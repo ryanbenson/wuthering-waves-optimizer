@@ -1,153 +1,209 @@
 <template>
-  <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
-    <h3 class="text-sm font-semibold">Rotations</h3>
-    <div class="flex flex-wrap items-center gap-2">
-      <button
-        class="btn btn-sm"
-        @click="handleCreateRotation"
-        data-test-rotations-action="create">
-        Create
-      </button>
-      <AppOverflowMenu
-        aria-label="More rotation actions"
-        data-test="rotations-overflow-menu">
-        <li>
-          <button
-            type="button"
-            @click="isImportOpen = true"
-            data-test-rotations-action="import">
-            Import
-          </button>
-        </li>
-        <li>
-          <button
-            type="button"
-            @click="isPresetRotationsOpen = true"
-            data-test-rotations-action="presets">
-            List Presets
-          </button>
-        </li>
-      </AppOverflowMenu>
-    </div>
-  </div>
-  <CalculatorRotationsImportModal v-model:open="isImportOpen" @import="handleImportedRotation" />
-  <CalculatorRotationsPresetsModal
-    v-model:open="isPresetRotationsOpen"
-    :presets="presets"
-    :character-name="character"
-    @import="handleImportPreset" />
-  <div
-    v-if="isLiveResultBarEnabled && rotations.length > 0"
-    class="rotations__summary mb-4 rounded-lg bg-base-200 p-4"
-    data-test-rotations-summary>
-    <div class="flex items-center justify-between gap-2 flex-wrap mb-3">
-      <h3 class="text-sm font-semibold">All Rotations Summary</h3>
-      <div class="flex items-center gap-2">
-        <span class="text-xs opacity-70">Sort by:</span>
-        <div class="join" data-test-rotations-sort-metric>
-          <input
-            v-model="sortMetric"
-            value="normal"
-            class="join-item btn btn-xs"
-            type="radio"
-            name="rotation-sort-metric"
-            aria-label="Normal" />
-          <input
-            v-model="sortMetric"
-            value="avg"
-            class="join-item btn btn-xs"
-            type="radio"
-            name="rotation-sort-metric"
-            aria-label="Average" />
-          <input
-            v-model="sortMetric"
-            value="crit"
-            class="join-item btn btn-xs"
-            type="radio"
-            name="rotation-sort-metric"
-            aria-label="Crit" />
-          <input
-            v-model="sortMetric"
-            value="name"
-            class="join-item btn btn-xs"
-            type="radio"
-            name="rotation-sort-metric"
-            aria-label="Name (A-Z)" />
-        </div>
+  <!-- Rotation Flow (Labs) detail view — mirrors TeamRotations.vue's
+  selectedTeamId pattern exactly: a dedicated full view instead of one
+  accordion among many, since an open rotation (summary strip, damage
+  strip, quick-add, full action list) is tall enough that staying inside
+  the list makes it easy to lose track of which one you're editing — and,
+  worse, sort-by-damage can reorder the list out from under you mid-edit. -->
+  <template v-if="isLiveResultBarEnabled && openRotation">
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm mb-4"
+      data-test-rotation-detail-back
+      @click="openRotationId = null">
+      ← Back to Rotations
+    </button>
+    <CalculatorRotation
+      :key="openRotation.id"
+      :character="character"
+      :character-data="characterData"
+      :character-build-data="currentCharacter"
+      :definitions="characterContext?.definitions ?? null"
+      :id="openRotation.id"
+      :name="openRotation.name"
+      :description="openRotation.description"
+      :duration="openRotation.duration"
+      :echo="openRotation.echo"
+      :echo-rank="openRotation.echoRank"
+      :order="openRotation.order"
+      :actions="openRotation.actions"
+      :can-reorder="false"
+      :all-damages="allDamages"
+      :favorite="openRotation.favorite ?? false"
+      :rank="openRotationRank"
+      :stat-value="rotationStatsById[openRotation.id]?.[leaderboardMetric] ?? 0"
+      :stat-label="leaderboardMetric === 'normal' ? 'Normal' : leaderboardMetric === 'crit' ? 'Crit' : 'Avg'"
+      always-open
+      @updated-rotation="handleUpdatedRotation"
+      @rotation-delete="handleDeleteRotation"
+      @toggle-favorite="toggleFavoriteRotation(openRotation.id)"></CalculatorRotation>
+  </template>
+
+  <template v-else>
+    <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Rotations</h3>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          class="btn btn-sm"
+          @click="handleCreateRotation"
+          data-test-rotations-action="create">
+          Create
+        </button>
+        <AppOverflowMenu
+          aria-label="More rotation actions"
+          data-test="rotations-overflow-menu">
+          <li>
+            <button
+              type="button"
+              @click="isImportOpen = true"
+              data-test-rotations-action="import">
+              Import
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              @click="isPresetRotationsOpen = true"
+              data-test-rotations-action="presets">
+              List Presets
+            </button>
+          </li>
+        </AppOverflowMenu>
       </div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-      <button
-        v-if="strongestRotationByDamage"
-        type="button"
-        class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
-        data-test-rotations-summary-strongest
-        @click="goToRotation(strongestRotationByDamage!.rotation.id)">
-        <div class="text-xs opacity-70 mb-1">Strongest Rotation (Dmg)</div>
-        <div class="font-semibold truncate">{{ strongestRotationByDamage.rotation.name }}</div>
-        <div>{{ displayDamage(strongestRotationByDamage.value) }}</div>
-      </button>
-      <button
-        v-if="strongestRotationByDps"
-        type="button"
-        class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
-        data-test-rotations-summary-dps
-        @click="goToRotation(strongestRotationByDps!.rotation.id)">
-        <div class="text-xs opacity-70 mb-1">Best DPS</div>
-        <div class="font-semibold truncate">{{ strongestRotationByDps.rotation.name }}</div>
-        <div>{{ displayDamage(strongestRotationByDps.value) }}</div>
-      </button>
-      <button
-        v-if="strongestRotationByHit"
-        type="button"
-        class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
-        data-test-rotations-summary-hit
-        @click="goToRotation(strongestRotationByHit!.rotation.id)">
-        <div class="text-xs opacity-70 mb-1">Strongest Hit</div>
-        <div class="font-semibold truncate">{{ strongestRotationByHit.rotation.name }}</div>
-        <div>{{ displayDamage(strongestRotationByHit.value) }}</div>
-      </button>
-    </div>
-  </div>
-  <div class="flex flex-col gap-4">
+    <CalculatorRotationsImportModal v-model:open="isImportOpen" @import="handleImportedRotation" />
+    <CalculatorRotationsPresetsModal
+      v-model:open="isPresetRotationsOpen"
+      :presets="presets"
+      :character-name="character"
+      @import="handleImportPreset" />
     <div
-      v-for="(rotation, index) in sortedRotations"
-      :key="rotation.id"
-      class="rotation-dnd-item rounded-lg"
-      :class="{
-        'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
-          dropIndex === index && dragIndex !== null && dragIndex !== index,
-      }"
-      @dragover.prevent="onDragOver(index, $event)"
-      @dragenter.prevent="onDragEnter(index)"
-      @drop.prevent="onDrop(index)">
-      <CalculatorRotation
-        :ref="(el) => setRotationRef(rotation.id, el)"
-        :character="character"
-        :character-data="characterData"
-        :character-build-data="currentCharacter"
-        :definitions="characterContext?.definitions ?? null"
-        :id="rotation.id"
+      v-if="isLiveResultBarEnabled && rotations.length > 0"
+      class="rotations__summary mb-4 rounded-lg bg-base-200 p-4"
+      data-test-rotations-summary>
+      <div class="flex items-center justify-between gap-2 flex-wrap mb-3">
+        <h3 class="text-sm font-semibold">All Rotations Summary</h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xs opacity-70">Sort by:</span>
+          <div class="join" data-test-rotations-sort-metric>
+            <input
+              v-model="sortMetric"
+              value="normal"
+              class="join-item btn btn-xs"
+              type="radio"
+              name="rotation-sort-metric"
+              aria-label="Normal" />
+            <input
+              v-model="sortMetric"
+              value="avg"
+              class="join-item btn btn-xs"
+              type="radio"
+              name="rotation-sort-metric"
+              aria-label="Average" />
+            <input
+              v-model="sortMetric"
+              value="crit"
+              class="join-item btn btn-xs"
+              type="radio"
+              name="rotation-sort-metric"
+              aria-label="Crit" />
+            <input
+              v-model="sortMetric"
+              value="name"
+              class="join-item btn btn-xs"
+              type="radio"
+              name="rotation-sort-metric"
+              aria-label="Name (A-Z)" />
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+        <button
+          v-if="strongestRotationByDamage"
+          type="button"
+          class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+          data-test-rotations-summary-strongest
+          @click="openRotationId = strongestRotationByDamage!.rotation.id">
+          <div class="text-xs opacity-70 mb-1">Strongest Rotation (Dmg)</div>
+          <div class="font-semibold truncate">{{ strongestRotationByDamage.rotation.name }}</div>
+          <div>{{ displayDamage(strongestRotationByDamage.value) }}</div>
+        </button>
+        <button
+          v-if="strongestRotationByDps"
+          type="button"
+          class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+          data-test-rotations-summary-dps
+          @click="openRotationId = strongestRotationByDps!.rotation.id">
+          <div class="text-xs opacity-70 mb-1">Best DPS</div>
+          <div class="font-semibold truncate">{{ strongestRotationByDps.rotation.name }}</div>
+          <div>{{ displayDamage(strongestRotationByDps.value) }}</div>
+        </button>
+        <button
+          v-if="strongestRotationByHit"
+          type="button"
+          class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+          data-test-rotations-summary-hit
+          @click="openRotationId = strongestRotationByHit!.rotation.id">
+          <div class="text-xs opacity-70 mb-1">Strongest Hit</div>
+          <div class="font-semibold truncate">{{ strongestRotationByHit.rotation.name }}</div>
+          <div>{{ displayDamage(strongestRotationByHit.value) }}</div>
+        </button>
+      </div>
+    </div>
+
+    <ul v-if="isLiveResultBarEnabled" class="flex flex-col gap-2" data-test-rotations-list>
+      <CalculatorRotationRow
+        v-for="(rotation, index) in sortedRotations"
+        :key="rotation.id"
         :name="rotation.name"
-        :description="rotation.description"
+        :favorite="rotation.favorite ?? false"
+        :rank="index + 1"
+        :stat-value="rotationStatsById[rotation.id]?.[leaderboardMetric] ?? 0"
+        :stat-label="leaderboardMetric === 'normal' ? 'Normal' : leaderboardMetric === 'crit' ? 'Crit' : 'Avg'"
+        :actions-count="rotation.actions.length"
         :duration="rotation.duration"
         :echo="rotation.echo"
-        :echo-rank="rotation.echoRank"
-        :order="rotation.order"
-        :actions="rotation.actions"
-        :can-reorder="canReorder"
-        :all-damages="allDamages"
-        :favorite="rotation.favorite ?? false"
-        :rank="isLiveResultBarEnabled ? index + 1 : null"
-        :stat-value="isLiveResultBarEnabled ? (rotationStatsById[rotation.id]?.[leaderboardMetric] ?? 0) : null"
-        :stat-label="leaderboardMetric === 'normal' ? 'Normal' : leaderboardMetric === 'crit' ? 'Crit' : 'Avg'"
-        @drag-reorder-start="onDragStart(index)"
-        @drag-reorder-end="onDragEnd"
-        @updated-rotation="handleUpdatedRotation"
-        @rotation-delete="handleDeleteRotation"
-        @toggle-favorite="toggleFavoriteRotation(rotation.id)"></CalculatorRotation>
+        @open="openRotationId = rotation.id"
+        @toggle-favorite="toggleFavoriteRotation(rotation.id)"
+        @delete="handleDeleteRotation(rotation.id)" />
+    </ul>
+
+    <!-- Legacy (flag off): unchanged accordion-in-list. -->
+    <div v-else class="flex flex-col gap-4">
+      <div
+        v-for="(rotation, index) in sortedRotations"
+        :key="rotation.id"
+        class="rotation-dnd-item rounded-lg"
+        :class="{
+          'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
+            dropIndex === index && dragIndex !== null && dragIndex !== index,
+        }"
+        @dragover.prevent="onDragOver(index, $event)"
+        @dragenter.prevent="onDragEnter(index)"
+        @drop.prevent="onDrop(index)">
+        <CalculatorRotation
+          :ref="(el) => setRotationRef(rotation.id, el)"
+          :character="character"
+          :character-data="characterData"
+          :character-build-data="currentCharacter"
+          :definitions="characterContext?.definitions ?? null"
+          :id="rotation.id"
+          :name="rotation.name"
+          :description="rotation.description"
+          :duration="rotation.duration"
+          :echo="rotation.echo"
+          :echo-rank="rotation.echoRank"
+          :order="rotation.order"
+          :actions="rotation.actions"
+          :can-reorder="canReorder"
+          :all-damages="allDamages"
+          @drag-reorder-start="onDragStart(index)"
+          @drag-reorder-end="onDragEnd"
+          @updated-rotation="handleUpdatedRotation"
+          @rotation-delete="handleDeleteRotation"></CalculatorRotation>
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -158,6 +214,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
+import CalculatorRotationRow from "./CalculatorRotationRow.vue";
 import CalculatorRotationsImportModal from "./CalculatorRotationsImportModal.vue";
 import CalculatorRotationsPresetsModal from "./CalculatorRotationsPresetsModal.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
@@ -245,6 +302,18 @@ const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
 const characterData = ref<Record<string, unknown>>({});
 const presets = ref<CharacterRotationPreset[]>([]);
+
+// Rotation Flow (Labs) — which rotation (if any) is showing as its own
+// detail view, mirroring TeamRotations.vue's `selectedTeamId`. Legacy
+// (flag-off) never sets this — it still opens/closes inline via each
+// CalculatorRotation's own accordion state.
+const openRotationId = ref<string | null>(null);
+const openRotation = computed(() => rotations.value.find((r) => r.id === openRotationId.value) ?? null);
+const openRotationRank = computed(() => {
+  if (!openRotationId.value) return null;
+  const idx = sortedRotations.value.findIndex((r) => r.id === openRotationId.value);
+  return idx === -1 ? null : idx + 1;
+});
 
 const rotationRefs = new Map<string, { toggleOpen: () => void }>();
 
@@ -406,10 +475,6 @@ function displayDamage(value: number): string {
   return Math.round(value).toLocaleString();
 }
 
-function goToRotation(id: string) {
-  rotationRefs.get(id)?.toggleOpen();
-}
-
 async function toggleFavoriteRotation(id: string) {
   const next = rotations.value.map((rotation) =>
     rotation.id === id ? { ...rotation, favorite: !rotation.favorite } : rotation,
@@ -500,6 +565,10 @@ async function handleCreateRotation() {
   };
   const next = [...rotations.value, newRotationData];
   await persistRotations(next);
+  if (isLiveResultBarEnabled.value) {
+    openRotationId.value = id;
+    return;
+  }
   await nextTick();
   rotationRefs.get(id)?.toggleOpen();
 }
@@ -551,6 +620,9 @@ async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
 async function handleDeleteRotation(rotationId: string) {
   const next = rotations.value.filter((rotation) => rotation.id !== rotationId);
   await persistRotations(next);
+  if (openRotationId.value === rotationId) {
+    openRotationId.value = null;
+  }
 }
 
 const { dragIndex, dropIndex, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd } =

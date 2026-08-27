@@ -214,7 +214,40 @@ legacy path untouched:
     one action" label sits above a full-width input, a `divider` reading
     "or" separates the two paths, and the paste toggle is a low-emphasis
     `btn-ghost` reading "📋 Paste a whole rotation" underneath — visually
-    subordinate to, not beside, the primary input.
+    subordinate to, not beside, the primary input. (A later pass swapped
+    the emoji for a proper inline paste SVG and bumped the button to
+    `btn-neutral btn-sm w-full` — `btn-ghost` at its natural width read as
+    a stray label, not a button.)
+
+## Round 4 (list/detail split)
+
+16. **An open rotation is its own view, not an accordion item.** The
+    density Rotation Flow added (summary strip, damage strip, quick-add,
+    full action list) made an expanded rotation genuinely tall — combined
+    with round 2's sort-by-damage, editing a rotation could even reorder it
+    out from under you in the list mid-edit. Ported TeamRotations.vue's
+    `selectedTeamId` pattern exactly: `CalculatorRotations.vue` gets an
+    `openRotationId` ref; `null` renders the list (leaderboard + a new
+    `CalculatorRotationRow.vue` per rotation, mirroring TeamRotations.vue's
+    own compact list-row card almost verbatim — rank badge, avatar, name +
+    meta, stat, favorite/delete), non-null renders a "← Back to Rotations"
+    button (same `btn-ghost btn-sm`, same copy pattern as Team's "← Back to
+    Teams") plus exactly one `CalculatorRotation`, permanently expanded.
+    `CalculatorRotation.vue` gained a single `alwaysOpen` prop for this —
+    `isOpen` became `computed(() => alwaysOpen || isOpenLocal.value)`
+    instead of a plain ref, so the existing accordion-toggle code
+    (`toggleOpen()`, now writing to the renamed `isOpenLocal`) is otherwise
+    untouched; the collapse chevron just hides itself when `alwaysOpen`.
+    Legacy (flag off) is a completely separate top-level template branch —
+    still the exact old accordion-in-list — not a further-branched version
+    of the new one, so there was no risk of the split leaking into it.
+    `handleCreateRotation` and `handleDeleteRotation` both branch on the
+    flag: creating opens the new rotation as a detail view instead of
+    auto-expanding it in place; deleting the currently-open rotation clears
+    `openRotationId` so you don't end up looking at a detail view for
+    something that no longer exists. The leaderboard cards' `goToRotation`
+    helper from round 2 was deleted — clicking one now just assigns
+    `openRotationId` directly, same as a list row's own click.
 
 ## Not done here
 
@@ -244,8 +277,9 @@ legacy path untouched:
 - `src/components/CalculatorRotationAction.vue`,
   `CalculatorRotationActionEditor.vue`, `CalculatorRotation.vue`,
   `CalculatorRotations.vue`, `TeamRotationActionEditor.vue`,
-  `TeamRotationTeamEditor.vue`, `CalculatorRotationQuickAdd.vue` (new),
-  `AppOverflowMenu.vue`, `FavoriteHeartButton.vue` (both reused, unchanged)
+  `TeamRotationTeamEditor.vue`, `CalculatorRotationQuickAdd.vue`,
+  `CalculatorRotationRow.vue` (new)
+- `AppOverflowMenu.vue`, `FavoriteHeartButton.vue` (reused, unchanged)
 - `src/composables/useCharacterActionList.ts` (new)
 - `src/utils/actionTextMatch.ts` (new) — `tests/utils/actionTextMatch.test.ts`
 - `src/calculator/rotationAdvancedBuffs.ts`, `characterRotation.ts`,
