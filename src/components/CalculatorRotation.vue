@@ -71,17 +71,6 @@
       </form>
       <h3 class="font-bold text-lg mb-4">Main Echo Settings</h3>
       <div class="flex flex-col gap-4">
-        <div class="rotation__desc flex flex-col gap-2">
-          <label for="description-modal">Description</label>
-          <textarea
-            v-model="descriptionValue"
-            name="description-modal"
-            id="description-modal"
-            class="textarea textarea-bordered"
-            @input="onDescriptionChange"
-            >{{ description }}</textarea
-          >
-        </div>
         <div class="rotation__current-echo flex flex-col gap-2 items-center">
           <img
             :src="
@@ -173,6 +162,7 @@
               name="name"
               id="name"
               class="input input-bordered w-full max-w-lg"
+              :class="{ 'input-sm': isLiveResultBarEnabled }"
               v-model="nameValue"
               @input="onNameChange"
               @click.stop
@@ -233,6 +223,17 @@
             </div>
           </div>
         </h2>
+        <input
+          v-if="isOpen && isLiveResultBarEnabled"
+          type="text"
+          name="description-quick"
+          id="description-quick"
+          class="input input-bordered input-xs w-full max-w-lg mt-1"
+          placeholder="Add a description…"
+          v-model="descriptionValue"
+          @input="onDescriptionChange"
+          @click.stop
+          data-test-rotation-description-quick />
         <div class="rotation__body" v-if="isOpen" @click.stop>
           <div v-if="isLiveResultBarEnabled" class="rotation__topbar flex items-center gap-2 flex-wrap">
             <button
