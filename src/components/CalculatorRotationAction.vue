@@ -93,7 +93,7 @@
         <button
           v-else
           type="button"
-          class="btn btn-xs"
+          class="btn btn-xs btn-neutral"
           data-test-rotation-action-manage-buffs
           @click.stop="toggleManageBuffs">
           {{ showManualBuffs ? "Hide" : "⚙ Manage" }} Buffs
@@ -111,6 +111,7 @@
         <button
           type="button"
           class="btn btn-xs"
+          :class="{ 'btn-error btn-outline': isLiveResultBarEnabled }"
           data-test-rotation-action-remove
           @click.stop="removeAction">
           Delete

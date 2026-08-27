@@ -213,8 +213,11 @@ function collectCategoryChips(
 }
 
 const advancedBuffChips = computed<AdvancedBuffChip[]>(() => {
+  // Only surface these once the action actually diverges from the
+  // character's live buff state — see CalculatorRotationActionEditor.vue's
+  // identical comment.
   const defs = props.definitionsForSlot?.[props.action.slot];
-  if (!defs) return [];
+  if (!defs || !isCustomized.value) return [];
   const config = displayedAdvancedConfig.value;
   const chips: AdvancedBuffChip[] = [
     ...collectCategoryChips("buffs", config.buffs, defs.buffs),

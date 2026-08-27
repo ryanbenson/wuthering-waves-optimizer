@@ -87,6 +87,14 @@
                   d="M7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
               </svg>
             </span>
+            <span v-if="isLiveResultBarEnabled && rank !== null" class="badge badge-sm" data-test-rotation-rank>
+              #{{ rank }}
+            </span>
+            <FavoriteHeartButton
+              v-if="isLiveResultBarEnabled"
+              :active="favorite"
+              :test-id="name"
+              @toggle="$emit('toggle-favorite')" />
             <span v-if="!isOpen" class="truncate" v-tooltip="description">{{
               name
             }}</span>
@@ -124,9 +132,16 @@
                 :alt="currentEchoData?.name" />
             </div>
             <div
+              v-if="isLiveResultBarEnabled && statValue !== null && statValue > 0"
+              class="badge badge-ghost min-w-max"
+              data-test-rotation-stat-badge>
+              {{ statLabel }}: {{ Math.round(statValue).toLocaleString() }}
+            </div>
+            <div
               class="rotation__actions-count min-w-24"
               :data-test-rotation-actions-count="nameValue">
-              {{ actionsCount }} Actions
+              {{ actionsCount }} Action{{ actionsCount === 1 ? "" : "s" }}
+              <template v-if="isLiveResultBarEnabled && durationValue">· {{ durationValue }}s</template>
             </div>
             <div class="rotation__expand">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -137,7 +152,58 @@
           </div>
         </h2>
         <div class="rotation__body" v-if="isOpen" @click.stop>
-          <div class="rotation__desc flex flex-col gap-2">
+          <div v-if="isLiveResultBarEnabled" class="rotation__topbar flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              class="relative size-9 shrink-0 rounded-full bg-transparent border-none p-0 cursor-pointer"
+              title="Choose echo"
+              data-test-rotation-echo-quick-open
+              @click="openEchoChooser">
+              <img
+                :src="
+                  currentEchoData?.image ||
+                  'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
+                "
+                class="size-9 rounded-full border border-solid neutral-content bg-cover"
+                :class="{
+                  'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+                  'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+                  'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+                  'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+                  'echo__item__image--empty': !currentEchoData?.image,
+                }"
+                :alt="currentEchoData?.name" />
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost"
+              data-test-rotation-settings-toggle
+              @click="showRotationSettings = !showRotationSettings">
+              {{ showRotationSettings ? "Hide" : "More" }} settings
+            </button>
+            <AppOverflowMenu aria-label="Rotation actions" data-test="rotation-overflow-menu">
+              <li>
+                <button type="button" @click="handleRotationExport" :data-test-rotation-action-export="nameValue">
+                  Copy to Clipboard
+                </button>
+              </li>
+              <li>
+                <button type="button" @click="handleRotationExportFile" :data-test-rotation-action-export-file="nameValue">
+                  Download JSON
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="text-error"
+                  @click="handleRotationDelete"
+                  :data-test-rotation-action-delete="nameValue">
+                  Delete
+                </button>
+              </li>
+            </AppOverflowMenu>
+          </div>
+          <div v-if="!isLiveResultBarEnabled || showRotationSettings" class="rotation__desc flex flex-col gap-2 mt-2">
             <label for="description">Description</label>
             <textarea
               v-model="descriptionValue"
@@ -148,7 +214,9 @@
               >{{ description }}</textarea
             >
           </div>
-          <div class="rotation__duration-echo flex gap-4 items-center mt-4">
+          <div
+            v-if="!isLiveResultBarEnabled || showRotationSettings"
+            class="rotation__duration-echo flex gap-4 items-center mt-4">
             <div class="rotation__echo">
               <div
                 class="rotation__current-echo flex flex-col gap-2 items-center">
@@ -238,6 +306,15 @@
                 @click="scrollToAction(bar.id)"></button>
             </div>
           </div>
+          <div v-if="isLiveResultBarEnabled" class="rotation__add-actions mt-4">
+            <button
+              class="rotation__action--add btn btn-primary btn-xs w-full"
+              @click="addAction"
+              :data-test-rotation-action-add="nameValue">
+              Add Action
+            </button>
+            <CalculatorRotationQuickAdd :actions="characterActionList" @add-actions="handleAddActions" />
+          </div>
           <div class="rotations__list">
             <div
               v-for="(action, index) in actionsList"
@@ -280,16 +357,13 @@
             </div>
           </div>
           <button
+            v-if="!isLiveResultBarEnabled"
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
             @click="addAction"
             :data-test-rotation-action-add="nameValue">
             Add Action
           </button>
-          <CalculatorRotationQuickAdd
-            v-if="isLiveResultBarEnabled"
-            :actions="characterActionList"
-            @add-actions="handleAddActions" />
-          <div class="rotation__action--system">
+          <div v-if="!isLiveResultBarEnabled" class="rotation__action--system">
             <button
               class="btn btn-primary btn-xs"
               @click="handleRotationExport"
@@ -322,6 +396,8 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
+import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
 import { getEchoSetIconByType } from "../echoes/stats";
@@ -377,6 +453,13 @@ const props = withDefaults(
      * rotation's real per-action damage for the damage-by-action strip. No
      * damage calculation happens in this component. */
     allDamages?: Record<string, unknown> | null;
+    /** Rotation Flow (Labs) — list-level display data computed by
+     * CalculatorRotations.vue (sort/rank/favorite are list concerns; this
+     * component only displays and reports toggles, it owns none of it). */
+    favorite?: boolean;
+    rank?: number | null;
+    statValue?: number | null;
+    statLabel?: string | null;
   }>(),
   {
     characterData: () => ({}),
@@ -389,6 +472,10 @@ const props = withDefaults(
     actions: () => [],
     canReorder: false,
     allDamages: null,
+    favorite: false,
+    rank: null,
+    statValue: null,
+    statLabel: null,
   },
 );
 
@@ -397,6 +484,7 @@ const emit = defineEmits<{
   "rotation-delete": [id: string];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
+  "toggle-favorite": [];
 }>();
 
 const characterStore = useCharacterStore();
@@ -407,6 +495,7 @@ const isLiveResultBarEnabled = computed(
 );
 
 const isOpen = ref(false);
+const showRotationSettings = ref(false);
 const nameValue = ref<string | null>(null);
 const descriptionValue = ref<string | null>(null);
 const durationValue = ref<string | number | null>(null);

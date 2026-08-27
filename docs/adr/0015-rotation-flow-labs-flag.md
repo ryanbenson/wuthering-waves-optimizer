@@ -106,6 +106,79 @@ established pattern.
    design proposal's own interactive demo exactly, rather than silently
    guessing or letting an unresolved line through.
 
+## Round 2 (post-review refinements)
+
+Real usage of round 1 surfaced five more changes, all still flag-gated,
+legacy path untouched:
+
+7. **Live-buff chips only show once an action is actually customized.**
+   Round 1's unified chip row showed a character's currently-enabled
+   `advancedConfig` entries on every single action — but while an action is
+   still "Synced with character," those chips are identical, expected noise
+   repeated down the whole rotation. `advancedBuffChips` in both wrapper
+   editors now short-circuits to `[]` unless `isCustomized` is true. Custom
+   `action.buffs` chips are unaffected — those are always a deliberate
+   per-action choice, sync status doesn't apply to them.
+
+8. **Button weight consistency.** "Manage Buffs" was plain `btn btn-xs`
+   while "Duplicate" was `btn-neutral` — inconsistent prominence for two
+   equally-primary actions on the same row. Both are `btn-neutral` now;
+   "Delete" gets `btn-error btn-outline` so it reads as clearly destructive.
+   All three changes are flag-gated (`:class` bindings, not a swapped base
+   class) so the legacy row is pixel-identical off-flag.
+
+9. **Quick-add/paste-import moved to the top of the action list**, next to
+   a duplicate "Add Action" button rendered only when the flag is on — the
+   original bottom-of-list placement (round 1) was easy to miss entirely.
+   The legacy bottom placement is preserved exactly for the flag-off case.
+
+10. **The open rotation's header compresses to name + echo + overflow.**
+    Round 1 left the full description/echo-picker/rank-slider/duration block
+    always expanded under an open rotation. Now (flag on) that whole block
+    lives behind a "More settings" toggle; the always-visible bar is just a
+    clickable echo avatar (opens the existing echo-chooser dialog directly)
+    and an `AppOverflowMenu` (Copy to Clipboard / Download JSON / Delete —
+    the same handlers as before, just relocated out of three separate
+    inline buttons).
+
+11. **The rotations list gained TeamRotations.vue's ranking/summary
+    pattern**, scoped to what was asked for (filters explicitly skipped —
+    there's no meaningful character-scoped filter axis here the way
+    TeamRotations.vue's character/status filters have) — one compact list,
+    not TeamRotations.vue's grid/list toggle, since the ask was about
+    information density (action count, duration, sort), not a card
+    layout choice:
+    - `sortMetric` (`normal | avg | crit | name`) reorders the list and
+      drives an "All Rotations Summary" panel with three leaderboard cards
+      (Strongest Rotation, Best DPS, Strongest Hit) — same shape as
+      TeamRotations.vue's five-card leaderboard, trimmed to the three
+      metrics actually named in review (healing/shield cards would mostly
+      read as zero for non-support characters' rotations, unlike a team
+      that usually has a healer).
+    - Unlike TeamRotations.vue's async `calcTeamRotationDamage` +
+      fingerprint-cache pipeline (needed because a team combines multiple
+      characters), `CalculatorRotations.vue` doesn't compute anything new —
+      it reads the exact same `allDamages.rotations[i].damageAggregation`/
+      `.attacks` that `CalculatorRotation.vue`'s own damage-by-action strip
+      already reads, just summed/maxed across every rotation instead of one.
+    - Favoriting reuses `FavoriteHeartButton.vue` as-is, but the persisted
+      shape differs deliberately from Team's: a plain `favorite?: boolean`
+      field directly on each rotation object, not a separate
+      `favoriteRotationIds`-style array — a single character's own
+      rotations don't need cross-entity favorite lookups the way Team's
+      shared `favoriteTeamIds` array does.
+    - Fixed a real bug surfaced while wiring this in:
+      `CalculatorRotations.vue`'s `handleUpdatedRotation` was a wholesale
+      replace, not a merge — `CalculatorRotation.vue`'s own
+      `emitRotation()` payload has no idea about list-owned fields like the
+      new `favorite`, so any unrelated edit (renaming, duration, etc.)
+      would have silently dropped it. Same class of bug the codebase
+      already guards against for `advancedConfig` elsewhere; fixed the same
+      way (merge, not replace).
+    - Manual drag-reorder is disabled when the flag is on — order is now
+      sort-metric-driven, same as TeamRotations.vue never supporting manual
+      per-team ordering in its list either.
+
 ## Not done here
 
 - Team paste-import's `Name:`-per-line prefix convention for assigning a
@@ -120,16 +193,29 @@ established pattern.
   separate to avoid touching the already-working picker.
 - Rotation health-check hints, a snippet library, and user-submittable team
   presets — adjacent ideas from the same design proposal, not built here.
+- A grid/list view toggle and character/status-style filters for the
+  rotations list (TeamRotations.vue has both) — explicitly out of scope per
+  review; there's one compact list and no meaningful filter axis for a
+  single character's own rotations.
+- Applying the same rotations-list ranking/summary/favorite treatment to
+  Team Rotations' own list — TeamRotations.vue already has an equivalent
+  (older, team-shaped) version of this; round 2 only ported the pattern
+  toward `CalculatorRotations.vue`, not the reverse.
 
 ## Related
 
 - `src/components/CalculatorRotationAction.vue`,
   `CalculatorRotationActionEditor.vue`, `CalculatorRotation.vue`,
-  `TeamRotationActionEditor.vue`, `TeamRotationTeamEditor.vue`,
-  `CalculatorRotationQuickAdd.vue` (new)
+  `CalculatorRotations.vue`, `TeamRotationActionEditor.vue`,
+  `TeamRotationTeamEditor.vue`, `CalculatorRotationQuickAdd.vue` (new),
+  `AppOverflowMenu.vue`, `FavoriteHeartButton.vue` (both reused, unchanged)
 - `src/composables/useCharacterActionList.ts` (new)
 - `src/utils/actionTextMatch.ts` (new) — `tests/utils/actionTextMatch.test.ts`
 - `src/calculator/rotationAdvancedBuffs.ts`, `characterRotation.ts`,
   `teamRotation.ts` (read, unchanged)
+- `tests/components/CalculatorRotationActionEditor.test.ts` (new) — covers
+  the synced/customized chip-visibility split
+- `src/components/TeamRotations.vue` — the source pattern for the rotations
+  list's sort/leaderboard/favorite treatment
 - ADR [0013](./0013-live-result-bar-labs-flag.md) — the Labs-flag pattern
   this follows

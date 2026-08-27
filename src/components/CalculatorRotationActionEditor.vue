@@ -216,7 +216,11 @@ function collectCategoryChips(
 }
 
 const advancedBuffChips = computed<AdvancedBuffChip[]>(() => {
-  if (!props.definitions) return [];
+  // Only surface these once the action actually diverges from the
+  // character's live buff state — while synced, every action would
+  // otherwise repeat the same (often long) list of "just how this
+  // character normally buffs" chips, which is noise, not information.
+  if (!props.definitions || !isCustomized.value) return [];
   const config = displayedAdvancedConfig.value;
   const chips: AdvancedBuffChip[] = [
     ...collectCategoryChips("buffs", config.buffs, props.definitions.buffs),

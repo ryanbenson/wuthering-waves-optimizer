@@ -187,6 +187,30 @@
                 @click="scrollToAction(bar.id)"></button>
             </div>
           </div>
+          <div v-if="isLiveResultBarEnabled" class="rotation__add-actions mb-3">
+            <button
+              class="btn btn-primary btn-xs w-full"
+              :disabled="!hasAnyCharacter"
+              data-test-team-rotation-add-action
+              @click="addAction">
+              + Add Action
+            </button>
+            <div v-if="hasAnyCharacter" class="mt-2">
+              <div class="flex items-center gap-2 mb-1">
+                <label for="quick-add-slot" class="text-xs opacity-70">Adding for:</label>
+                <select
+                  id="quick-add-slot"
+                  v-model.number="quickAddSlot"
+                  class="select select-bordered select-xs"
+                  data-test-team-rotation-quick-add-slot>
+                  <option v-for="slot in [0, 1, 2]" :key="slot" :value="slot" :disabled="!team.characterIds[slot]">
+                    {{ team.characterIds[slot] ? displayName(team.characterIds[slot] as string) : `Slot ${slot + 1} (empty)` }}
+                  </option>
+                </select>
+              </div>
+              <CalculatorRotationQuickAdd :actions="quickAddActionList" @add-actions="handleQuickAddActions" />
+            </div>
+          </div>
           <div class="flex flex-col gap-4" data-test-team-rotation-actions>
             <div
               v-for="(action, index) in team.actions"
@@ -223,27 +247,13 @@
             </div>
           </div>
           <button
+            v-if="!isLiveResultBarEnabled"
             class="btn btn-primary btn-xs w-full mt-2"
             :disabled="!hasAnyCharacter"
             data-test-team-rotation-add-action
             @click="addAction">
             + Add Action
           </button>
-          <div v-if="isLiveResultBarEnabled && hasAnyCharacter" class="mt-2">
-            <div class="flex items-center gap-2 mb-1">
-              <label for="quick-add-slot" class="text-xs opacity-70">Adding for:</label>
-              <select
-                id="quick-add-slot"
-                v-model.number="quickAddSlot"
-                class="select select-bordered select-xs"
-                data-test-team-rotation-quick-add-slot>
-                <option v-for="slot in [0, 1, 2]" :key="slot" :value="slot" :disabled="!team.characterIds[slot]">
-                  {{ team.characterIds[slot] ? displayName(team.characterIds[slot] as string) : `Slot ${slot + 1} (empty)` }}
-                </option>
-              </select>
-            </div>
-            <CalculatorRotationQuickAdd :actions="quickAddActionList" @add-actions="handleQuickAddActions" />
-          </div>
         </div>
       </div>
     </div>
