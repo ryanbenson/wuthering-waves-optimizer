@@ -121,34 +121,44 @@
         v-if="isLiveResultBarEnabled && (buffData.length || advancedBuffChips.length)"
         class="rotation__action__unified-chips"
         @click.stop>
-        <span
-          v-for="buff in buffData"
-          :key="buff.id"
-          class="badge badge-outline unified-chip"
-          data-test-rotation-action-unified-chip-custom>
-          {{ buff.modifier ?? "?" }}: {{ buff.modifierValue ?? "?" }}
-          <button
-            type="button"
-            class="unified-chip__remove"
-            title="Remove"
-            @click.stop="handleRemoveBuff(buff.id)">
-            ✕
-          </button>
-        </span>
-        <span
-          v-for="chip in advancedBuffChips"
-          :key="`${chip.category}:${chip.key}`"
-          class="badge badge-outline badge-accent unified-chip"
-          data-test-rotation-action-unified-chip-live>
-          {{ chip.label }}
-          <button
-            type="button"
-            class="unified-chip__remove"
-            title="Turn off"
-            @click.stop="removeAdvancedBuffChip(chip)">
-            ✕
-          </button>
-        </span>
+        <div v-if="buffData.length" class="unified-chip-group">
+          <div class="unified-chip-group__label">Stat Bonuses</div>
+          <div class="unified-chip-group__pills">
+            <span
+              v-for="buff in buffData"
+              :key="buff.id"
+              class="badge badge-outline unified-chip"
+              data-test-rotation-action-unified-chip-custom>
+              {{ buff.modifier ?? "?" }}: {{ buff.modifierValue ?? "?" }}
+              <button
+                type="button"
+                class="unified-chip__remove"
+                title="Remove"
+                @click.stop="handleRemoveBuff(buff.id)">
+                ✕
+              </button>
+            </span>
+          </div>
+        </div>
+        <div v-for="group in groupedAdvancedBuffChips" :key="group.category" class="unified-chip-group">
+          <div class="unified-chip-group__label">{{ group.label }}</div>
+          <div class="unified-chip-group__pills">
+            <span
+              v-for="chip in group.chips"
+              :key="`${chip.category}:${chip.key}`"
+              class="badge badge-outline badge-accent unified-chip"
+              data-test-rotation-action-unified-chip-live>
+              {{ chip.label }}
+              <button
+                type="button"
+                class="unified-chip__remove"
+                title="Turn off"
+                @click.stop="removeAdvancedBuffChip(chip)">
+                ✕
+              </button>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
     <div v-if="isEditing" class="rotation__action__edit mt-2" @click.stop>
@@ -324,6 +334,26 @@ type AdvancedBuffChip = {
   key: string;
   label: string;
   code?: string | null;
+};
+
+// Same category labels/order TeamRotationAdvancedBuffs.vue already uses for
+// its section headings — reused here so the grouping reads identically
+// whether you're looking at the full editor or this compact chip summary.
+const ADVANCED_CATEGORY_ORDER = [
+  "buffs",
+  "weaponPassives",
+  "echoSetPassives",
+  "mainEchoBuff",
+  "teamBuffs",
+  "resonanceChains",
+] as const;
+const ADVANCED_CATEGORY_LABELS: Record<string, string> = {
+  buffs: "Self Buffs",
+  weaponPassives: "Weapon",
+  echoSetPassives: "Echo Set Bonuses",
+  mainEchoBuff: "Main Echo",
+  teamBuffs: "Team Buffs",
+  resonanceChains: "Resonance Chains",
 };
 
 const skillKeyMap = {
@@ -799,6 +829,17 @@ function removeAdvancedBuffChip(chip: AdvancedBuffChip) {
   emit("toggle-advanced-buff", { category: chip.category, key: chip.key });
 }
 
+const groupedAdvancedBuffChips = computed(() => {
+  const groups: Array<{ category: string; label: string; chips: AdvancedBuffChip[] }> = [];
+  for (const category of ADVANCED_CATEGORY_ORDER) {
+    const chips = props.advancedBuffChips.filter((chip) => chip.category === category);
+    if (chips.length) {
+      groups.push({ category, label: ADVANCED_CATEGORY_LABELS[category] ?? category, chips });
+    }
+  }
+  return groups;
+});
+
 const formattedDamageValue = computed(() => {
   if (props.damageValue === null || props.damageValue === undefined) return null;
   return Math.round(props.damageValue).toLocaleString();
@@ -936,9 +977,21 @@ onMounted(() => {
 }
 .rotation__action__unified-chips {
   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  cursor: default;
+}
+.unified-chip-group__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 0.25rem;
+}
+.unified-chip-group__pills {
+  display: flex;
   flex-wrap: wrap;
   gap: 0.375rem;
-  cursor: default;
 }
 .unified-chip {
   gap: 0.375rem;

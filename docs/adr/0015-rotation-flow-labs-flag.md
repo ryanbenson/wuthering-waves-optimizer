@@ -249,6 +249,25 @@ legacy path untouched:
     helper from round 2 was deleted — clicking one now just assigns
     `openRotationId` directly, same as a list row's own click.
 
+## Round 5 (small polish)
+
+17. Name input sized to match the duration input beside it (`input-sm`,
+    flag-on only); description moved out of the Main Echo Settings modal
+    (now genuinely just echo settings) into a short single-line input
+    directly under the name, instead of a multi-row textarea behind a
+    modal click.
+
+18. **Unified chips grouped by category, not one flat list.** `buffData`
+    (custom modifiers) gets its own "Stat Bonuses" heading; `advancedBuffChips`
+    groups by `category` into "Self Buffs" / "Weapon" / "Echo Set Bonuses" /
+    "Main Echo" / "Team Buffs" / "Resonance Chains" — the exact same labels
+    and order `TeamRotationAdvancedBuffs.vue` already uses for its own
+    section headings, so the grouping reads identically whether you're in
+    the full editor or this compact summary. Pure display grouping — the
+    chip data and its category field already existed (round 1), this just
+    partitions `groupedAdvancedBuffChips` by it instead of rendering one
+    concatenated row.
+
 ## Not done here
 
 - Team paste-import's `Name:`-per-line prefix convention for assigning a
