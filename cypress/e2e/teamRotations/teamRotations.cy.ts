@@ -8,7 +8,6 @@ describe("Team Rotations", () => {
     cy.get('[data-test-calculator-nav="weapon"]').click();
     cy.get(".weapon__basic-data").should("be.visible");
     cy.get("[data-test-weapon-open-browser]").click();
-    cy.get("[data-test-weapon-browser-filters] [data-test-filter-panel-toggle]").click();
     cy.get('[data-test-weapon-browser-filter-rarity="5"]').click();
     cy.get('[data-test-weapon-browser-list="TheLastDance"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "The Last Dance");
@@ -164,7 +163,6 @@ describe("Team Rotations", () => {
 
     // Filtering by a character in the team keeps it visible; filtering by one
     // that isn't on any team hides it
-    cy.get("[data-test-filter-panel-toggle]").click();
     cy.richSelect("[data-test-team-rotations-filter]", "Carlotta");
     cy.get("[data-test-team-rotations-item]").should("exist");
     cy.richSelect("[data-test-team-rotations-filter]", "Calcharo");

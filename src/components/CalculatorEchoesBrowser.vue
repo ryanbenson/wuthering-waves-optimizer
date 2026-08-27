@@ -11,6 +11,7 @@
       </form>
       <div class="py-4">
         <AppFilterPanel
+          panel-key="calculator-echoes"
           class="mb-6"
           :active-count="activeFilterCount"
           :clear-disabled="!activeFilterCount"
@@ -37,14 +38,6 @@
               allow-empty
               empty-label="Echo"
               aria-label="Echo filter"
-              class="w-fit min-w-[200px]" />
-            <AppRichSelect
-              v-model="echoSet"
-              :options="echoSetSelectOptions"
-              searchable
-              allow-empty
-              empty-label="Set"
-              aria-label="Set filter"
               class="w-fit min-w-[200px]" />
             <AppRichSelect
               v-model="equippedFilter"
@@ -93,6 +86,26 @@
             <EchoRatingRangeFilters
               v-model:rating-min="ratingMin"
               v-model:rating-max="ratingMax" />
+          </div>
+
+          <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+            <span class="text-xs font-medium opacity-60 mr-1">Set</span>
+            <div
+              class="echoes__filters__sets echo-filters__sets flex flex-wrap"
+              :class="{ 'echo-filters__sets--active': echoSet !== null }">
+              <button
+                v-for="setKey in echoSetsList"
+                :key="setKey"
+                type="button"
+                @click="toggleEchoSetFilter(setKey)"
+                class="rounded mr-1 p-[.3rem]"
+                :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
+                <img
+                  :src="getEchoSetImage(setKey)"
+                  class="size-7"
+                  :class="setKey" />
+              </button>
+            </div>
           </div>
         </AppFilterPanel>
 
@@ -179,6 +192,7 @@ import {
   echoSetLabelMap,
   getEchoCritValue,
   getEchoRollValue,
+  getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
@@ -196,7 +210,6 @@ import AppRichSelect, {
 import AppFilterPanel from "./AppFilterPanel.vue";
 import {
   buildEchoSelectOptions,
-  buildEchoSetSelectOptions,
   buildSimpleSelectOptions,
 } from "../utils/richSelectOptions";
 import { useToast } from "../composables/useToast";
@@ -380,9 +393,19 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
 const echoSelectOptions = computed((): AppRichSelectOption[] =>
   buildEchoSelectOptions(mainEchoOptions.value),
 );
-const echoSetSelectOptions = computed((): AppRichSelectOption[] =>
-  buildEchoSetSelectOptions(echoSetsList.value),
-);
+
+function getEchoSetImage(set: string) {
+  return getEchoSetIconByType(set);
+}
+
+function toggleEchoSetFilter(set: string) {
+  echoSet.value = echoSet.value === set ? null : set;
+}
+
+function isEchoSetFilterActive(set: string) {
+  return echoSet.value === set;
+}
+
 const equippedFilterOptions = computed((): AppRichSelectOption[] => [
   { value: "self", label: `Hide equipped by ${props.character}` },
   { value: "any", label: "Hide equipped by anyone" },
@@ -496,6 +519,14 @@ html[data-theme-style="light"] {
   }
   .MoonlitClouds {
     filter: contrast(0);
+  }
+}
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
   }
 }
 </style>

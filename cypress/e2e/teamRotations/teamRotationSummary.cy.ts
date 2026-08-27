@@ -9,7 +9,6 @@ describe("Team Rotation Summary", () => {
     cy.get('[data-test-calculator-nav="weapon"]').click();
     cy.get(".weapon__basic-data").should("be.visible");
     cy.get("[data-test-weapon-open-browser]").click();
-    cy.get("[data-test-weapon-browser-filters] [data-test-filter-panel-toggle]").click();
     cy.get('[data-test-weapon-browser-filter-rarity="5"]').click();
     cy.get('[data-test-weapon-browser-list="TheLastDance"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "The Last Dance");

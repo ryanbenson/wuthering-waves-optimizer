@@ -11,6 +11,7 @@
       </form>
       <div class="py-4">
         <AppFilterPanel
+          panel-key="calculator-characters"
           class="mb-6"
           :active-count="activeFilterCount"
           :clear-disabled="!activeFilterCount"
