@@ -51,11 +51,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { randomString } from "../utils/strings";
+import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    panelKey: string;
     label?: string;
     activeCount?: number;
     clearDisabled?: boolean;
@@ -71,7 +72,7 @@ defineEmits<{
   clear: [];
 }>();
 
-const open = ref(false);
+const open = useFilterPanelOpen(props.panelKey);
 const panelId = `app-filter-panel-${randomString()}`;
 </script>
 

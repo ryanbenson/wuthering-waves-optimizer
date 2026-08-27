@@ -180,7 +180,25 @@
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
       </form>
       <div class="py-4">
-        <EchoSetFilterSelect v-model="echoSetFilter" />
+        <div
+          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+          <span class="mr-2">Filter</span>
+          <button
+            v-for="echoSetKey in echoSetsList"
+            :key="echoSetKey"
+            @click="toggleEchoSetFilter(echoSetKey)"
+            class="rounded p-[.3rem]"
+            :class="{ 'btn-active': isEchoSetFilterActive(echoSetKey) }">
+            <img
+              :src="getEchoSetIcon(echoSetKey)"
+              class="size-7 m-width-7"
+              :class="echoSetKey" />
+          </button>
+          <button @click="resetFilters" class="btn btn-sm btn-ghost">
+            Clear
+          </button>
+        </div>
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
         <template v-if="!allEchoesListFiltered.length">
@@ -222,12 +240,16 @@
 import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { getSubstatFamily } from "../echoes/substatFamilies";
-import { subStats, getReadableSubStatLabel, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
+import {
+  subStats,
+  getReadableSubStatLabel,
+  SHOW_ROLL_VALUE_BADGE,
+  echoSetLabelMap,
+} from "../echoes/stats";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import { mainEchoesData } from "../echoes/index.ts";
 import AppRichSelect from "./AppRichSelect.vue";
-import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
 import EchoSubstatSlider from "./EchoSubstatSlider.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
@@ -404,6 +426,20 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+
+function toggleEchoSetFilter(echoSetKey: string) {
+  echoSetFilter.value = echoSetFilter.value === echoSetKey ? null : echoSetKey;
+}
+
+function isEchoSetFilterActive(echoSetKey: string) {
+  return echoSetFilter.value === echoSetKey;
+}
+
+function resetFilters() {
+  echoSetFilter.value = null;
+}
+
 type EchoListEntry = { key: string; name: string; class: string; sets: string[]; image?: string };
 const classOrder: Record<string, number> = { Calamity: 0, Overlord: 1, Elite: 2, Common: 3 };
 const allEchoesListFiltered = computed((): EchoListEntry[] => {
@@ -430,6 +466,13 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
   min-width: 0;
   border-left: 1px solid oklch(var(--b3));
   background: oklch(var(--b1));
+}
+
+.echo-filters__sets--active button {
+  opacity: 0.6;
+}
+.echo-filters__sets--active button.btn-active {
+  opacity: 1;
 }
 
 .echo-edit-panel--inventory {

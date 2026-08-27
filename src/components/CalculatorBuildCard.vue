@@ -25,6 +25,7 @@
     </div>
 
     <AppFilterPanel
+      panel-key="build-card-customize"
       class="mb-4"
       label="Customize"
       :active-count="customizationActiveCount"
