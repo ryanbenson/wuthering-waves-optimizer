@@ -320,6 +320,26 @@ ADR is for building that, not the proposal itself.
    Fixed with the same explicit `isOpen` ref + `v-show` + outside-pointerdown-
    close pattern already validated for `AppRichSelect.vue`.
 
+15. **`CalculatorOptimizerResultLoadoutEcho.vue` gets the same skinny
+   tile-style treatment as `CalculatorEchoCard.vue`'s compact layout
+   (decision #14), flag-gated the same way.** This component (the
+   Optimizer's per-loadout-result echo cards) is a separate, parallel
+   implementation — not `CalculatorEchoCard.vue` — that had duplicated its
+   own copy of the CV/RV/badge-class math instead of using
+   `useEchoCardStats`/`useEchoRating`. Rather than hand-port the new
+   markup on top of a fourth copy of that math, it now calls those same
+   composables directly (`characterId` sourced from
+   `characterStore.activeCharacter`, since Optimizer results are always
+   for the active character, not threaded as a prop) and reuses
+   `EchoCardSubstatList.vue` (`size="xs"`) for its substat rows — removing
+   the duplication instead of adding to it. Flag on shows names (this
+   component previously never rendered the echo's name — a stale
+   `v-if="false"` block, not a deliberate suppression, per its own dead
+   code) and free-stat values (also previously never shown) for parity
+   with every other tile-style display in this redesign. No footer here:
+   this component has no `<slot>` and no per-echo actions, so there was
+   nothing to cluster. Flag off is the exact original layout, unchanged.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button
