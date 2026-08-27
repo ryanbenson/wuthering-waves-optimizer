@@ -57,6 +57,75 @@
       </div>
     </div>
   </dialog>
+  <dialog v-if="isLiveResultBarEnabled" :id="mainEchoSettingsModalId" class="modal">
+    <form method="dialog" class="modal-backdrop" @click="closeMainEchoSettings">
+      <button>close</button>
+    </form>
+    <div class="modal-box max-w-md" @click.stop>
+      <form method="dialog">
+        <button
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          @click="closeMainEchoSettings">
+          ✕
+        </button>
+      </form>
+      <h3 class="font-bold text-lg mb-4">Main Echo Settings</h3>
+      <div class="flex flex-col gap-4">
+        <div class="rotation__desc flex flex-col gap-2">
+          <label for="description-modal">Description</label>
+          <textarea
+            v-model="descriptionValue"
+            name="description-modal"
+            id="description-modal"
+            class="textarea textarea-bordered"
+            @input="onDescriptionChange"
+            >{{ description }}</textarea
+          >
+        </div>
+        <div class="rotation__current-echo flex flex-col gap-2 items-center">
+          <img
+            :src="
+              currentEchoData?.image ||
+              'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
+            "
+            class="size-12 rounded-full border border-solid neutral-content bg-cover"
+            :class="{
+              'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+              'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+              'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+              'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+              'echo__item__image--empty': !currentEchoData?.image,
+            }"
+            :alt="currentEchoData?.name" />
+          <span class="rotation__echo-echo--name">
+            {{ currentEchoData?.name }}
+          </span>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-outline btn-primary" @click="openEchoChooser">
+              Choose echo
+            </button>
+            <button
+              class="btn btn-sm btn-outline btn-secondary"
+              @click="chooseCurrentMainEcho"
+              :disabled="!hasCurrentMainEcho">
+              Use current echo
+            </button>
+          </div>
+          <span class="main-echo--rank">
+            <span class="font-bold">Rank</span> <span class="text-primary">{{ mainEchoRank }}</span>
+          </span>
+          <Range
+            id="Rank-modal"
+            :values="[1, 2, 3, 4, 5]"
+            :default-value="5"
+            size="xs"
+            class="w-full"
+            @update-value="(val: string | number) => onMainEchoRankChange(val)"
+            data-test-rotation-main-echo-rank-modal="CritRate" />
+        </div>
+      </div>
+    </div>
+  </dialog>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     :data-test-rotation-item="id"
@@ -108,6 +177,19 @@
               @input="onNameChange"
               @click.stop
               :data-test-rotation-name-input="nameValue" />
+            <div v-if="isOpen && isLiveResultBarEnabled" class="flex items-center gap-1 shrink-0">
+              <label for="duration-quick" class="text-xs opacity-70">Duration</label>
+              <input
+                type="text"
+                name="duration-quick"
+                id="duration-quick"
+                class="input input-bordered input-sm w-16"
+                v-model="durationValue"
+                @input="onDurationChange"
+                @click.stop
+                data-test-rotation-duration-quick />
+              <span class="text-xs opacity-70">s</span>
+            </div>
           </div>
 
           <div class="rotation__end">
@@ -178,8 +260,8 @@
               type="button"
               class="btn btn-xs btn-ghost"
               data-test-rotation-settings-toggle
-              @click="showRotationSettings = !showRotationSettings">
-              {{ showRotationSettings ? "Hide" : "More" }} settings
+              @click="openMainEchoSettings">
+              Main Echo Settings
             </button>
             <AppOverflowMenu aria-label="Rotation actions" data-test="rotation-overflow-menu">
               <li>
@@ -203,7 +285,7 @@
               </li>
             </AppOverflowMenu>
           </div>
-          <div v-if="!isLiveResultBarEnabled || showRotationSettings" class="rotation__desc flex flex-col gap-2 mt-2">
+          <div v-if="!isLiveResultBarEnabled" class="rotation__desc flex flex-col gap-2 mt-2">
             <label for="description">Description</label>
             <textarea
               v-model="descriptionValue"
@@ -215,7 +297,7 @@
             >
           </div>
           <div
-            v-if="!isLiveResultBarEnabled || showRotationSettings"
+            v-if="!isLiveResultBarEnabled"
             class="rotation__duration-echo flex gap-4 items-center mt-4">
             <div class="rotation__echo">
               <div
@@ -292,8 +374,7 @@
             class="rotation__damage-strip mt-4"
             data-test-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
-              Damage by action — ordered, not timed. There's no per-action
-              cast timing in the data to plot a real timeline.
+              Damage by action, in rotation order — bar height shows which hits matter most.
             </div>
             <div class="rotation__damage-strip__bars">
               <button
@@ -495,7 +576,6 @@ const isLiveResultBarEnabled = computed(
 );
 
 const isOpen = ref(false);
-const showRotationSettings = ref(false);
 const nameValue = ref<string | null>(null);
 const descriptionValue = ref<string | null>(null);
 const durationValue = ref<string | number | null>(null);
@@ -503,6 +583,7 @@ const echoValue = ref<string | null>(null);
 const mainEchoRank = ref<string | number>(5);
 const actionsList = ref<RotationActionRow[]>([]);
 const modalIdPicker = `echo-chooser-modal-${randomString()}`;
+const mainEchoSettingsModalId = `main-echo-settings-modal-${randomString()}`;
 const echoSetFilter = ref<string | null>(null);
 
 const actionRefs = new Map<string, { toggleEdit: () => void }>();
@@ -929,6 +1010,16 @@ function closeEchoChooser() {
 
 function openEchoChooser() {
   const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function closeMainEchoSettings() {
+  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+function openMainEchoSettings() {
+  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
   modalEl?.showModal();
 }
 

@@ -173,8 +173,7 @@
             class="rotation__damage-strip mb-3"
             data-test-team-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
-              Damage by action — ordered, not timed. There's no per-action cast
-              timing in the data to plot a real timeline.
+              Damage by action, in rotation order — bar height shows which hits matter most.
             </div>
             <div class="rotation__damage-strip__bars">
               <button

@@ -179,6 +179,43 @@ legacy path untouched:
       sort-metric-driven, same as TeamRotations.vue never supporting manual
       per-team ordering in its list either.
 
+## Round 3 (density and clarity pass)
+
+12. **Damage strip caption reframed positively.** "— ordered, not timed.
+    There's no per-action cast timing in the data to plot a real timeline"
+    (round 1's honest-about-limitations framing) became "Damage by action,
+    in rotation order — bar height shows which hits matter most" — states
+    what the strip does rather than what it doesn't.
+
+13. **Duration moved next to the name field**, in the always-visible header
+    row (a compact `input-sm w-16`), rather than living only inside the
+    settings panel — it's common enough to want to glance at or tweak that
+    it earned a spot beside the name, on both flag states equally (though
+    only rendered `v-if="isOpen && isLiveResultBarEnabled"`, since the
+    legacy header has no equivalent compact field).
+
+14. **"More settings" → "Main Echo Settings", inline collapse → modal.**
+    Now that duration lives next to the name, what's left (description +
+    echo picker: image, Choose/Use current echo, rank) is genuinely just
+    "settings for this rotation's main echo" — the rename reflects that.
+    It's a real `<dialog>` now (mirrors the existing echo-chooser dialog:
+    rendered as a template-root sibling of `.card`, not nested inside it,
+    so it isn't subject to the card's own `@click="toggleOpen"`), opened
+    via `showModal()`/closed via `close()` on a second modal id
+    (`mainEchoSettingsModalId`) — not the collapsible `showRotationSettings`
+    boolean from round 2, which is gone entirely. The legacy (flag-off)
+    inline block is untouched, still always-expanded with its own duration
+    field intact.
+
+15. **Quick-add and paste-import read as two distinct features, not one
+    input + its submit button.** Round 2's layout put "Paste rotation" (a
+    solid `btn-neutral`) directly beside the text input at the same height
+    — indistinguishable from a submit button for that input. Now: an "Add
+    one action" label sits above a full-width input, a `divider` reading
+    "or" separates the two paths, and the paste toggle is a low-emphasis
+    `btn-ghost` reading "📋 Paste a whole rotation" underneath — visually
+    subordinate to, not beside, the primary input.
+
 ## Not done here
 
 - Team paste-import's `Name:`-per-line prefix convention for assigning a

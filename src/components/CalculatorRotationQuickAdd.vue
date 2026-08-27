@@ -1,22 +1,16 @@
 <template>
   <div class="rotation__quick-add mt-2" data-test-rotation-quick-add>
-    <div class="rotation__quick-add__row flex gap-2 relative">
+    <div class="text-xs font-semibold opacity-70 mb-1">Add one action</div>
+    <div class="rotation__quick-add__row relative">
       <input
         v-model="queryValue"
         type="text"
-        class="input input-bordered input-sm flex-1"
+        class="input input-bordered input-sm w-full"
         placeholder="Type an action name, press Enter to add…"
         autocomplete="off"
         data-test-rotation-quick-add-input
         @keydown.enter.prevent="onEnter"
         @keydown.esc="queryValue = ''" />
-      <button
-        type="button"
-        class="btn btn-sm btn-neutral"
-        data-test-rotation-quick-add-paste-toggle
-        @click="showPaste = !showPaste">
-        {{ showPaste ? "Hide paste" : "Paste rotation" }}
-      </button>
       <ul
         v-if="suggestions.length"
         class="rotation__quick-add__suggest menu bg-base-200 rounded-box shadow"
@@ -29,6 +23,15 @@
         </li>
       </ul>
     </div>
+
+    <div class="divider my-1 text-xs opacity-50" data-test-rotation-quick-add-divider>or</div>
+    <button
+      type="button"
+      class="btn btn-xs btn-ghost"
+      data-test-rotation-quick-add-paste-toggle
+      @click="showPaste = !showPaste">
+      {{ showPaste ? "Hide paste panel" : "📋 Paste a whole rotation" }}
+    </button>
 
     <div v-if="showPaste" class="rotation__quick-add__paste mt-3 flex flex-col gap-2" data-test-rotation-quick-add-paste>
       <label for="rotation-quick-add-paste-textarea" class="text-xs opacity-70">
@@ -193,7 +196,7 @@ function addPasted() {
   position: absolute;
   top: calc(100% + 0.25rem);
   left: 0;
-  right: 5.5rem;
+  right: 0;
   z-index: 10;
   max-height: 14rem;
   overflow-y: auto;
