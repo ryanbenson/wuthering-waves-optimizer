@@ -10,6 +10,9 @@
     "email": "benson.ryan@gmail.com"
   },
   "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
