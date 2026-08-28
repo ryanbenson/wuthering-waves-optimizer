@@ -2,7 +2,7 @@
   <template v-if="echoId">
     <span
       v-if="locked"
-      class="echo-status-icon"
+      class="echo-status-icon text-accent"
       :data-test-echo-status-badge="echoId"
       data-test-echo-status="locked"
       v-tooltip="'Locked — protected from deletion'">
