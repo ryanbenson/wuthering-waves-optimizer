@@ -1,21 +1,68 @@
 <template>
   <div
+    v-if="layout === 'list'"
+    class="presetEchoes presetEchoes--list flex items-center gap-3 rounded-lg bg-base-100 border border-base-300 shadow-sm px-3 py-2 mb-2">
+    <div class="flex gap-1 shrink-0">
+      <EchoCustomPresetEcho v-if="echo1Id" key="echo1" :echo-id="echo1Id" compact />
+      <EchoCustomPresetEcho v-if="echo2Id" key="echo2" :echo-id="echo2Id" compact />
+      <EchoCustomPresetEcho v-if="echo3Id" key="echo3" :echo-id="echo3Id" compact />
+      <EchoCustomPresetEcho v-if="echo4Id" key="echo4" :echo-id="echo4Id" compact />
+      <EchoCustomPresetEcho v-if="echo5Id" key="echo5" :echo-id="echo5Id" compact />
+    </div>
+    <span class="font-semibold truncate flex-1 min-w-[8rem]">{{ name }}</span>
+    <div class="flex gap-2 shrink-0">
+      <span
+        class="echo__item__cost badge badge-sm text-nowrap"
+        :class="critValueBadgeClass">
+        CV {{ formattedCritValue }}%
+      </span>
+      <span
+        class="echo__item__cost badge badge-sm text-nowrap"
+        v-tooltip="'Build Score'"
+        :class="buildScoreBadgeClass">
+        {{ buildScoreLabel }}
+      </span>
+    </div>
+    <div v-if="!disableAction" class="actions flex gap-2 shrink-0">
+      <button
+        class="btn btn-xs btn-primary"
+        :class="{ 'btn-disabled': isApplying }"
+        :disabled="isApplying"
+        @click="emit('apply')">
+        <span v-if="isApplying" class="loading loading-spinner loading-xs"></span>
+        {{ isApplying ? "Applying..." : "Apply preset" }}
+      </button>
+      <button
+        @click.stop="deletePreset"
+        class="btn btn-xs btn-error"
+        :disabled="isApplying">
+        Delete preset
+      </button>
+    </div>
+    <slot></slot>
+  </div>
+
+  <div
+    v-else
     class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
-      <h2 class="card-title">{{ name }}</h2>
-      <div class="mb-2 flex gap-2">
-        <span
-          class="echo__item__cost badge text-nowrap"
-          :class="critValueBadgeClass">
-          CV {{ formattedCritValue }}%
-        </span>
-        <span
-          class="echo__item__cost badge text-nowrap"
-          :class="rollValueBadgeClass">
-          RV {{ totalRv }}%
-        </span>
+      <div class="flex items-start justify-between gap-2">
+        <h2 class="card-title truncate">{{ name }}</h2>
+        <div class="flex gap-2 shrink-0">
+          <span
+            class="echo__item__cost badge text-nowrap"
+            :class="critValueBadgeClass">
+            CV {{ formattedCritValue }}%
+          </span>
+          <span
+            class="echo__item__cost badge text-nowrap"
+            v-tooltip="'Build Score'"
+            :class="buildScoreBadgeClass">
+            {{ buildScoreLabel }}
+          </span>
+        </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 mt-2">
         <EchoCustomPresetEcho v-if="echo1Id" key="echo1" :echo-id="echo1Id" />
         <EchoCustomPresetEcho v-if="echo2Id" key="echo2" :echo-id="echo2Id" />
         <EchoCustomPresetEcho v-if="echo3Id" key="echo3" :echo-id="echo3Id" />
@@ -46,11 +93,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import EchoCustomPresetEcho from "./EchoCustomPresetEcho.vue";
-import { getRollValue } from "../echoes/stats";
+import { getEchoCritValue, type EchoSubStatsSource } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
-
-type EchoSlotData = Record<string, unknown>;
+import { getBadgeClass } from "../composables/useEchoCardStats";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
+import { usePresetBuildScore } from "../composables/usePresetBuildScore";
 
 const emit = defineEmits<{
   apply: [];
@@ -68,11 +116,13 @@ const props = withDefaults(
     disableAction?: boolean;
     showEquippedChars?: boolean;
     isApplying?: boolean;
+    layout?: "tile" | "list";
   }>(),
   {
     disableAction: false,
     showEquippedChars: false,
     isApplying: false,
+    layout: "tile",
   },
 );
 
@@ -92,77 +142,17 @@ const echo3Data = computed(() => slotEcho(props.echo3Id));
 const echo4Data = computed(() => slotEcho(props.echo4Id));
 const echo5Data = computed(() => slotEcho(props.echo5Id));
 
-function getEchoStatsFormatted(data: EchoSlotData): Record<string, string> {
-  const echoData: Record<string, string> = {};
-  for (let i = 1; i <= 5; i += 1) {
-    const typeKey = `echoSubStatsType${i}`;
-    const valueKey = `echoSubStatsValue${i}`;
-    if (data[typeKey]) {
-      echoData[String(data[typeKey])] = String(data[valueKey] ?? 0);
-    }
-  }
-  return echoData;
+function echoCv(data: EchoSubStatsSource | null) {
+  return data ? getEchoCritValue(data) : 0;
 }
-
-function calculateCritValue(echoData: EchoSlotData) {
-  let cv = 0;
-  for (let i = 1; i <= 5; i += 1) {
-    const typeKey = `echoSubStatsType${i}`;
-    const valueKey = `echoSubStatsValue${i}`;
-    if (echoData[typeKey] === "CritRate") {
-      cv += (echoData[valueKey] as number) * 2;
-    } else if (echoData[typeKey] === "CritDMG") {
-      cv += echoData[valueKey] as number;
-    }
-  }
-  return cv;
-}
-
-function echoRv(data: EchoSlotData | null) {
-  if (!data) {
-    return 0;
-  }
-  return getRollValue(getEchoStatsFormatted(data));
-}
-
-const echo1Rv = computed(() => echoRv(echo1Data.value));
-const echo2Rv = computed(() => echoRv(echo2Data.value));
-const echo3Rv = computed(() => echoRv(echo3Data.value));
-const echo4Rv = computed(() => echoRv(echo4Data.value));
-const echo5Rv = computed(() => echoRv(echo5Data.value));
-
-const echo1Cv = computed(() =>
-  echo1Data.value ? calculateCritValue(echo1Data.value) : 0,
-);
-const echo2Cv = computed(() =>
-  echo2Data.value ? calculateCritValue(echo2Data.value) : 0,
-);
-const echo3Cv = computed(() =>
-  echo3Data.value ? calculateCritValue(echo3Data.value) : 0,
-);
-const echo4Cv = computed(() =>
-  echo4Data.value ? calculateCritValue(echo4Data.value) : 0,
-);
-const echo5Cv = computed(() =>
-  echo5Data.value ? calculateCritValue(echo5Data.value) : 0,
-);
-
-const totalRv = computed(
-  () =>
-    echo1Rv.value +
-    echo2Rv.value +
-    echo3Rv.value +
-    echo4Rv.value +
-    echo5Rv.value,
-);
 
 const totalCv = computed(
   () =>
-    echo1Cv.value +
-    echo2Cv.value +
-    echo3Cv.value +
-    echo4Cv.value +
-    echo5Cv.value,
+    echoCv(echo1Data.value) +
+    echoCv(echo2Data.value) +
+    echoCv(echo3Data.value) +
+    echoCv(echo4Data.value) +
+    echoCv(echo5Data.value),
 );
 
 const formattedCritValue = computed(() => {
@@ -174,72 +164,32 @@ const formattedCritValue = computed(() => {
   return rounded.endsWith(".0") ? parseInt(rounded, 10) : parseFloat(rounded);
 });
 
-const rollValueBadgeClass = computed(() => {
-  const rv = (totalRv.value ?? 0) / 5;
-  const percentage = Math.min(Math.max(rv, 0), 600);
-  let bgColor: string;
-  let color = "text-white";
-  let boxShadow: string | undefined;
-  let borderColor: string;
-  if (percentage <= 180) {
-    bgColor = "bg-emerald-800";
-    borderColor = "border-emerald-800";
-  } else if (percentage <= 220) {
-    bgColor = "bg-green-500";
-    borderColor = "border-green-500";
-  } else if (percentage <= 300) {
-    bgColor = "bg-blue-600";
-    borderColor = "border-blue-600";
-    color = "text-black";
-  } else if (percentage < 400) {
-    bgColor = "bg-purple-600";
-    borderColor = "border-purple-600";
-    color = "text-black";
-  } else {
-    bgColor = "bg-yellow-500";
-    borderColor = "border-yellow-500";
-    color = "text-black";
-  }
-  if (percentage >= 450) {
-    boxShadow = "shadow-md shadow-yellow-500/50";
-  }
-  return [bgColor, color, borderColor, boxShadow];
+const critValueBadgeClass = computed(() =>
+  getBadgeClass((totalCv.value ?? 0) / 5, 42, "cv"),
+);
+
+// A preset has no persisted "which character is this for" field — derive it
+// from whichever character (if any) currently has this preset equipped, the
+// same lookup the equipped-avatars footer already uses.
+const buildScoreCharacterId = computed(
+  () => inventoryStore.getEchoPresetCharacters(props.presetId)[0] ?? null,
+);
+
+const { rollup: buildScoreRollup } = usePresetBuildScore(
+  () => [props.echo1Id, props.echo2Id, props.echo3Id, props.echo4Id, props.echo5Id],
+  () => buildScoreCharacterId.value,
+);
+
+const buildScoreLabel = computed(() => {
+  const rollup = buildScoreRollup.value;
+  if (!rollup) return "BS —";
+  return `BS ${rollup.grade} ${Math.round(rollup.percent)}%${rollup.provisional ? "*" : ""}`;
 });
 
-const critValueBadgeClass = computed(() => {
-  const cv = (totalCv.value ?? 0) / 5;
-  const percentage = Math.min(Math.max(cv, 0), 42);
-  let bgColor: string;
-  let color = "text-white";
-  let boxShadow: string | undefined;
-  let borderColor: string;
-  if (percentage <= 7) {
-    bgColor = "bg-emerald-800";
-    borderColor = "border-emerald-800";
-  } else if (percentage <= 14) {
-    bgColor = "bg-green-500";
-    borderColor = "border-green-500";
-  } else if (percentage <= 21) {
-    bgColor = "bg-blue-600";
-    borderColor = "border-blue-600";
-    color = "text-black";
-  } else if (percentage <= 28) {
-    bgColor = "bg-purple-600";
-    borderColor = "border-purple-600";
-    color = "text-black";
-  } else if (percentage <= 35) {
-    bgColor = "bg-purple-400";
-    borderColor = "border-purple-400";
-    color = "text-black";
-  } else {
-    bgColor = "bg-yellow-500";
-    borderColor = "border-yellow-500";
-    color = "text-black";
-  }
-  if (percentage >= 40) {
-    boxShadow = "shadow-md shadow-yellow-500/50";
-  }
-  return [bgColor, color, borderColor, boxShadow];
+const buildScoreBadgeClass = computed(() => {
+  const rollup = buildScoreRollup.value;
+  if (!rollup) return ["bg-base-300", "text-base-content/50", "border-base-300", ""];
+  return getRatingBadgeClasses(rollup.color);
 });
 
 function getEquippedCharactersForPreset() {
