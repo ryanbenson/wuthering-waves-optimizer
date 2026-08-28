@@ -21,6 +21,7 @@ export function useEchoInventory() {
       | {
           locked?: boolean;
           trash?: boolean;
+          temp?: boolean;
           ignoreFromOptimizer?: boolean;
           favorite?: boolean;
         }
@@ -28,17 +29,35 @@ export function useEchoInventory() {
     return {
       locked: Boolean(echo?.locked),
       trash: Boolean(echo?.trash),
+      temp: Boolean(echo?.temp),
       ignoreFromOptimizer: Boolean(echo?.ignoreFromOptimizer),
       favorite: Boolean(echo?.favorite),
     };
   }
 
+  // Locked, trash, and temp are mutually exclusive: setting one clears the
+  // other two in the same patch so an echo is never in more than one of
+  // these three states at once. ignoreFromOptimizer ("hidden") is
+  // independent and can combine with any of them.
   function setEchoLocked(echoId: string, locked: boolean) {
-    inventoryStore.patchEcho(echoId, { locked });
+    inventoryStore.patchEcho(
+      echoId,
+      locked ? { locked: true, trash: false, temp: false } : { locked: false },
+    );
   }
 
   function setEchoTrash(echoId: string, trash: boolean) {
-    inventoryStore.patchEcho(echoId, { trash });
+    inventoryStore.patchEcho(
+      echoId,
+      trash ? { trash: true, locked: false, temp: false } : { trash: false },
+    );
+  }
+
+  function setEchoTemp(echoId: string, temp: boolean) {
+    inventoryStore.patchEcho(
+      echoId,
+      temp ? { temp: true, locked: false, trash: false } : { temp: false },
+    );
   }
 
   function setEchoIgnoreFromOptimizer(
@@ -62,6 +81,11 @@ export function useEchoInventory() {
     setEchoTrash(echoId, !trash);
   }
 
+  function toggleEchoTemp(echoId: string) {
+    const { temp } = getEchoFlags(echoId);
+    setEchoTemp(echoId, !temp);
+  }
+
   function toggleEchoIgnoreFromOptimizer(echoId: string) {
     const { ignoreFromOptimizer } = getEchoFlags(echoId);
     setEchoIgnoreFromOptimizer(echoId, !ignoreFromOptimizer);
@@ -81,6 +105,12 @@ export function useEchoInventory() {
   function bulkSetTrash(echoIds: string[], trash: boolean) {
     for (const echoId of echoIds) {
       setEchoTrash(echoId, trash);
+    }
+  }
+
+  function bulkSetTemp(echoIds: string[], temp: boolean) {
+    for (const echoId of echoIds) {
+      setEchoTemp(echoId, temp);
     }
   }
 
@@ -140,18 +170,22 @@ export function useEchoInventory() {
   }
 
   return {
+    trashEchoes,
     trashEchoCount,
     getEchoFlags,
     setEchoLocked,
     setEchoTrash,
+    setEchoTemp,
     setEchoIgnoreFromOptimizer,
     setEchoFavorite,
     toggleEchoLocked,
     toggleEchoTrash,
+    toggleEchoTemp,
     toggleEchoIgnoreFromOptimizer,
     toggleEchoFavorite,
     bulkSetLocked,
     bulkSetTrash,
+    bulkSetTemp,
     bulkSetIgnoreFromOptimizer,
     bulkSetFavorite,
     removeEchoFully,

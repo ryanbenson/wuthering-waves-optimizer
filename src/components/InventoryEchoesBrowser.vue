@@ -172,8 +172,8 @@
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-ghost join-item text-error"
-            :class="{ 'btn-active': trashFilter }"
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active text-error': trashFilter }"
             v-tooltip="'Show only echoes marked as trash'"
             aria-label="Show trash only"
             data-test-filter-trash
@@ -186,6 +186,44 @@
               <path
                 d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
                 fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active text-info': tempFilter }"
+            v-tooltip="'Show only echoes marked as temporary'"
+            aria-label="Show temporary only"
+            data-test-filter-temp
+            @click="tempFilter = !tempFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              class="size-4"
+              aria-hidden="true">
+              <circle
+                cx="10"
+                cy="10"
+                r="8.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5" />
+              <line
+                x1="10"
+                y1="10"
+                x2="10"
+                y2="5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round" />
+              <line
+                x1="10"
+                y1="10"
+                x2="13.5"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round" />
             </svg>
           </button>
           <button
@@ -352,6 +390,24 @@
           data-test-bulk-untrash
           @click="bulkTrash(false)">
           Unmark trash
+        </button>
+      </div>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Mark selected echoes as temporary'"
+          data-test-bulk-temp
+          @click="bulkTemp(true)">
+          Mark temp
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Unmark selected echoes as temporary'"
+          data-test-bulk-untemp
+          @click="bulkTemp(false)">
+          Unmark temp
         </button>
       </div>
       <div class="join">
@@ -551,6 +607,7 @@ type InventoryEchoRow = {
   echoId: string;
   locked?: boolean;
   trash?: boolean;
+  temp?: boolean;
   ignoreFromOptimizer?: boolean;
   favorite?: boolean;
   rank?: number;
@@ -614,6 +671,7 @@ const { confirm } = useConfirm();
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
 const {
+  trashEchoes,
   trashEchoCount,
   getEchoFlags,
   removeEchoFully,
@@ -621,6 +679,7 @@ const {
   removeAllTrashEchoes,
   bulkSetLocked,
   bulkSetTrash,
+  bulkSetTemp,
   bulkSetIgnoreFromOptimizer,
   bulkSetFavorite,
 } = useEchoInventory();
@@ -645,6 +704,7 @@ const costFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const lockedFilter = ref(false);
 const trashFilter = ref(false);
+const tempFilter = ref(false);
 const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
 const duplicatesFilter = ref(false);
@@ -668,6 +728,7 @@ const activeFilterCount = computed(() => {
   if (mainStatFilter.value) count += 1;
   if (lockedFilter.value) count += 1;
   if (trashFilter.value) count += 1;
+  if (tempFilter.value) count += 1;
   if (ignoreFromOptimizerFilter.value) count += 1;
   if (favoriteFilter.value) count += 1;
   if (duplicatesFilter.value) count += 1;
@@ -745,6 +806,7 @@ watch(
     costFilter,
     lockedFilter,
     trashFilter,
+    tempFilter,
     ignoreFromOptimizerFilter,
     favoriteFilter,
     duplicatesFilter,
@@ -783,6 +845,9 @@ const echoesList = computed(() => {
   }
   if (trashFilter.value) {
     allEchoes = allEchoes.filter((e) => e.trash);
+  }
+  if (tempFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.temp);
   }
   if (ignoreFromOptimizerFilter.value) {
     allEchoes = allEchoes.filter((e) => e.ignoreFromOptimizer);
@@ -939,6 +1004,7 @@ function resetFilters() {
   costFilter.value = null;
   lockedFilter.value = false;
   trashFilter.value = false;
+  tempFilter.value = false;
   ignoreFromOptimizerFilter.value = false;
   favoriteFilter.value = false;
   duplicatesFilter.value = false;
@@ -1008,6 +1074,16 @@ function bulkTrash(trash: boolean) {
   );
 }
 
+function bulkTemp(temp: boolean) {
+  bulkSetTemp(selectedEchoIds.value, temp);
+  showToast(
+    temp
+      ? `Marked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} as temporary.`
+      : `Unmarked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} as temporary.`,
+    "success",
+  );
+}
+
 function bulkIgnoreOptimizer(ignore: boolean) {
   bulkSetIgnoreFromOptimizer(selectedEchoIds.value, ignore);
   showToast(
@@ -1018,12 +1094,22 @@ function bulkIgnoreOptimizer(ignore: boolean) {
   );
 }
 
+function describeEcho(e: { echo?: string | null; type?: unknown; rank?: number }) {
+  const key = e.echo ? String(e.echo) : null;
+  const name = (key && mainEchoesData[key as keyof typeof mainEchoesData]?.name) || key || "Unknown echo";
+  const cost = e.type != null && e.type !== "" ? `${e.type} Cost` : null;
+  const rank = e.rank != null ? `Rank ${e.rank}` : null;
+  const details = [cost, rank].filter(Boolean).join(", ");
+  return details ? `${name} (${details})` : name;
+}
+
 async function bulkDelete() {
   const ids = [...selectedEchoIds.value];
   if (!ids.length) return;
 
   const lockedCount = ids.filter((id) => getEchoFlags(id).locked).length;
-  const deletableCount = ids.length - lockedCount;
+  const deletableIds = ids.filter((id) => !getEchoFlags(id).locked);
+  const deletableCount = deletableIds.length;
   if (deletableCount <= 0) {
     showToast("All selected echoes are locked and cannot be deleted.", "warning");
     return;
@@ -1039,6 +1125,7 @@ async function bulkDelete() {
       title: "Delete selected echoes",
       confirmLabel: "Delete",
       variant: "error",
+      items: deletableIds.map((id) => describeEcho(getEchoById(id) ?? {})),
     },
   );
   if (!confirmed) return;
@@ -1095,6 +1182,7 @@ async function deleteAllTrash() {
       title: "Delete trash echoes",
       confirmLabel: "Delete all",
       variant: "error",
+      items: trashEchoes.value.map((e: InventoryEchoRow) => describeEcho(e)),
     },
   );
   if (!confirmed) return;
@@ -1119,6 +1207,7 @@ async function duplicateEcho(sourceEchoId: string) {
     echoId,
     locked: false,
     trash: false,
+    temp: false,
     ignoreFromOptimizer: false,
     favorite: false,
   });

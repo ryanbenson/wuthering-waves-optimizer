@@ -12,6 +12,7 @@
       :default-value="modelValue"
       size="xs"
       show-ticks
+      :disabled="disabled"
       class="w-full"
       :aria-label="ariaLabel"
       @update-value="onUpdate" />
@@ -28,6 +29,7 @@ const props = defineProps<{
   modelValue: number;
   unit?: string;
   ariaLabel?: string;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits<{ "update:modelValue": [value: number] }>();

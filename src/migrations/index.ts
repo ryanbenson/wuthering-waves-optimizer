@@ -11,6 +11,7 @@
  *   6 — replace character rotation exclude-buffs checkboxes with advancedConfig
  *   7 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
  *   8 — add builds[]/activeBuildId to character records (issue #278)
+ *   9 — resolve echoes with both locked and trash set (now mutually exclusive)
  *
  * On load, compare the user's version to CURRENT_DATA_VERSION and run each
  * pending migration in order.
@@ -28,6 +29,7 @@ import addTeamRotationsExport from "./versions/005_addTeamRotationsExport";
 import replaceCharacterRotationExcludeBuffs from "./versions/006_replaceCharacterRotationExcludeBuffs";
 import migrateMainEchoBuffs from "./versions/007_mainEchoBuffs";
 import addCharacterBuildsMigration from "./versions/008_addCharacterBuilds";
+import resolveEchoLockTrashConflictsMigration from "./versions/009_resolveEchoLockTrashConflicts";
 
 /** localStorage key that mirrors export `meta.version`. */
 export const DATA_VERSION_KEY = "dataVersion";
@@ -36,7 +38,7 @@ export const DATA_VERSION_KEY = "dataVersion";
  * Latest data version. Bump when adding a migration.
  * Also written to export `meta.version`.
  */
-export const CURRENT_DATA_VERSION = 8;
+export const CURRENT_DATA_VERSION = 9;
 
 /**
  * Version assumed when an existing user has data but no data-version key yet
@@ -55,6 +57,7 @@ const migrations: Migration[] = [
   replaceCharacterRotationExcludeBuffs,
   migrateMainEchoBuffs,
   addCharacterBuildsMigration,
+  resolveEchoLockTrashConflictsMigration,
 ];
 
 function parseVersion(raw: string | null | undefined): number | null {

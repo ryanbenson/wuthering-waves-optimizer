@@ -32,6 +32,50 @@
           fill="currentColor" />
       </svg>
     </span>
+    <span
+      v-if="temp"
+      class="echo-status-icon text-info"
+      :data-test-echo-status-badge="echoId"
+      data-test-echo-status="temp"
+      v-tooltip="'Temporary echo — stats editable, not auto-deleted'">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        class="echo-status-icon__glyph"
+        aria-hidden="true">
+        <circle
+          cx="10"
+          cy="10"
+          r="8.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5" />
+        <line
+          x1="10"
+          y1="10"
+          x2="10"
+          y2="5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round" />
+        <line
+          x1="10"
+          y1="10"
+          x2="13.5"
+          y2="12"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round" />
+      </svg>
+    </span>
+    <span
+      v-if="hidden"
+      class="echo-status-icon text-warning"
+      :data-test-echo-status-badge="echoId"
+      data-test-echo-status="hidden"
+      v-tooltip="'Hidden from optimizer'">
+      <EchoOptimizerVisibilityIcon :hidden="true" />
+    </span>
   </template>
 </template>
 
@@ -39,6 +83,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
+import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 
 const props = defineProps<{
   echoId: string | null | undefined;
@@ -47,8 +92,9 @@ const props = defineProps<{
 const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 
-// Lock and trash are independent flags — an echo can be both locked and
-// trash at once, so show both icons rather than picking one.
+// Locked, trash, and temp are mutually exclusive — an echo is in at most
+// one of these three states. ignoreFromOptimizer ("hidden") is independent
+// and can combine with any of them, so it's shown alongside.
 const locked = computed(() => {
   void echoes.value;
   if (!props.echoId) return false;
@@ -59,6 +105,18 @@ const trash = computed(() => {
   void echoes.value;
   if (!props.echoId) return false;
   return Boolean(inventoryStore.getEchoById(props.echoId)?.trash);
+});
+
+const temp = computed(() => {
+  void echoes.value;
+  if (!props.echoId) return false;
+  return Boolean(inventoryStore.getEchoById(props.echoId)?.temp);
+});
+
+const hidden = computed(() => {
+  void echoes.value;
+  if (!props.echoId) return false;
+  return Boolean(inventoryStore.getEchoById(props.echoId)?.ignoreFromOptimizer);
 });
 </script>
 

@@ -15,10 +15,10 @@
 
       <div class="flex items-start gap-3 px-4 py-3 border-b border-base-300 shrink-0">
         <div
-          class="echo-edit-panel__avatar rounded-full border border-solid neutral-content size-12 bg-cover cursor-pointer shrink-0"
-          :class="rankBorderClass"
+          class="echo-edit-panel__avatar rounded-full border border-solid neutral-content size-12 bg-cover shrink-0"
+          :class="[rankBorderClass, isEchoLocked ? 'opacity-60' : 'cursor-pointer']"
           :style="{ backgroundImage: `url(${echoImage})` }"
-          @click="openEchoPicker"></div>
+          @click="!isEchoLocked && openEchoPicker()"></div>
         <div class="flex-1 min-w-0">
           <div class="font-bold text-sm truncate">{{ echoName ?? "No echo selected" }}</div>
           <div v-if="hasSubStats" class="flex items-center gap-1.5 flex-wrap mt-0.5">
@@ -47,6 +47,7 @@
             <button
               type="button"
               class="btn btn-xs"
+              :disabled="isEchoLocked"
               data-test-echo-edit-find
               @click="openEchoPicker">
               Find
@@ -67,6 +68,7 @@
               type="button"
               class="size-5 rounded-full shrink-0"
               :class="{ 'ring-2 ring-primary': isSetSelected(s) }"
+              :disabled="isEchoLocked"
               :aria-pressed="isSetSelected(s)"
               :aria-label="s"
               @click="handleChooseEchoSet(s)">
@@ -95,12 +97,20 @@
             type="button"
             class="btn btn-xs"
             :class="String(rank) === String(r) ? 'btn-primary' : 'btn-ghost'"
+            :disabled="isEchoLocked"
             :aria-pressed="String(rank) === String(r)"
             :data-test-echo-edit-rank="r"
-            @click="rank = r">
+            @click="setRank(r)">
             {{ r }}★
           </button>
         </div>
+      </div>
+
+      <div
+        v-if="isEchoLocked"
+        class="mx-4 mt-3 alert alert-warning p-2 text-xs"
+        data-test-echo-edit-locked-notice>
+        This echo is locked — unlock it to change its stats.
       </div>
 
       <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
@@ -126,7 +136,7 @@
           <AppRichSelect
             v-model="stat"
             :options="mainStatOptions"
-            :disabled="!type"
+            :disabled="!type || isEchoLocked"
             placeholder="Select stat"
             aria-label="Main stat"
             data-test="echo-edit-main-stat" />
@@ -148,11 +158,12 @@
                   :model-value="slot.type.value === 'none' ? null : slot.type.value"
                   :options="substatOptions"
                   allow-empty
+                  :disabled="isEchoLocked"
                   empty-label="Choose substat"
                   placeholder="Choose substat"
                   :aria-label="`Substat ${i + 1} type`"
                   :data-test="`echo-edit-slot-type-${i}`"
-                  @update:model-value="(v) => assignSlot(i, v as string | null)" />
+                  @update:model-value="(v) => assignSlotIfUnlocked(i, v as string | null)" />
               </div>
               <div v-if="isSlotFilled(i)" class="mt-2">
                 <EchoSubstatSlider
@@ -160,9 +171,10 @@
                   :values="getSubStatRange(slot.type.value)"
                   :model-value="slot.value.value"
                   :unit="slot.type.value.includes('FLAT') ? '' : '%'"
+                  :disabled="isEchoLocked"
                   :aria-label="`Substat ${i + 1} value`"
                   :data-test-echo-edit-slot-value="i"
-                  @update:model-value="(v) => (slot.value.value = v)" />
+                  @update:model-value="(v) => setSlotValueIfUnlocked(i, v)" />
               </div>
             </div>
           </div>
@@ -239,6 +251,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
+import { useEchoInventory } from "../composables/useEchoInventory";
 import { getSubstatFamily } from "../echoes/substatFamilies";
 import {
   subStats,
@@ -312,6 +325,7 @@ onUnmounted(() => {
 
 const {
   echo,
+  echoId,
   echoSet,
   rank,
   stat,
@@ -326,9 +340,34 @@ const {
   echoSets,
   getEchoSetIcon,
   getSubStatRange,
-  handleChooseEchoSet,
+  handleChooseEchoSet: handleChooseEchoSetField,
   isSetSelected,
 } = useEchoEditFields(() => target.value);
+
+const { getEchoFlags } = useEchoInventory();
+const isEchoLocked = computed(() =>
+  echoId.value ? getEchoFlags(echoId.value).locked : false,
+);
+
+function handleChooseEchoSet(set: string) {
+  if (isEchoLocked.value) return;
+  handleChooseEchoSetField(set);
+}
+
+function setRank(r: number) {
+  if (isEchoLocked.value) return;
+  rank.value = r;
+}
+
+function assignSlotIfUnlocked(i: number, statKey: string | null) {
+  if (isEchoLocked.value) return;
+  assignSlot(i, statKey);
+}
+
+function setSlotValueIfUnlocked(i: number, value: number) {
+  if (isEchoLocked.value) return;
+  slots[i].value.value = value;
+}
 
 // Same getter-passthrough approach as CalculatorEchoTile.vue — reuses the
 // exact CV/RV/rating math CalculatorEchoCard.vue already uses rather than
@@ -417,6 +456,7 @@ function closeEchoChooser() {
 }
 
 function chooseMainEcho(echoKey: string) {
+  if (isEchoLocked.value) return;
   echo.value = echoKey;
   if (props.context === "inventory") {
     if (!echoSet.value) echoSet.value = echoSetFilter.value;

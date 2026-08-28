@@ -30,7 +30,10 @@
                   backgroundImage: `url(${echoImage})`,
                 }"></div>
             </div>
-            <button @click="openEchoPicker" class="btn btn-sm btn--echo--find">
+            <button
+              @click="openEchoPicker"
+              :disabled="isEchoLocked"
+              class="btn btn-sm btn--echo--find">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -48,6 +51,7 @@
               class="main-echo-selector"
               data-test-main-echo
               :options="mainEchoSelectOptions"
+              :disabled="isEchoLocked"
               searchable
               placeholder="Select echo"
               aria-label="Main echo" />
@@ -57,7 +61,7 @@
               class="echo-main-stat-selector"
               data-test-echo-main-stat
               :options="mainStatSelectOptions"
-              :disabled="!type"
+              :disabled="!type || isEchoLocked"
               placeholder="Select Stat"
               aria-label="Main stat"
               @update:model-value="updateTotalStats" />
@@ -68,7 +72,8 @@
               Echo Set
             </span>
             <div
-              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap"
+              :class="{ 'opacity-50 pointer-events-none': isEchoLocked }">
               <div
                 v-for="echo in echoSets"
                 :key="echo"
@@ -93,6 +98,12 @@
             Any changes will affect those too.
           </template>
         </div>
+        <div
+          v-if="isEchoLocked"
+          class="echo__locked-notice alert alert-warning my-2 flex items-center p-2"
+          data-test-echo-locked-notice>
+          This echo is locked — unlock it to change its stats.
+        </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
             <label for="rank" class="rank__label">
@@ -106,6 +117,7 @@
               max="5"
               v-model="rank"
               step="1"
+              :disabled="isEchoLocked"
               :class="rangeClasses"
               class="echo__selection__rank__input range range-xs" />
           </div>
@@ -140,6 +152,7 @@
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('CritRate', $event)"
                   data-test-substat-range="CritRate" />
@@ -171,6 +184,7 @@
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('CritDMG', $event)"
                   data-test-substat-range="CritDMG" />
@@ -202,6 +216,7 @@
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ATK', $event)"
                   data-test-substat-range="ATK" />
@@ -233,6 +248,7 @@
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ATK_FLAT', $event)"
                   data-test-substat-range="ATK_FLAT" />
@@ -264,6 +280,7 @@
                   :default-value="getDefaultValue('HP')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HP', $event)"
                   data-test-substat-range="HP" />
@@ -295,6 +312,7 @@
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HP_FLAT', $event)"
                   data-test-substat-range="HP_FLAT" />
@@ -326,6 +344,7 @@
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('DEF', $event)"
                   data-test-substat-range="DEF" />
@@ -357,6 +376,7 @@
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('DEF_FLAT', $event)"
                   data-test-substat-range="DEF_FLAT" />
@@ -388,6 +408,7 @@
                   :default-value="getDefaultValue('BasicAttackDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('BasicAttackDMGBonus', $event)"
                   data-test-substat-range="BasicAttackDMGBonus" />
@@ -419,6 +440,7 @@
                   :default-value="getDefaultValue('HeavyAttackDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HeavyAttackDMGBonus', $event)"
                   data-test-substat-range="HeavyAttackDMGBonus" />
@@ -450,6 +472,7 @@
                   :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ResonanceSkillDMGBonus', $event)"
                   data-test-substat-range="ResonanceSkillDMGBonus" />
@@ -483,6 +506,7 @@
                   "
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ResonanceLiberationDMGBonus', $event)"
                   data-test-substat-range="ResonanceLiberationDMGBonus" />
@@ -514,6 +538,7 @@
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('EnergyRegen', $event)"
                   data-test-substat-checkbox="EnergyRegen" />
@@ -871,6 +896,7 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
+import { useEchoInventory } from "../composables/useEchoInventory";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -896,6 +922,7 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
+const { getEchoFlags } = useEchoInventory();
 const settingsStore = useSettingsStore();
 
 const allSubStatsEnabled = ref({
@@ -1168,6 +1195,7 @@ const isEchoIncomplete = computed(() => {
 });
 
 function statDisabled(statName: string) {
+  if (isEchoLocked.value) return true;
   if (!isMaxSubstats.value) return false;
   return !allSubStats.value.includes(statName);
 }
@@ -1379,6 +1407,11 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
 });
 
 const isInInventory = computed(() => !!echoId.value);
+
+const isEchoLocked = computed(() => {
+  if (!echoId.value) return false;
+  return getEchoFlags(echoId.value).locked;
+});
 
 const equippedChars = computed(() => {
   if (!echoId.value) {
@@ -1802,6 +1835,7 @@ function getEchoSetIcon(setType: string) {
 }
 
 function handleChooseEchoSet(set: string) {
+  if (isEchoLocked.value) return;
   echoSet.value = set;
 }
 
@@ -1886,6 +1920,7 @@ function resetFilters() {
 }
 
 async function chooseMainEcho(echoKey: string) {
+  if (isEchoLocked.value) return;
   echo.value = echoKey;
   if (echoSetFilter.value) {
     echoSet.value = echoSetFilter.value;
