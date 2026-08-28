@@ -155,7 +155,7 @@
           <button
             type="button"
             class="btn btn-sm btn-ghost join-item"
-            :class="{ 'btn-active': lockedFilter }"
+            :class="{ 'btn-active text-accent': lockedFilter }"
             v-tooltip="'Show only locked echoes'"
             aria-label="Show locked only"
             data-test-filter-locked
