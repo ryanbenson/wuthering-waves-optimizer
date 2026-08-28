@@ -4,6 +4,7 @@ import { render, fireEvent } from "@testing-library/vue";
 import InventoryEchoesBrowser from "../../src/components/InventoryEchoesBrowser.vue";
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useInventoryStore } from "../../src/stores/inventory";
+import { useConfirm } from "../../src/composables/useConfirm";
 
 const ELITE_ECHO = "AbyssalGladius";
 const COMMON_ECHO = "AeroDrake";
@@ -185,5 +186,40 @@ describe("InventoryEchoesBrowser rating filter", () => {
       (el) => el.getAttribute("data-echo-id"),
     );
     expect(ids).toEqual(["worst-roll"]);
+  });
+});
+
+describe("InventoryEchoesBrowser bulk delete confirmation", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [
+      makeCompleteInventoryEcho("deletable-1", ELITE_ECHO, 3, "EnergyRegen"),
+      makeCompleteInventoryEcho("deletable-2", COMMON_ECHO, 1, "ATK"),
+      makeInventoryEcho("locked-1", ELITE_ECHO, 4, "CritRate", {
+        ...FULL_SUB_STATS,
+        locked: true,
+      }),
+    ];
+  });
+
+  it("lists the deletable echoes by name in the confirm dialog, skipping locked ones", async () => {
+    const { container, getByText } = renderBrowser();
+
+    for (const id of ["deletable-1", "deletable-2", "locked-1"]) {
+      const checkbox = container.querySelector<HTMLInputElement>(
+        `[data-test-echo-select="${id}"]`,
+      )!;
+      await fireEvent.click(checkbox);
+    }
+
+    const deleteButton = getByText("Delete", { selector: "[data-test-bulk-delete]" });
+    await fireEvent.click(deleteButton);
+
+    const { confirmRequest } = useConfirm();
+    expect(confirmRequest.value?.items).toBeDefined();
+    expect(confirmRequest.value?.items?.length).toBe(2);
+    expect(confirmRequest.value?.items?.join(" | ")).toContain("Cost");
+    expect(confirmRequest.value?.message).toContain("1 locked echo");
   });
 });

@@ -5,6 +5,7 @@ export type ConfirmVariant = "primary" | "error" | "warning";
 export interface ConfirmRequest {
   message: string;
   title?: string;
+  items?: string[];
   confirmLabel: string;
   cancelLabel: string;
   variant: ConfirmVariant;
@@ -12,6 +13,7 @@ export interface ConfirmRequest {
 
 export interface ConfirmOptions {
   title?: string;
+  items?: string[];
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: ConfirmVariant;
@@ -37,6 +39,7 @@ export function useConfirm() {
       confirmRequest.value = {
         message,
         title: options.title,
+        items: options.items,
         confirmLabel: options.confirmLabel ?? "Confirm",
         cancelLabel: options.cancelLabel ?? "Cancel",
         variant: options.variant ?? "primary",

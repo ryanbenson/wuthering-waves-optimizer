@@ -28,7 +28,10 @@
                   backgroundImage: `url(${echoImage})`,
                 }"></div>
             </div>
-            <button @click="openEchoPicker" class="btn btn-sm btn--echo--find">
+            <button
+              @click="openEchoPicker"
+              :disabled="isEchoLocked"
+              class="btn btn-sm btn--echo--find">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -44,6 +47,7 @@
             <AppRichSelect
               v-model="echo"
               :options="mainEchoSelectOptions"
+              :disabled="isEchoLocked"
               searchable
               placeholder="Select echo"
               aria-label="Main echo" />
@@ -51,7 +55,7 @@
             <AppRichSelect
               v-model="stat"
               :options="mainStatSelectOptions"
-              :disabled="!type"
+              :disabled="!type || isEchoLocked"
               placeholder="Select Stat"
               aria-label="Main stat" />
           </div>
@@ -61,7 +65,8 @@
               Echo Set
             </span>
             <div
-              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap"
+              :class="{ 'opacity-50 pointer-events-none': isEchoLocked }">
               <div
                 v-for="echo in echoSets"
                 :key="echo"
@@ -79,6 +84,12 @@
           This echo is found in {{ echoPresetsFoundWithEcho.length }} presets.
           Any changes will affect those too.
         </div>
+        <div
+          v-if="isEchoLocked"
+          class="echo__locked-notice alert alert-warning my-2 flex items-center p-2"
+          data-test-echo-locked-notice>
+          This echo is locked — unlock it to change its stats.
+        </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
             <label for="rank" class="rank__label">
@@ -92,6 +103,7 @@
               max="5"
               v-model="rank"
               step="1"
+              :disabled="isEchoLocked"
               :class="rangeClasses"
               class="echo__selection__rank__input range range-xs" />
           </div>
@@ -124,6 +136,7 @@
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('CritRate', val)" />
               </div>
@@ -152,6 +165,7 @@
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('CritDMG', val)" />
               </div>
@@ -180,6 +194,7 @@
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('ATK', val)" />
               </div>
@@ -208,6 +223,7 @@
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('ATK_FLAT', val)" />
               </div>
@@ -236,6 +252,7 @@
                   :default-value="getDefaultValue('HP')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('HP', val)" />
               </div>
@@ -264,6 +281,7 @@
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('HP_FLAT', val)" />
               </div>
@@ -292,6 +310,7 @@
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('DEF', val)" />
               </div>
@@ -320,6 +339,7 @@
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('DEF_FLAT', val)" />
               </div>
@@ -348,6 +368,7 @@
                   :default-value="getDefaultValue('BasicAttackDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('BasicAttackDMGBonus', val)
@@ -378,6 +399,7 @@
                   :default-value="getDefaultValue('HeavyAttackDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('HeavyAttackDMGBonus', val)
@@ -408,6 +430,7 @@
                   :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('ResonanceSkillDMGBonus', val)
@@ -440,6 +463,7 @@
                   "
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('ResonanceLiberationDMGBonus', val)
@@ -470,6 +494,7 @@
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
                   show-ticks
+                  :disabled="isEchoLocked"
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('EnergyRegen', val)" />
               </div>
@@ -581,6 +606,7 @@ import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
 import { buildEchoSelectOptions } from "../utils/richSelectOptions";
+import { useEchoInventory } from "../composables/useEchoInventory";
 
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 
@@ -588,8 +614,12 @@ const inventoryStore = useInventoryStore();
 const { getEchoPresetsByEchoId } = inventoryStore;
 const { config } = storeToRefs(useSettingsStore());
 const { patchEcho, getEchoById } = inventoryStore;
+const { getEchoFlags } = useEchoInventory();
 
 const echoId = ref<string | null>(null);
+const isEchoLocked = computed(() =>
+  echoId.value ? getEchoFlags(echoId.value).locked : false,
+);
 const allSubStatsEnabled = ref({
   echoSubStatsType1: false,
   echoSubStatsType2: false,
@@ -957,6 +987,7 @@ function getEchoSetIcon(type: string) {
 }
 
 function handleChooseEchoSet(set: string) {
+  if (isEchoLocked.value) return;
   echoSet.value = set;
 }
 
@@ -985,6 +1016,7 @@ function resetFilters() {
 }
 
 function chooseMainEcho(echoKey: string) {
+  if (isEchoLocked.value) return;
   echo.value = echoKey;
   if (!echoSet.value) {
     echoSet.value = echoSetFilter.value;
@@ -1060,6 +1092,7 @@ const isMaxSubstats = computed(() => totalSubStatsEnabled.value >= 5);
 
 function mkDisabled(statName: string) {
   return computed(() => {
+    if (isEchoLocked.value) return true;
     if (!isMaxSubstats.value) return false;
     return !allSubStats.value.includes(statName);
   });

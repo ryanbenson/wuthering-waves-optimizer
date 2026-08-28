@@ -12,6 +12,13 @@
           {{ confirmRequest.title }}
         </h3>
         <p class="py-4">{{ confirmRequest.message }}</p>
+        <ul
+          v-if="confirmRequest.items?.length"
+          class="confirm-dialog__items max-h-48 overflow-y-auto list-disc list-inside text-sm bg-base-200 rounded-lg p-3 -mt-2 mb-4">
+          <li v-for="(item, index) in confirmRequest.items" :key="index">
+            {{ item }}
+          </li>
+        </ul>
         <div class="modal-action">
           <button type="button" class="btn" @click="handleCancel">
             {{ confirmRequest.cancelLabel }}
