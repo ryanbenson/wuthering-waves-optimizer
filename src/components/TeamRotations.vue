@@ -44,6 +44,7 @@
       </div>
 
       <AppFilterPanel
+        panel-key="team-rotations"
         class="mb-4"
         :active-count="activeFilterCount"
         :clear-disabled="!activeFilterCount"

@@ -10,7 +10,25 @@
         </button>
       </form>
       <div class="py-4">
-        <EchoSetFilterSelect v-model="echoSetFilter" />
+        <div
+          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+          <span class="mr-2">Filter</span>
+          <button
+            v-for="echoSet in echoSetsList"
+            :key="echoSet"
+            @click="toggleEchoSetFilter(echoSet)"
+            class="rounded p-[.3rem]"
+            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+            <img
+              :src="getEchoSetImage(echoSet)"
+              class="size-7 m-width-7"
+              :class="echoSet" />
+          </button>
+          <button @click="resetFilters" class="btn btn-sm btn-ghost">
+            Clear
+          </button>
+        </div>
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
         <template v-if="!allEchoesListFiltered.length">
@@ -472,17 +490,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
-import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import {
@@ -800,6 +817,8 @@ function handleBulkApplyBuff(payload: {
   );
 }
 
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+
 const allEchoesListFiltered = computed(() => {
   let allEchoes = Object.values(mainEchoesData) as unknown as EchoGridRow[];
   if (echoSetFilter.value) {
@@ -1033,6 +1052,22 @@ function openMainEchoSettings() {
   modalEl?.showModal();
 }
 
+function getEchoSetImage(echoSet: string) {
+  return getEchoSetIconByType(echoSet);
+}
+
+function toggleEchoSetFilter(echoSet: string) {
+  echoSetFilter.value = echoSetFilter.value === echoSet ? null : echoSet;
+}
+
+function isEchoSetFilterActive(echoSet: string) {
+  return echoSetFilter.value === echoSet;
+}
+
+function resetFilters() {
+  echoSetFilter.value = null;
+}
+
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
 }
@@ -1097,6 +1132,14 @@ onMounted(() => {
 .rotation__drag-handle {
   -webkit-user-drag: element;
   user-select: none;
+}
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
+  }
 }
 .rotation__head {
   display: flex;

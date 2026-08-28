@@ -52,10 +52,19 @@ function visitInventoryWithEcho(density: "comfy" | "compact" = "comfy") {
 }
 
 function openEditPanelForSeededEcho() {
+  // Flag-on's decluttered action cluster (decision #14) uses an icon-only
+  // Edit button (aria-label, no visible text); the flag-off footer is
+  // unchanged and still has a plain text "Edit" button.
   cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
     .closest(".echo__item-wrap")
-    .contains("button", "Edit")
-    .click();
+    .then(($wrap) => {
+      const $ariaEdit = $wrap.find('button[aria-label="Edit"]');
+      if ($ariaEdit.length) {
+        cy.wrap($ariaEdit).click();
+      } else {
+        cy.wrap($wrap).contains("button", "Edit").click();
+      }
+    });
 }
 
 describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
@@ -89,13 +98,32 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       .should("contain.text", "21%");
   });
 
-  it("shows family-colored substat chips in comfy density", () => {
+  it("shows roll-quality colored substat rows in comfy density", () => {
     visitInventoryWithEcho("comfy");
+    // ATK is substat slot 1 (index 0) on the seeded echo.
     cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
       .closest(".echo__item-wrap")
-      .find("tr")
-      .filter(":contains('ATK')")
-      .should("have.class", "border-l-4");
+      .find('[data-test-echo-card-substat="0"]')
+      .should("have.class", "border-l-4")
+      .and("contain.text", "ATK");
+  });
+
+  it("keeps the original table-based comfy layout with the flag off — no CalculatorEchoTile-style list", () => {
+    cy.visit("/inventory", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("settings", JSON.stringify({ config: { density: "comfy" }, labs: {} }));
+        win.localStorage.setItem(
+          "inventory",
+          JSON.stringify({ echoes: [seedEcho()], equipped: {}, echoPresets: [], equippedPresets: {} }),
+        );
+      },
+    });
+    cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
+      .closest(".echo__item-wrap")
+      .within(() => {
+        cy.get("table.echo__item__sub-stats").should("exist").and("contain.text", "ATK");
+        cy.get('[data-test-echo-card-substat="0"]').should("not.exist");
+      });
   });
 
   it("shows family-colored substat chips in compact density", () => {

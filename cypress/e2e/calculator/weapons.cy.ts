@@ -37,7 +37,6 @@ describe("Calculator Weapons", () => {
     cy.get("[data-test-weapon-browser-list]").should("be.visible");
     cy.get("[data-test-weapon-browser-filters]").should("be.visible");
     // do a filter
-    cy.get("[data-test-weapon-browser-filters] [data-test-filter-panel-toggle]").click();
     cy.get('[data-test-weapon-browser-filter-rarity="5"]').should("be.visible");
     cy.get("[data-test-weapon-browser-list]").should("be.visible");
     // choose a weapon

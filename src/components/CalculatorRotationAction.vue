@@ -292,7 +292,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";

@@ -63,15 +63,16 @@ describe("useEchoRating", () => {
       const characterStore = useCharacterStore();
       characterStore.setCharacterData("Camellya", {});
       const { substatScore } = useEchoRating(makeProps({ characterId: "Camellya" }));
-      // Camellya's curated weights are CritRate 3, CritDMG 4, ATK 2,
-      // BasicAttackDMGBonus 1, ATK_FLAT 1. This echo only has 3 of her
-      // weighted stats (CritRate/CritDMG/ATK, perfectly rolled) — HP/DEF
-      // (weight 0 for her) fill the other 2 slots instead of
-      // BasicAttackDMGBonus/ATK_FLAT, so it can't reach 100%: it's scored
-      // against her ideal 5-substat echo (8×(3+4+2+1) + 4×1 [ATK_FLAT only
-      // has 4 possible tiers] = 84), not just against the substats it
-      // happens to have.
-      expect(substatScore.value?.percent).toBeCloseTo(85.71, 1);
+      // Camellya's curated weights are CritRate 3, CritDMG 4, EnergyRegen 1,
+      // ATK 2, BasicAttackDMGBonus 1, ATK_FLAT 1. This echo only has 3 of
+      // her weighted stats (CritRate/CritDMG/ATK, perfectly rolled) — HP/DEF
+      // (weight 0 for her) fill the other 2 slots instead of two of her
+      // other priority stats, so it can't reach 100%: it's scored against
+      // her ideal 5-substat echo (top 5 of weight×tier-count across all 6
+      // weighted stats: 8×(3+4+2+1+1) [EnergyRegen and BasicAttackDMGBonus
+      // both make the cut; ATK_FLAT's 4-tier flat stat doesn't] = 88), not
+      // just against the substats it happens to have.
+      expect(substatScore.value?.percent).toBeCloseTo(81.82, 1);
       expect(substatScore.value?.grade).toBe("SS");
     });
 
@@ -105,7 +106,7 @@ describe("useEchoRating", () => {
       );
       // no Crit Rate substat at all, despite it being tied for Aemeath's
       // single highest-weighted stat
-      expect(substatScore.value?.percent).toBeCloseTo(31.77, 1);
+      expect(substatScore.value?.percent).toBeCloseTo(35.5, 1);
       expect(substatScore.value?.grade).toBe("C");
     });
 

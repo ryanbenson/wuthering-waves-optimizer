@@ -18,6 +18,7 @@
           until your character has an element.
         </p>
         <AppFilterPanel
+          panel-key="calculator-enemies"
           class="mb-6"
           :active-count="activeFilterCount"
           :clear-disabled="!activeFilterCount"

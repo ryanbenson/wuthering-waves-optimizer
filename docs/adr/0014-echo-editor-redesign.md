@@ -249,6 +249,97 @@ ADR is for building that, not the proposal itself.
    returns `null` when the flag is off, restoring the flag-off Inventory
    grid to exactly how it looked before decision #7 touched this file.
 
+13. **`CalculatorEchoCard.vue`'s comfy layout mirrors
+   `CalculatorEchoTile.vue`'s look when the `liveResultBar` flag is on**,
+   instead of its own older table-based layout — an echo looks the same
+   whether it's equipped (the build-strip tile) or being browsed
+   (Inventory grid / Echo Browser, both of which share this one card
+   component). Same shape as the tile: circular avatar with the cost
+   badge overlaid at its corner, name + CV/Substat-Score-or-Echo-Rating
+   badges below it, a plain main-stat/free-stat text line, then a vertical
+   5-row substat list (icon + label left, value right, roll-quality-colored
+   left border and background tint when filled). Unlike the tile (always
+   exactly 5 slots by construction), an Inventory echo can have fewer than
+   5 revealed substats; missing ones render as an explicit "Empty" row
+   (border-l-base-300, dimmed) instead of being omitted outright, the same
+   visual language the tile already used for an in-progress build slot.
+   An early version of this change applied the new layout unconditionally
+   (flag on or off), reasoning that only the roll-quality *color* was a
+   Labs feature (decision #12) — but that changed the flag-off experience
+   too, which this whole redesign has otherwise treated as an inviolable
+   "byte-identical to today" guarantee (decision #6). Corrected: comfy now
+   branches on `isLiveResultBarEnabled` the same way compact vs. comfy
+   already branches on the `compact` prop — flag on gets the tile-style
+   layout above; flag off gets the exact original
+   `<table class="table table-zebra">` markup, unchanged. Compact mode
+   (the optimizer-loadout card style) is unaffected either way.
+   `hideInventory`/`echoId`-driven "in your inventory" indicator and the
+   host-supplied footer slot (Inventory's Edit/Duplicate/Delete, the Echo
+   Browser's "Use echo") are unchanged in both branches.
+
+14. **`CalculatorEchoCard.vue`'s compact layout gets a skinnier tile-style
+   redesign too, flag-gated the same way comfy is (decision #13), and the
+   Inventory grid's action buttons split into two clusters.** The old
+   compact layout (dense grids: Inventory, Echo Browser) packed a `size-16`
+   avatar with three absolutely-positioned badges (cost, set icon, "in
+   inventory") around it, and rendered substats as icon-only rows with no
+   stat-name label — hard to read at a glance. Flag on: same
+   avatar-with-overlaid-cost-badge header as the comfy tile-style layout,
+   just smaller (`size-10`), with the same labeled vertical substat list
+   (`EchoCardSubstatList.vue`, `size="xs"` — smaller icon/text/padding than
+   comfy's `size="sm"`, same row logic). This is also why
+   `EchoCardSubstatList.vue` exists as its own component now: the same
+   5-row list is used by three layouts (compact-flag-on, comfy-flag-on, and
+   — via its `size` prop — future callers), so it moved out of
+   `CalculatorEchoCard.vue` instead of getting duplicated a third time.
+   Flag off keeps the exact original compact markup, unchanged.
+
+   Separately, `InventoryEchoesBrowser.vue`'s footer (the card's default
+   slot) also gets a flag-gated redesign: the old single button row —
+   `EchoLockTrashActions` (Lock/Trash-mark/Ignore-from-optimizer, 3 icon
+   toggles) immediately followed by full-width **Edit**/**Duplicate**/
+   **Delete** text buttons, one crowded `flex-wrap` row — splits into two
+   visually distinct clusters when the flag is on: a **status** cluster
+   (equipped-by avatars + `EchoLockTrashActions`, left) and an **actions**
+   cluster (Edit/Duplicate/Delete as `btn-square` icon buttons with
+   tooltips, right) — matching the icon-button convention
+   `EchoLockTrashActions` already established, rather than inventing a
+   second button style. `CalculatorEchoesBrowser.vue`'s own slot (just a
+   single "Use echo" button) wasn't crowded to begin with and is
+   unchanged. Flag off keeps the exact original footer markup.
+
+   While verifying the Echo Browser modal for this change, found and fixed
+   a real, separate bug in `AppOverflowMenu.vue` (used by
+   `CalculatorEchoTile.vue`'s "…" menu, Manage Builds, Team Rotations, and
+   others): it relied entirely on daisyUI's CSS-only `:focus-within` to
+   show/hide its dropdown content, the exact same fragile pattern already
+   fixed once for `AppRichSelect.vue` earlier in this redesign — and it
+   broke the same way, staying visibly open by default in some contexts
+   (reproduced via `CalculatorEchoTile.vue`'s overflow menu, whose root is
+   itself a `<button>`, an unusual ancestor for a focus-within dropdown).
+   Fixed with the same explicit `isOpen` ref + `v-show` + outside-pointerdown-
+   close pattern already validated for `AppRichSelect.vue`.
+
+15. **`CalculatorOptimizerResultLoadoutEcho.vue` gets the same skinny
+   tile-style treatment as `CalculatorEchoCard.vue`'s compact layout
+   (decision #14), flag-gated the same way.** This component (the
+   Optimizer's per-loadout-result echo cards) is a separate, parallel
+   implementation — not `CalculatorEchoCard.vue` — that had duplicated its
+   own copy of the CV/RV/badge-class math instead of using
+   `useEchoCardStats`/`useEchoRating`. Rather than hand-port the new
+   markup on top of a fourth copy of that math, it now calls those same
+   composables directly (`characterId` sourced from
+   `characterStore.activeCharacter`, since Optimizer results are always
+   for the active character, not threaded as a prop) and reuses
+   `EchoCardSubstatList.vue` (`size="xs"`) for its substat rows — removing
+   the duplication instead of adding to it. Flag on shows names (this
+   component previously never rendered the echo's name — a stale
+   `v-if="false"` block, not a deliberate suppression, per its own dead
+   code) and free-stat values (also previously never shown) for parity
+   with every other tile-style display in this redesign. No footer here:
+   this component has no `<slot>` and no per-echo actions, so there was
+   nothing to cluster. Flag off is the exact original layout, unchanged.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button

@@ -220,9 +220,9 @@
                 'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
                   actionDropIndex === index && actionDragIndex !== null && actionDragIndex !== index,
               }"
-              @dragover.prevent="onActionDragOver(index, $event)"
-              @dragenter.prevent="onActionDragEnter(index)"
-              @drop.prevent="onActionDrop(index)">
+              @dragover.prevent="onActionDragOver(Number(index), $event)"
+              @dragenter.prevent="onActionDragEnter(Number(index))"
+              @drop.prevent="onActionDrop(Number(index))">
               <TeamRotationActionEditor
                 :action="action"
                 :team="team"
@@ -241,7 +241,7 @@
                 @remove="handleActionRemove"
                 @duplicate="handleActionDuplicate"
                 @bulk-apply="handleBulkApplyBuff"
-                @drag-reorder-start="onActionDragStart(index)"
+                @drag-reorder-start="onActionDragStart(Number(index))"
                 @drag-reorder-end="onActionDragEnd" />
             </div>
           </div>
