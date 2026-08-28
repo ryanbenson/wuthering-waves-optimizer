@@ -29,8 +29,8 @@
     </button>
     <button
       type="button"
-      class="btn btn-sm btn-ghost btn-square"
-      :class="{ 'btn-active text-error': isTrash }"
+      class="btn btn-sm btn-ghost btn-square text-error"
+      :class="{ 'btn-active': isTrash }"
       v-tooltip="
         isTrash
           ? 'Remove from trash'

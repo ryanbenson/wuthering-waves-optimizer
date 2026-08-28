@@ -172,8 +172,8 @@
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-ghost join-item"
-            :class="{ 'btn-active text-error': trashFilter }"
+            class="btn btn-sm btn-ghost join-item text-error"
+            :class="{ 'btn-active': trashFilter }"
             v-tooltip="'Show only echoes marked as trash'"
             aria-label="Show trash only"
             data-test-filter-trash
