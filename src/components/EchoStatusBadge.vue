@@ -69,7 +69,6 @@ const trash = computed(() => {
   justify-content: center;
   width: 1.25rem;
   height: 1.25rem;
-  color: currentColor;
   opacity: 0.85;
 
   &__glyph {
