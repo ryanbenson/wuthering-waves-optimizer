@@ -1,15 +1,18 @@
 <template>
   <div class="presetEcho relative w-fit">
-    <EchoFavoriteButton overlay :echo-id="echoId || null" />
+    <EchoFavoriteButton v-if="!compact" overlay :echo-id="echoId || null" />
     <div
-      class="echo__item__image rounded-full border border-solid neutral-content size-16 bg-cover min-w-16 text-center"
-      :class="{
-        'border-amber-300': rank === '5' || rank === 5,
-        'border-violet-600': rank === '4' || rank === 4,
-        'border-blue-500': rank === '3' || rank === 3,
-        'border-green-500': rank === '2' || rank === 2,
-        'echo__item__image--empty': isEchoEmpty,
-      }"
+      class="echo__item__image rounded-full border border-solid neutral-content bg-cover text-center"
+      :class="[
+        compact ? 'size-10 min-w-10' : 'size-16 min-w-16',
+        {
+          'border-amber-300': rank === '5' || rank === 5,
+          'border-violet-600': rank === '4' || rank === 4,
+          'border-blue-500': rank === '3' || rank === 3,
+          'border-green-500': rank === '2' || rank === 2,
+          'echo__item__image--empty': isEchoEmpty,
+        },
+      ]"
       :style="{
         backgroundImage: `url(${echoImage})`,
       }"></div>
@@ -22,9 +25,15 @@ import { getEchoData } from "../echoes/index.ts";
 import { useInventoryStore } from "../stores/inventory";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 
-const props = defineProps<{
-  echoId: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    echoId: string;
+    compact?: boolean;
+  }>(),
+  {
+    compact: false,
+  },
+);
 
 const inventoryStore = useInventoryStore();
 

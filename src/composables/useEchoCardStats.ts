@@ -47,7 +47,7 @@ function getSubStatValueColorClass(type: string, value: string | number) {
   return "text-yellow-500";
 }
 
-function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
+export function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
   const percentage = Math.min(Math.max(value, 0), max);
   let bgColor = "bg-emerald-800";
   let color = "text-white";
