@@ -75,6 +75,64 @@
       </div>
     </div>
   </dialog>
+  <dialog v-if="isLiveResultBarEnabled" :id="mainEchoSettingsModalId" class="modal">
+    <form method="dialog" class="modal-backdrop" @click="closeMainEchoSettings">
+      <button>close</button>
+    </form>
+    <div class="modal-box max-w-md" @click.stop>
+      <form method="dialog">
+        <button
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          @click="closeMainEchoSettings">
+          ✕
+        </button>
+      </form>
+      <h3 class="font-bold text-lg mb-4">Main Echo Settings</h3>
+      <div class="flex flex-col gap-4">
+        <div class="rotation__current-echo flex flex-col gap-2 items-center">
+          <img
+            :src="
+              currentEchoData?.image ||
+              'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
+            "
+            class="size-12 rounded-full border border-solid neutral-content bg-cover"
+            :class="{
+              'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+              'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+              'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+              'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+              'echo__item__image--empty': !currentEchoData?.image,
+            }"
+            :alt="currentEchoData?.name" />
+          <span class="rotation__echo-echo--name">
+            {{ currentEchoData?.name }}
+          </span>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-outline btn-primary" @click="openEchoChooser">
+              Choose echo
+            </button>
+            <button
+              class="btn btn-sm btn-outline btn-secondary"
+              @click="chooseCurrentMainEcho"
+              :disabled="!hasCurrentMainEcho">
+              Use current echo
+            </button>
+          </div>
+          <span class="main-echo--rank">
+            <span class="font-bold">Rank</span> <span class="text-primary">{{ mainEchoRank }}</span>
+          </span>
+          <Range
+            id="Rank-modal"
+            :values="[1, 2, 3, 4, 5]"
+            :default-value="5"
+            size="xs"
+            class="w-full"
+            @update-value="(val: string | number) => onMainEchoRankChange(val)"
+            data-test-rotation-main-echo-rank-modal="CritRate" />
+        </div>
+      </div>
+    </div>
+  </dialog>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     :data-test-rotation-item="id"
@@ -105,6 +163,14 @@
                   d="M7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
               </svg>
             </span>
+            <span v-if="isLiveResultBarEnabled && rank !== null" class="badge badge-sm" data-test-rotation-rank>
+              #{{ rank }}
+            </span>
+            <FavoriteHeartButton
+              v-if="isLiveResultBarEnabled"
+              :active="favorite"
+              :test-id="name"
+              @toggle="$emit('toggle-favorite')" />
             <span v-if="!isOpen" class="truncate" v-tooltip="description">{{
               name
             }}</span>
@@ -114,10 +180,24 @@
               name="name"
               id="name"
               class="input input-bordered w-full max-w-lg"
+              :class="{ 'input-sm': isLiveResultBarEnabled }"
               v-model="nameValue"
               @input="onNameChange"
               @click.stop
               :data-test-rotation-name-input="nameValue" />
+            <div v-if="isOpen && isLiveResultBarEnabled" class="flex items-center gap-1 shrink-0">
+              <label for="duration-quick" class="text-xs opacity-70">Duration</label>
+              <input
+                type="text"
+                name="duration-quick"
+                id="duration-quick"
+                class="input input-bordered input-sm w-16"
+                v-model="durationValue"
+                @input="onDurationChange"
+                @click.stop
+                data-test-rotation-duration-quick />
+              <span class="text-xs opacity-70">s</span>
+            </div>
           </div>
 
           <div class="rotation__end">
@@ -142,11 +222,18 @@
                 :alt="currentEchoData?.name" />
             </div>
             <div
+              v-if="isLiveResultBarEnabled && statValue !== null && statValue > 0"
+              class="badge badge-ghost min-w-max"
+              data-test-rotation-stat-badge>
+              {{ statLabel }}: {{ Math.round(statValue).toLocaleString() }}
+            </div>
+            <div
               class="rotation__actions-count min-w-24"
               :data-test-rotation-actions-count="nameValue">
-              {{ actionsCount }} Actions
+              {{ actionsCount }} Action{{ actionsCount === 1 ? "" : "s" }}
+              <template v-if="isLiveResultBarEnabled && durationValue">· {{ durationValue }}s</template>
             </div>
-            <div class="rotation__expand">
+            <div v-if="!alwaysOpen" class="rotation__expand">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path
                   d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z" />
@@ -154,8 +241,70 @@
             </div>
           </div>
         </h2>
+        <input
+          v-if="isOpen && isLiveResultBarEnabled"
+          type="text"
+          name="description-quick"
+          id="description-quick"
+          class="input input-bordered input-xs w-full max-w-lg mt-1"
+          placeholder="Add a description…"
+          v-model="descriptionValue"
+          @input="onDescriptionChange"
+          @click.stop
+          data-test-rotation-description-quick />
         <div class="rotation__body" v-if="isOpen" @click.stop>
-          <div class="rotation__desc flex flex-col gap-2">
+          <div v-if="isLiveResultBarEnabled" class="rotation__topbar flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              class="relative size-9 shrink-0 rounded-full bg-transparent border-none p-0 cursor-pointer"
+              title="Choose echo"
+              data-test-rotation-echo-quick-open
+              @click="openEchoChooser">
+              <img
+                :src="
+                  currentEchoData?.image ||
+                  'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
+                "
+                class="size-9 rounded-full border border-solid neutral-content bg-cover"
+                :class="{
+                  'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+                  'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+                  'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+                  'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+                  'echo__item__image--empty': !currentEchoData?.image,
+                }"
+                :alt="currentEchoData?.name" />
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost"
+              data-test-rotation-settings-toggle
+              @click="openMainEchoSettings">
+              Main Echo Settings
+            </button>
+            <AppOverflowMenu aria-label="Rotation actions" data-test="rotation-overflow-menu">
+              <li>
+                <button type="button" @click="handleRotationExport" :data-test-rotation-action-export="nameValue">
+                  Copy to Clipboard
+                </button>
+              </li>
+              <li>
+                <button type="button" @click="handleRotationExportFile" :data-test-rotation-action-export-file="nameValue">
+                  Download JSON
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  class="text-error"
+                  @click="handleRotationDelete"
+                  :data-test-rotation-action-delete="nameValue">
+                  Delete
+                </button>
+              </li>
+            </AppOverflowMenu>
+          </div>
+          <div v-if="!isLiveResultBarEnabled" class="rotation__desc flex flex-col gap-2 mt-2">
             <label for="description">Description</label>
             <textarea
               v-model="descriptionValue"
@@ -166,7 +315,9 @@
               >{{ description }}</textarea
             >
           </div>
-          <div class="rotation__duration-echo flex gap-4 items-center mt-4">
+          <div
+            v-if="!isLiveResultBarEnabled"
+            class="rotation__duration-echo flex gap-4 items-center mt-4">
             <div class="rotation__echo">
               <div
                 class="rotation__current-echo flex flex-col gap-2 items-center">
@@ -225,10 +376,50 @@
                 :data-test-rotation-name-input="durationValue" />
             </div>
           </div>
+          <div
+            v-if="isLiveResultBarEnabled"
+            class="rotation__summary-strip flex flex-wrap gap-3 items-center mt-4 text-sm"
+            data-test-rotation-summary-strip>
+            <span><b>{{ actionsCount }}</b> action{{ actionsCount === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ durationValue !== null && durationValue !== "" ? `${durationValue}s` : "—" }}</b> duration</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ customizedActionsCount }}</b> customized</span>
+          </div>
+          <div
+            v-if="isLiveResultBarEnabled && damageStripBars.length"
+            class="rotation__damage-strip mt-4"
+            data-test-rotation-damage-strip>
+            <div class="text-xs opacity-60 mb-2">
+              Damage by action, in rotation order — bar height shows which hits matter most.
+            </div>
+            <div class="rotation__damage-strip__bars">
+              <button
+                v-for="bar in damageStripBars"
+                :key="bar.id"
+                type="button"
+                class="rotation__damage-strip__bar"
+                :style="{ height: bar.heightPct + '%' }"
+                :title="Math.round(bar.value).toLocaleString()"
+                @click="scrollToAction(bar.id)"></button>
+            </div>
+          </div>
+          <div v-if="isLiveResultBarEnabled" class="rotation__add-actions mt-4">
+            <button
+              class="rotation__action--add btn btn-primary btn-xs w-full"
+              @click="addAction"
+              :data-test-rotation-action-add="nameValue">
+              Add Action
+            </button>
+            <CalculatorRotationQuickAdd :actions="characterActionList" @add-actions="handleAddActions" />
+          </div>
           <div class="rotations__list">
             <div
               v-for="(action, index) in actionsList"
               :key="action.id"
+              :ref="(el) => setRowEl(action.id, el as HTMLElement | null)"
               class="action-dnd-item rounded-lg"
               :class="{
                 'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
@@ -249,9 +440,12 @@
                 :previous-action="previousActionByActionId[action.id] ?? null"
                 :range-actions="rangeActions"
                 :can-reorder="canReorderActions"
+                :damage-value="actionDamageById[action.id] ?? null"
+                damage-label="Avg"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
+                @duplicate-action="handleDuplicateAction"
                 @bulk-apply="handleBulkApplyBuff"
                 @drag-reorder-start="onActionDragStart(index)"
                 @drag-reorder-end="onActionDragEnd"
@@ -263,12 +457,13 @@
             </div>
           </div>
           <button
+            v-if="!isLiveResultBarEnabled"
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
             @click="addAction"
             :data-test-rotation-action-add="nameValue">
             Add Action
           </button>
-          <div class="rotation__action--system">
+          <div v-if="!isLiveResultBarEnabled" class="rotation__action--system">
             <button
               class="btn btn-primary btn-xs"
               @click="handleRotationExport"
@@ -299,6 +494,10 @@ import { computed, nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
+import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
+import FavoriteHeartButton from "./FavoriteHeartButton.vue";
+import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
@@ -309,7 +508,13 @@ import {
 } from "../echoes/index.ts";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
-import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
+import { useSettingsStore } from "../stores/settings";
+import {
+  applyBulkAdvancedConfigOverride,
+  hasAdvancedConfigOverrides,
+  type AdvancedConfigCategory,
+  type RotationAdvancedConfig,
+} from "../calculator/rotationAdvancedBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
@@ -342,6 +547,22 @@ const props = withDefaults(
     order?: number;
     actions?: RotationActionRow[];
     canReorder?: boolean;
+    /** Rotation Flow (Labs) — Calculator.vue's already-computed allDamages
+     * (threaded through CalculatorRotations.vue), used only to read this
+     * rotation's real per-action damage for the damage-by-action strip. No
+     * damage calculation happens in this component. */
+    allDamages?: Record<string, unknown> | null;
+    /** Rotation Flow (Labs) — list-level display data computed by
+     * CalculatorRotations.vue (sort/rank/favorite are list concerns; this
+     * component only displays and reports toggles, it owns none of it). */
+    favorite?: boolean;
+    rank?: number | null;
+    statValue?: number | null;
+    statLabel?: string | null;
+    /** Rotation Flow (Labs) — CalculatorRotations.vue's detail view renders
+     * exactly one of these, permanently expanded, instead of this being one
+     * accordion item among many in a list. */
+    alwaysOpen?: boolean;
   }>(),
   {
     characterData: () => ({}),
@@ -353,6 +574,12 @@ const props = withDefaults(
     order: 0,
     actions: () => [],
     canReorder: false,
+    allDamages: null,
+    favorite: false,
+    rank: null,
+    statValue: null,
+    statLabel: null,
+    alwaysOpen: false,
   },
 );
 
@@ -361,12 +588,21 @@ const emit = defineEmits<{
   "rotation-delete": [id: string];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
+  "toggle-favorite": [];
 }>();
 
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const settingsStore = useSettingsStore();
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
 
-const isOpen = ref(false);
+const isOpenLocal = ref(false);
+// Rotation Flow (Labs) — detail-view usage (CalculatorRotations.vue's
+// list/detail split) forces this permanently open via the alwaysOpen prop,
+// instead of the local accordion toggle legacy/list-row usage still owns.
+const isOpen = computed(() => props.alwaysOpen || isOpenLocal.value);
 const nameValue = ref<string | null>(null);
 const descriptionValue = ref<string | null>(null);
 const durationValue = ref<string | number | null>(null);
@@ -374,6 +610,7 @@ const echoValue = ref<string | null>(null);
 const mainEchoRank = ref<string | number>(5);
 const actionsList = ref<RotationActionRow[]>([]);
 const modalIdPicker = `echo-chooser-modal-${randomString()}`;
+const mainEchoSettingsModalId = `main-echo-settings-modal-${randomString()}`;
 const echoSetFilter = ref<string | null>(null);
 
 const actionRefs = new Map<string, { toggleEdit: () => void }>();
@@ -419,13 +656,98 @@ function onDragReorderEnd() {
 }
 
 function toggleOpen() {
-  isOpen.value = !isOpen.value;
+  isOpenLocal.value = !isOpenLocal.value;
 }
 
 defineExpose({ toggleOpen });
 
 const actionsCount = computed(() => actionsList.value?.length || 0);
 const canReorderActions = computed(() => actionsList.value.length > 1);
+
+// Rotation Flow (Labs) summary strip — pure derivations of the same
+// actionsList data already driving the rest of this component, no new
+// data sources.
+const totalHits = computed(() =>
+  actionsList.value.reduce((sum, action) => sum + (Number(action.count) || 1), 0),
+);
+const customizedActionsCount = computed(
+  () =>
+    actionsList.value.filter(
+      (action) =>
+        (Array.isArray(action.buffs) && action.buffs.length > 0) ||
+        hasAdvancedConfigOverrides(action.advancedConfig),
+    ).length,
+);
+
+// Rotation Flow (Labs) damage-by-action strip. Reads this rotation's real
+// per-action damage out of Calculator.vue's already-computed `allDamages`
+// (matched by rotation id, then attack id === action id — see
+// calcCharacterRotationDamage/resolveRotationAction). No damage math here;
+// ordered by action sequence, never by time — there's no per-action cast
+// timing in the data model to plot honestly.
+type RotationDamageAttack = {
+  id: string;
+  damage?: {
+    totalDamage?: number;
+    avgDamage?: number;
+    critDamage?: number;
+    healAmount?: number;
+    shieldAmount?: number;
+  };
+};
+
+const rotationDamageAttacks = computed<RotationDamageAttack[]>(() => {
+  const rotations = (
+    props.allDamages as { rotations?: Array<{ id: string; attacks?: RotationDamageAttack[] }> } | null
+  )?.rotations;
+  return rotations?.find((r) => r.id === props.id)?.attacks ?? [];
+});
+
+const actionDamageById = computed<Record<string, number>>(() => {
+  const map: Record<string, number> = {};
+  for (const attack of rotationDamageAttacks.value) {
+    map[attack.id] =
+      attack.damage?.avgDamage ??
+      attack.damage?.totalDamage ??
+      attack.damage?.healAmount ??
+      attack.damage?.shieldAmount ??
+      0;
+  }
+  return map;
+});
+
+const maxActionDamage = computed(() =>
+  Math.max(1, ...Object.values(actionDamageById.value)),
+);
+
+const damageStripBars = computed(() =>
+  actionsSorted.value
+    .filter((action) => actionDamageById.value[action.id] !== undefined)
+    .map((action) => {
+      const value = actionDamageById.value[action.id] ?? 0;
+      return {
+        id: action.id,
+        value,
+        heightPct: Math.max(4, Math.round((value / maxActionDamage.value) * 100)),
+      };
+    }),
+);
+
+const rowEls = new Map<string, HTMLElement>();
+function setRowEl(id: string, el: unknown) {
+  if (el instanceof HTMLElement) {
+    rowEls.set(id, el);
+  } else {
+    rowEls.delete(id);
+  }
+}
+function scrollToAction(id: string) {
+  const el = rowEls.get(id);
+  if (!el) return;
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  el.classList.add("rotation__action--flash");
+  window.setTimeout(() => el.classList.remove("rotation__action--flash"), 900);
+}
 
 /** Trust current array order and stamp order 1..n (used after a drag reorder). */
 function renumberActionsByArrayOrder(list: RotationActionRow[]): RotationActionRow[] {
@@ -542,6 +864,24 @@ const isEquippedEchoSameAsRotationEcho = computed(() => {
   }
   return currentCharacterMainEcho.value === echoValue.value;
 });
+
+const characterActionList = useCharacterActionList(computed(() => props.characterData));
+
+function handleAddActions(entries: Array<{ key: string; type: string; count: number }>) {
+  if (!entries.length) return;
+  const newActions: RotationActionRow[] = entries.map((entry) => ({
+    id: randomString(),
+    type: entry.type,
+    key: entry.key,
+    order: 0,
+    count: entry.count,
+    buffs: [],
+    negativeStatusStacks: 1,
+    electroRageStacks: 0,
+  }));
+  actionsList.value = renumberActionsByArrayOrder([...actionsList.value, ...newActions]);
+  emitRotation();
+}
 
 function addAction() {
   const newSequence = actionsCount.value + 1;
@@ -671,6 +1011,16 @@ function handleRemoveAction(actionData: { id: string }) {
   emitRotation();
 }
 
+function handleDuplicateAction(payload: { id: string }) {
+  const actions = JSON.parse(JSON.stringify(actionsList.value)) as RotationActionRow[];
+  const sourceIndex = actions.findIndex((action) => action.id === payload.id);
+  if (sourceIndex === -1) return;
+  const clone: RotationActionRow = { ...actions[sourceIndex], id: randomString() };
+  actions.splice(sourceIndex + 1, 0, clone);
+  actionsList.value = renumberActionsByArrayOrder(actions);
+  emitRotation();
+}
+
 function handleRotationDelete() {
   emit("rotation-delete", props.id);
 }
@@ -689,6 +1039,16 @@ function closeEchoChooser() {
 
 function openEchoChooser() {
   const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function closeMainEchoSettings() {
+  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+function openMainEchoSettings() {
+  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
   modalEl?.showModal();
 }
 
@@ -738,6 +1098,29 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.rotation__damage-strip__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.375rem;
+  height: 3.5rem;
+}
+.rotation__damage-strip__bar {
+  flex: 1;
+  min-width: 0.5rem;
+  max-width: 2.5rem;
+  border-radius: 0.25rem 0.25rem 0.125rem 0.125rem;
+  background: oklch(var(--p) / 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.rotation__damage-strip__bar:hover {
+  background: oklch(var(--p) / 0.8);
+}
+.rotation__action--flash {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: -2px;
+}
 .mismatch-echo {
   svg {
     filter: none !important;

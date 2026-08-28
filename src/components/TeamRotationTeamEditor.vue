@@ -156,10 +156,65 @@
 
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
+          <div
+            v-if="isLiveResultBarEnabled"
+            class="rotation__summary-strip flex flex-wrap gap-3 items-center mb-3 text-sm"
+            data-test-team-rotation-summary-strip>
+            <span><b>{{ team.actions.length }}</b> action{{ team.actions.length === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ team.duration !== null && team.duration !== "" ? `${team.duration}s` : "—" }}</b> duration</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ customizedActionsCount }}</b> customized</span>
+          </div>
+          <div
+            v-if="isLiveResultBarEnabled && damageStripBars.length"
+            class="rotation__damage-strip mb-3"
+            data-test-team-rotation-damage-strip>
+            <div class="text-xs opacity-60 mb-2">
+              Damage by action, in rotation order — bar height shows which hits matter most.
+            </div>
+            <div class="rotation__damage-strip__bars">
+              <button
+                v-for="bar in damageStripBars"
+                :key="bar.id"
+                type="button"
+                class="rotation__damage-strip__bar"
+                :style="{ height: bar.heightPct + '%' }"
+                :title="Math.round(bar.value).toLocaleString()"
+                @click="scrollToAction(bar.id)"></button>
+            </div>
+          </div>
+          <div v-if="isLiveResultBarEnabled" class="rotation__add-actions mb-3">
+            <button
+              class="btn btn-primary btn-xs w-full"
+              :disabled="!hasAnyCharacter"
+              data-test-team-rotation-add-action
+              @click="addAction">
+              + Add Action
+            </button>
+            <div v-if="hasAnyCharacter" class="mt-2">
+              <div class="flex items-center gap-2 mb-1">
+                <label for="quick-add-slot" class="text-xs opacity-70">Adding for:</label>
+                <select
+                  id="quick-add-slot"
+                  v-model.number="quickAddSlot"
+                  class="select select-bordered select-xs"
+                  data-test-team-rotation-quick-add-slot>
+                  <option v-for="slot in [0, 1, 2]" :key="slot" :value="slot" :disabled="!team.characterIds[slot]">
+                    {{ team.characterIds[slot] ? displayName(team.characterIds[slot] as string) : `Slot ${slot + 1} (empty)` }}
+                  </option>
+                </select>
+              </div>
+              <CalculatorRotationQuickAdd :actions="quickAddActionList" @add-actions="handleQuickAddActions" />
+            </div>
+          </div>
           <div class="flex flex-col gap-4" data-test-team-rotation-actions>
             <div
               v-for="(action, index) in team.actions"
               :key="action.id"
+              :ref="(el) => setRowEl(action.id, el as HTMLElement | null)"
               class="action-dnd-item rounded-lg"
               :class="{
                 'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
@@ -179,15 +234,19 @@
                 :previous-action="previousActionByActionId[action.id] ?? null"
                 :range-actions="orderedActionRangeList"
                 :can-reorder="canReorderActions"
+                :damage-value="actionDamageById[action.id] ?? null"
+                damage-label="Avg"
                 @update="handleActionUpdate"
                 @update:sequence="handleSequenceUpdate"
                 @remove="handleActionRemove"
+                @duplicate="handleActionDuplicate"
                 @bulk-apply="handleBulkApplyBuff"
                 @drag-reorder-start="onActionDragStart(Number(index))"
                 @drag-reorder-end="onActionDragEnd" />
             </div>
           </div>
           <button
+            v-if="!isLiveResultBarEnabled"
             class="btn btn-primary btn-xs w-full mt-2"
             :disabled="!hasAnyCharacter"
             data-test-team-rotation-add-action
@@ -297,7 +356,10 @@ import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
+import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
+import { useSettingsStore } from "../stores/settings";
+import { useCharacterActionList } from "../composables/useCharacterActionList";
 import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import { getTeamBuildStatus } from "../teamRotations/teamBuildStatus";
@@ -329,6 +391,7 @@ import {
 } from "../calculator/teamRotation";
 import {
   applyBulkAdvancedConfigOverride,
+  hasAdvancedConfigOverrides,
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
@@ -749,6 +812,116 @@ function handleActionRemove(id: string) {
   );
 }
 
+function handleActionDuplicate(id: string) {
+  if (!team.value) return;
+  const actions = JSON.parse(JSON.stringify(team.value.actions)) as TeamRotationAction[];
+  const sourceIndex = actions.findIndex((action) => action.id === id);
+  if (sourceIndex === -1) return;
+  const clone: TeamRotationAction = { ...actions[sourceIndex], id: randomString() };
+  actions.splice(sourceIndex + 1, 0, clone);
+  teamRotationsStore.setTeamActions(props.teamId, renumberActionsByArrayOrder(actions));
+}
+
+// Rotation Flow (Labs) — mirrors CalculatorRotation.vue's identical
+// summary-strip/duplicate/damage-strip/quick-add pieces, adapted to a team's
+// shared actions array instead of one character's.
+const settingsStore = useSettingsStore();
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
+
+const totalHits = computed(
+  () =>
+    ((team.value?.actions ?? []) as TeamRotationAction[]).reduce(
+      (sum: number, action: TeamRotationAction) => sum + (Number(action.count) || 1),
+      0,
+    ),
+);
+const customizedActionsCount = computed(
+  () =>
+    ((team.value?.actions ?? []) as TeamRotationAction[]).filter(
+      (action: TeamRotationAction) =>
+        (Array.isArray(action.buffs) && action.buffs.length > 0) ||
+        hasAdvancedConfigOverrides(action.advancedConfig),
+    ).length,
+);
+
+// `result.actionResults` (built by calcTeamRotationDamage in `recompute()`
+// below) already carries real per-action damage for the whole team, kept
+// live by the existing `watch(team, ...)` — no separate compute cycle needed.
+const actionDamageById = computed<Record<string, number>>(() => {
+  const map: Record<string, number> = {};
+  for (const entry of result.value.actionResults) {
+    const damage = entry.attack?.damage as
+      | { totalDamage?: number; avgDamage?: number; critDamage?: number; healAmount?: number; shieldAmount?: number }
+      | undefined;
+    map[entry.attack?.id as string] =
+      damage?.avgDamage ?? damage?.totalDamage ?? damage?.healAmount ?? damage?.shieldAmount ?? 0;
+  }
+  return map;
+});
+
+const maxActionDamage = computed(() => Math.max(1, ...Object.values(actionDamageById.value)));
+
+const damageStripBars = computed(() =>
+  [...(team.value?.actions ?? [])]
+    .sort((a, b) => Number(a.order) - Number(b.order))
+    .filter((action) => actionDamageById.value[action.id] !== undefined)
+    .map((action) => {
+      const value = actionDamageById.value[action.id] ?? 0;
+      return { id: action.id, value, heightPct: Math.max(4, Math.round((value / maxActionDamage.value) * 100)) };
+    }),
+);
+
+const rowEls = new Map<string, HTMLElement>();
+function setRowEl(id: string, el: unknown) {
+  if (el instanceof HTMLElement) {
+    rowEls.set(id, el);
+  } else {
+    rowEls.delete(id);
+  }
+}
+function scrollToAction(id: string) {
+  const el = rowEls.get(id);
+  if (!el) return;
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  el.classList.add("rotation__action--flash");
+  window.setTimeout(() => el.classList.remove("rotation__action--flash"), 900);
+}
+
+// Quick-add is scoped to one teammate at a time (mirrors "Copy previous
+// action settings" being per-character) rather than every slot's actions
+// merged into one ambiguous list — defaults to whichever slot was last
+// edited, same as addAction()'s own default.
+const quickAddSlot = ref<number>(0);
+watch(
+  () => lastUsedSlot.value,
+  (slot) => {
+    if (slot !== null) quickAddSlot.value = slot;
+  },
+);
+const quickAddActionList = useCharacterActionList(
+  computed(() => (chosenChars.value[quickAddSlot.value] as Record<string, unknown>) ?? {}),
+);
+
+function handleQuickAddActions(entries: Array<{ key: string; type: string; count: number }>) {
+  if (!team.value || !entries.length) return;
+  const slot = quickAddSlot.value as 0 | 1 | 2;
+  const newActions: TeamRotationAction[] = entries.map((entry) => ({
+    id: randomString(),
+    slot,
+    order: 0,
+    type: entry.type,
+    key: entry.key,
+    count: entry.count,
+  }));
+  teamRotationsStore.setTeamActions(
+    props.teamId,
+    renumberActionsByArrayOrder([...team.value.actions, ...newActions]),
+  );
+  lastUsedSlot.value = slot;
+}
+
 // Per-slot calculation contexts, rebuilt fresh (no caching) whenever the
 // team's characters or enemy config change.
 const slotContexts = ref<Record<number, CharacterCalculationContext | null>>({});
@@ -953,3 +1126,29 @@ watch(
   { deep: true, immediate: true },
 );
 </script>
+
+<style scoped lang="scss">
+.rotation__damage-strip__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.375rem;
+  height: 3.5rem;
+}
+.rotation__damage-strip__bar {
+  flex: 1;
+  min-width: 0.5rem;
+  max-width: 2.5rem;
+  border-radius: 0.25rem 0.25rem 0.125rem 0.125rem;
+  background: oklch(var(--p) / 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.rotation__damage-strip__bar:hover {
+  background: oklch(var(--p) / 0.8);
+}
+.rotation__action--flash {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: -2px;
+}
+</style>

@@ -161,6 +161,7 @@
         <CalculatorRotations
           :key="characterBuildKey"
           :character="character"
+          :all-damages="allDamages.value"
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
       <div class="screen--custom-buffs" v-show="curScreen === 'custom-buffs'">

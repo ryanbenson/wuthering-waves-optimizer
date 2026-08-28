@@ -43,6 +43,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0012](./0012-echo-substat-ratings.md) | Echo & character substat ratings | accepted | echoes, characters, stores |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, composables, inventory |
+| [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, composables, stores |
 
 ## When to write a new ADR
 
