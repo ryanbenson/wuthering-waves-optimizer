@@ -34,10 +34,7 @@ export function useEchoInventory() {
   }
 
   function setEchoLocked(echoId: string, locked: boolean) {
-    inventoryStore.patchEcho(echoId, {
-      locked,
-      ...(locked ? { trash: false } : {}),
-    });
+    inventoryStore.patchEcho(echoId, { locked });
   }
 
   function setEchoTrash(echoId: string, trash: boolean) {

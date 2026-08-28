@@ -47,10 +47,8 @@ const props = defineProps<{
 const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 
-// An echo can be both locked and trash at once (trashing doesn't require
-// being unlocked first — only locking clears trash, see
-// useEchoInventory.ts#setEchoLocked) — show both icons rather than picking
-// one, so a locked-and-trashed echo doesn't silently hide its trash mark.
+// Lock and trash are independent flags — an echo can be both locked and
+// trash at once, so show both icons rather than picking one.
 const locked = computed(() => {
   void echoes.value;
   if (!props.echoId) return false;
