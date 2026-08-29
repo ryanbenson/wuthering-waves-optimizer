@@ -16,16 +16,24 @@
       :weapon-type="weaponType"
       @change-screen="$emit('change-screen', $event)" />
 
+    <!-- Mode is a core toggle — it changes which self-buffs and Resonance
+         Chain buffs are active, so it sits above Forte/Buffs/Resonance
+         Chain rather than tucked inside one of those panels. -->
+    <div
+      v-if="characterStances.length > 1 && !isLoading"
+      class="workspace-mode bg-base-200 rounded-xl p-3">
+      <CalculatorCharacterStance
+        :character="character"
+        :stances="characterStances"
+        @updated-character-stance="$emit('updated-character-stance', $event)" />
+    </div>
+
     <div class="grid gap-4 lg:grid-cols-[20rem_1fr]">
       <div class="flex flex-col gap-4">
         <WorkspaceForteRail
           :character="character"
+          :attack-info="attackInfo"
           @character-talent-updated="$emit('character-talent-updated', $event)" />
-        <CalculatorCharacterStance
-          v-if="characterStances.length > 1 && !isLoading"
-          :character="character"
-          :stances="characterStances"
-          @updated-character-stance="$emit('updated-character-stance', $event)" />
       </div>
       <div class="flex flex-col gap-4">
         <template v-if="buffs.length && !isLoading">
@@ -90,6 +98,11 @@ interface ResonanceChainBuffRow {
   };
 }
 
+interface AttackInfo {
+  icon?: string;
+  description?: string;
+}
+
 interface Props {
   character: string;
   characterName?: string;
@@ -100,6 +113,13 @@ interface Props {
   resonanceChainBuffs?: ResonanceChainBuffRow[];
   characterStances?: string[];
   isLoading?: boolean;
+  attackInfo?: {
+    basic?: AttackInfo;
+    skill?: AttackInfo;
+    forte?: AttackInfo;
+    liberation?: AttackInfo;
+    intro?: AttackInfo;
+  };
 }
 
 withDefaults(defineProps<Props>(), {
@@ -107,6 +127,7 @@ withDefaults(defineProps<Props>(), {
   resonanceChainBuffs: () => [],
   characterStances: () => [],
   isLoading: false,
+  attackInfo: () => ({}),
 });
 
 const emit = defineEmits<{
@@ -137,3 +158,26 @@ function handleChosenCharacter(nextCharacter: string) {
   emit("updated-chosen-character", nextCharacter);
 }
 </script>
+
+<style scoped lang="scss">
+// CalculatorCharacterStance.vue is reused unmodified (so the legacy screen
+// keeps its exact look when the labs flag is off) — this overrides just the
+// "Mode" label's typography for this workspace's context, where it's a
+// prominent top-level toggle rather than a small aside above the Forte
+// sliders. Deep-scoped so it doesn't leak into the legacy layout.
+.workspace-mode {
+  :deep(.character__stance) {
+    margin: 0;
+  }
+  :deep(.mode__label) {
+    position: static;
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+  }
+}
+</style>

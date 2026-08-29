@@ -1,5 +1,5 @@
 <template>
-  <div v-if="buffs.length" class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
+  <div v-if="groups.length" class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
     <div class="flex items-center justify-between">
       <h3 class="text-sm font-semibold">Resonance Chain</h3>
       <div class="flex gap-2">
@@ -12,10 +12,11 @@
       </div>
     </div>
 
-    <div class="flex items-start justify-between gap-1 px-1 pt-2">
+    <div class="workspace-rc-track flex items-start justify-between px-1 pt-2">
+      <div class="workspace-rc-track__line"></div>
       <button
         type="button"
-        class="workspace-rc-node"
+        class="workspace-rc-node workspace-rc-node--base"
         :class="{ 'workspace-rc-node--on': currentLevel >= 0 }"
         title="Base — Sequence 0"
         data-test-workspace-rc-node="0"
@@ -23,73 +24,80 @@
         <span class="workspace-rc-node__dot"></span>
       </button>
       <button
-        v-for="(buff, i) in buffs"
-        :key="buff.key"
+        v-for="group in groups"
+        :key="group.level"
         type="button"
         class="workspace-rc-node"
-        :class="{ 'workspace-rc-node--on': currentLevel > i }"
-        :title="`Sequence ${i + 1} — ${buff.name}`"
-        :data-test-workspace-rc-node="i + 1"
-        @click="setLevel(i + 1)">
-        S{{ i + 1 }}
+        :class="{ 'workspace-rc-node--on': currentLevel >= group.level }"
+        :title="`Sequence ${group.level}`"
+        :data-test-workspace-rc-node="group.level"
+        @click="setLevel(group.level)">
+        <img v-if="group.icon" :src="group.icon" alt="" class="workspace-rc-node__icon" />
+        <span v-else class="font-mono">S{{ group.level }}</span>
       </button>
     </div>
 
     <div class="flex flex-col gap-2 mt-1">
       <div
-        v-for="(buff, i) in buffs"
-        :key="`row-${buff.key}`"
-        class="rounded-lg border border-base-300 bg-base-100 p-3"
-        :class="{ 'opacity-45': !isEnabled(buff.key) }">
-        <div class="flex items-start gap-2.5">
-          <div
-            class="size-6 rounded flex items-center justify-center font-mono text-[.65rem] font-bold shrink-0"
-            :class="isEnabled(buff.key) ? 'bg-primary/15 text-primary' : 'bg-base-200 opacity-60'">
-            S{{ i + 1 }}
-          </div>
-          <div class="min-w-0 flex-1">
-            <h4 class="text-sm font-semibold leading-tight">{{ buff.name }}</h4>
-            <div class="text-xs opacity-70 mt-1 leading-relaxed" v-html="buff.details"></div>
-          </div>
-          <input
-            type="checkbox"
-            class="toggle toggle-primary toggle-sm shrink-0"
-            :checked="isEnabled(buff.key)"
-            :disabled="buff.alwaysEnabled"
-            @change="setEnabled(buff.key, ($event.target as HTMLInputElement).checked)" />
-        </div>
+        v-for="group in groups"
+        :key="`group-${group.level}`"
+        class="flex flex-col gap-2 rounded-lg border border-base-300 bg-base-100 p-3"
+        :class="{ 'opacity-45': !isGroupEnabled(group) }">
         <div
-          v-if="buff.hasStacks && Number(buff.maxStacks) > 0 && !buff.alwaysEnabled"
-          class="flex items-center gap-2 mt-2.5 pt-2.5 border-t border-base-300">
-          <span class="text-[.65rem] font-bold uppercase tracking-wide opacity-60">Stacks</span>
-          <input
-            type="range"
-            :min="buff.minStacks ?? 0"
-            :max="buff.maxStacks"
-            class="range range-xs range-primary flex-1"
-            :value="stacksFor(buff.key)"
-            @input="setStacks(buff.key, ($event.target as HTMLInputElement).value, buff.maxStacks)" />
-          <span class="font-mono text-xs text-primary shrink-0">
-            {{ stacksFor(buff.key) }} / {{ buff.maxStacks }}
-          </span>
-        </div>
-        <div v-if="buff.buffAttackTargetSelection" class="mt-2.5 pt-2.5 border-t border-base-300">
-          <label class="text-xs opacity-70 block mb-1">
-            {{ buff.buffAttackTargetSelection.label ?? "Buff applies to" }}
-          </label>
-          <select
-            class="select select-xs select-bordered w-full max-w-xs"
-            :value="attackTargetFor(buff)"
-            @change="
-              setAttackTarget(buff, ($event.target as HTMLSelectElement).value)
-            ">
-            <option
-              v-for="opt in buff.buffAttackTargetSelection.options"
-              :key="opt.value"
-              :value="opt.value">
-              {{ opt.label }}
-            </option>
-          </select>
+          v-for="buff in group.buffs"
+          :key="buff.key"
+          :class="{ 'pt-2 border-t border-base-300': group.buffs.indexOf(buff) > 0 }">
+          <div class="flex items-start gap-2.5">
+            <div
+              class="size-6 rounded flex items-center justify-center font-mono text-[.65rem] font-bold shrink-0 overflow-hidden"
+              :class="isEnabled(buff.key) ? 'bg-primary/15 text-primary' : 'bg-base-200 opacity-60'">
+              <img v-if="buff.icon" :src="buff.icon" alt="" class="w-full h-full object-cover" />
+              <template v-else>S{{ group.level }}</template>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm font-semibold leading-tight">{{ buff.name }}</h4>
+              <div class="text-xs opacity-70 mt-1 leading-relaxed" v-html="buff.details"></div>
+            </div>
+            <input
+              type="checkbox"
+              class="toggle toggle-primary toggle-sm shrink-0"
+              :checked="isEnabled(buff.key)"
+              :disabled="buff.alwaysEnabled"
+              @change="setEnabled(buff.key, ($event.target as HTMLInputElement).checked)" />
+          </div>
+          <div
+            v-if="buff.hasStacks && Number(buff.maxStacks) > 0 && !buff.alwaysEnabled"
+            class="flex items-center gap-2 mt-2.5 pt-2.5 border-t border-base-300">
+            <span class="text-[.65rem] font-bold uppercase tracking-wide opacity-60">Stacks</span>
+            <input
+              type="range"
+              :min="buff.minStacks ?? 0"
+              :max="buff.maxStacks"
+              class="range range-xs range-primary flex-1"
+              :value="stacksFor(buff.key)"
+              @input="setStacks(buff.key, ($event.target as HTMLInputElement).value, buff.maxStacks)" />
+            <span class="font-mono text-xs text-primary shrink-0">
+              {{ stacksFor(buff.key) }} / {{ buff.maxStacks }}
+            </span>
+          </div>
+          <div v-if="buff.buffAttackTargetSelection" class="mt-2.5 pt-2.5 border-t border-base-300">
+            <label class="text-xs opacity-70 block mb-1">
+              {{ buff.buffAttackTargetSelection.label ?? "Buff applies to" }}
+            </label>
+            <select
+              class="select select-xs select-bordered w-full max-w-xs"
+              :value="attackTargetFor(buff)"
+              @change="
+                setAttackTarget(buff, ($event.target as HTMLSelectElement).value)
+              ">
+              <option
+                v-for="opt in buff.buffAttackTargetSelection.options"
+                :key="opt.value"
+                :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -149,17 +157,58 @@ function stacksFor(key: string): number {
   return chains.value[key]?.stacks ?? 0;
 }
 
-// Highest N such that Sequence nodes 1..N are all enabled, counting from the
-// start — the sequence track is a convenience layer over the existing
-// per-node toggles (no new "level" field), so this stays correct even if a
-// user's saved state has gaps from before this view existed.
+// Each buff's `name` reliably reads "Sequence Node {N}: ..." across the
+// entire roster — more reliable than the `key`, which sometimes packs extra
+// digits into the same slot (e.g. Danjin's "SequenceNode51"/"SequenceNode52"
+// are both Sequence 5) or drops the number entirely (Mortefi's
+// "SequenceNodeFuneraryQuartet" is Sequence 5 with no digit in the key at
+// all). A character can also have more than one buff at the same sequence
+// level — some are stance variants already filtered upstream by
+// filterBuffsForStance, others (like Danjin's two Sequence 5 effects) are
+// just two effects that both come with the same node — so this groups by
+// parsed level rather than assuming one buff per level.
+interface Group {
+  level: number;
+  buffs: ResonanceChainBuffRow[];
+  icon?: string;
+}
+
+const groups = computed((): Group[] => {
+  const byLevel = new Map<number, ResonanceChainBuffRow[]>();
+  let lastLevel = 0;
+  for (const buff of props.buffs) {
+    const match = buff.name?.match(/Sequence Node (\d+):/);
+    const level = match ? Number(match[1]) : lastLevel + 1;
+    lastLevel = level;
+    if (!byLevel.has(level)) {
+      byLevel.set(level, []);
+    }
+    byLevel.get(level)!.push(buff);
+  }
+  return Array.from(byLevel.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([level, buffs]) => ({
+      level,
+      buffs,
+      icon: buffs.find((b) => b.icon)?.icon,
+    }));
+});
+
+function isGroupEnabled(group: Group): boolean {
+  return group.buffs.some((b) => isEnabled(b.key) || b.alwaysEnabled);
+}
+
+// Highest level such that every group from 1 up to it is enabled, counting
+// from the start — the track is a convenience layer over the existing
+// per-buff toggles (no separate "level" field), so this stays correct even
+// with gaps from before this view existed.
 const currentLevel = computed(() => {
   let level = 0;
-  for (const buff of props.buffs) {
-    if (!isEnabled(buff.key)) {
+  for (const group of groups.value) {
+    if (!isGroupEnabled(group)) {
       break;
     }
-    level += 1;
+    level = group.level;
   }
   return level;
 });
@@ -205,19 +254,22 @@ function setAttackTarget(buff: ResonanceChainBuffRow, value: string) {
 
 function setLevel(level: number) {
   const updates: Record<string, { isEnabled: boolean }> = {};
-  props.buffs.forEach((buff, i) => {
-    const shouldEnable = i < level;
-    if (buff.alwaysEnabled && !shouldEnable) {
-      return;
+  for (const group of groups.value) {
+    const shouldEnable = group.level <= level;
+    for (const buff of group.buffs) {
+      if (buff.alwaysEnabled && !shouldEnable) {
+        continue;
+      }
+      updates[buff.key] = { isEnabled: shouldEnable };
     }
-    updates[buff.key] = { isEnabled: shouldEnable };
-  });
+  }
   characterStore.setCharacterData(props.character, { resonanceChains: updates });
   emit("updated-character-resonance-chains");
 }
 
 function enableAll() {
-  setLevel(props.buffs.length);
+  const maxLevel = groups.value[groups.value.length - 1]?.level ?? 0;
+  setLevel(maxLevel);
 }
 
 function maxAll() {
@@ -235,22 +287,48 @@ function maxAll() {
 </script>
 
 <style scoped lang="scss">
+.workspace-rc-track {
+  position: relative;
+}
+.workspace-rc-track__line {
+  // Vertically centered on the star nodes: the track's own top padding
+  // (0.5rem, from `pt-2`) plus half the node height (2.1rem / 2).
+  position: absolute;
+  left: 1.05rem;
+  right: 1.05rem;
+  top: calc(0.5rem + 1.05rem);
+  height: 0;
+  border-top: 2px dotted oklch(var(--bc) / 0.25);
+  z-index: 0;
+}
 .workspace-rc-node {
+  position: relative;
+  z-index: 1;
   width: 2.1rem;
   height: 2.1rem;
-  border-radius: 0.5rem;
-  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
   background: oklch(var(--b3, var(--b1)));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   opacity: 0.55;
   border: none;
   cursor: pointer;
   flex: none;
+  overflow: hidden;
 
   &--on {
     background: oklch(var(--p));
@@ -258,11 +336,24 @@ function maxAll() {
     opacity: 1;
   }
 
+  &--base {
+    clip-path: circle(50%);
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-top: 0.35rem;
+  }
+
   &__dot {
     width: 0.4rem;
     height: 0.4rem;
     border-radius: 9999px;
     background: currentColor;
+  }
+
+  &__icon {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
   }
 }
 </style>

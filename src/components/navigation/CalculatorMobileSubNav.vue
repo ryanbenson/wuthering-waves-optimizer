@@ -165,23 +165,22 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      curScreen: "character",
-    };
+  computed: {
+    // Mirrors the `screen` prop so the active highlight stays correct when
+    // the screen changes from outside this nav (e.g. a "jump to Weapons"
+    // link elsewhere on the page), not just from clicks within this nav.
+    curScreen() {
+      return this.screen;
+    },
   },
   methods: {
     changeScreen(screen) {
       this.$emit("change-screen", screen);
-      this.curScreen = screen;
       const mainMenuEl = document.querySelector(".main-menu-mobile");
       if (mainMenuEl) {
         mainMenuEl.removeAttribute("open");
       }
     },
-  },
-  mounted() {
-    this.curScreen = this.screen;
   },
 };
 </script>

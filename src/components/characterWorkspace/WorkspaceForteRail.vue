@@ -12,7 +12,13 @@
       :key="track.key"
       class="flex flex-col gap-1.5">
       <div class="flex items-center gap-2 text-sm font-medium">
-        <span v-html="track.icon" class="size-4 opacity-70 shrink-0"></span>
+        <span
+          v-tooltip="track.description ? { content: track.description, html: true } : undefined"
+          class="size-5 rounded overflow-hidden shrink-0 flex items-center justify-center"
+          :class="{ 'cursor-help': track.description }">
+          <img v-if="track.icon" :src="track.icon" alt="" class="w-full h-full object-contain" />
+          <span v-else v-html="FALLBACK_ICON"></span>
+        </span>
         <span class="flex-1">{{ track.label }}</span>
         <span class="font-mono text-xs text-primary">{{ track.value }}</span>
       </div>
@@ -34,11 +40,23 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 
-interface Props {
-  character: string;
+interface AttackInfo {
+  icon?: string;
+  description?: string;
 }
 
-const props = defineProps<Props>();
+interface Props {
+  character: string;
+  attackInfo?: {
+    basic?: AttackInfo;
+    skill?: AttackInfo;
+    forte?: AttackInfo;
+    liberation?: AttackInfo;
+    intro?: AttackInfo;
+  };
+}
+
+const props = withDefaults(defineProps<Props>(), { attackInfo: () => ({}) });
 const emit = defineEmits<{
   "character-talent-updated": [payload: { type: string; value: string }];
 }>();
@@ -55,20 +73,12 @@ const talents = computed(
   () => (currentCharacter.value as { talents?: Record<string, number> }).talents ?? {},
 );
 
-const ICONS: Record<string, string> = {
-  basic:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.5 3.5l6 6-8.2 8.2-6-6 8.2-8.2z" stroke-linejoin="round"/><path d="M9 13l-5.5 5.5M4 21l1.5-3.5L7.5 19 4 21z" stroke-linejoin="round"/></svg>',
-  skill:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v6M12 15v6M3 12h6M15 12h6M5.6 5.6l4.2 4.2M14.2 14.2l4.2 4.2M18.4 5.6l-4.2 4.2M9.8 14.2l-4.2 4.2"/></svg>',
-  forte:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 018 8" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>',
-  liberation:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l5 10-5 10-5-10 5-10z" stroke-linejoin="round"/></svg>',
-  intro:
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h13M11 6l6 6-6 6"/><path d="M19 5v14"/></svg>',
-};
+// Shown only if a character's attack data is missing an icon — shouldn't
+// normally happen, just a defensive fallback so the row never looks broken.
+const FALLBACK_ICON =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="opacity-50"><circle cx="12" cy="12" r="8"/></svg>';
 
-const TRACK_DEFS: { key: string; label: string }[] = [
+const TRACK_DEFS: { key: "basic" | "skill" | "forte" | "liberation" | "intro"; label: string }[] = [
   { key: "basic", label: "Basic Attack" },
   { key: "skill", label: "Resonance Skill" },
   { key: "forte", label: "Forte Circuit" },
@@ -79,7 +89,8 @@ const TRACK_DEFS: { key: string; label: string }[] = [
 const tracks = computed(() =>
   TRACK_DEFS.map((def) => ({
     ...def,
-    icon: ICONS[def.key],
+    icon: props.attackInfo[def.key]?.icon,
+    description: props.attackInfo[def.key]?.description,
     value: talents.value[def.key] ?? 10,
   })),
 );

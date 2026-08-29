@@ -1,5 +1,5 @@
 <template>
-  <details ref="detailsRef" class="dropdown dropdown-end">
+  <details class="dropdown dropdown-end">
     <summary
       class="btn btn-xs btn-ghost gap-1.5 rounded-full list-none"
       data-test-workspace-progress-trigger>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 
@@ -57,8 +57,6 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 9.5;
-
-const detailsRef = ref<HTMLDetailsElement | null>(null);
 
 const currentCharacter = computed(
   () => (characters.value[props.character] ?? {}) as Record<string, unknown>,

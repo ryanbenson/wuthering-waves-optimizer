@@ -92,6 +92,13 @@
           :resonance-chain-buffs="filteredResonanceChains"
           :character-stances="characterStances"
           :is-loading="isLoading"
+          :attack-info="{
+            basic: chosenChar?.value?.basicAttacks,
+            skill: chosenChar?.value?.skillAttacks,
+            forte: chosenChar?.value?.forteCircuitAttacks,
+            liberation: chosenChar?.value?.liberationAttacks,
+            intro: chosenChar?.value?.introAttacks,
+          }"
           @updated-chosen-character="handleUpdatedCharacter"
           @character-level-updated="handleCharacterLevelUpdated"
           @character-talent-updated="handleCharacterTalentUpdated"

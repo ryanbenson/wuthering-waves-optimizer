@@ -13,9 +13,8 @@
     </div>
 
     <div v-if="statBonusChips.length" class="pt-1 pb-3 border-b border-base-300">
-      <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2 flex items-center gap-2">
+      <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
         Stat Bonuses
-        <span class="badge badge-xs badge-ghost normal-case font-normal">toggle as you unlock them</span>
       </div>
       <div class="flex flex-wrap gap-1.5">
         <button

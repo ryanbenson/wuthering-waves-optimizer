@@ -36,7 +36,12 @@
           data-test-workspace-score-chip
           @click="$emit('change-screen', 'echoes')">
           Build Score
-          <span v-if="scoreRollup" class="text-primary font-mono">{{ scoreRollup.percent }}</span>
+          <template v-if="scoreRollup">
+            <span class="font-mono font-bold" :class="scoreAccent?.text">{{ scoreRollup.grade }}</span>
+            <span class="font-mono" :class="scoreAccent?.text">
+              {{ Math.round(scoreRollup.percent) }}%{{ scoreRollup.provisional ? "*" : "" }}
+            </span>
+          </template>
           <span v-else class="opacity-50 font-mono">—</span>
         </button>
 
@@ -59,6 +64,7 @@ import { computed, ref, watch, watchEffect } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamSubstatScoreRollup } from "../../composables/useTeamSubstatScoreRollup";
+import { getRatingAccentClasses } from "../../composables/useEchoRating";
 import { getWeaponByName } from "../../weapons/weapons";
 import WorkspaceProgress from "./WorkspaceProgress.vue";
 
@@ -139,4 +145,7 @@ watchEffect(async () => {
 });
 
 const { rollup: scoreRollup } = useTeamSubstatScoreRollup(() => props.character);
+const scoreAccent = computed(() =>
+  scoreRollup.value ? getRatingAccentClasses(scoreRollup.value.color) : null,
+);
 </script>
