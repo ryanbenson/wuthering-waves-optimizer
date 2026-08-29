@@ -42,7 +42,9 @@
         <div v-if="false" class="alert alert-success mb-6">
           Version 3.6 content is now available
         </div>
-        <div>
+
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
+        <div v-if="!isLiveResultBarEnabled">
           <CalculatorCharacterSelect
             :key="character"
             :character="character"
@@ -76,6 +78,34 @@
               "></CalculatorCharacterBuffs>
           </template>
         </div>
+
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned workspace. -->
+        <CalculatorCharacterWorkspace
+          v-else
+          :key="characterBuildKey"
+          :character="character"
+          :character-name="chosenChar?.value?.basic?.name"
+          :rarity="chosenChar?.value?.basic?.rarity"
+          :element="chosenChar?.value?.basic?.element"
+          :weapon-type="weaponType"
+          :buffs="filteredCharacterBuffs"
+          :resonance-chain-buffs="filteredResonanceChains"
+          :character-stances="characterStances"
+          :is-loading="isLoading"
+          :attack-info="{
+            basic: chosenChar?.value?.basicAttacks,
+            skill: chosenChar?.value?.skillAttacks,
+            forte: chosenChar?.value?.forteCircuitAttacks,
+            liberation: chosenChar?.value?.liberationAttacks,
+            intro: chosenChar?.value?.introAttacks,
+          }"
+          @updated-chosen-character="handleUpdatedCharacter"
+          @character-level-updated="handleCharacterLevelUpdated"
+          @character-talent-updated="handleCharacterTalentUpdated"
+          @updated-character-stance="handleUpdatedCharacterStance"
+          @updated-character-buffs="handleUpdatedCharacterBuffs"
+          @updated-character-resonance-chains="handleUpdatedCharacterResonanceChains"
+          @change-screen="changeScreen" />
       </div>
 
       <div class="screen--weapon" v-show="curScreen === 'weapon'">
@@ -410,6 +440,7 @@ import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
+import CalculatorCharacterWorkspace from "./characterWorkspace/CalculatorCharacterWorkspace.vue";
 import {
   filterBuffsForStance,
   resolveActiveStance,
@@ -491,6 +522,7 @@ export default defineComponent({
   components: {
     CalculatorCharacterSelect,
     CalculatorCharacterStance,
+    CalculatorCharacterWorkspace,
     CalculatorDamages,
     CalculatorEchoes,
     CalculatorEnemy,
