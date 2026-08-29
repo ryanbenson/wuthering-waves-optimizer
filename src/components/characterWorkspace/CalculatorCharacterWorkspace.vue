@@ -6,27 +6,17 @@
       :rarity="rarity"
       :element="element"
       :weapon-type="weaponType"
+      :character-stances="!isLoading ? characterStances : []"
       @open-character-browser="openCharacterBrowser"
       @create-build="openManageBuilds"
       @manage-builds="openManageBuilds"
-      @character-level-updated="$emit('character-level-updated', $event)" />
+      @character-level-updated="$emit('character-level-updated', $event)"
+      @updated-character-stance="$emit('updated-character-stance', $event)" />
 
     <WorkspaceBuildMeta
       :character="character"
       :weapon-type="weaponType"
       @change-screen="$emit('change-screen', $event)" />
-
-    <!-- Mode is a core toggle — it changes which self-buffs and Resonance
-         Chain buffs are active, so it sits above Forte/Buffs/Resonance
-         Chain rather than tucked inside one of those panels. -->
-    <div
-      v-if="characterStances.length > 1 && !isLoading"
-      class="workspace-mode bg-base-200 rounded-xl p-3">
-      <CalculatorCharacterStance
-        :character="character"
-        :stances="characterStances"
-        @updated-character-stance="$emit('updated-character-stance', $event)" />
-    </div>
 
     <div class="grid gap-4 lg:grid-cols-[20rem_1fr]">
       <div class="flex flex-col gap-4">
@@ -61,7 +51,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
-import CalculatorCharacterStance from "../CalculatorCharacterStance.vue";
 import CalculatorManageBuilds from "../CalculatorManageBuilds.vue";
 import { useCharacterStore } from "../../stores/character";
 import WorkspaceIdentityBar from "./WorkspaceIdentityBar.vue";
@@ -158,26 +147,3 @@ function handleChosenCharacter(nextCharacter: string) {
   emit("updated-chosen-character", nextCharacter);
 }
 </script>
-
-<style scoped lang="scss">
-// CalculatorCharacterStance.vue is reused unmodified (so the legacy screen
-// keeps its exact look when the labs flag is off) — this overrides just the
-// "Mode" label's typography for this workspace's context, where it's a
-// prominent top-level toggle rather than a small aside above the Forte
-// sliders. Deep-scoped so it doesn't leak into the legacy layout.
-.workspace-mode {
-  :deep(.character__stance) {
-    margin: 0;
-  }
-  :deep(.mode__label) {
-    position: static;
-    display: block;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    opacity: 0.5;
-    margin-bottom: 0.5rem;
-  }
-}
-</style>

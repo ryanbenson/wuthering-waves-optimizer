@@ -12,14 +12,18 @@
       :key="track.key"
       class="flex flex-col gap-1.5">
       <div class="flex items-center gap-2 text-sm font-medium">
-        <span
-          v-tooltip="track.description ? { content: track.description, html: true } : undefined"
+        <button
+          type="button"
           class="size-5 rounded overflow-hidden shrink-0 flex items-center justify-center"
-          :class="{ 'cursor-help': track.description }">
+          :title="track.description ? `View ${track.label} details` : undefined"
+          :data-test-workspace-forte-details="track.key"
+          @click="openDetails(track.key)">
           <img v-if="track.icon" :src="track.icon" alt="" class="w-full h-full object-contain" />
           <span v-else v-html="FALLBACK_ICON"></span>
-        </span>
-        <span class="flex-1">{{ track.label }}</span>
+        </button>
+        <button type="button" class="flex-1 text-left hover:underline" @click="openDetails(track.key)">
+          {{ track.label }}
+        </button>
         <span class="font-mono text-xs text-primary">{{ track.value }}</span>
       </div>
       <input
@@ -32,13 +36,16 @@
         :data-test-workspace-forte-slider="track.key"
         @input="update(track.key, ($event.target as HTMLInputElement).value)" />
     </div>
+
+    <WorkspaceForteDetailsModal ref="detailsModalRef" :attack-info="attackInfo" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
+import WorkspaceForteDetailsModal from "./WorkspaceForteDetailsModal.vue";
 
 interface AttackInfo {
   icon?: string;
@@ -94,6 +101,12 @@ const tracks = computed(() =>
     value: talents.value[def.key] ?? 10,
   })),
 );
+
+const detailsModalRef = ref<{ triggerOpenModal: (tab?: string) => void } | null>(null);
+
+function openDetails(key: string) {
+  detailsModalRef.value?.triggerOpenModal(key);
+}
 
 function update(type: string, rawValue: string) {
   const value = Number(rawValue);

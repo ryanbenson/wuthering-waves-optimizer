@@ -56,6 +56,13 @@
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-1">Status</div>
         <CharacterBuildStatus :status="buildStatus" :character-key="character" interactive />
       </div>
+      <div v-if="characterStances.length > 1" class="workspace-identity__mode">
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-1">Mode</div>
+        <CalculatorCharacterStance
+          :character="character"
+          :stances="characterStances"
+          @updated-character-stance="$emit('updated-character-stance', $event)" />
+      </div>
     </div>
 
     <div class="ml-auto">
@@ -73,6 +80,7 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { getCharacterBuildStatus } from "../../characters/characterBuildStatus";
 import CharacterBuildStatus from "../CharacterBuildStatus.vue";
+import CalculatorCharacterStance from "../CalculatorCharacterStance.vue";
 import WorkspaceLevelStepper from "./WorkspaceLevelStepper.vue";
 import WorkspaceBuildSwitcher from "./WorkspaceBuildSwitcher.vue";
 
@@ -84,14 +92,16 @@ interface Props {
   rarity?: number;
   element?: string;
   weaponType?: string;
+  characterStances?: string[];
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { characterStances: () => [] });
 defineEmits<{
   "open-character-browser": [];
   "create-build": [];
   "manage-builds": [];
   "character-level-updated": [level: string];
+  "updated-character-stance": [stance: string];
 }>();
 
 const characterStore = useCharacterStore();
@@ -131,5 +141,35 @@ const buildStatus = computed(() => getCharacterBuildStatus(props.character, char
   border-style: solid;
   cursor: pointer;
   padding: 0;
+}
+
+// CalculatorCharacterStance.vue is reused unmodified so the legacy screen's
+// full-width toggle keeps its exact look. Here it sits inline next to
+// Level/Status as a compact control, not a full-width block, so its size
+// and label are overridden just for this instance.
+.workspace-identity__mode {
+  :deep(.character__stance) {
+    margin: 0;
+  }
+  :deep(.mode__label) {
+    display: none;
+  }
+  :deep(.character__stance-toggle) {
+    width: auto;
+  }
+  :deep(.character__stance-btn) {
+    flex: none;
+    margin-right: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    height: 2rem;
+    min-height: 2rem;
+  }
+  :deep(.character__stance-icon) {
+    width: 1rem;
+    height: 1rem;
+  }
+  :deep(.character__stance-label) {
+    font-size: 0.75rem;
+  }
 }
 </style>

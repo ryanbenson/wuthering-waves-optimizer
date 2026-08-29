@@ -15,20 +15,11 @@
     <div class="workspace-rc-track flex items-start justify-between px-1 pt-2">
       <div class="workspace-rc-track__line"></div>
       <button
-        type="button"
-        class="workspace-rc-node workspace-rc-node--base"
-        :class="{ 'workspace-rc-node--on': currentLevel >= 0 }"
-        title="Base — Sequence 0"
-        data-test-workspace-rc-node="0"
-        @click="setLevel(0)">
-        <span class="workspace-rc-node__dot"></span>
-      </button>
-      <button
         v-for="group in groups"
         :key="group.level"
         type="button"
         class="workspace-rc-node"
-        :class="{ 'workspace-rc-node--on': currentLevel >= group.level }"
+        :class="currentLevel >= group.level ? 'workspace-rc-node--on' : 'workspace-rc-node--off'"
         :title="`Sequence ${group.level}`"
         :data-test-workspace-rc-node="group.level"
         @click="setLevel(group.level)">
@@ -291,8 +282,8 @@ function maxAll() {
   position: relative;
 }
 .workspace-rc-track__line {
-  // Vertically centered on the star nodes: the track's own top padding
-  // (0.5rem, from `pt-2`) plus half the node height (2.1rem / 2).
+  // Vertically centered on the nodes: the track's own top padding (0.5rem,
+  // from `pt-2`) plus half the node height (2.1rem / 2).
   position: absolute;
   left: 1.05rem;
   right: 1.05rem;
@@ -301,59 +292,41 @@ function maxAll() {
   border-top: 2px dotted oklch(var(--bc) / 0.25);
   z-index: 0;
 }
+// Matches the icon treatment on the Build Card's own Resonance Chain row
+// (.build-card__resonance-node in CalculatorBuildCard.vue) — same circular
+// frame, same active/inactive language, so the two surfaces read as one
+// visual system.
 .workspace-rc-node {
   position: relative;
   z-index: 1;
   width: 2.1rem;
   height: 2.1rem;
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  background: oklch(var(--b3, var(--b1)));
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.62rem;
   font-weight: 700;
-  opacity: 0.55;
-  border: none;
+  border: 1px solid oklch(var(--bc) / 0.4);
+  background: oklch(var(--b1));
   cursor: pointer;
   flex: none;
   overflow: hidden;
 
   &--on {
-    background: oklch(var(--p));
-    color: oklch(var(--pc));
-    opacity: 1;
+    border-color: oklch(var(--p) / 0.9);
+    background: oklch(var(--p) / 0.35);
+    box-shadow: 0 0 8px 1px oklch(var(--p) / 0.4);
   }
 
-  &--base {
-    clip-path: circle(50%);
-    width: 1.4rem;
-    height: 1.4rem;
-    margin-top: 0.35rem;
-  }
-
-  &__dot {
-    width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 9999px;
-    background: currentColor;
+  &--off {
+    opacity: 0.5;
   }
 
   &__icon {
-    width: 60%;
-    height: 60%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 </style>
