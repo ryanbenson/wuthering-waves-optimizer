@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="flex items-end gap-4 flex-wrap">
+    <div class="flex items-start gap-4 flex-wrap">
       <div>
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-1">Level</div>
         <WorkspaceLevelStepper
