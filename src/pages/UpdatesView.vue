@@ -2,6 +2,35 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 29, 2026</h3>
+    <ul>
+      <li>Update to lab feature: UI v3.0: New character system. Udates to how you configure your character and resonance chains. resonance chains got moved to the main character screen, you can quickly select your sequence number, and it auto-enables any sequence up to that one (you click s3, it enables s1 through s3), added build score reference, quick glance at the weapon you're using, simplified the forte config and more, and some small thigns like it shows you when you last modified a character, and if you're missing some basic stuff (weapon setup, team setup)</li>
+      <li>Updates Jingran s2 so it is split into two separate buffs.</li>
+    </ul>
+    <h3>August 28, 2026</h3>
+    <ul>
+      <li>Fixed up some echo status issues, added a new status (temp)</li>
+      <li>Updated preset management UI: has sorting, filtering, list and grid view, remove the old RV with build rating</li>
+      <li>Locking an echo now disabled editing an echo too</li>
+      <li>Adds confirmation before bulk deleting echoes with a quick summary of what will get removed</li>
+    </ul>
+    <h3>August 27, 2026</h3>
+    <ul>
+      <li>Update to lab feature: UI v3.0: released an entirely new rotation system. You can now import a rotatoin just typing/pasting the text of actions and it creates your rotation from that. you can quick type to find actions to make it also easier to add actions. you can quickly see what buffs are active if you are customizing buffs in detail. you get a neat chart highlighting where your bigger hits are. and you can see in the rotation itself the damage and hit damages without needing to find the rotation in the damages panel. also cleaned up the UI so it's easier to manage and edit a rotation</li>
+      <li>Added a "max" button for some team buffs so you can quickly max out the stacks</li>
+      <li>Adjusted some substat priorities for characters like some characters needing energy regen</li>
+      <li>Added the trash and lock icons to echoes when you are browsing for an echo</li>
+      <li>Undid the echo set filter change. it's a list again instead of a selection</li>
+      <li>App remembers if you open or close the filter panel, so when you come back it will be back to that state</li>
+    </ul>
+    <h3>August 26, 2026</h3>
+    <ul>
+      <li>Released new lab feature: UI v3.0: it is a re-imagining of the app's UX and UI. You can enable it under Settings > Labs. It's a work in progress, and this works side by side the current UI. I'll be releasing more parts over time. This one comes with the top bar, damage monitor, echoes and echo add/edit, and inventory (partially).</li>
+    </ul>
+    <h3>August 25, 2026</h3>
+    <ul>
+      <li>UX Update: some of the menus, filters, and action bars were getting a little crazy with how many options there were. so i started to organize and consolidate things to remove a lot of the clutter. so key actions are around, there are filter panels too.</li>
+    </ul>
     <h3>August 24, 2026</h3>
     <ul>
       <li>Adds an echo quality grade (E-SSS) and a per-character Substat Score, so you can see how well an echo's substats rolled overall and for a specific character.</li>

@@ -26,7 +26,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2ASolitaryLanternAcrossLandsShadeTrodden`,
     name: `Sequence Node 2: A Solitary Lantern, Across Lands Shade-Trodden`,
-    details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> are increased by 46%. While in the <span style="color:#ffd12f;" class="font-bold">Yinghuo</span> state, the DMG Multiplier increase effect via <span style="color:#ffd12f;" class="font-bold">Fire of Life</span> on <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> is increased by 46%.</span><br><br>Upon entering combat, Jingran gains the following effects, triggered once every 4s:<br>- Gains 300 point of <span style="color:#ffd12f;" class="font-bold">Qi</span>.<br>- Gains <span style="color:#ffd12f;" class="font-bold">Netherworld's Boon</span>.</span><br><br><span class="Title">Netherworld's Boon</span></span><br><br>Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> restores 25% of Max Resonance Energy and grants <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> 180% DMG Amplification for 4s.</div>`,
+    details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> are increased by 46%. While in the <span style="color:#ffd12f;" class="font-bold">Yinghuo</span> state, the DMG Multiplier increase effect via <span style="color:#ffd12f;" class="font-bold">Fire of Life</span> on <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> is increased by 46%.</span></div>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JingranM2_UI.webp`,
     hasStacks: false,
     modifiers: [
@@ -38,6 +38,18 @@ export const resonanceChains = [
         ],
         modifierValue: 0.46,
       },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `SequenceNode2ASolitaryLanternAcrossLandsShadeTroddenNether`,
+    name: `Sequence Node 2: A Solitary Lantern, Across Lands Shade-Trodden`,
+    details: `<div>Upon entering combat, Jingran gains the following effects, triggered once every 4s:<br>- Gains 300 point of <span style="color:#ffd12f;" class="font-bold">Qi</span>.<br>- Gains <span style="color:#ffd12f;" class="font-bold">Netherworld's Boon</span>.</span><br><br><span class="Title">Netherworld's Boon</span></span><br><br>Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> restores 25% of Max Resonance Energy and grants <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> 180% DMG Amplification for 4s.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JingranM2_UI.webp`,
+    hasStacks: false,
+    modifiers: [
       {
         // Netherworld's Boon: 180% DMG Amplification on the Heavy Attack that triggered it
         modifier: "DMGDeepen",
