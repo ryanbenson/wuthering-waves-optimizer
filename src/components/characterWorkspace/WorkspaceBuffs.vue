@@ -16,20 +16,25 @@
       <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
         Stat Bonuses
       </div>
-      <div class="flex flex-wrap gap-1.5">
-        <button
-          v-for="chip in statBonusChips"
-          :key="chip.key"
-          type="button"
-          class="btn btn-xs gap-1.5"
-          :class="chip.enabled ? 'btn-primary' : 'btn-ghost opacity-60'"
-          v-tooltip="{ content: chip.details, html: true }"
-          :data-test-workspace-stat-bonus="chip.key"
-          @click="toggleStatBonus(chip.key)">
-          <img v-if="chip.icon" :src="chip.icon" class="size-3.5" alt="" />
-          {{ chip.label }}
-          <span class="font-mono">+{{ chip.formattedValue }}</span>
-        </button>
+      <div class="flex flex-wrap gap-x-3 gap-y-2">
+        <div
+          v-for="group in statBonusGroups"
+          :key="group.type"
+          class="flex items-center gap-1 bg-base-100 border border-base-300 rounded-lg px-1.5 py-1">
+          <button
+            v-for="chip in group.chips"
+            :key="chip.key"
+            type="button"
+            class="btn btn-xs gap-1.5"
+            :class="chip.enabled ? 'btn-primary' : 'btn-ghost opacity-60'"
+            v-tooltip="{ content: chip.details, html: true }"
+            :data-test-workspace-stat-bonus="chip.key"
+            @click="toggleStatBonus(chip.key)">
+            <img v-if="chip.icon" :src="chip.icon" class="size-3.5" alt="" />
+            {{ chip.label }}
+            <span class="font-mono">+{{ chip.formattedValue }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -107,6 +112,7 @@ const statBonusChips = computed(() =>
       const rawValue = modifier?.modifierValue ?? 0;
       return {
         key: buff.key,
+        type,
         details: buff.details,
         icon: getSubStatIconByType(type),
         label: getReadableSubStatLabel(type) ?? type,
@@ -115,6 +121,22 @@ const statBonusChips = computed(() =>
       };
     }),
 );
+
+const statBonusGroups = computed(() => {
+  const groups: { type: string; chips: (typeof statBonusChips.value)[number][] }[] = [];
+  const groupsByType = new Map<string, (typeof statBonusChips.value)[number][]>();
+  for (const chip of statBonusChips.value) {
+    const groupKey = chip.type || chip.label;
+    let chips = groupsByType.get(groupKey);
+    if (!chips) {
+      chips = [];
+      groupsByType.set(groupKey, chips);
+      groups.push({ type: groupKey, chips });
+    }
+    chips.push(chip);
+  }
+  return groups;
+});
 
 function toggleStatBonus(key: string) {
   characterStore.setCharacterData(props.character, {

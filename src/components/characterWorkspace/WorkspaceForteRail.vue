@@ -1,7 +1,7 @@
 <template>
   <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-4">
     <div class="flex items-center justify-between">
-      <h3 class="text-sm font-semibold">Forte Progression</h3>
+      <h3 class="text-sm font-semibold">Forte</h3>
       <button type="button" class="btn btn-xs" data-test-workspace-forte-max-all @click="maxAll">
         Max All
       </button>

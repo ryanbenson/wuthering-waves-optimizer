@@ -1,28 +1,16 @@
 <template>
   <div class="flex flex-col gap-2 mt-2">
-    <div class="flex items-center justify-between gap-4 flex-wrap">
-      <textarea
-        v-model="notesDraft"
-        rows="1"
-        placeholder="What's this build for? (e.g. off-field support, solo content...)"
-        class="textarea textarea-ghost textarea-sm flex-1 min-w-[16rem] italic resize-none"
-        data-test-workspace-build-notes
-        @change="commitNotes" />
-      <span class="text-xs opacity-50 font-mono whitespace-nowrap" data-test-workspace-build-updated>
-        Updated {{ updatedLabel }}
-      </span>
-    </div>
-
     <div class="flex items-center justify-between gap-3 flex-wrap">
-      <div class="flex items-center gap-2 flex-wrap">
+      <div
+        class="flex items-stretch divide-x divide-base-300 rounded-lg border border-base-300 bg-base-200/60 overflow-hidden">
         <button
           type="button"
-          class="btn btn-xs btn-ghost gap-1.5"
+          class="btn btn-sm btn-ghost rounded-none gap-1.5"
           title="Jump to Weapons"
           data-test-workspace-weapon-chip
           @click="$emit('change-screen', 'weapon')">
           <span
-            class="size-5 rounded overflow-hidden border border-base-300 bg-base-200 flex items-center justify-center shrink-0">
+            class="size-5 rounded overflow-hidden border border-base-300 bg-base-100 flex items-center justify-center shrink-0">
             <img v-if="weaponIcon" :src="weaponIcon" alt="" class="w-full h-full object-cover" />
           </span>
           <span>{{ weaponName }}</span>
@@ -31,7 +19,7 @@
 
         <button
           type="button"
-          class="btn btn-xs btn-ghost gap-1.5"
+          class="btn btn-sm btn-ghost rounded-none gap-1.5"
           title="Jump to Echoes"
           data-test-workspace-score-chip
           @click="$emit('change-screen', 'echoes')">
@@ -47,7 +35,7 @@
 
         <button
           type="button"
-          class="btn btn-xs btn-ghost gap-1.5"
+          class="btn btn-sm btn-ghost rounded-none gap-1.5 font-semibold"
           data-test-workspace-echoes-link
           @click="$emit('change-screen', 'echoes')">
           View Echoes →
@@ -56,11 +44,44 @@
 
       <WorkspaceProgress :character="character" />
     </div>
+
+    <div class="flex items-center gap-1.5">
+      <button
+        v-if="!isEditingNotes"
+        type="button"
+        class="btn btn-xs btn-ghost gap-1.5 opacity-60 hover:opacity-100 max-w-full"
+        data-test-workspace-build-notes-toggle
+        @click="startEditingNotes">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3 shrink-0" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 20.5l4-1 11-11-3-3-11 11-1 4z" />
+        </svg>
+        <span class="truncate italic">{{ notesDraft || "Add a build note" }}</span>
+      </button>
+      <textarea
+        v-else
+        ref="notesInputRef"
+        v-model="notesDraft"
+        rows="1"
+        placeholder="What's this build for? (e.g. off-field support, solo content...)"
+        class="textarea textarea-ghost textarea-xs flex-1 min-w-[16rem] italic resize-none"
+        data-test-workspace-build-notes
+        @change="commitNotes"
+        @blur="isEditingNotes = false" />
+      <span class="text-xs opacity-50 font-mono whitespace-nowrap shrink-0" data-test-workspace-build-updated>
+        Updated {{ updatedLabel }}
+      </span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, nextTick, ref, watch, watchEffect } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useTeamSubstatScoreRollup } from "../../composables/useTeamSubstatScoreRollup";
@@ -112,6 +133,15 @@ watch(
 
 function commitNotes() {
   characterStore.setCharacterData(props.character, { notes: notesDraft.value });
+}
+
+const isEditingNotes = ref(false);
+const notesInputRef = ref<HTMLTextAreaElement | null>(null);
+
+async function startEditingNotes() {
+  isEditingNotes.value = true;
+  await nextTick();
+  notesInputRef.value?.focus();
 }
 
 const weaponKey = computed(
