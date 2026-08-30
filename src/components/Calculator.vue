@@ -195,10 +195,19 @@
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
       <div class="screen--custom-buffs" v-show="curScreen === 'custom-buffs'">
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
         <CalculatorCustomBuffs
+          v-if="!isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
           @custom-buffs-updated="handleCustomBuffs"></CalculatorCustomBuffs>
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned, grouped + element-aware panel. -->
+        <CalculatorCustomBuffsWorkspace
+          v-else
+          :key="characterBuildKey"
+          :character="character"
+          :character-element="characterElement"
+          @custom-buffs-updated="handleCustomBuffs"></CalculatorCustomBuffsWorkspace>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
@@ -448,6 +457,7 @@ import {
 import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
+import CalculatorCustomBuffsWorkspace from "./CalculatorCustomBuffsWorkspace.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorBuildCard from "./CalculatorBuildCard.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
@@ -529,6 +539,7 @@ export default defineComponent({
     CalculatorWeapons,
     CalculatorCharacterBuffs,
     CalculatorCustomBuffs,
+    CalculatorCustomBuffsWorkspace,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
     CalculatorRotations,
