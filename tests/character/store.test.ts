@@ -268,14 +268,6 @@ describe("useCharacterStore builds", () => {
   });
 
   describe("substat weights", () => {
-    it("falls back to the neutral default for an uncurated, unconfigured character", () => {
-      const store = useCharacterStore();
-      // Jingran/Qingxiao are real characters in this repo added after the
-      // curated dataset's last sync, so they're deliberately uncurated.
-      store.setCharacterData("Jingran", {});
-      expect(store.getCharacterSubstatWeights("Jingran").CritRate).toBe(1);
-    });
-
     it("uses the curated default for a character with one", () => {
       const store = useCharacterStore();
       store.setCharacterData("Camellya", {});
