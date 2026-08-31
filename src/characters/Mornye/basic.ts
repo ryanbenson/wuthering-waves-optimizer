@@ -15,5 +15,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "StarfieldCalibrator",
     liveResultBarStats: ["totalDef", "totalCritRate", "totalCritDMG", "energyRegen"],
+    suggestedWeapons: [],
   };
 }

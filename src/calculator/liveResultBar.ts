@@ -33,7 +33,9 @@ export const DEFAULT_LIVE_RESULT_BAR_STATS = [
 
 // Preference order when a character hasn't declared `liveResultBarDefaultTarget`
 // and has no saved rotation yet — picks the first group with any attacks.
-const FALLBACK_ATTACK_GROUP_PRIORITY: LiveResultBarAttackGroup[] = [
+// Exported for reuse by src/weapons/weaponImpact.ts, which needs the same
+// "no saved rotation, pick a representative attack" fallback headlessly.
+export const FALLBACK_ATTACK_GROUP_PRIORITY: LiveResultBarAttackGroup[] = [
   "liberationAttacks",
   "skillAttacks",
   "forteCircuitAttacks",

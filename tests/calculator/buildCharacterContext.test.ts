@@ -380,4 +380,58 @@ describe("buildCharacterCalculationContext", () => {
       expect(filtered.finalStats.totalAtk).toBeGreaterThan(filtered.baseAtk);
     });
   });
+
+  describe("weaponPassiveMode (weapon-swap previews — src/weapons/weaponImpact.ts)", () => {
+    // Iuno's PulsationBracer ("Barrier Breacher") has an alwaysEnabled 12%
+    // ATK passive plus a conditional, stackable Basic Attack DMG Bonus —
+    // the same fixture the alwaysEnabledOnly tests above use, and the one
+    // case in this app where "all-off" has to do something nothing else
+    // can: suppress an alwaysEnabled passive.
+    const characters = {
+      Iuno: {
+        weapon: "PulsationBracer",
+        weapons: { PulsationBracer: { weaponLevel: "90", refinement: "1" } },
+      },
+    };
+
+    it("defaults to today's stored-toggle behavior when omitted", async () => {
+      const withOption = await buildCharacterCalculationContext("Iuno", characters, enemyConfig, [], {
+        weaponPassiveMode: "stored",
+      });
+      const withoutOption = await buildCharacterCalculationContext("Iuno", characters, enemyConfig);
+      expect(withOption.weaponData).toEqual(withoutOption.weaponData);
+    });
+
+    it("all-off suppresses every passive, including the alwaysEnabled one", async () => {
+      const result = await buildCharacterCalculationContext("Iuno", characters, enemyConfig, [], {
+        weaponPassiveMode: "all-off",
+      });
+      expect(result.weaponData.weaponPassiveStats.ATK ?? 0).toBeCloseTo(0);
+      expect(result.weaponData.weaponPassiveStats.BasicAttackDMGBonus ?? 0).toBeCloseTo(0);
+      // The stat swap itself (ATK/secondary stat) is untouched.
+      expect(result.weaponData.attack).toBeGreaterThan(0);
+    });
+
+    it("all-max enables every passive at max stacks, regardless of the stored toggle state", async () => {
+      const unconfigured = await buildCharacterCalculationContext("Iuno", characters, enemyConfig, [], {
+        weaponPassiveMode: "all-max",
+      });
+      expect(unconfigured.weaponData.weaponPassiveStats.ATK).toBeCloseTo(0.12);
+      expect(unconfigured.weaponData.weaponPassiveStats.BasicAttackDMGBonus).toBeGreaterThan(0);
+
+      // Even an explicit stored isEnabled:false is overridden.
+      const explicitlyOff = {
+        Iuno: {
+          ...characters.Iuno,
+          weaponPassives: { PulsationBracerBasic: { isEnabled: false, stacks: 0 } },
+        },
+      };
+      const result = await buildCharacterCalculationContext("Iuno", explicitlyOff, enemyConfig, [], {
+        weaponPassiveMode: "all-max",
+      });
+      expect(result.weaponData.weaponPassiveStats.BasicAttackDMGBonus).toBeCloseTo(
+        unconfigured.weaponData.weaponPassiveStats.BasicAttackDMGBonus,
+      );
+    });
+  });
 });

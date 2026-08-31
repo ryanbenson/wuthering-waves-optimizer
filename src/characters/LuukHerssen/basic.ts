@@ -15,5 +15,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "DaybreakersSpine",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
+    suggestedWeapons: [],
   };
 }

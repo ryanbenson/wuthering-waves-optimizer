@@ -17,5 +17,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "ForgedDwarfStar",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
+    suggestedWeapons: [],
   };
 }
