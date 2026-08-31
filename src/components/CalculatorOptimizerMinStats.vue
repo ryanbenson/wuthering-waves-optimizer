@@ -1,5 +1,18 @@
 <template>
   <div>
+    <div
+      v-if="availableQuickAddStats.length"
+      class="flex flex-wrap gap-2 mb-3"
+      data-test-optimizer-min-stats-quick-add>
+      <button
+        v-for="quickStat in availableQuickAddStats"
+        :key="quickStat.stat"
+        type="button"
+        class="btn btn-xs btn-outline"
+        @click="addQuickStat(quickStat.stat)">
+        + {{ quickStat.label }}
+      </button>
+    </div>
     <CalculatorOptimizerMinStat
       v-for="stat in stats"
       :key="stat.id"
@@ -18,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import CalculatorOptimizerMinStat from "./CalculatorOptimizerMinStat.vue";
 import { randomString } from "../utils/strings";
 import { useCharacterStore } from "../stores/character";
@@ -34,6 +47,8 @@ export type OptimizerMinStatRow = {
 const props = defineProps<{
   character: string;
   minStats?: OptimizerMinStatRow[];
+  /** Optional one-click "+ Energy Regen" style chips, shown ahead of the row list. */
+  quickAddStats?: { stat: string; label: string }[];
 }>();
 
 const emit = defineEmits<{
@@ -43,6 +58,19 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 
 const stats = ref<OptimizerMinStatRow[]>([]);
+
+// A quick-add chip drops off the row once its stat has been added, so it
+// can't be added twice.
+const availableQuickAddStats = computed(() =>
+  (props.quickAddStats ?? []).filter(
+    (quickStat) => !stats.value.some((s) => s.stat === quickStat.stat),
+  ),
+);
+
+function addQuickStat(stat: string) {
+  stats.value.push({ id: randomString(), stat, minValue: null });
+  void updatedMinStats();
+}
 
 function addNewStat() {
   stats.value.push({ id: randomString(), stat: null, minValue: null });
