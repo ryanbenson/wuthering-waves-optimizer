@@ -109,13 +109,24 @@
       </div>
 
       <div class="screen--weapon" v-show="curScreen === 'weapon'">
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
         <CalculatorWeapons
-          v-if="character"
+          v-if="character && !isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"
           :signature-weapon="chosenChar.value?.basic?.signatureWeapon"></CalculatorWeapons>
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned weapon workspace. -->
+        <WorkspaceWeaponPanel
+          v-else-if="character"
+          :key="characterBuildKey"
+          :character="character"
+          :character-name="chosenChar.value?.basic?.name"
+          :weapon-type="weaponType"
+          :signature-weapon="chosenChar.value?.basic?.signatureWeapon"
+          :suggested-weapons="chosenChar.value?.basic?.suggestedWeapons"
+          @update-weapon="handleWeaponUpdated" />
       </div>
 
       <div class="screen--echoes" v-show="curScreen === 'echoes'">
@@ -450,6 +461,7 @@ import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterWorkspace from "./characterWorkspace/CalculatorCharacterWorkspace.vue";
+import WorkspaceWeaponPanel from "./characterWorkspace/WorkspaceWeaponPanel.vue";
 import {
   filterBuffsForStance,
   resolveActiveStance,
@@ -537,6 +549,7 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorEnemy,
     CalculatorWeapons,
+    WorkspaceWeaponPanel,
     CalculatorCharacterBuffs,
     CalculatorCustomBuffs,
     CalculatorCustomBuffsWorkspace,

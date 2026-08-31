@@ -17,8 +17,8 @@ function enableLiveResultBarLab() {
 
 function openBrantEchoesTab() {
   enableLiveResultBarLab();
-  cy.richSelect("[data-test-character-select]", "Brant");
-  cy.get(".character__self-buffs").should("be.visible");
+  cy.selectWorkspaceCharacter("Brant");
+  cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
   cy.get('[data-test-calculator-nav="echoes"]').click();
 }
 
@@ -124,8 +124,8 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
   it("stacks the insights panel below the strip on a mobile viewport", () => {
     cy.viewport(390, 844);
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
 
     cy.get('[data-test-echo-item="0"]').then(($strip) => {

@@ -151,6 +151,26 @@ describe("calcCharacterRotationDamage", () => {
     expect(result.attacks).toHaveLength(0);
     expect(result.damageAggregation.normalDamage).toBeNull();
   });
+
+  it("an omitted trailing options param behaves identically to passing {}", async () => {
+    const characters = { Calcharo: {} };
+    const action: CharacterRotationAction = { id: "a1", order: 0, type: "basic", key: "Part1Damage", count: 1 };
+    const rotation = { id: "r1", name: "Rotation", duration: 10, actions: [action] };
+
+    const omitted = await calcCharacterRotationDamage(rotation, null, "Calcharo", characters, enemyConfig, [], null);
+    const explicitEmpty = await calcCharacterRotationDamage(
+      rotation,
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      null,
+      {},
+    );
+
+    expect(omitted.damageAggregation).toEqual(explicitEmpty.damageAggregation);
+  });
 });
 
 describe("calcCharacterRotationDamage buildId override (issue #278)", () => {

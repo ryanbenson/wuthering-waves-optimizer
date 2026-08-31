@@ -134,6 +134,21 @@ export interface BuildCharacterContextOptions {
    * unlocks alone (see issue #383).
    */
   alwaysEnabledOnly?: boolean;
+  /**
+   * Overrides which of the equipped weapon's passives are treated as
+   * active, for "what would this weapon be worth" previews (see
+   * `src/weapons/weaponImpact.ts`) rather than the build's real toggle
+   * state:
+   * - `"stored"` (default): today's behavior — the character's actual
+   *   saved `weaponPassives` toggle/stack config, with `alwaysEnabled`
+   *   passives forced on as usual.
+   * - `"all-off"`: every passive contributes nothing, *including*
+   *   `alwaysEnabled` ones (nothing else in this app can suppress those).
+   * - `"all-max"`: every passive is treated as enabled at its `maxStacks`
+   *   (or simply enabled, for non-stacking passives), regardless of its
+   *   own `alwaysEnabled` flag or the build's real stored toggle state.
+   */
+  weaponPassiveMode?: "stored" | "all-off" | "all-max";
 }
 
 /**
@@ -155,7 +170,7 @@ export async function buildCharacterCalculationContext(
   inventoryEchoes: any[] = [],
   options: BuildCharacterContextOptions = {},
 ): Promise<CharacterCalculationContext> {
-  const { alwaysEnabledOnly = false } = options;
+  const { alwaysEnabledOnly = false, weaponPassiveMode = "stored" } = options;
   const characterData = characters?.[characterId] ?? {};
   const chosenChar = await getCharByName(characterId);
 
@@ -202,10 +217,24 @@ export async function buildCharacterCalculationContext(
       const passiveDataForCalc = ((chosenWeapon.info?.passiveData ?? []) as any[]).filter(
         (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
       );
+      let effectivePassiveDefs = passiveDataForCalc;
+      let effectiveWeaponPassivesConfig = characterData.weaponPassives ?? {};
+      if (weaponPassiveMode === "all-off") {
+        // Strip `alwaysEnabled` so resolveWeaponPassiveInstance's forced-on
+        // path doesn't apply — combined with an empty config, this leaves
+        // every passive off, including ones the player could never toggle
+        // themselves.
+        effectivePassiveDefs = passiveDataForCalc.map((passive) => ({ ...passive, alwaysEnabled: false }));
+        effectiveWeaponPassivesConfig = {};
+      } else if (weaponPassiveMode === "all-max") {
+        effectiveWeaponPassivesConfig = Object.fromEntries(
+          passiveDataForCalc.map((passive) => [passive.key, { isEnabled: true, stacks: passive.maxStacks ?? 0 }]),
+        );
+      }
       weaponPassiveStats = computeWeaponPassiveStats(
         weaponKey,
-        passiveDataForCalc,
-        characterData.weaponPassives ?? {},
+        effectivePassiveDefs,
+        effectiveWeaponPassivesConfig,
         refinement,
       );
     }

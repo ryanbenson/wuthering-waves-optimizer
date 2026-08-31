@@ -10,5 +10,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJingran/SP_IconJingranD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJingran/SP_IconJingranD2.webp"],
     signatureWeapon: "ThousandfoldDeliverance",
     liveResultBarStats: ["totalHp", "totalCritRate", "totalCritDMG", "energyRegen"],
+    suggestedWeapons: [],
   };
 }

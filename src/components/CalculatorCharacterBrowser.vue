@@ -157,6 +157,7 @@
                 :is-active="false">
                 <button
                   @click="chooseCharacter(character)"
+                  :data-test-character-browse-select="character.key"
                   class="btn btn-sm btn-primary">
                   Use character
                 </button>

@@ -1,6 +1,11 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
-import { buildCharacterCalculationContext, type CalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
+import {
+  buildCharacterCalculationContext,
+  type BuildCharacterContextOptions,
+  type CalculationContext,
+  type TeamEnemyConfig,
+} from "./buildCharacterContext";
 import { applyAdvancedOverrides, hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
 import { resolveCharactersForBuild } from "./buildOverride";
 
@@ -118,6 +123,7 @@ export async function calcCharacterRotationDamage(
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
   buildId: string | null = null,
+  options: BuildCharacterContextOptions = {},
 ): Promise<CharacterRotationDamageResult> {
   const effectiveCharacters = resolveCharactersForBuild(characters, characterId, buildId);
   const characterData = effectiveCharacters?.[characterId] ?? {};
@@ -133,7 +139,7 @@ export async function calcCharacterRotationDamage(
     if (baseContext) {
       sharedContext = baseContext;
     } else {
-      const built = await buildCharacterCalculationContext(characterId, effectiveCharacters, enemyConfig, inventoryEchoes);
+      const built = await buildCharacterCalculationContext(characterId, effectiveCharacters, enemyConfig, inventoryEchoes, options);
       sharedContext = { chosenChar: built.chosenChar, characterLevel: built.characterLevel, context: built.context };
     }
     const plainAttacks = plainActions
@@ -155,7 +161,7 @@ export async function calcCharacterRotationDamage(
       ...effectiveCharacters,
       [characterId]: applyAdvancedOverrides(characterData, action.advancedConfig),
     };
-    const built = await buildCharacterCalculationContext(characterId, overriddenCharacters, enemyConfig, inventoryEchoes);
+    const built = await buildCharacterCalculationContext(characterId, overriddenCharacters, enemyConfig, inventoryEchoes, options);
     const attack = resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel);
     if (attack == null) continue;
     built.context.rotationsList = [

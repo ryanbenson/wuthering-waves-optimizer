@@ -13,6 +13,15 @@ interface CharacterBasicInfo {
   stances?: string[];
   /** Weapon key (matches a weapon's `key`, e.g. "AzureOath") for this character's signature weapon. */
   signatureWeapon?: string;
+  /**
+   * Curated alternative weapon recommendations for the Weapons workspace's
+   * "Recommended" rail, in addition to `signatureWeapon` (which always
+   * renders first when present). Order matters — first is the strongest
+   * recommendation. `label` renders as a small tag (e.g. "Top Alt", "F2P
+   * Pick", "Budget"); omit for a generic "Recommended" tag. Populated by
+   * hand per character — empty is a valid, common state.
+   */
+  suggestedWeapons?: Array<{ key: string; label?: string }>;
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;
