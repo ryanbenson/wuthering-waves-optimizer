@@ -177,7 +177,9 @@
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--optimizer" v-if="curScreen === 'optimizer'">
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
         <CalculatorOptimizer
+          v-if="!isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
           :total-combos="totalCombos"
@@ -197,6 +199,36 @@
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
           @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned setup/running/results workspace. -->
+        <CalculatorOptimizerWorkspace
+          v-else
+          :key="characterBuildKey"
+          :character="character"
+          :character-name="chosenChar.value?.basic?.name"
+          :rarity="chosenChar.value?.basic?.rarity"
+          :weapon-type="chosenChar.value?.basic?.weapon"
+          :total-combos="totalCombos"
+          :processed-combos="processedCombos"
+          :optimizer-elapsed-ms="optimizerElapsedMs"
+          :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
+          :optimizer-empty-reason="optimizerEmptyReason"
+          :optimizer-results="optimizerResults"
+          :character-element="characterElement"
+          :all-damages="JSON.parse(JSON.stringify(allDamages))"
+          :total-atk="totalAtk"
+          :total-hp="totalHp"
+          :total-def="totalDef"
+          :total-crit-rate="totalCritRate"
+          :total-crit-dmg="totalCritDMG"
+          :energy-regen="energyRegen"
+          :optimization-target-type="optimizationTargetType"
+          :optimization-target-object="optimizationTargetObject"
+          :is-optimizer-running="isOptimizerRunning"
+          :optimizer-search-complete="optimizerSearchComplete"
+          :live-best-result="liveBestResult"
+          @optimizer:optimize="handleOptimize"
+          @optimizer:cancel="cancelOptimizer"
+          @optimizer:edit-setup="optimizerResults = []"></CalculatorOptimizerWorkspace>
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
         <CalculatorRotations
@@ -474,6 +506,7 @@ import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorBuildCard from "./CalculatorBuildCard.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import CalculatorOptimizer from "./CalculatorOptimizer.vue";
+import CalculatorOptimizerWorkspace from "./optimizerWorkspace/CalculatorOptimizerWorkspace.vue";
 import {
   getEchoStats,
   getCombinedEchoStats,
@@ -560,6 +593,7 @@ export default defineComponent({
     CalculatorBuildCard,
     CalculatorTalents,
     CalculatorOptimizer,
+    CalculatorOptimizerWorkspace,
     CalculatorMobileSubNav,
     CalculatorSubNav,
     Nav,
@@ -776,6 +810,13 @@ export default defineComponent({
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
     const optimizerElapsedMs = ref(0);
+    // Optimizer Workspace (UI Overhaul 3.0 / liveResultBar flag) — additive
+    // state consumed only by CalculatorOptimizerWorkspace.vue; the legacy
+    // CalculatorOptimizer.vue ignores these.
+    const isOptimizerRunning = ref(false);
+    const optimizerSearchComplete = ref(false);
+    const liveBestResult = ref<any>(null);
+    let currentOptimizerCleanup: (() => void) | null = null;
     let optimizerTimerStartMs = 0;
     let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -891,6 +932,9 @@ export default defineComponent({
       optimizerNoPossibleLoadouts.value = false;
       optimizerEmptyReason.value = null;
       optimizerResults.value = [];
+      isOptimizerRunning.value = false;
+      optimizerSearchComplete.value = false;
+      liveBestResult.value = null;
       stopOptimizerTimer();
       optimizerElapsedMs.value = 0;
       optimizerTimerStartMs = 0;
@@ -1392,6 +1436,9 @@ export default defineComponent({
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
+      isOptimizerRunning.value = true;
+      optimizerSearchComplete.value = false;
+      liveBestResult.value = null;
       startOptimizerTimer();
 
       // 1. Filter upfront
@@ -1728,6 +1775,10 @@ export default defineComponent({
 
       // State management
       const heap: any[] = [];
+      // Throttles how often the workspace's live "best found so far" ref is
+      // written — the heap itself merges on every batch, but redrawing the
+      // UI that often is unnecessary churn (see docs on liveBestResult).
+      let lastLiveBestUpdateMs = 0;
       const workQueue: Array<{ batch: any[]; batchId: number }> = [];
       let batchIdCounter = 0;
       let totalProcessed = 0;
@@ -1785,6 +1836,7 @@ export default defineComponent({
       const cleanupWorkers = () => {
         if (cleanedUp) return;
         cleanedUp = true;
+        currentOptimizerCleanup = null;
         generatorWorkers.forEach((w) => {
           try {
             w.postMessage({ type: "stop" });
@@ -1802,6 +1854,7 @@ export default defineComponent({
           w.terminate();
         });
       };
+      currentOptimizerCleanup = cleanupWorkers;
 
       /** Ask each generator shard for another batch while the shared queue has room */
       const maybeContinueGenerator = () => {
@@ -1922,6 +1975,28 @@ export default defineComponent({
               }
             }
 
+            // Optimizer Workspace: throttled snapshot of the current best
+            // (heap is a min-heap, so the max isn't heap[0] — scan it; cheap
+            // since heap.length is bounded by topN). Only meaningful once the
+            // heap has actually filled, otherwise every early insert would
+            // trivially look like "the best so far".
+            if (heap.length >= topN) {
+              const nowMs = performance.now();
+              if (nowMs - lastLiveBestUpdateMs >= 1000) {
+                let best = heap[0];
+                for (let i = 1; i < heap.length; i++) {
+                  if (heap[i].targetValue > best.targetValue) best = heap[i];
+                }
+                if (
+                  !liveBestResult.value ||
+                  best.targetValue > liveBestResult.value.targetValue
+                ) {
+                  liveBestResult.value = best;
+                }
+                lastLiveBestUpdateMs = nowMs;
+              }
+            }
+
             // Request more work and unblock generator if queue drained
             distributeWork();
             maybeContinueGenerator();
@@ -2009,6 +2084,7 @@ export default defineComponent({
           cleanupWorkers();
           totalCombos.value = totalProcessed;
           stopOptimizerTimer();
+          isOptimizerRunning.value = false;
           trackEvent("optimizer-run", { resultsFound: finalResults.length > 0 });
         }
       };
@@ -2055,6 +2131,7 @@ export default defineComponent({
               console.error("Error sending data to generator worker:", error);
               cleanupWorkers();
               stopOptimizerTimer();
+              isOptimizerRunning.value = false;
             }
           } else if (e.data.type === "batch") {
             generatorShardTotal.set(worker, e.data.totalGenerated || 0);
@@ -2089,6 +2166,7 @@ export default defineComponent({
             );
             totalCombos.value = totalGenerated();
             if (generatorAllDone()) {
+              optimizerSearchComplete.value = true;
               optimizerNoPossibleLoadouts.value = totalGenerated() === 0;
               if (totalGenerated() === 0) {
                 optimizerEmptyReason.value = resolveOptimizerEmptyReason({
@@ -2097,6 +2175,7 @@ export default defineComponent({
                   generatedCount: 0,
                 });
                 stopOptimizerTimer();
+                isOptimizerRunning.value = false;
               }
             }
             distributeWork(); // Process remaining work
@@ -2108,7 +2187,9 @@ export default defineComponent({
             generatorShardDone.set(worker, true);
             generatorShardAwaitingContinue.set(worker, false);
             if (generatorAllDone()) {
+              optimizerSearchComplete.value = true;
               stopOptimizerTimer();
+              isOptimizerRunning.value = false;
             }
             distributeWork();
           } else {
@@ -2122,6 +2203,24 @@ export default defineComponent({
         // Initialize this shard
         worker.postMessage({ type: "init" });
       });
+    };
+
+    // Optimizer Workspace only (legacy CalculatorOptimizer.vue has no cancel
+    // affordance). Tears down whichever run is currently active via the
+    // cleanup closure that run's handleOptimize call captured, then resets
+    // every optimizer ref to its idle state.
+    const cancelOptimizer = () => {
+      currentOptimizerCleanup?.();
+      currentOptimizerCleanup = null;
+      stopOptimizerTimer();
+      isOptimizerRunning.value = false;
+      optimizerResults.value = [];
+      totalCombos.value = 0;
+      processedCombos.value = 0;
+      optimizerNoPossibleLoadouts.value = false;
+      optimizerEmptyReason.value = null;
+      optimizerSearchComplete.value = false;
+      liveBestResult.value = null;
     };
 
     async function handleSelectedAttack(attackKey, damage, label) {
@@ -2228,6 +2327,11 @@ export default defineComponent({
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,
+      // optimizer workspace (liveResultBar flag) only
+      isOptimizerRunning,
+      optimizerSearchComplete,
+      liveBestResult,
+      cancelOptimizer,
       // data for the sidebar
       displayPercentage,
       displayInt,

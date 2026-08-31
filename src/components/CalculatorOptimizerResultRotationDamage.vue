@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!hideToggle"
     class="optimizer-rotation-actions flex justify-center items-center"
     data-test-optimizer-result-rotation-info>
     <button class="btn btn-xs btn-outline" @click="toggleIsDamagesListShown">
@@ -166,9 +167,30 @@ const props = defineProps<{
   rotation: RotationPayload;
   allDamages?: unknown;
   rotationId: string;
+  /** Hides the built-in toggle button so a parent can drive isShown itself
+   * (see modelValue) and place its own button elsewhere in its layout. */
+  hideToggle?: boolean;
+  /** When provided, this component is "controlled" — isShown mirrors this
+   * prop instead of its own internal ref, and toggling emits update:modelValue
+   * rather than changing local state. Omit for the original, uncontrolled
+   * behavior (internal state + built-in button). */
+  modelValue?: boolean;
 }>();
 
-const isDamagesListShown = ref(false);
+const emit = defineEmits<{ "update:modelValue": [value: boolean] }>();
+
+const internalDamagesListShown = ref(false);
+
+const isDamagesListShown = computed({
+  get: () => props.modelValue ?? internalDamagesListShown.value,
+  set: (value: boolean) => {
+    if (props.modelValue !== undefined) {
+      emit("update:modelValue", value);
+    } else {
+      internalDamagesListShown.value = value;
+    }
+  },
+});
 
 function toggleIsDamagesListShown() {
   isDamagesListShown.value = !isDamagesListShown.value;
