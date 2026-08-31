@@ -39,4 +39,23 @@ Cypress.Commands.add(
   },
 );
 
+// Character Workspace (UI Overhaul 3.0 / liveResultBar Labs flag) has no
+// select dropdown — switching character opens CalculatorCharacterBrowser's
+// modal via the identity bar's avatar, then picks a card from it.
+Cypress.Commands.add("selectWorkspaceCharacter", (key: string) => {
+  // Calculator.vue remounts the whole workspace (`:key="characterBuildKey"`)
+  // once the initial character's active build id resolves shortly after
+  // mount/switch. Clicking the avatar mid-remount silently no-ops — wait for
+  // the currently-loaded character to finish settling first.
+  cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+  cy.get("[data-test-workspace-avatar]").first().click();
+  // The browser's <dialog> is a fixed-position scroll container — Cypress
+  // can't reliably auto-scroll a card into view inside it (its own
+  // actionability check says as much), so force the click as this repo
+  // already does for other fixed-position overlays.
+  cy.get(`[data-test-character-browse-select="${key}"]`).click({
+    force: true,
+  });
+});
+
 export {};

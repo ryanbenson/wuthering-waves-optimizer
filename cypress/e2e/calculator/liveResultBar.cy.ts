@@ -25,8 +25,8 @@ describe("Live Result Bar (Labs flag)", () => {
 
   it("replaces the split pane with a pinned bar once enabled", () => {
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
     cy.get("[data-test-live-result-bar]").should("be.visible");
     cy.get(".results").should("not.exist");
@@ -45,8 +45,8 @@ describe("Live Result Bar (Labs flag)", () => {
 
   it("opens the full breakdown slide-out and reuses the real stat/damage data", () => {
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
     cy.get("[data-test-live-result-detail]").should("not.exist");
     cy.get("[data-test-live-result-bar-toggle]").click();
@@ -60,8 +60,8 @@ describe("Live Result Bar (Labs flag)", () => {
 
   it("picking a specific action + damage type from the settings popover updates the hero number, and persists per character across a reload", () => {
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
     // Target + damage type live behind the settings gear, not inline in
     // the bar — see the "cluttered" feedback that moved them there.
@@ -84,7 +84,7 @@ describe("Live Result Bar (Labs flag)", () => {
 
     // Persists for Brant specifically across a reload...
     cy.reload();
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-live-result-bar-hero]").should(
       "contain.text",
       "Tune Break DMG",
@@ -92,16 +92,16 @@ describe("Live Result Bar (Labs flag)", () => {
 
     // ...but a different character still gets their own default, not
     // Brant's remembered pick.
-    cy.richSelect("[data-test-character-select]", "Jiyan");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Jiyan");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-live-result-bar-hero]").should(
       "not.contain.text",
       "Tune Break DMG",
     );
 
     // Switching back to Brant restores it again.
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-live-result-bar-hero]").should(
       "contain.text",
       "Tune Break DMG",
@@ -110,8 +110,8 @@ describe("Live Result Bar (Labs flag)", () => {
 
   it("persists a pinned breakdown across a reload", () => {
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
     cy.get("[data-test-live-result-bar-toggle]").click();
     cy.get("[data-test-live-result-detail-pin]").click();
@@ -122,7 +122,7 @@ describe("Live Result Bar (Labs flag)", () => {
     );
 
     cy.reload();
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-live-result-detail]").should("be.visible");
     cy.get("[data-test-live-result-detail-pin]").should(
       "have.attr",
@@ -133,8 +133,8 @@ describe("Live Result Bar (Labs flag)", () => {
 
   it("clicking a stat chip opens the same breakdown drawer a stat row opens today", () => {
     enableLiveResultBarLab();
-    cy.richSelect("[data-test-character-select]", "Brant");
-    cy.get(".character__self-buffs").should("be.visible");
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
     cy.get("[data-test-live-result-bar-stats] button")
       .contains("ATK")

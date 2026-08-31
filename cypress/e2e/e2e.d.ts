@@ -17,6 +17,7 @@ declare global {
         value: string,
         options?: { search?: string },
       ): Chainable<void>;
+      selectWorkspaceCharacter(key: string): Chainable<void>;
     }
   }
 }
