@@ -90,18 +90,19 @@ export const mainEchoesData: MainEchoes = {
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CalamityEffigy.webp",
     details: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG.
-The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.
+The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.
 CD: 15s`,
     modifiers: [
       {
         key: "CalamityEffigyAero",
-        details: `The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus.`,
+        details: `The Resonator with this Echo equipped in the main slot gains 10.00% Aero DMG Bonus`,
         modifier: "Aero",
         modifierValue: 0.1,
+        alwaysEnabled: true,
       },
       {
         key: "CalamityEffigyAeroStrain",
-        details: `Additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.`,
+        details: `Additionally gains 10.00% Aero DMG Bonus for 15s when inflicting Tune Strain - Shifting on the target.`,
         modifier: "Aero",
         modifierValue: 0.1,
       },
