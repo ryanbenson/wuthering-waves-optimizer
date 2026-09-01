@@ -9,6 +9,9 @@
         <button type="button" class="btn btn-xs" data-test-workspace-rc-max-all @click="maxAll">
           Max All
         </button>
+        <button type="button" class="btn btn-xs" data-test-workspace-rc-disable-all @click="disableAll">
+          Disable All
+        </button>
       </div>
     </div>
 
@@ -261,6 +264,10 @@ function setLevel(level: number) {
 function enableAll() {
   const maxLevel = groups.value[groups.value.length - 1]?.level ?? 0;
   setLevel(maxLevel);
+}
+
+function disableAll() {
+  setLevel(0);
 }
 
 function maxAll() {

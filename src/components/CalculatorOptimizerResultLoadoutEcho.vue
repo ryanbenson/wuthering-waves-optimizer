@@ -84,7 +84,7 @@
           </span>
         </div>
 
-        <EchoCardSubstatList :slots="substatSlots" size="xs" />
+        <EchoCardSubstatList :slots="substatSlots" size="xs" :character-id="characterStore.activeCharacter" />
       </div>
 
       <!-- Flag off — unchanged from before decision #14. -->

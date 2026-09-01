@@ -36,7 +36,7 @@
           alt="Your Echoes" />
       </a>
     </li>
-    <li>
+    <li v-if="!hideResonanceChains">
       <a
         @click="changeScreen('constellations')"
         :class="{ active: curScreen === 'constellations' }"
@@ -138,6 +138,10 @@ export default {
     screen: {
       type: String,
       required: true,
+    },
+    hideResonanceChains: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

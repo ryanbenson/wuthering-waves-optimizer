@@ -32,14 +32,6 @@
           </template>
           <span v-else class="opacity-50 font-mono">—</span>
         </button>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-ghost rounded-none gap-1.5 font-semibold"
-          data-test-workspace-echoes-link
-          @click="$emit('change-screen', 'echoes')">
-          View Echoes →
-        </button>
       </div>
 
       <WorkspaceProgress :character="character" />

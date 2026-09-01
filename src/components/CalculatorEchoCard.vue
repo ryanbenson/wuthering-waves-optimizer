@@ -104,7 +104,7 @@
           </span>
         </div>
 
-        <EchoCardSubstatList :slots="substatSlots" size="xs" />
+        <EchoCardSubstatList :slots="substatSlots" size="xs" :character-id="props.characterId" />
       </div>
 
       <!-- Compact layout, flag off — unchanged from before decision #14. -->
@@ -342,7 +342,7 @@
           </span>
         </div>
 
-        <EchoCardSubstatList :slots="substatSlots" size="sm" />
+        <EchoCardSubstatList :slots="substatSlots" size="sm" :character-id="props.characterId" />
       </div>
 
       <!-- Flag-off comfy layout — unchanged from before decision #13. -->

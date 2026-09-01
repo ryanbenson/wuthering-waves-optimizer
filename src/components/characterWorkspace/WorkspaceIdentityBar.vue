@@ -68,7 +68,6 @@
     <div class="ml-auto">
       <WorkspaceBuildSwitcher
         :character="character"
-        @create-build="$emit('create-build')"
         @manage-builds="$emit('manage-builds')" />
     </div>
   </div>
@@ -98,7 +97,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { characterStances: () => [] });
 defineEmits<{
   "open-character-browser": [];
-  "create-build": [];
   "manage-builds": [];
   "character-level-updated": [level: string];
   "updated-character-stance": [stance: string];

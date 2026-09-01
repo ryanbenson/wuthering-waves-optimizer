@@ -9,11 +9,13 @@
       <template #mobile>
         <CalculatorMobileSubNav
           @change-screen="changeScreen"
-          :screen="curScreen"></CalculatorMobileSubNav>
+          :screen="curScreen"
+          :hide-resonance-chains="isLiveResultBarEnabled"></CalculatorMobileSubNav>
       </template>
       <template #default>
         <CalculatorSubNav
           :screen="curScreen"
+          :hide-resonance-chains="isLiveResultBarEnabled"
           @change-screen="changeScreen"></CalculatorSubNav>
       </template>
     </Nav>
@@ -212,9 +214,6 @@
           v-else
           :key="characterBuildKey"
           :character="character"
-          :character-name="chosenChar.value?.basic?.name"
-          :rarity="chosenChar.value?.basic?.rarity"
-          :weapon-type="chosenChar.value?.basic?.weapon"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
           :optimizer-elapsed-ms="optimizerElapsedMs"

@@ -27,6 +27,7 @@
 import { computed } from "vue";
 import { getReadableSubStatLabel } from "../echoes/stats";
 import { getSubstatRollQualityClasses } from "../composables/useEchoCardStats";
+import { usePrioritySubstats } from "../composables/usePrioritySubstats";
 import { useSettingsStore } from "../stores/settings";
 
 export interface EchoCardSubstatSlot {
@@ -40,15 +41,21 @@ export interface EchoCardSubstatSlot {
 
 defineOptions({ name: "EchoCardSubstatList" });
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     slots: EchoCardSubstatSlot[];
     // "sm" (CalculatorEchoCard's comfy tile-style layout) or "xs" (its
     // skinnier compact layout) — same row shape, smaller icon/text/padding.
     size?: "sm" | "xs";
+    // Omitted in inventory-only contexts (no target character, so no
+    // priority signal to show) — set everywhere else (echoes view, build
+    // page, optimizer results, browsing echoes for a character).
+    characterId?: string | null;
   }>(),
-  { size: "sm" },
+  { size: "sm", characterId: null },
 );
+
+const { isPrioritySubstat } = usePrioritySubstats();
 
 // Same flag-gating as CalculatorEchoCard.vue itself (see docs/adr/0014
 // decisions #12/#13) — a filled row with the flag off gets the same
@@ -60,7 +67,10 @@ const isLiveResultBarEnabled = computed(
 
 function rowClass(slot: EchoCardSubstatSlot) {
   if (!slot.filled || !isLiveResultBarEnabled.value) return "border-l-base-300";
-  return ["bg-base-200/60", getSubstatRollQualityClasses(slot.type, slot.value)?.border];
+  return [
+    isPrioritySubstat(props.characterId, slot.type) ? "bg-primary/15" : "bg-base-200/60",
+    getSubstatRollQualityClasses(slot.type, slot.value)?.border,
+  ];
 }
 function textClass(slot: EchoCardSubstatSlot) {
   if (!slot.filled) return "opacity-40";

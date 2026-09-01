@@ -122,7 +122,7 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.get("[data-test-team-buffs-contribution-value]").first().should("contain.text", "10%");
 
     // The tray's ✕ disables the buff without opening the section again.
-    cy.get("[data-test-team-buffs-active-tray] button").contains("Fallacy of No Return").find("span").last().click();
+    cy.get('[data-test-team-buffs-tray-remove="FallacyOfNoReturn"]').click();
     cy.get('[data-test-team-buffs-buff-enabled="FallacyOfNoReturn"]').should("not.be.checked");
 
     // Reset all clears every enabled buff and both teammate slots.
