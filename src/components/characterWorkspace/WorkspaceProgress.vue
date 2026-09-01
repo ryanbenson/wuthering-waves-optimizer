@@ -1,5 +1,5 @@
 <template>
-  <details class="dropdown dropdown-end">
+  <details ref="progressDetailsEl" class="dropdown dropdown-end">
     <summary
       class="btn btn-xs btn-ghost gap-1.5 rounded-full list-none"
       data-test-workspace-progress-trigger>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 
@@ -55,6 +55,23 @@ interface Props {
 const props = defineProps<Props>();
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+
+// Native <details>/<summary> has no built-in "close on outside click"
+// behavior — see CalculatorLiveResultBar.vue's settingsDetailsEl for the
+// same pattern.
+const progressDetailsEl = ref<HTMLDetailsElement | null>(null);
+function onDocumentPointerDown(event: PointerEvent) {
+  const el = progressDetailsEl.value;
+  if (!el || !el.open) return;
+  if (event.target instanceof Node && el.contains(event.target)) return;
+  el.open = false;
+}
+onMounted(() => {
+  document.addEventListener("pointerdown", onDocumentPointerDown, true);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocumentPointerDown, true);
+});
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 9.5;
 

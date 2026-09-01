@@ -87,7 +87,15 @@
           v-for="(slot, i) in slots"
           :key="i"
           class="flex items-center justify-between gap-2 text-xs rounded-sm border-l-4 pl-2 pr-2 py-1"
-          :class="slotIsFilled(slot) ? ['bg-base-200/60', qualityClasses(slot)?.border] : 'border-l-base-300'"
+          :class="
+            slotIsFilled(slot)
+              ? [
+                  'bg-base-200/60',
+                  qualityClasses(slot)?.border,
+                  isPrioritySubstat(props.character, slot.type.value) ? 'ring-1 ring-inset ring-primary/50' : '',
+                ]
+              : 'border-l-base-300'
+          "
           :data-test-echo-item-substat="i">
           <span class="flex items-center gap-1.5 min-w-0">
             <img v-if="slotIsFilled(slot)" :src="getSubStatIconByType(slot.type.value)" class="size-4 shrink-0" />
@@ -119,6 +127,7 @@ import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType, S
 import { useEchoCardStats, getSubstatRollQualityClasses, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import { useEchoEditFields, type EchoEditTarget, type EchoSubstatSlot } from "../composables/useEchoEditFields";
+import { usePrioritySubstats } from "../composables/usePrioritySubstats";
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
@@ -197,6 +206,7 @@ const { hasSubStats, formattedCritValue, critValueBadgeClass, echoRollValue, rol
   useEchoCardStats(cardStatsSource);
 const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
   useEchoRating(cardStatsSource);
+const { isPrioritySubstat } = usePrioritySubstats();
 
 function qualityClasses(slot: EchoSubstatSlot) {
   return getSubstatRollQualityClasses(slot.type.value, slot.value.value);

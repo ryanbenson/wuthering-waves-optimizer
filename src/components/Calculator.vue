@@ -9,11 +9,13 @@
       <template #mobile>
         <CalculatorMobileSubNav
           @change-screen="changeScreen"
-          :screen="curScreen"></CalculatorMobileSubNav>
+          :screen="curScreen"
+          :hide-resonance-chains="isLiveResultBarEnabled"></CalculatorMobileSubNav>
       </template>
       <template #default>
         <CalculatorSubNav
           :screen="curScreen"
+          :hide-resonance-chains="isLiveResultBarEnabled"
           @change-screen="changeScreen"></CalculatorSubNav>
       </template>
     </Nav>

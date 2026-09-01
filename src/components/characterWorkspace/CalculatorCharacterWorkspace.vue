@@ -8,7 +8,6 @@
       :weapon-type="weaponType"
       :character-stances="!isLoading ? characterStances : []"
       @open-character-browser="openCharacterBrowser"
-      @create-build="openManageBuilds"
       @manage-builds="openManageBuilds"
       @character-level-updated="$emit('character-level-updated', $event)"
       @updated-character-stance="$emit('updated-character-stance', $event)" />

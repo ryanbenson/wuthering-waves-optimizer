@@ -12,14 +12,6 @@
         @click="equip(build.id)">
         {{ build.name }}
       </button>
-      <button
-        type="button"
-        class="btn btn-ghost btn-xs btn-square"
-        title="New build"
-        data-test-workspace-build-add
-        @click="$emit('create-build')">
-        +
-      </button>
     </div>
     <button
       type="button"
@@ -41,7 +33,6 @@ interface Props {
 
 const props = defineProps<Props>();
 defineEmits<{
-  "create-build": [];
   "manage-builds": [];
 }>();
 

@@ -41,7 +41,7 @@
         Echoes
       </a>
     </li>
-    <li class="mb-2">
+    <li v-if="!hideResonanceChains" class="mb-2">
       <a
         @click="changeScreen('constellations')"
         :class="{ active: curScreen === 'constellations' }"
@@ -163,6 +163,10 @@ export default {
     screen: {
       type: String,
       required: true,
+    },
+    hideResonanceChains: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

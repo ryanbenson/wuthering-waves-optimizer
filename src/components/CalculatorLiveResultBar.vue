@@ -114,7 +114,7 @@
         <div class="text-[10px] uppercase tracking-wide opacity-60">
           {{ heroLabel }}
         </div>
-        <div class="font-mono font-bold text-lg leading-tight tabular-nums">
+        <div class="font-mono font-bold text-lg leading-tight tabular-nums text-secondary">
           {{ heroDisplay }}
         </div>
       </div>

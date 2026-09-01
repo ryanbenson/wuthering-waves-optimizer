@@ -9,6 +9,9 @@
         <button type="button" class="btn btn-xs" data-test-workspace-buffs-max-all @click="maxAll">
           Max All
         </button>
+        <button type="button" class="btn btn-xs" data-test-workspace-buffs-disable-all @click="disableAll">
+          Disable All
+        </button>
       </div>
     </div>
 
@@ -149,6 +152,15 @@ function enableAll() {
   const updates: Record<string, { isEnabled: boolean }> = {};
   for (const buff of props.buffs) {
     updates[buff.key] = { isEnabled: true };
+  }
+  characterStore.setCharacterData(props.character, { buffs: updates });
+  emit("updated-character-buffs");
+}
+
+function disableAll() {
+  const updates: Record<string, { isEnabled: boolean }> = {};
+  for (const buff of props.buffs) {
+    updates[buff.key] = { isEnabled: false };
   }
   characterStore.setCharacterData(props.character, { buffs: updates });
   emit("updated-character-buffs");
