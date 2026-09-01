@@ -22,6 +22,26 @@ export const LIVE_RESULT_BAR_STAT_META: Record<
   totalCritRate: { label: "Crit Rate", format: "percent" },
   totalCritDMG: { label: "Crit DMG", format: "percent" },
   energyRegen: { label: "Energy Regen", format: "percent" },
+  // Added for the pinned-stat favorites strip (CalculatorLiveResultOverview.vue)
+  // — these don't appear in DEFAULT_LIVE_RESULT_BAR_STATS or the Optimizer's
+  // own Stat: target vocabulary, only in the panel's full 13-row grouping.
+  basicAttackDmgBonus: { label: "Basic Attack DMG Bonus", format: "percent" },
+  heavyAttackDmgBonus: { label: "Heavy Attack DMG Bonus", format: "percent" },
+  resonanceSkillDmgBonus: {
+    label: "Resonance Skill DMG Bonus",
+    format: "percent",
+  },
+  resonanceLiberationDmgBonus: {
+    label: "Resonance Liberation DMG Bonus",
+    format: "percent",
+  },
+  // A character only ever shows one element's DMG bonus row (their own) —
+  // this generic key stands in for whichever one that is, so pinning it
+  // doesn't require a separate key per element. The caller resolves the
+  // actual label/value from the character's element.
+  elementDmgBonus: { label: "Element DMG Bonus", format: "percent" },
+  healingBonus: { label: "Healing Bonus", format: "percent" },
+  tuneBreakBoost: { label: "Tune Break Boost", format: "percent" },
 };
 
 export const DEFAULT_LIVE_RESULT_BAR_STATS = [
@@ -158,4 +178,29 @@ export function resolveLiveResultBarTarget(
   }
 
   return null;
+}
+
+/**
+ * Which attack-group key (if any) an `"Attack:group|key"` target belongs to
+ * — used by the Attacks tab's accordion (CalculatorLiveResultAttacks.vue) to
+ * auto-expand the group matching the user's current optimizer target on
+ * open, rather than starting every group collapsed. Reuses the same
+ * `Attack:group|key` parse as `resolveLiveResultBarTarget` above instead of
+ * re-deriving it. Non-Attack targets (Stat/Rotation) and unparseable strings
+ * resolve to `null` — nothing to auto-expand.
+ */
+export function attackGroupForTarget(
+  target: string | null | undefined,
+): string | null {
+  if (!target) return null;
+  const separatorIndex = target.indexOf(":");
+  if (separatorIndex === -1) return null;
+  const type = target.slice(0, separatorIndex);
+  if (type !== "Attack") return null;
+
+  const rest = target.slice(separatorIndex + 1);
+  const pipeIndex = rest.indexOf("|");
+  if (pipeIndex === -1) return null;
+
+  return rest.slice(0, pipeIndex);
 }

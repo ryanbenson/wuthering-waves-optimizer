@@ -131,6 +131,38 @@ describe("Live Result Bar (Labs flag)", () => {
     );
   });
 
+  it("pinning/unpinning a stat updates the favorites strip, persists per character across a reload", () => {
+    enableLiveResultBarLab();
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+
+    cy.get("[data-test-live-result-bar-toggle]").click();
+    cy.get("[data-test-live-result-detail]").should("be.visible");
+
+    // HP isn't one of the default pinned stats — pin it, and unpin ATK
+    // (a default) to prove both directions of the toggle work.
+    cy.get('[data-test-live-result-stat-row-key="totalHp"] [data-test-live-result-stat-row-pin]').click();
+    cy.get('[data-test-live-result-stat-row-key="totalAtk"] [data-test-live-result-stat-row-pin]').click();
+
+    cy.get("[data-test-live-result-detail-pin-strip]").should("contain.text", "HP");
+    cy.get("[data-test-live-result-detail-pin-strip]").should("not.contain.text", "ATK");
+
+    cy.reload();
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.get("[data-test-live-result-bar-toggle]").click();
+    cy.get("[data-test-live-result-detail-pin-strip]").should("contain.text", "HP");
+    cy.get("[data-test-live-result-detail-pin-strip]").should("not.contain.text", "ATK");
+
+    // A different character still gets the unmodified defaults, not
+    // Brant's customized set. The panel stays open across a character
+    // switch (only a reload resets isDetailOpen), so no second toggle click
+    // here — clicking it again would just close the still-open panel.
+    cy.selectWorkspaceCharacter("Jiyan");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.get("[data-test-live-result-detail-pin-strip]").should("not.contain.text", "HP");
+    cy.get("[data-test-live-result-detail-pin-strip]").should("contain.text", "ATK");
+  });
+
   it("clicking a stat chip opens the same breakdown drawer a stat row opens today", () => {
     enableLiveResultBarLab();
     cy.selectWorkspaceCharacter("Brant");
