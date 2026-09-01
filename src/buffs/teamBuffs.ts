@@ -37,6 +37,123 @@ export interface TeamBuffInstanceResult {
   data: Record<string, unknown>;
 }
 
+export const ELEMENT_NAMES = ["Glacio", "Fusion", "Electro", "Aero", "Spectro", "Havoc"] as const;
+export type ElementName = (typeof ELEMENT_NAMES)[number];
+
+/**
+ * Pulls "Requires S6" style copy out of the common
+ * "Sequence Node N: <title>" buff-name convention, so the workspace can flag
+ * copy-gated buffs without a hand-maintained list.
+ */
+export function getSequenceNodeRequirement(buffName: string): string | null {
+  const match = /^Sequence Node (\d+):/.exec(buffName);
+  return match ? `Requires S${match[1]}` : null;
+}
+
+export type BuffContributionCategory = "atk" | "critRate" | "critDMG" | "energyRegen" | "damage" | null;
+
+/**
+ * Buckets a *resolved* stat key (as produced by `aggregateTeamBuffStats`)
+ * into a coarse category for display-only summary totals — never fed back
+ * into the real calculation pipeline, so a miscategorized future key is a
+ * cosmetic gap, not an accuracy bug. Keys this can't confidently place
+ * (`EnableAttack`'s array, `specialMultiplier`'s different math, the
+ * Denia-only `tuneBreakBoost`, echo-specific `CritDMG:Echo`) fall through to
+ * `null` on purpose rather than being force-fit into a bucket.
+ */
+export function categorizeBuffModifier(modifierKey: string): BuffContributionCategory {
+  switch (modifierKey) {
+    case "ATK":
+      return "atk";
+    case "CritRate":
+      return "critRate";
+    case "CritDMG":
+      return "critDMG";
+    case "EnergyRegen":
+      return "energyRegen";
+    default:
+      break;
+  }
+  if (
+    modifierKey.startsWith("DMGDeepen") ||
+    modifierKey.endsWith("Bonus") ||
+    modifierKey.startsWith("ResistShred") ||
+    modifierKey.startsWith("ResistIgnore") ||
+    modifierKey.startsWith("DEFIgnore") ||
+    modifierKey === "DefReduction" ||
+    (ELEMENT_NAMES as readonly string[]).includes(modifierKey)
+  ) {
+    return "damage";
+  }
+  return null;
+}
+
+/**
+ * A short, human-readable label for a *resolved* stat key (as produced by
+ * `resolveTeamBuffInstance`/`aggregateTeamBuffStats`) — e.g. "ATK",
+ * "Crit DMG", "Heavy Attack DMG Deepen", "Fusion DMG Bonus". Used for the
+ * Active Buffs tray's "+20% Crit DMG" readout. An exhaustive flat lookup
+ * (not a pattern guess) over every distinct modifier string that exists in
+ * `src/buffs/index.ts` today; an unrecognized future key falls back to the
+ * raw key itself rather than a wrong-sounding guess.
+ */
+const MODIFIER_LABELS: Record<string, string> = {
+  ATK: "ATK",
+  ATK_FLAT: "ATK (Flat)",
+  HP: "HP",
+  HP_FLAT: "HP (Flat)",
+  DEF: "DEF",
+  DEF_FLAT: "DEF (Flat)",
+  CritRate: "Crit Rate",
+  CritDMG: "Crit DMG",
+  "CritDMG:Echo": "Echo Crit DMG",
+  EnergyRegen: "Energy Regen",
+  DEFIgnore: "DEF Ignore",
+  "DEFIgnore:Havoc": "Havoc DEF Ignore",
+  DefReduction: "DEF Reduction",
+  DMGBonus: "DMG Bonus",
+  DMGDeepen: "DMG Deepen",
+  "DMGDeepen:Aero": "Aero DMG Deepen",
+  "DMGDeepen:AeroErosion": "Aero DMG Deepen",
+  "DMGDeepen:Basic": "Basic Attack DMG Deepen",
+  "DMGDeepen:Coordinated": "Coordinated Attack DMG Deepen",
+  "DMGDeepen:Echo": "Echo Skill DMG Deepen",
+  "DMGDeepen:Electro": "Electro DMG Deepen",
+  "DMGDeepen:ElectroFlare": "Electro DMG Deepen",
+  "DMGDeepen:Fusion": "Fusion DMG Deepen",
+  "DMGDeepen:FusionBurst": "Fusion DMG Deepen",
+  "DMGDeepen:Glacio": "Glacio DMG Deepen",
+  "DMGDeepen:GlacioChafe": "Glacio DMG Deepen",
+  "DMGDeepen:Havoc": "Havoc DMG Deepen",
+  "DMGDeepen:Heavy": "Heavy Attack DMG Deepen",
+  "DMGDeepen:Liberation": "Resonance Liberation DMG Deepen",
+  "DMGDeepen:Skill": "Resonance Skill DMG Deepen",
+  "DMGDeepen:SpectroFrazzle": "Spectro DMG Deepen",
+  EchoDMGBonus: "Echo Skill DMG Bonus",
+  Electro: "Electro DMG Bonus",
+  Fusion: "Fusion DMG Bonus",
+  Glacio: "Glacio DMG Bonus",
+  Aero: "Aero DMG Bonus",
+  Spectro: "Spectro DMG Bonus",
+  Havoc: "Havoc DMG Bonus",
+  AllElementAttributeBonus: "All-Attribute DMG Bonus",
+  BasicAttackDMGBonus: "Basic Attack DMG Bonus",
+  HeavyAttackDMGBonus: "Heavy Attack DMG Bonus",
+  ResonanceSkillDMGBonus: "Resonance Skill DMG Bonus",
+  ResonanceLiberationDMGBonus: "Resonance Liberation DMG Bonus",
+  "ResistShred:Aero": "Aero RES Shred",
+  "ResistShred:Glacio": "Glacio RES Shred",
+  "ResistShred:Havoc": "Havoc RES Shred",
+  "ResistShred:Spectro": "Spectro RES Shred",
+  "ResistIgnore:Fusion": "Fusion RES Ignore",
+  specialMultiplier: "Vulnerability",
+  tuneBreakBoost: "Tune Break Boost",
+};
+
+export function getModifierLabel(modifierKey: string): string {
+  return MODIFIER_LABELS[modifierKey] ?? modifierKey;
+}
+
 /**
  * Resolves a single team-buff definition + its stored toggle/stack/etc
  * config into a numeric buff stats object. Mirrors CalculatorPartyBuff.vue's

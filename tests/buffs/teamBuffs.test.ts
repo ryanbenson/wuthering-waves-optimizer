@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   resolveTeamBuffInstance,
   aggregateTeamBuffStats,
+  getSequenceNodeRequirement,
+  categorizeBuffModifier,
+  getModifierLabel,
   type TeamBuffDef,
 } from "../../src/buffs/teamBuffs";
 
@@ -228,5 +231,65 @@ describe("aggregateTeamBuffStats", () => {
       },
     ]);
     expect(result.specificTalentBuffs).toEqual({ "skillDMGBonus:DMGBonus": 0.2 });
+  });
+});
+
+describe("getSequenceNodeRequirement", () => {
+  it("extracts the sequence node number from the standard naming convention", () => {
+    expect(getSequenceNodeRequirement("Sequence Node 6: Daybreak Radiance")).toBe("Requires S6");
+    expect(getSequenceNodeRequirement("Sequence Node 4: Dark Alliance")).toBe("Requires S4");
+  });
+
+  it("returns null for buff names that aren't sequence-node-gated", () => {
+    expect(getSequenceNodeRequirement("Outro: Silversnow")).toBeNull();
+    expect(getSequenceNodeRequirement("Euphonia")).toBeNull();
+  });
+});
+
+describe("categorizeBuffModifier", () => {
+  it("categorizes the core single-key stats", () => {
+    expect(categorizeBuffModifier("ATK")).toBe("atk");
+    expect(categorizeBuffModifier("CritRate")).toBe("critRate");
+    expect(categorizeBuffModifier("CritDMG")).toBe("critDMG");
+    expect(categorizeBuffModifier("EnergyRegen")).toBe("energyRegen");
+  });
+
+  it("categorizes damage-increasing/defense-shredding keys as 'damage'", () => {
+    expect(categorizeBuffModifier("DMGBonus")).toBe("damage");
+    expect(categorizeBuffModifier("DMGDeepen:Heavy")).toBe("damage");
+    expect(categorizeBuffModifier("Fusion")).toBe("damage");
+    expect(categorizeBuffModifier("EchoDMGBonus")).toBe("damage");
+    expect(categorizeBuffModifier("AllElementAttributeBonus")).toBe("damage");
+    expect(categorizeBuffModifier("ResistShred:Aero")).toBe("damage");
+    expect(categorizeBuffModifier("DEFIgnore:Havoc")).toBe("damage");
+    expect(categorizeBuffModifier("DefReduction")).toBe("damage");
+  });
+
+  it("safely skips keys it can't confidently place rather than guessing", () => {
+    expect(categorizeBuffModifier("EnableAttack")).toBeNull();
+    expect(categorizeBuffModifier("specialMultiplier")).toBeNull();
+    expect(categorizeBuffModifier("tuneBreakBoost")).toBeNull();
+    expect(categorizeBuffModifier("CritDMG:Echo")).toBeNull();
+    expect(categorizeBuffModifier("ATK_FLAT")).toBeNull();
+  });
+});
+
+describe("getModifierLabel", () => {
+  it("labels the core single-key stats", () => {
+    expect(getModifierLabel("ATK")).toBe("ATK");
+    expect(getModifierLabel("CritRate")).toBe("Crit Rate");
+    expect(getModifierLabel("CritDMG")).toBe("Crit DMG");
+    expect(getModifierLabel("EnergyRegen")).toBe("Energy Regen");
+  });
+
+  it("labels elemental and attack-type DMG keys", () => {
+    expect(getModifierLabel("Fusion")).toBe("Fusion DMG Bonus");
+    expect(getModifierLabel("DMGDeepen:Heavy")).toBe("Heavy Attack DMG Deepen");
+    expect(getModifierLabel("DMGDeepen:SpectroFrazzle")).toBe("Spectro DMG Deepen");
+    expect(getModifierLabel("EchoDMGBonus")).toBe("Echo Skill DMG Bonus");
+  });
+
+  it("falls back to the raw key for anything it doesn't recognize", () => {
+    expect(getModifierLabel("SomeBrandNewModifier")).toBe("SomeBrandNewModifier");
   });
 });

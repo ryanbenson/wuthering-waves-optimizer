@@ -171,10 +171,18 @@
           :chosen-char="chosenChar"></CalculatorBuildCard>
       </div>
       <div class="screen-party" v-show="curScreen === 'party'">
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
         <CalculatorPartyBuffs
+          v-if="!isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned team buffs workspace, aligned with CalculatorCustomBuffsWorkspace.vue. -->
+        <CalculatorTeamBuffsWorkspace
+          v-else
+          :key="characterBuildKey"
+          :character="character"
+          @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorTeamBuffsWorkspace>
       </div>
       <div class="screen--optimizer" v-if="curScreen === 'optimizer'">
         <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
@@ -489,6 +497,7 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import CalculatorTeamBuffsWorkspace from "./CalculatorTeamBuffsWorkspace.vue";
 import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
@@ -587,6 +596,7 @@ export default defineComponent({
     CalculatorCustomBuffs,
     CalculatorCustomBuffsWorkspace,
     CalculatorPartyBuffs,
+    CalculatorTeamBuffsWorkspace,
     CalculatorResonanceChains,
     CalculatorRotations,
     CalculatorStats,
