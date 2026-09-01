@@ -2,27 +2,8 @@
   <div class="flex flex-col gap-4" data-test-optimizer-workspace>
     <CalculatorOptimizerGuide ref="optimizerGuide"></CalculatorOptimizerGuide>
 
-    <div class="bg-base-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <h3 class="text-lg font-bold">Optimizer</h3>
-        <div class="w-px h-5 bg-base-300"></div>
-        <div class="flex items-center gap-2 min-w-0">
-          <div
-            class="size-8 rounded-full border-2 bg-cover shrink-0"
-            :class="rarityBorderClass"
-            :style="{ backgroundImage: `url(${characterImageUrl})` }"></div>
-          <div class="min-w-0">
-            <div class="text-sm font-semibold leading-tight truncate">
-              {{ characterName || character }}
-            </div>
-            <div class="text-[.65rem] opacity-50 leading-tight truncate">
-              <span v-if="characterElement">{{ characterElement }}</span>
-              <span v-if="characterElement && weaponType"> &middot; </span>
-              <span v-if="weaponType">{{ weaponType }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Optimizer</h3>
       <button type="button" class="btn btn-sm" data-test-optimizer-workspace-guide-btn @click="optimizerGuide?.triggerOpenModal()">
         <span class="text-primary">Optimizer Guide</span>
       </button>
@@ -89,14 +70,9 @@ import {
 
 defineOptions({ name: "CalculatorOptimizerWorkspace" });
 
-const CHARACTER_IMAGE_BASE = "https://ryanbenson.github.io/wuthering-waves-assets/images";
-
 const props = withDefaults(
   defineProps<{
     character: string;
-    characterName?: string;
-    rarity?: number;
-    weaponType?: string;
     totalCombos?: number;
     processedCombos?: number;
     optimizerElapsedMs?: number;
@@ -153,14 +129,6 @@ const phase = computed<"setup" | "running" | "results">(() => {
   if (props.optimizerResults?.length) return "results";
   if (props.isOptimizerRunning) return "running";
   return "setup";
-});
-
-const characterImageUrl = computed(() => `${CHARACTER_IMAGE_BASE}/${props.character}.png`);
-
-const rarityBorderClass = computed(() => {
-  if (props.rarity === 5) return "border-amber-300";
-  if (props.rarity === 4) return "border-violet-600";
-  return "border-transparent";
 });
 
 const emptyReasonMessage = computed(() => {
