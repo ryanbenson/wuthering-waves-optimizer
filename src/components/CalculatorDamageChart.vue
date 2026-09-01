@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="flex justify-center items-center py-6">
-      <div style="width: 320px">
+      <div :style="{ width: props.chartWidth + 'px' }">
         <canvas :id="uniqueKey" ref="chartCanvas"></canvas>
       </div>
     </div>
@@ -65,14 +65,22 @@ type ChartAttack = {
   damage: Record<string, number>;
 };
 
-const props = defineProps<{
-  character: string;
-  rotation: { attacks?: ChartAttack[] } | null;
-  uniqueKey: string;
-  name: string;
-  charBuffsData: Record<string, any>;
-  charResonanceChainsData: Record<string, any>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    rotation: { attacks?: ChartAttack[] } | null;
+    uniqueKey: string;
+    name: string;
+    charBuffsData: Record<string, any>;
+    charResonanceChainsData: Record<string, any>;
+    /** Pie chart width in px (square — height follows). Default matches the
+     *  size this has always rendered at for existing callers. */
+    chartWidth?: number;
+  }>(),
+  {
+    chartWidth: 320,
+  },
+);
 
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 const chartObj = ref<Chart | null>(null);

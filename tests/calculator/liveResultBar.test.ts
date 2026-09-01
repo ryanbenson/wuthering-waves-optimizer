@@ -3,6 +3,7 @@ import {
   buildLiveResultBarTarget,
   fallbackLiveResultBarTarget,
   resolveLiveResultBarTarget,
+  attackGroupForTarget,
 } from "../../src/calculator/liveResultBar";
 
 describe("buildLiveResultBarTarget", () => {
@@ -157,5 +158,28 @@ describe("resolveLiveResultBarTarget", () => {
   it("returns null when given no target, or data isn't ready yet", () => {
     expect(resolveLiveResultBarTarget(null, allDamages, stats)).toBeNull();
     expect(resolveLiveResultBarTarget("Attack:skillAttacks|anchorsAweigh", undefined, stats)).toBeNull();
+  });
+});
+
+describe("attackGroupForTarget", () => {
+  it("extracts the group key from an Attack target", () => {
+    expect(attackGroupForTarget("Attack:liberationAttacks|toTheHorizon")).toBe(
+      "liberationAttacks",
+    );
+    expect(attackGroupForTarget("Attack:skillAttacks|anchorsAweigh")).toBe(
+      "skillAttacks",
+    );
+  });
+
+  it("returns null for Stat and Rotation targets", () => {
+    expect(attackGroupForTarget("Stat:totalAtk")).toBeNull();
+    expect(attackGroupForTarget("Rotation:rot-1")).toBeNull();
+  });
+
+  it("returns null for null/undefined/unparseable targets", () => {
+    expect(attackGroupForTarget(null)).toBeNull();
+    expect(attackGroupForTarget(undefined)).toBeNull();
+    expect(attackGroupForTarget("not-a-target")).toBeNull();
+    expect(attackGroupForTarget("Attack:missing-pipe")).toBeNull();
   });
 });
