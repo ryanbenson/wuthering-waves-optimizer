@@ -57,18 +57,25 @@
           Nothing enabled yet — buffs you turn on below show up here.
         </p>
         <div v-else class="flex flex-wrap gap-1.5" data-test-team-buffs-active-tray>
-          <button
+          <div
             v-for="entry in activeTrayEntries"
             :key="entry.key"
-            type="button"
-            class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1"
-            @click="jumpTo(entry.key)">
-            {{ entry.label }}
-            <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
-              >+{{ formatPct(c.value) }} {{ c.label }}</span
-            >
-            <span class="opacity-70 hover:opacity-100" @click.stop="disableBuff(entry.key)">✕</span>
-          </button>
+            class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1 !pr-1">
+            <button type="button" class="flex flex-wrap items-center gap-1.5 min-w-0" @click="jumpTo(entry.key)">
+              {{ entry.label }}
+              <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
+                >+{{ formatPct(c.value) }} {{ c.label }}</span
+              >
+            </button>
+            <button
+              type="button"
+              class="opacity-70 hover:opacity-100 shrink-0 px-1"
+              :aria-label="`Remove ${entry.label}`"
+              :data-test-team-buffs-tray-remove="entry.key"
+              @click="disableBuff(entry.key)">
+              ✕
+            </button>
+          </div>
         </div>
       </div>
     </div>

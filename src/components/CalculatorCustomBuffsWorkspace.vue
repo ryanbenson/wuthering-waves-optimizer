@@ -16,16 +16,6 @@
 
     <div class="bg-base-200 rounded-xl p-3 flex flex-col gap-3 mb-3">
       <div class="flex flex-wrap items-center gap-2">
-        <div class="join">
-          <span class="join-item btn btn-sm btn-disabled no-animation gap-1.5 !text-base-content">
-            <img
-              v-if="characterElement"
-              :src="getSubStatIconByType(characterElement)"
-              class="size-3.5"
-              alt="" />
-            {{ characterElement || "No element" }}
-          </span>
-        </div>
         <label class="input input-bordered input-sm flex-1 min-w-[10rem] flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5 opacity-50" fill="none">
             <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2" />
@@ -49,21 +39,23 @@
           Nothing set yet — values you enter below show up here.
         </p>
         <div v-else class="flex flex-wrap gap-1.5">
-          <button
+          <div
             v-for="f in activeFields"
             :key="f.key"
-            type="button"
-            class="btn btn-xs btn-primary gap-1.5"
-            @click="jumpTo(f)">
-            {{ f.trayLabel }}
-            <span class="font-mono">{{ formatValue(f) }}</span>
-            <span
-              class="opacity-70 hover:opacity-100"
-              @click.stop="setValue(f.key, 0)"
-              :aria-label="`Clear ${f.trayLabel}`">
+            class="btn btn-xs btn-primary gap-1.5 !pr-1">
+            <button type="button" class="flex items-center gap-1.5" @click="jumpTo(f)">
+              {{ f.trayLabel }}
+              <span class="font-mono">{{ formatValue(f) }}</span>
+            </button>
+            <button
+              type="button"
+              class="opacity-70 hover:opacity-100 shrink-0 px-1"
+              :aria-label="`Clear ${f.trayLabel}`"
+              :data-test-custom-buffs-tray-clear="f.key"
+              @click="setValue(f.key, 0)">
               ✕
-            </span>
-          </button>
+            </button>
+          </div>
         </div>
       </div>
     </div>
