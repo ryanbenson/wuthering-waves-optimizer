@@ -4,6 +4,7 @@ import { buildCharacterCalculationContext, resolveCharacterEchoes, type TeamEnem
 import { getEchoSetIconByType, getEchoSetLabelByType } from "../echoes/stats";
 import { getSetBonusThreshold } from "../echoes/sets";
 import { resolveCharactersForBuildPreview } from "./buildOverride";
+import { resolveActiveStance } from "./stances";
 
 const CHARACTER_IMAGE_BASE = "https://ryanbenson.github.io/wuthering-waves-assets/images";
 
@@ -46,6 +47,8 @@ export interface BuildPreview {
   echoSets: BuildPreviewEchoSet[];
   teammates: BuildPreviewTeammate[];
   stats: BuildPreviewStats | null;
+  /** Active mode/stance (e.g. Phoebe's Absolution/Confession), null for characters without one. */
+  stance: string | null;
 }
 
 /**
@@ -76,6 +79,11 @@ export async function computeBuildPreview(
 
   const chosenChar = await getCharByName(characterId);
   const weaponType = chosenChar?.basic?.weapon ?? "Swords";
+  const stances: string[] = chosenChar?.basic?.stances ?? [];
+  const stance =
+    stances.length > 1
+      ? resolveActiveStance(stances, characterData.activeStance, characterData.buffs)
+      : null;
   const weaponKey: string | null = characterData.weapon ?? null;
   let weaponName: string | null = null;
   let weaponIcon: string | null = null;
@@ -130,5 +138,5 @@ export async function computeBuildPreview(
     stats = null;
   }
 
-  return { weaponName, weaponIcon, echoSets, teammates, stats };
+  return { weaponName, weaponIcon, echoSets, teammates, stats, stance };
 }

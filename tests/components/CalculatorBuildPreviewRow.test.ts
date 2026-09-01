@@ -106,6 +106,36 @@ describe("CalculatorBuildPreviewRow", () => {
     }, PREVIEW_TIMEOUT);
   });
 
+  it("shows the active mode/stance for a character that has one", async () => {
+    const characterStore = useCharacterStore();
+    characterStore.characters = {
+      Phoebe: {
+        activeBuildId: "b1",
+        builds: [{ id: "b1", name: "Default" }],
+        activeStance: "Confession",
+      },
+    };
+    const { container } = render(CalculatorBuildPreviewRow, {
+      props: { characterId: "Phoebe", buildId: "b1" },
+      global: { directives: { tooltip: () => {} } },
+    });
+
+    await waitFor(() => {
+      expect(container.querySelector("[data-test-build-preview-stance]")?.textContent).toContain("Confession");
+    }, PREVIEW_TIMEOUT);
+  });
+
+  it("omits the mode/stance row for a character that doesn't have one", async () => {
+    seedCharacter();
+    seedInventoryEchoes();
+    const { container } = renderRow();
+
+    await waitFor(() => {
+      expect(container.querySelector("[data-test-build-preview-weapon]")).toBeTruthy();
+    }, PREVIEW_TIMEOUT);
+    expect(container.querySelector("[data-test-build-preview-stance]")).toBeNull();
+  });
+
   it("reads a non-active build's own data, not the live/active character record", async () => {
     seedCharacter({
       builds: [

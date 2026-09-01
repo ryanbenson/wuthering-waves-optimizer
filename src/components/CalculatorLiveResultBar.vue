@@ -43,6 +43,40 @@
     </div>
 
     <!--
+      Mode/stance sits inline, right after the stat chips, rather than
+      behind the settings gear — it's the one setting that's genuinely
+      worth surfacing all the time (it changes which buffs are active),
+      not a "set once" preference like target/damage type.
+    -->
+    <div
+      v-if="characterStances.length > 1"
+      class="flex flex-col items-start leading-tight shrink-0"
+      data-test-live-result-bar-stance>
+      <span class="text-[10px] uppercase tracking-wide opacity-60 mb-1">Mode</span>
+      <div class="join">
+        <button
+          v-for="stance in characterStances"
+          :key="stance"
+          type="button"
+          class="join-item btn btn-xs"
+          :class="stance === activeStance ? 'btn-default' : 'btn-ghost opacity-50'"
+          :aria-pressed="stance === activeStance"
+          :data-test-stance="stance"
+          v-tooltip="stance"
+          @click="selectStance(stance)">
+          <img
+            v-if="stanceIconUrl(stance)"
+            :src="stanceIconUrl(stance)"
+            :alt="stance"
+            class="size-3.5"
+            :style="stanceIconStyle(stance)"
+            loading="lazy" />
+          <span>{{ stance }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!--
       ml-auto: pushes this group to the right, whether it shares the row
       with the stat chips or wraps onto its own line — stays right-aligned
       either way rather than centering when wrapped. Not shrink-0 — that
@@ -147,6 +181,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
@@ -156,6 +191,9 @@ import {
   type LiveResultBarDamageType,
 } from "../calculator/liveResultBar";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
+import { useCharacterStore } from "../stores/character";
+import { resolveActiveStance } from "../calculator/stances";
+import { getStanceIconConfig } from "../calculator/stanceIcons";
 
 defineOptions({ name: "CalculatorLiveResultBar" });
 
@@ -171,6 +209,7 @@ const props = defineProps<{
   allDamages: Record<string, any> | null | undefined;
   isDetailOpen: boolean;
   isLoading?: boolean;
+  characterStances?: string[];
 }>();
 
 const emit = defineEmits<{
@@ -178,7 +217,36 @@ const emit = defineEmits<{
   "update:damage-type": [damageType: LiveResultBarDamageType];
   "stat-selected": [stat: string];
   "toggle-detail": [];
+  "updated-character-stance": [stance: string];
 }>();
+
+const characterStances = computed(() => props.characterStances ?? []);
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const activeStance = computed(() =>
+  resolveActiveStance(
+    characterStances.value,
+    characters.value[props.character]?.activeStance,
+    characters.value[props.character]?.buffs,
+  ),
+);
+
+function stanceIconUrl(stance: string): string | undefined {
+  return getStanceIconConfig(stance)?.imageUrl;
+}
+
+function stanceIconStyle(stance: string): Record<string, string> | undefined {
+  const filter = getStanceIconConfig(stance)?.cssFilter;
+  return filter ? { filter } : undefined;
+}
+
+async function selectStance(stance: string) {
+  if (stance === activeStance.value) return;
+  await characterStore.setCharacterData(props.character, { activeStance: stance });
+  emit("updated-character-stance", stance);
+}
 
 const characterRarity = computed(() =>
   props.characterRarity === undefined || props.characterRarity === null

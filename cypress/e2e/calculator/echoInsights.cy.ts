@@ -67,11 +67,11 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     // CV = CritRate 10.5 * 2 + CritDMG 21 = 42
     cy.get("[data-test-echo-insights-total-cv]").should("contain.text", "42.0%");
 
-    // CritRate/CritDMG (weight 4) should lead the priority list, ahead of a
-    // lower-weighted priority stat like EnergyRegen (weight 2, unrolled).
+    // EnergyRegen always leads the priority list when present, ahead of even
+    // higher-weighted stats like CritRate/CritDMG (weight 4 vs. EnergyRegen's 2).
     cy.get("[data-test-echo-insights-row]").then(($rows) => {
       const types = [...$rows].map((el) => el.getAttribute("data-test-echo-insights-row"));
-      expect(types.indexOf("CritRate")).to.be.lessThan(types.indexOf("EnergyRegen"));
+      expect(types.indexOf("EnergyRegen")).to.be.lessThan(types.indexOf("CritRate"));
     });
 
     // HP (weight 0 for Brant) lands in "Other rolled substats", not flagged.

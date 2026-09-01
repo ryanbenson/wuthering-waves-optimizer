@@ -57,6 +57,7 @@
               class="toggle toggle-primary toggle-sm shrink-0"
               :checked="isEnabled(buff.key)"
               :disabled="buff.alwaysEnabled"
+              :data-test-workspace-rc-toggle="buff.key"
               @change="setEnabled(buff.key, ($event.target as HTMLInputElement).checked)" />
           </div>
           <div
@@ -207,11 +208,28 @@ const currentLevel = computed(() => {
   return level;
 });
 
+function findGroupLevel(key: string): number | null {
+  return groups.value.find((group) => group.buffs.some((b) => b.key === key))?.level ?? null;
+}
+
+// A buff's own toggle switch is the more obvious click target than the
+// small node icons above it, so it needs the same cascade setLevel already
+// gives the node track: turning one on enables every earlier sequence level
+// (setLevel(thisLevel), same as clicking this node), turning it off cascades
+// down to just before this level (setLevel(thisLevel - 1), same as clicking
+// the previous node) — otherwise the node track's "on" state (currentLevel,
+// which requires every group from 1 up to be enabled) never lights up from
+// a lone checkbox click, since it stops at the first unenabled group.
 function setEnabled(key: string, value: boolean) {
-  characterStore.setCharacterData(props.character, {
-    resonanceChains: { [key]: { isEnabled: value } },
-  });
-  emit("updated-character-resonance-chains");
+  const level = findGroupLevel(key);
+  if (level === null) {
+    characterStore.setCharacterData(props.character, {
+      resonanceChains: { [key]: { isEnabled: value } },
+    });
+    emit("updated-character-resonance-chains");
+    return;
+  }
+  setLevel(value ? level : level - 1);
 }
 
 function setStacks(key: string, rawValue: string, maxStacks?: number) {

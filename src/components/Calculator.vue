@@ -32,7 +32,9 @@
       :all-damages="allDamages.value"
       :is-detail-open="isLiveResultDetailOpen"
       :is-loading="isLoading"
+      :character-stances="characterStances"
       @stat-selected="handleStatSelected"
+      @updated-character-stance="handleUpdatedCharacterStance"
       @toggle-detail="
         isLiveResultDetailOpen = !isLiveResultDetailOpen
       "></CalculatorLiveResultBar>
