@@ -4,7 +4,7 @@
       <tr
         class="stat-hp"
         @click="emit('stat-selected', 'HP')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />
@@ -22,7 +22,7 @@
       <tr
         class="stat-atk"
         @click="emit('stat-selected', 'ATK')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td class="w-10">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
@@ -40,7 +40,7 @@
       <tr
         class="stat-def"
         @click="emit('stat-selected', 'DEF')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
@@ -58,7 +58,7 @@
       <tr
         class="stat-cr"
         @click="emit('stat-selected', 'Crit Rate')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
@@ -69,7 +69,7 @@
       <tr
         class="stat-cd"
         @click="emit('stat-selected', 'Crit DMG')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
@@ -80,7 +80,7 @@
       <tr
         class="stat-er"
         @click="emit('stat-selected', 'Energy Regen')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />
@@ -91,7 +91,7 @@
       <tr
         class="stat-basic"
         @click="emit('stat-selected', 'Basic Attack DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
@@ -102,7 +102,7 @@
       <tr
         class="stat-heavy"
         @click="emit('stat-selected', 'Heavy Attack DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />
@@ -113,7 +113,7 @@
       <tr
         class="stat-skill"
         @click="emit('stat-selected', 'Resonance Skill DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
@@ -126,7 +126,7 @@
       <tr
         class="stat-liberation"
         @click="emit('stat-selected', 'Resonance Liberation DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
@@ -140,7 +140,7 @@
         v-if="showElement('Glacio')"
         class="stat-glacio"
         @click="emit('stat-selected', 'Glacio DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
@@ -153,7 +153,7 @@
         v-if="showElement('Fusion')"
         class="stat-fusion"
         @click="emit('stat-selected', 'Fusion DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
@@ -166,7 +166,7 @@
         v-if="showElement('Electro')"
         class="stat-electro"
         @click="emit('stat-selected', 'Electro DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
@@ -179,7 +179,7 @@
         v-if="showElement('Aero')"
         class="stat-aero"
         @click="emit('stat-selected', 'Aero DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
@@ -192,7 +192,7 @@
         v-if="showElement('Spectro')"
         class="stat-spectro"
         @click="emit('stat-selected', 'Spectro DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
@@ -205,7 +205,7 @@
         v-if="showElement('Havoc')"
         class="stat-havoc"
         @click="emit('stat-selected', 'Havoc DMG Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
@@ -217,7 +217,7 @@
       <tr
         class="stat-healing"
         @click="emit('stat-selected', 'Healing Bonus')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />
@@ -228,7 +228,7 @@
       <tr
         class="stat-tune-break-boost"
         @click="emit('stat-selected', 'Tune Break Boost')"
-        style="cursor: pointer">
+        :style="{ cursor: props.clickable ? 'pointer' : 'default' }">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/tunebreakboost.png" />
@@ -247,36 +247,41 @@ import { computed, onMounted, ref } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
 import { getCharByName } from "../characters/characters";
 
-const props = defineProps<{
-  character: string;
-  characterLevel: string;
-  weaponAtk: number;
-  totalAtk: number;
-  totalAtkPercent: number;
-  totalAtkFlat: number;
-  totalHp: number;
-  totalHpPercent: number;
-  totalHpFlat: number;
-  totalDef: number;
-  totalDefPercent: number;
-  totalDefFlat: number;
-  totalCritRate: number;
-  totalCritDmg: number;
-  energyRegen: number;
-  basicAttackDmgBonus: number;
-  heavyAttackDmgBonus: number;
-  resonanceSkillDmgBonus: number;
-  resonanceLiberationDmgBonus: number;
-  glacio: number;
-  fusion: number;
-  electro: number;
-  aero: number;
-  spectro: number;
-  havoc: number;
-  healingBonus: number;
-  tuneBreakBoost: number;
-  elementFilter?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    characterLevel: string;
+    weaponAtk: number;
+    totalAtk: number;
+    totalAtkPercent: number;
+    totalAtkFlat: number;
+    totalHp: number;
+    totalHpPercent: number;
+    totalHpFlat: number;
+    totalDef: number;
+    totalDefPercent: number;
+    totalDefFlat: number;
+    totalCritRate: number;
+    totalCritDmg: number;
+    energyRegen: number;
+    basicAttackDmgBonus: number;
+    heavyAttackDmgBonus: number;
+    resonanceSkillDmgBonus: number;
+    resonanceLiberationDmgBonus: number;
+    glacio: number;
+    fusion: number;
+    electro: number;
+    aero: number;
+    spectro: number;
+    havoc: number;
+    healingBonus: number;
+    tuneBreakBoost: number;
+    elementFilter?: string;
+    /** Whether stat rows respond to clicks (cursor + emit "stat-selected"). Off for static contexts like the Build Card export image. */
+    clickable?: boolean;
+  }>(),
+  { clickable: true },
+);
 
 const emit = defineEmits<{
   "stat-selected": [stat: string];

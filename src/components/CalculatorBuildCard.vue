@@ -263,7 +263,8 @@
                 :havoc="buildCardStats.havoc ?? 0"
                 :healing-bonus="buildCardStats.healingBonus ?? 0"
                 :tune-break-boost="buildCardTuneBreakBoost"
-                :element-filter="characterBasic?.element" />
+                :element-filter="characterBasic?.element"
+                :clickable="false" />
             </div>
             <div
               v-if="echoSetSummary.length"

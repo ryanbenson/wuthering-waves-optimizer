@@ -73,10 +73,26 @@ describe("useEchoInsights", () => {
 
     const { insights } = useEchoInsights(() => "Carlotta");
     expect(insights.value.isCurated).toBe(true);
-    const weights = insights.value.priorityRows.map((r) => r.weight);
-    expect(weights).toEqual([...weights].sort((a, b) => b - a));
-    // CritRate (4) should lead ahead of ATK (2)
-    expect(insights.value.priorityRows[0].type).toBe("CritRate");
+    // Carlotta's curated weights include EnergyRegen (1), which always leads
+    // regardless of weight — the rest stays weight-descending.
+    const rest = insights.value.priorityRows.filter((r) => r.type !== "EnergyRegen");
+    const restWeights = rest.map((r) => r.weight);
+    expect(restWeights).toEqual([...restWeights].sort((a, b) => b - a));
+    // CritRate (4) should lead the non-EnergyRegen stats, ahead of ATK (2)
+    expect(rest[0].type).toBe("CritRate");
+  });
+
+  it("puts Energy Regen at the top of priorityRows when it's a curated priority stat", () => {
+    const characterStore = useCharacterStore();
+    const inventoryStore = useInventoryStore();
+    // Carlotta's curated weights: CritRate 4, CritDMG 2.5, EnergyRegen 1, ATK 2,
+    // ResonanceSkillDMGBonus 1.5, ATK_FLAT 1 — EnergyRegen has a lower weight
+    // than CritRate/CritDMG/ATK but should still sort first.
+    inventoryStore.echoes = [{ echoId: "e1", ...CARLOTTA_ECHO }];
+    characterStore.setCharacterData("Carlotta", { echoes: { 0: { echoId: "e1" } } });
+
+    const { insights } = useEchoInsights(() => "Carlotta");
+    expect(insights.value.priorityRows[0].type).toBe("EnergyRegen");
   });
 
   it("flags a zero-roll priority substat as missing", () => {

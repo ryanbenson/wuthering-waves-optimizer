@@ -5,6 +5,19 @@
       Loading build details…
     </div>
     <div v-else class="build-preview__body grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs">
+      <div
+        v-if="preview.stance"
+        class="build-preview__stance flex items-center gap-1.5 col-span-1 sm:col-span-2"
+        data-test-build-preview-stance>
+        <img
+          v-if="stanceIconUrl"
+          :src="stanceIconUrl"
+          alt=""
+          class="size-4 shrink-0"
+          :style="stanceIconStyle" />
+        <span class="badge badge-outline badge-sm">{{ preview.stance }}</span>
+      </div>
+
       <div class="build-preview__weapon flex items-center gap-2 min-w-0">
         <img
           v-if="preview.weaponIcon"
@@ -78,11 +91,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { computeBuildPreview, type BuildPreview } from "../calculator/buildPreview";
+import { getStanceIconConfig } from "../calculator/stanceIcons";
 import { displayInt, displayPercentage } from "../utils/numbers";
 
 defineOptions({ name: "CalculatorBuildPreviewRow" });
@@ -99,6 +113,16 @@ const inventoryStore = useInventoryStore();
 const { characters } = storeToRefs(characterStore);
 
 const preview = ref<BuildPreview | null>(null);
+
+const stanceIconUrl = computed(() =>
+  preview.value?.stance ? getStanceIconConfig(preview.value.stance)?.imageUrl : undefined,
+);
+const stanceIconStyle = computed(() => {
+  const filter = preview.value?.stance
+    ? getStanceIconConfig(preview.value.stance)?.cssFilter
+    : undefined;
+  return filter ? { filter } : undefined;
+});
 
 async function load() {
   preview.value = null;

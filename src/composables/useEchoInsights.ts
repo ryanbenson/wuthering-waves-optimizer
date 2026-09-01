@@ -111,7 +111,13 @@ export function useEchoInsights(
       else otherRows.push(row);
     }
 
-    priorityRows.sort((a, b) => b.weight - a.weight);
+    // Energy Regen always leads the priority list when present — running out
+    // of it stalls a rotation outright, so it outranks weight-based ordering.
+    priorityRows.sort((a, b) => {
+      if (a.type === "EnergyRegen") return -1;
+      if (b.type === "EnergyRegen") return 1;
+      return b.weight - a.weight;
+    });
     otherRows.sort((a, b) => b.total - a.total);
 
     const totalRollCount = Object.values(counts).reduce((sum, c) => sum + c, 0);
