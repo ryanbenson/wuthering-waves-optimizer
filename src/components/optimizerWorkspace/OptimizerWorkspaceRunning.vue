@@ -51,32 +51,15 @@
 
     <!-- Progress hero -->
     <div class="bg-base-200 rounded-xl p-6 flex flex-col sm:flex-row gap-6 sm:items-center">
-      <div class="relative size-40 shrink-0 mx-auto sm:mx-0">
-        <svg width="100%" height="100%" viewBox="0 0 184 184">
-          <circle cx="92" cy="92" r="80" fill="none" class="stroke-base-300" stroke-width="14" />
-          <circle
-            cx="92"
-            cy="92"
-            r="80"
-            fill="none"
-            class="stroke-primary"
-            stroke-width="14"
-            stroke-linecap="round"
-            :stroke-dasharray="ringCircumference"
-            :stroke-dashoffset="ringOffset"
-            transform="rotate(-90 92 92)" />
-        </svg>
-        <div class="absolute inset-0 flex flex-col items-center justify-center">
-          <div class="font-mono text-2xl font-bold">{{ progressPercent }}%</div>
-          <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
-            {{ optimizerSearchComplete ? "scored" : "processing" }}
-          </div>
-        </div>
-      </div>
-
       <div class="flex-1 flex flex-col gap-4 min-w-0">
         <div>
-          <div class="font-mono text-sm font-semibold">
+          <div class="flex items-baseline gap-2">
+            <span class="font-mono text-2xl font-bold">{{ progressPercent }}%</span>
+            <span class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
+              {{ optimizerSearchComplete ? "scored" : "processing" }}
+            </span>
+          </div>
+          <div class="font-mono text-sm font-semibold mt-1">
             {{ displayInt(processedCombos) }}
             <span class="opacity-45 font-normal">
               / {{ displayInt(totalCombos) }}{{ optimizerSearchComplete ? "" : "+" }} loadouts scored
@@ -160,15 +143,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{ cancel: [] }>();
 
-const RING_RADIUS = 80;
-const ringCircumference = 2 * Math.PI * RING_RADIUS;
-
 const progressPercent = computed(() => {
   if (!props.totalCombos) return 0;
   return Math.min(100, Math.round((props.processedCombos / props.totalCombos) * 100));
 });
-
-const ringOffset = computed(() => ringCircumference * (1 - progressPercent.value / 100));
 
 const formattedElapsed = computed(() => formatOptimizerElapsed(props.optimizerElapsedMs));
 
