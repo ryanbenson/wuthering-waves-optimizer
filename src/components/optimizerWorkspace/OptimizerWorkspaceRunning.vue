@@ -55,7 +55,6 @@
         <svg width="100%" height="100%" viewBox="0 0 184 184">
           <circle cx="92" cy="92" r="80" fill="none" class="stroke-base-300" stroke-width="14" />
           <circle
-            v-if="optimizerSearchComplete"
             cx="92"
             cy="92"
             r="80"
@@ -66,23 +65,11 @@
             :stroke-dasharray="ringCircumference"
             :stroke-dashoffset="ringOffset"
             transform="rotate(-90 92 92)" />
-          <circle
-            v-else
-            cx="92"
-            cy="92"
-            r="80"
-            fill="none"
-            class="stroke-primary opacity-60 animate-pulse"
-            stroke-width="14"
-            stroke-linecap="round"
-            :stroke-dasharray="`${ringCircumference * 0.18} ${ringCircumference}`" />
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
-          <div class="font-mono text-2xl font-bold">
-            {{ optimizerSearchComplete ? `${progressPercent}%` : "…" }}
-          </div>
+          <div class="font-mono text-2xl font-bold">{{ progressPercent }}%</div>
           <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
-            {{ optimizerSearchComplete ? "scored" : "searching" }}
+            {{ optimizerSearchComplete ? "scored" : "processing" }}
           </div>
         </div>
       </div>
@@ -96,9 +83,7 @@
             </span>
           </div>
           <div class="h-2 rounded-full bg-base-300 mt-2 overflow-hidden">
-            <div
-              class="h-full rounded-full bg-primary"
-              :style="{ width: `${optimizerSearchComplete ? progressPercent : 0}%` }"></div>
+            <div class="h-full rounded-full bg-primary" :style="{ width: `${progressPercent}%` }"></div>
           </div>
         </div>
         <div class="flex flex-wrap gap-3">

@@ -90,9 +90,8 @@
           :class="
             slotIsFilled(slot)
               ? [
-                  'bg-base-200/60',
+                  isPrioritySubstat(props.character, slot.type.value) ? 'bg-primary/15' : 'bg-base-200/60',
                   qualityClasses(slot)?.border,
-                  isPrioritySubstat(props.character, slot.type.value) ? 'ring-1 ring-inset ring-primary/50' : '',
                 ]
               : 'border-l-base-300'
           "

@@ -68,9 +68,8 @@ const isLiveResultBarEnabled = computed(
 function rowClass(slot: EchoCardSubstatSlot) {
   if (!slot.filled || !isLiveResultBarEnabled.value) return "border-l-base-300";
   return [
-    "bg-base-200/60",
+    isPrioritySubstat(props.characterId, slot.type) ? "bg-primary/15" : "bg-base-200/60",
     getSubstatRollQualityClasses(slot.type, slot.value)?.border,
-    isPrioritySubstat(props.characterId, slot.type) ? "ring-1 ring-inset ring-primary/50" : "",
   ];
 }
 function textClass(slot: EchoCardSubstatSlot) {
