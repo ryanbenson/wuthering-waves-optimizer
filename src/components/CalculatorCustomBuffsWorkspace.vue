@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-buffs-workspace max-w-4xl">
+  <div class="custom-buffs-workspace">
     <div
       class="custom-buffs-workspace__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Custom Buffs</h3>
@@ -21,7 +21,6 @@
             <img
               v-if="characterElement"
               :src="getSubStatIconByType(characterElement)"
-              :class="`${characterElement.toLowerCase()}--active`"
               class="size-3.5"
               alt="" />
             {{ characterElement || "No element" }}
@@ -109,11 +108,10 @@
               class="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors"
               :class="[
                 f.isActive ? 'bg-primary/10' : 'hover:bg-base-100',
-                f.pinned ? 'ring-1 ring-primary/40' : '',
                 f.dimmed ? 'opacity-50' : '',
               ]">
               <img v-if="f.icon" :src="f.icon" :class="f.iconClass" class="size-3.5 shrink-0" alt="" />
-              <span v-else class="size-1.5 rounded-full shrink-0" :class="f.pinned ? 'bg-primary' : 'bg-base-content/30'"></span>
+              <span v-else class="size-1.5 rounded-full shrink-0 bg-base-content/30"></span>
               <span class="flex-1 min-w-0 text-xs leading-tight">
                 {{ f.label }}
                 <small v-if="f.small" class="block opacity-50 text-[.65rem]">{{ f.small }}</small>
@@ -397,7 +395,6 @@ const visibleSections = computed(() => {
       label: labelFor(f),
       icon: iconFor(f),
       iconClass: f.element ? `${f.element.toLowerCase()}--active` : undefined,
-      pinned: !!f.element && f.element === props.characterElement,
       dimmed: extra.includes(f),
       isActive: !!(getValue(f.key) || (f.flatKey && getValue(f.flatKey))),
     }));
