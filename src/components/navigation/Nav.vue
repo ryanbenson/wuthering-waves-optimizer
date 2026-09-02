@@ -25,13 +25,13 @@
         <RouterLink
           to="/"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
-          :class="{ 'btn-active': curPage === 'home' }"
+          :class="{ 'btn-active text-white': curPage === 'home' }"
           title="Calculator"
           data-test-nav-calculator
           @click="handleCalculatorNavClick">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="size-8"
+            class="size-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor">
@@ -39,7 +39,10 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="1.75"
-              d="M3 11.5L12 4l9 7.5M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" />
+              d="M6 20V4M12 20V4M18 20V4" />
+            <circle cx="6" cy="15" r="2.1" fill="currentColor" stroke="none" />
+            <circle cx="12" cy="9" r="2.1" fill="currentColor" stroke="none" />
+            <circle cx="18" cy="13" r="2.1" fill="currentColor" stroke="none" />
           </svg>
         </RouterLink>
         <RouterLink
@@ -213,6 +216,17 @@ function toggleOptionsMenu() {
 <style lang="scss" scoped>
 .menu {
   z-index: 100;
+}
+// The global stylesheet still carries the Vite scaffold's default
+// `a:hover { color: #535bf2 }` (leftover boilerplate purple). It's invisible
+// on the image-based nav icons (img ignores `color`), but the home icon is
+// an inline SVG using `stroke="currentColor"`, so it visibly tints purple on
+// hover unless we override it back here.
+.navbar a {
+  color: inherit;
+  &:hover {
+    color: inherit;
+  }
 }
 .options-menu {
   summary:after {

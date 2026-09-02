@@ -1,6 +1,6 @@
 <template>
   <div
-    class="command-bar sticky top-20 z-30 flex flex-wrap items-center gap-6 bg-base-200 border-b border-base-300 px-4 py-2"
+    class="command-bar sticky top-20 z-30 flex flex-col items-center gap-3 md:flex-row md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-4 py-2"
     data-test-live-result-bar>
     <!-- Identity + config (inputs): who this is and how it's set up. -->
     <div class="flex items-center gap-2 shrink-0 min-w-0">
@@ -20,12 +20,7 @@
         @click="emit('open-character-browser')"></button>
 
       <div class="leading-tight min-w-0">
-        <div v-if="element || weaponType" class="text-[10px] opacity-60 whitespace-nowrap">
-          <template v-if="element">{{ element }}</template
-          ><template v-if="element && weaponType"> &middot; </template
-          ><template v-if="weaponType">{{ weaponType }}</template>
-        </div>
-        <div class="flex items-baseline gap-1.5 min-w-0">
+        <div class="flex items-center gap-1.5 min-w-0">
           <span class="font-bold text-sm truncate" data-test-live-result-bar-name>{{ characterName }}</span>
           <span v-if="characterRarity" class="text-[10px] text-amber-400 font-semibold shrink-0"
             >{{ characterRarity }}&#9733;</span
@@ -50,6 +45,11 @@
                 stroke-width="2" />
             </svg>
           </button>
+          <span v-if="element || weaponType" class="text-[10px] opacity-60 whitespace-nowrap">
+            <template v-if="element">{{ element }}</template
+            ><template v-if="element && weaponType"> &middot; </template
+            ><template v-if="weaponType">{{ weaponType }}</template>
+          </span>
         </div>
         <div class="flex items-center gap-1.5 flex-wrap text-[11px] opacity-70 mt-0.5 font-mono">
           <WorkspaceLevelStepper
@@ -95,132 +95,130 @@
     </div>
 
     <!-- Stats + damage monitor (outputs): the result of that configuration,
-    stacked together on the right — stats first, the monitor underneath. -->
-    <div class="flex flex-col items-end gap-1 ml-auto">
-      <div class="flex items-center gap-3">
-        <div
-          v-if="statChips.length"
-          :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex items-center gap-4 flex-wrap']"
-          data-test-live-result-bar-stats>
-          <button
-            v-for="chip in statChips"
-            :key="chip.key"
-            type="button"
-            class="flex flex-col items-start leading-tight text-left"
-            v-tooltip="'View full breakdown'"
-            @click="emit('stat-selected', chip.label)">
-            <span class="text-[10px] uppercase tracking-wide opacity-60">{{ chip.label }}</span>
-            <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
-          </button>
-        </div>
-
+    laid out in a single row on the right, bottom-aligned so stat values and
+    the damage monitor's value sit on the same line. -->
+    <div class="flex items-end gap-4 md:ml-auto">
+      <div
+        v-if="statChips.length"
+        :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex items-end gap-4 flex-wrap']"
+        data-test-live-result-bar-stats>
         <button
-          v-if="statChips.length"
+          v-for="chip in statChips"
+          :key="chip.key"
           type="button"
-          class="btn btn-circle btn-ghost btn-xs lg:hidden"
-          :aria-expanded="isMobileStatsExpanded"
-          aria-label="Show stat breakdown"
-          data-test-live-result-bar-mobile-stats-toggle
-          @click="isMobileStatsExpanded = !isMobileStatsExpanded">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-3.5 transition-transform"
-            :class="{ 'rotate-180': isMobileStatsExpanded }"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-          </svg>
+          class="flex flex-col items-start leading-tight text-left"
+          v-tooltip="'View full breakdown'"
+          @click="emit('stat-selected', chip.label)">
+          <span class="text-[10px] uppercase tracking-wide opacity-60">{{ chip.label }}</span>
+          <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
         </button>
       </div>
 
-      <div class="flex items-center gap-3">
-        <details
-          v-if="character"
-          ref="settingsDetailsEl"
-          class="dropdown dropdown-end"
-          data-test-live-result-bar-settings>
-          <summary
-            class="btn btn-sm btn-circle btn-ghost list-none"
-            aria-label="Change target and damage type"
-            v-tooltip="'Target & damage type'">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="size-4"
-              fill="currentColor"
-              viewBox="0 0 640 640">
-              <path
-                d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
-            </svg>
-          </summary>
-          <div
-            class="dropdown-content menu z-30 mt-2 w-72 rounded-box bg-base-100 p-3 shadow-lg">
-            <label
-              class="mb-1 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
-              >Target</label
-            >
-            <CalculatorOptimizerTarget
-              :key="character"
-              class="w-full"
-              :character="character"
-              :current-optimization-target="target"
-              @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+      <button
+        v-if="statChips.length"
+        type="button"
+        class="btn btn-xs btn-ghost gap-1 rounded-full lg:hidden self-center"
+        :aria-expanded="isMobileStatsExpanded"
+        aria-label="Show stat breakdown"
+        data-test-live-result-bar-mobile-stats-toggle
+        @click="isMobileStatsExpanded = !isMobileStatsExpanded">
+        <span class="text-[10px] uppercase tracking-wide opacity-70">Stats</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-3.5 transition-transform"
+          :class="{ 'rotate-180': isMobileStatsExpanded }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-            <label
-              class="mb-1 mt-3 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
-              >Damage type</label
-            >
-            <CalculatorOptimizerDamageType
-              name="live-result-bar-damage-type"
-              :character="character"
-              :current-damage-type="damageType"
-              @optimizer:damage-type-updated="
-                onDamageTypeUpdated
-              "></CalculatorOptimizerDamageType>
-          </div>
-        </details>
-
-        <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
-          <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
-          <div class="flex items-center gap-2">
-            <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
-              heroDisplay
-            }}</span>
-            <Transition name="live-result-bar-delta">
-              <span
-                v-if="delta !== null && delta !== 0"
-                class="badge badge-sm font-mono tabular-nums"
-                :class="delta > 0 ? 'badge-success' : 'badge-error'"
-                data-test-live-result-bar-delta>
-                {{ deltaLabel }}
-              </span>
-            </Transition>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-circle"
-          :class="{ 'btn-primary': isDetailOpen }"
-          :aria-expanded="isDetailOpen"
-          aria-label="Show full stats and damage breakdown"
-          data-test-live-result-bar-toggle
-          @click="emit('toggle-detail')">
+      <details
+        v-if="character"
+        ref="settingsDetailsEl"
+        class="dropdown dropdown-end self-center"
+        data-test-live-result-bar-settings>
+        <summary
+          class="btn btn-sm btn-circle btn-ghost list-none"
+          aria-label="Change target and damage type"
+          v-tooltip="'Target & damage type'">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="size-4 transition-transform"
-            :class="{ 'rotate-180': isDetailOpen }"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+            class="size-4"
+            fill="currentColor"
+            viewBox="0 0 640 640">
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7" />
+              d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
           </svg>
-        </button>
+        </summary>
+        <div
+          class="dropdown-content menu z-30 mt-2 w-72 rounded-box bg-base-100 p-3 shadow-lg">
+          <label
+            class="mb-1 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+            >Target</label
+          >
+          <CalculatorOptimizerTarget
+            :key="character"
+            class="w-full"
+            :character="character"
+            :current-optimization-target="target"
+            @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+
+          <label
+            class="mb-1 mt-3 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+            >Damage type</label
+          >
+          <CalculatorOptimizerDamageType
+            name="live-result-bar-damage-type"
+            :character="character"
+            :current-damage-type="damageType"
+            @optimizer:damage-type-updated="
+              onDamageTypeUpdated
+            "></CalculatorOptimizerDamageType>
+        </div>
+      </details>
+
+      <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
+        <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+        <div class="flex items-center gap-2">
+          <Transition name="live-result-bar-delta">
+            <span
+              v-if="delta !== null && delta !== 0"
+              class="badge badge-sm font-mono tabular-nums"
+              :class="delta > 0 ? 'badge-success' : 'badge-error'"
+              data-test-live-result-bar-delta>
+              {{ deltaLabel }}
+            </span>
+          </Transition>
+          <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
+            heroDisplay
+          }}</span>
+        </div>
       </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-circle self-center"
+        :class="{ 'btn-primary': isDetailOpen }"
+        :aria-expanded="isDetailOpen"
+        aria-label="Show full stats and damage breakdown"
+        data-test-live-result-bar-toggle
+        @click="emit('toggle-detail')">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-4 transition-transform"
+          :class="{ 'rotate-180': isDetailOpen }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>

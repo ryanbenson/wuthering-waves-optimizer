@@ -34,14 +34,18 @@
             <span v-else class="opacity-50 font-mono">—</span>
           </button>
         </div>
-
-        <CharacterBuildStatus :status="buildStatus" :character-key="character" interactive />
       </div>
 
       <WorkspaceProgress :character="character" />
     </div>
 
     <div class="flex items-center gap-1.5">
+      <CharacterBuildStatus
+        :status="buildStatus"
+        :character-key="character"
+        interactive
+        class="w-fit shrink-0" />
+      <span class="opacity-40 text-xs">&middot;</span>
       <button
         v-if="!isEditingNotes"
         type="button"
