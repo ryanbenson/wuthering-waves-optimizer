@@ -44,6 +44,15 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get("[data-test-echo-edit-panel]").should("not.exist");
   });
 
+  it("closes when navigating away to a different tab", () => {
+    openBrantEchoesTab();
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-panel]").should("be.visible");
+
+    cy.get('[data-test-calculator-nav="enemy"]').click();
+    cy.get("[data-test-echo-edit-panel]").should("not.exist");
+  });
+
   it("closes on Escape", () => {
     openBrantEchoesTab();
     cy.get('[data-test-echo-item="0"]').click();
