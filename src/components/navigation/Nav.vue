@@ -25,19 +25,25 @@
         <RouterLink
           to="/"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
-          :class="{ 'btn-active': curPage === 'home' }"
+          :class="{ 'btn-active text-white': curPage === 'home' }"
+          title="Calculator"
           data-test-nav-calculator
           @click="handleCalculatorNavClick">
-          <div
-            class="nav-character-avatar"
-            :class="{
-              'border-amber-300': characterRarity === 5,
-              'border-violet-600': characterRarity === 4,
-            }"
-            :style="{
-              backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${displayCharacter}.png)`,
-            }"
-            :data-test-char-avatar="displayCharacter"></div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.75"
+              d="M6 20V4M12 20V4M18 20V4" />
+            <circle cx="6" cy="15" r="2.1" fill="currentColor" stroke="none" />
+            <circle cx="12" cy="9" r="2.1" fill="currentColor" stroke="none" />
+            <circle cx="18" cy="13" r="2.1" fill="currentColor" stroke="none" />
+          </svg>
         </RouterLink>
         <RouterLink
           to="/inventory"
@@ -158,7 +164,7 @@ import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
-import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
+import { getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 
 defineOptions({
@@ -188,11 +194,6 @@ const displayCharacter = computed(() => {
   return getCharactersAvailable().five[0]?.key ?? "Calcharo";
 });
 
-const characterRarity = computed(() => {
-  const meta = allCharactersList.find((char) => char.key === displayCharacter.value);
-  return meta?.rarity ?? 5;
-});
-
 function handleCalculatorNavClick(event) {
   if (props.curPage === "home") {
     event.preventDefault();
@@ -216,6 +217,17 @@ function toggleOptionsMenu() {
 .menu {
   z-index: 100;
 }
+// The global stylesheet still carries the Vite scaffold's default
+// `a:hover { color: #535bf2 }` (leftover boilerplate purple). It's invisible
+// on the image-based nav icons (img ignores `color`), but the home icon is
+// an inline SVG using `stroke="currentColor"`, so it visibly tints purple on
+// hover unless we override it back here.
+.navbar a {
+  color: inherit;
+  &:hover {
+    color: inherit;
+  }
+}
 .options-menu {
   summary:after {
     display: none;
@@ -226,16 +238,5 @@ html[data-theme="black"] {
   .navbar {
     background: oklch(var(--b1)) !important;
   }
-}
-
-.nav-character-avatar {
-  width: 40px;
-  height: 40px;
-  background-repeat: no-repeat;
-  display: block;
-  background-size: contain;
-  border-radius: 100%;
-  border-width: 1px;
-  border-style: solid;
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
   <div
-    class="live-result-bar flex flex-wrap items-center gap-4 bg-base-200 border-b border-base-300 px-4 py-2"
+    class="command-bar sticky top-20 z-30 flex flex-col items-center gap-3 md:flex-row md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-4 py-2"
     data-test-live-result-bar>
-    <div class="flex items-center gap-2 shrink-0">
-      <div
-        class="live-result-bar__avatar size-8 rounded-full bg-cover bg-center border-2"
+    <!-- Identity + config (inputs): who this is and how it's set up. -->
+    <div class="flex items-center gap-2 shrink-0 min-w-0">
+      <button
+        type="button"
+        class="live-result-bar__avatar size-14 rounded-full bg-cover bg-center border-2 shrink-0"
         :class="{
           'border-amber-300': characterRarity === 5,
           'border-violet-600': characterRarity === 4,
@@ -13,86 +15,129 @@
         :style="{
           backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png)`,
         }"
-        :data-test-live-result-bar-avatar="character"></div>
-      <div class="leading-tight">
-        <div class="font-bold text-sm" data-test-live-result-bar-name>
-          {{ characterName }}
+        title="Choose a different character"
+        :data-test-workspace-avatar="character"
+        @click="emit('open-character-browser')"></button>
+
+      <div class="leading-tight min-w-0">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="font-bold text-sm truncate" data-test-live-result-bar-name>{{ characterName }}</span>
+          <span v-if="characterRarity" class="text-[10px] text-amber-400 font-semibold shrink-0"
+            >{{ characterRarity }}&#9733;</span
+          >
+          <button
+            type="button"
+            class="command-bar__favorite btn btn-circle btn-ghost btn-xs shrink-0"
+            :class="{ 'text-pink-400': isFavorite }"
+            :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+            :data-test-workspace-favorite="character"
+            @click.stop="characterStore.toggleFavoriteCharacter(character)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5" aria-hidden="true">
+              <path
+                v-if="isFavorite"
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="currentColor" />
+              <path
+                v-else
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2" />
+            </svg>
+          </button>
+          <span v-if="element || weaponType" class="text-[10px] opacity-60 whitespace-nowrap">
+            <template v-if="element">{{ element }}</template
+            ><template v-if="element && weaponType"> &middot; </template
+            ><template v-if="weaponType">{{ weaponType }}</template>
+          </span>
         </div>
-        <div class="text-xs opacity-60 font-mono">LV {{ characterLevel }}</div>
+        <div class="flex items-center gap-1.5 flex-wrap text-[11px] opacity-70 mt-0.5 font-mono">
+          <WorkspaceLevelStepper
+            :character="character"
+            @character-level-updated="emit('character-level-updated', $event)" />
+          <span class="opacity-40 font-sans">&middot;</span>
+          <CalculatorBuildSelect
+            :character="character"
+            variant="ghost"
+            size="xs"
+            root-class="w-auto" />
+          <button
+            type="button"
+            class="btn btn-circle btn-ghost btn-xs"
+            title="Manage builds"
+            aria-label="Manage builds"
+            data-test-workspace-manage-builds-open
+            @click="emit('manage-builds')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-3"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </button>
+          <template v-if="characterStances.length > 1">
+            <span class="opacity-40 font-sans">&middot;</span>
+            <div class="command-bar__mode">
+              <CalculatorCharacterStance
+                :character="character"
+                :stances="characterStances"
+                @updated-character-stance="emit('updated-character-stance', $event)" />
+            </div>
+          </template>
+        </div>
       </div>
     </div>
 
-    <div
-      v-if="statChips.length"
-      class="flex items-center gap-4 shrink-0"
-      data-test-live-result-bar-stats>
-      <button
-        v-for="chip in statChips"
-        :key="chip.key"
-        type="button"
-        class="flex flex-col items-start leading-tight text-left"
-        v-tooltip="'View full breakdown'"
-        @click="emit('stat-selected', chip.label)">
-        <span class="text-[10px] uppercase tracking-wide opacity-60">{{
-          chip.label
-        }}</span>
-        <span class="font-mono font-bold text-sm tabular-nums">{{
-          chip.display
-        }}</span>
-      </button>
-    </div>
-
-    <!--
-      Mode/stance sits inline, right after the stat chips, rather than
-      behind the settings gear — it's the one setting that's genuinely
-      worth surfacing all the time (it changes which buffs are active),
-      not a "set once" preference like target/damage type.
-    -->
-    <div
-      v-if="characterStances.length > 1"
-      class="flex flex-col items-start leading-tight shrink-0"
-      data-test-live-result-bar-stance>
-      <span class="text-[10px] uppercase tracking-wide opacity-60 mb-1">Mode</span>
-      <div class="join">
+    <!-- Stats + damage monitor (outputs): the result of that configuration,
+    laid out in a single row on the right, bottom-aligned so stat values and
+    the damage monitor's value sit on the same line. -->
+    <div class="flex items-end gap-4 md:ml-auto">
+      <div
+        v-if="statChips.length"
+        :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex items-end gap-4 flex-wrap']"
+        data-test-live-result-bar-stats>
         <button
-          v-for="stance in characterStances"
-          :key="stance"
+          v-for="chip in statChips"
+          :key="chip.key"
           type="button"
-          class="join-item btn btn-xs"
-          :class="stance === activeStance ? 'btn-default' : 'btn-ghost opacity-50'"
-          :aria-pressed="stance === activeStance"
-          :data-test-stance="stance"
-          v-tooltip="stance"
-          @click="selectStance(stance)">
-          <img
-            v-if="stanceIconUrl(stance)"
-            :src="stanceIconUrl(stance)"
-            :alt="stance"
-            class="size-3.5"
-            :style="stanceIconStyle(stance)"
-            loading="lazy" />
-          <span>{{ stance }}</span>
+          class="flex flex-col items-start leading-tight text-left"
+          v-tooltip="'View full breakdown'"
+          @click="emit('stat-selected', chip.label)">
+          <span class="text-[10px] uppercase tracking-wide opacity-60">{{ chip.label }}</span>
+          <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
         </button>
       </div>
-    </div>
 
-    <!--
-      ml-auto: pushes this group to the right, whether it shares the row
-      with the stat chips or wraps onto its own line — stays right-aligned
-      either way rather than centering when wrapped. Not shrink-0 — that
-      would refuse to compress below its unwrapped (max-content) width,
-      which stops the wrap from ever actually triggering.
-    -->
-    <div class="flex items-center gap-3 min-w-0 ml-auto">
-      <!--
-        Target + damage type move here instead of sitting inline — they're
-        a "set once, rarely touched again" preference, not something that
-        earns permanent width next to the number people actually watch.
-      -->
+      <button
+        v-if="statChips.length"
+        type="button"
+        class="btn btn-xs btn-ghost gap-1 rounded-full lg:hidden self-center"
+        :aria-expanded="isMobileStatsExpanded"
+        aria-label="Show stat breakdown"
+        data-test-live-result-bar-mobile-stats-toggle
+        @click="isMobileStatsExpanded = !isMobileStatsExpanded">
+        <span class="text-[10px] uppercase tracking-wide opacity-70">Stats</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-3.5 transition-transform"
+          :class="{ 'rotate-180': isMobileStatsExpanded }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
       <details
         v-if="character"
         ref="settingsDetailsEl"
-        class="dropdown dropdown-end"
+        class="dropdown dropdown-end self-center"
         data-test-live-result-bar-settings>
         <summary
           class="btn btn-sm btn-circle btn-ghost list-none"
@@ -134,28 +179,27 @@
         </div>
       </details>
 
-      <Transition name="live-result-bar-delta">
-        <span
-          v-if="delta !== null && delta !== 0"
-          class="badge badge-sm font-mono tabular-nums"
-          :class="delta > 0 ? 'badge-success' : 'badge-error'"
-          data-test-live-result-bar-delta>
-          {{ deltaLabel }}
-        </span>
-      </Transition>
-
-      <div class="text-right" data-test-live-result-bar-hero>
-        <div class="text-[10px] uppercase tracking-wide opacity-60">
-          {{ heroLabel }}
-        </div>
-        <div class="font-mono font-bold text-lg leading-tight tabular-nums text-secondary">
-          {{ heroDisplay }}
+      <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
+        <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+        <div class="flex items-center gap-2">
+          <Transition name="live-result-bar-delta">
+            <span
+              v-if="delta !== null && delta !== 0"
+              class="badge badge-sm font-mono tabular-nums"
+              :class="delta > 0 ? 'badge-success' : 'badge-error'"
+              data-test-live-result-bar-delta>
+              {{ deltaLabel }}
+            </span>
+          </Transition>
+          <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
+            heroDisplay
+          }}</span>
         </div>
       </div>
 
       <button
         type="button"
-        class="btn btn-sm btn-circle"
+        class="btn btn-sm btn-circle self-center"
         :class="{ 'btn-primary': isDetailOpen }"
         :aria-expanded="isDetailOpen"
         aria-label="Show full stats and damage breakdown"
@@ -181,9 +225,11 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
+import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
+import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
+import WorkspaceLevelStepper from "./characterWorkspace/WorkspaceLevelStepper.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import {
   LIVE_RESULT_BAR_STAT_META,
@@ -192,16 +238,16 @@ import {
 } from "../calculator/liveResultBar";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
 import { useCharacterStore } from "../stores/character";
-import { resolveActiveStance } from "../calculator/stances";
-import { getStanceIconConfig } from "../calculator/stanceIcons";
 
-defineOptions({ name: "CalculatorLiveResultBar" });
+defineOptions({ name: "CalculatorCommandBar" });
 
 const props = defineProps<{
   character: string;
   characterRarity?: number | string | null;
   characterName?: string | null;
   characterLevel: string;
+  element?: string;
+  weaponType?: string;
   target: string | null;
   damageType: LiveResultBarDamageType;
   statKeys: string[];
@@ -218,35 +264,17 @@ const emit = defineEmits<{
   "stat-selected": [stat: string];
   "toggle-detail": [];
   "updated-character-stance": [stance: string];
+  "open-character-browser": [];
+  "manage-builds": [];
+  "character-level-updated": [level: string];
 }>();
 
 const characterStances = computed(() => props.characterStances ?? []);
 
 const characterStore = useCharacterStore();
-const { characters } = storeToRefs(characterStore);
+const isFavorite = computed(() => characterStore.isFavoriteCharacter(props.character));
 
-const activeStance = computed(() =>
-  resolveActiveStance(
-    characterStances.value,
-    characters.value[props.character]?.activeStance,
-    characters.value[props.character]?.buffs,
-  ),
-);
-
-function stanceIconUrl(stance: string): string | undefined {
-  return getStanceIconConfig(stance)?.imageUrl;
-}
-
-function stanceIconStyle(stance: string): Record<string, string> | undefined {
-  const filter = getStanceIconConfig(stance)?.cssFilter;
-  return filter ? { filter } : undefined;
-}
-
-async function selectStance(stance: string) {
-  if (stance === activeStance.value) return;
-  await characterStore.setCharacterData(props.character, { activeStance: stance });
-  emit("updated-character-stance", stance);
-}
+const isMobileStatsExpanded = ref(false);
 
 const characterRarity = computed(() =>
   props.characterRarity === undefined || props.characterRarity === null
@@ -327,7 +355,7 @@ function onDamageTypeUpdated(next: string) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .live-result-bar-delta-enter-active,
 .live-result-bar-delta-leave-active {
   transition:
@@ -338,5 +366,37 @@ function onDamageTypeUpdated(next: string) {
 .live-result-bar-delta-leave-to {
   opacity: 0;
   transform: translateY(-3px);
+}
+
+/* CalculatorCharacterStance.vue is reused unmodified so the legacy
+screen's full-width toggle keeps its exact look elsewhere. Here it sits
+inline after a "·" separator, so its own "Mode" label and full-width
+sizing are overridden just for this instance — same pattern the deleted
+WorkspaceIdentityBar.vue used. */
+.command-bar__mode {
+  display: inline-flex;
+  :deep(.character__stance) {
+    margin: 0;
+  }
+  :deep(.mode__label) {
+    display: none;
+  }
+  :deep(.character__stance-toggle) {
+    width: auto;
+  }
+  :deep(.character__stance-btn) {
+    flex: none;
+    margin-right: 0.35rem;
+    padding: 0.2rem 0.55rem;
+    height: 1.6rem;
+    min-height: 1.6rem;
+  }
+  :deep(.character__stance-icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  :deep(.character__stance-label) {
+    font-size: 0.68rem;
+  }
 }
 </style>

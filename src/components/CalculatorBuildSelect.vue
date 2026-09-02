@@ -1,9 +1,10 @@
 <template>
   <AppRichSelect
-    class="w-44"
+    :class="rootClass"
     :model-value="activeBuildId"
     :options="buildOptions"
-    variant="neutral"
+    :variant="variant"
+    :size="size"
     aria-label="Choose active build"
     data-test-build-select
     @update:model-value="handleSelect" />
@@ -21,9 +22,16 @@ defineOptions({ name: "CalculatorBuildSelect" });
 
 interface Props {
   character: string;
+  variant?: "bordered" | "ghost" | "neutral";
+  size?: "sm" | "xs";
+  rootClass?: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  variant: "neutral",
+  size: "sm",
+  rootClass: "w-44",
+});
 
 const characterStore = useCharacterStore();
 

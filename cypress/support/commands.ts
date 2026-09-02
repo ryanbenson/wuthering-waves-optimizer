@@ -41,7 +41,7 @@ Cypress.Commands.add(
 
 // Character Workspace (UI Overhaul 3.0 / liveResultBar Labs flag) has no
 // select dropdown — switching character opens CalculatorCharacterBrowser's
-// modal via the identity bar's avatar, then picks a card from it.
+// modal via the Command Bar's avatar, then picks a card from it.
 Cypress.Commands.add("selectWorkspaceCharacter", (key: string) => {
   // Calculator.vue remounts the whole workspace (`:key="characterBuildKey"`)
   // once the initial character's active build id resolves shortly after

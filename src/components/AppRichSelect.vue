@@ -531,7 +531,14 @@ onBeforeUnmount(() => {
   // Leave min-width alone so callers can set min-w-[…] utilities.
   width: fit-content;
   flex: 0 0 auto;
+}
 
+// Not scoped to --bordered: a fit-width trigger (any variant) still opens a
+// menu whose options can be far longer than the trigger's own shrunk width
+// (e.g. a compact "ghost" build-picker chip listing full build names) — cap
+// the menu to the trigger's width only when the trigger isn't fit-width;
+// otherwise let it grow to its longest option instead of truncating them.
+.app-rich-select--fit {
   :deep(.dropdown-content) {
     width: max-content;
     min-width: 100%;

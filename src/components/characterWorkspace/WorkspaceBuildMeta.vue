@@ -1,43 +1,51 @@
 <template>
   <div class="flex flex-col gap-2 mt-2">
     <div class="flex items-center justify-between gap-3 flex-wrap">
-      <div
-        class="flex items-stretch divide-x divide-base-300 rounded-lg border border-base-300 bg-base-200/60 overflow-hidden">
-        <button
-          type="button"
-          class="btn btn-sm btn-ghost rounded-none gap-1.5"
-          title="Jump to Weapons"
-          data-test-workspace-weapon-chip
-          @click="$emit('change-screen', 'weapon')">
-          <span
-            class="size-5 rounded overflow-hidden border border-base-300 bg-base-100 flex items-center justify-center shrink-0">
-            <img v-if="weaponIcon" :src="weaponIcon" alt="" class="w-full h-full object-cover" />
-          </span>
-          <span>{{ weaponName }}</span>
-          <span v-if="weaponRefinement" class="text-primary font-mono">R{{ weaponRefinement }}</span>
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-sm btn-ghost rounded-none gap-1.5"
-          title="Jump to Echoes"
-          data-test-workspace-score-chip
-          @click="$emit('change-screen', 'echoes')">
-          Build Score
-          <template v-if="scoreRollup">
-            <span class="font-mono font-bold" :class="scoreAccent?.text">{{ scoreRollup.grade }}</span>
-            <span class="font-mono" :class="scoreAccent?.text">
-              {{ Math.round(scoreRollup.percent) }}%{{ scoreRollup.provisional ? "*" : "" }}
+      <div class="flex items-center gap-3 flex-wrap">
+        <div
+          class="flex items-stretch divide-x divide-base-300 rounded-lg border border-base-300 bg-base-200/60 overflow-hidden">
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost rounded-none gap-1.5"
+            title="Jump to Weapons"
+            data-test-workspace-weapon-chip
+            @click="$emit('change-screen', 'weapon')">
+            <span
+              class="size-5 rounded overflow-hidden border border-base-300 bg-base-100 flex items-center justify-center shrink-0">
+              <img v-if="weaponIcon" :src="weaponIcon" alt="" class="w-full h-full object-cover" />
             </span>
-          </template>
-          <span v-else class="opacity-50 font-mono">—</span>
-        </button>
+            <span>{{ weaponName }}</span>
+            <span v-if="weaponRefinement" class="text-primary font-mono">R{{ weaponRefinement }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost rounded-none gap-1.5"
+            title="Jump to Echoes"
+            data-test-workspace-score-chip
+            @click="$emit('change-screen', 'echoes')">
+            Build Score
+            <template v-if="scoreRollup">
+              <span class="font-mono font-bold" :class="scoreAccent?.text">{{ scoreRollup.grade }}</span>
+              <span class="font-mono" :class="scoreAccent?.text">
+                {{ Math.round(scoreRollup.percent) }}%{{ scoreRollup.provisional ? "*" : "" }}
+              </span>
+            </template>
+            <span v-else class="opacity-50 font-mono">—</span>
+          </button>
+        </div>
       </div>
 
       <WorkspaceProgress :character="character" />
     </div>
 
     <div class="flex items-center gap-1.5">
+      <CharacterBuildStatus
+        :status="buildStatus"
+        :character-key="character"
+        interactive
+        class="w-fit shrink-0" />
+      <span class="opacity-40 text-xs">&middot;</span>
       <button
         v-if="!isEditingNotes"
         type="button"
@@ -79,6 +87,8 @@ import { useCharacterStore } from "../../stores/character";
 import { useTeamSubstatScoreRollup } from "../../composables/useTeamSubstatScoreRollup";
 import { getRatingAccentClasses } from "../../composables/useEchoRating";
 import { getWeaponByName } from "../../weapons/weapons";
+import { getCharacterBuildStatus } from "../../characters/characterBuildStatus";
+import CharacterBuildStatus from "../CharacterBuildStatus.vue";
 import WorkspaceProgress from "./WorkspaceProgress.vue";
 
 interface Props {
@@ -99,6 +109,8 @@ const currentCharacter = computed(
 );
 
 const activeBuild = computed(() => characterStore.getActiveBuild(props.character));
+
+const buildStatus = computed(() => getCharacterBuildStatus(props.character, characters.value));
 
 const updatedLabel = computed(() => {
   const updatedAt = activeBuild.value?.updatedAt;
