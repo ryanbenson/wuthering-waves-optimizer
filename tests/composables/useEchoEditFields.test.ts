@@ -140,7 +140,7 @@ describe("useEchoEditFields", () => {
       expect(fields.stats.value.HP).toBe(200);
     });
 
-    it("resets the main stat to none when the echo's cost tier changes", async () => {
+    it("resets the main stat to none when it doesn't exist on the new cost tier", async () => {
       const characterStore = useCharacterStore() as any;
       characterStore.setCharacterData("TestChar", {
         echoes: { 0: { echo: "AbyssalGladius", type: 3, stat: "EnergyRegen" } }, // Elite -> cost 3
@@ -149,9 +149,22 @@ describe("useEchoEditFields", () => {
       expect(fields.stat.value).toBe("EnergyRegen");
 
       // the reset happens inside a watcher, which Vue flushes asynchronously
-      fields.echo.value = "BellBorneGeochelone"; // Calamity -> cost 4
+      fields.echo.value = "BellBorneGeochelone"; // Calamity -> cost 4; cost-3-only EnergyRegen isn't valid there
       await nextTick();
       expect(fields.stat.value).toBe("none");
+    });
+
+    it("keeps the main stat when it's still valid on the new cost tier", async () => {
+      const characterStore = useCharacterStore() as any;
+      characterStore.setCharacterData("TestChar", {
+        echoes: { 0: { echo: "AeroDrake", type: 1, stat: "ATK" } }, // Common -> cost 1
+      });
+      const fields = useEchoEditFields(() => ({ context: "build", character: "TestChar", index: 0 }));
+      expect(fields.stat.value).toBe("ATK");
+
+      fields.echo.value = "BellBorneGeochelone"; // Calamity -> cost 4; ATK is valid on both tiers
+      await nextTick();
+      expect(fields.stat.value).toBe("ATK");
     });
   });
 

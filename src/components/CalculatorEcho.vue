@@ -1598,7 +1598,13 @@ function updateEchoChoice(
     prevEchoCost =
       prevEchoClass != null ? getCostByClass(prevEchoClass) : null;
   }
-  if (previousVal && !options.keepStat && echoCost !== prevEchoCost) {
+  if (
+    previousVal &&
+    !options.keepStat &&
+    echoCost !== prevEchoCost &&
+    stat.value !== "none" &&
+    !getStats(echoCost).includes(stat.value)
+  ) {
     stat.value = "none";
   }
 }

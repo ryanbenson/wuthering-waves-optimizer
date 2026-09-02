@@ -91,7 +91,7 @@ describe("CalculatorEcho main stat preservation", () => {
     expect(inventoryStore.getEchoById("cost3").stat).toBe("EnergyRegen");
   });
 
-  it("clears the main stat when the echo in a slot is swapped for a different cost", async () => {
+  it("clears the main stat when it doesn't exist on the new cost tier", async () => {
     characterStore.characters = {
       [CHARACTER]: {
         echoes: {
@@ -108,11 +108,37 @@ describe("CalculatorEcho main stat preservation", () => {
     renderSlot(0);
     await nextTick();
 
+    // EnergyRegen is cost-3-only, so it's not valid on the common (cost 1) tier
     characterStore.characters[CHARACTER].echoes[0].echo = COMMON_ECHO;
     await nextTick();
     await nextTick();
 
     expect(characterStore.characters[CHARACTER].echoes[0].stat).toBe("none");
+  });
+
+  it("keeps the main stat when it's still valid on the new cost tier", async () => {
+    characterStore.characters = {
+      [CHARACTER]: {
+        echoes: {
+          0: {
+            ...createEmptyEchoSlot(),
+            echo: COMMON_ECHO,
+            type: 1,
+            rank: 5,
+            stat: "ATK",
+          },
+        },
+      },
+    };
+    renderSlot(0);
+    await nextTick();
+
+    // ATK is valid on both the common (cost 1) and elite (cost 3) tiers
+    characterStore.characters[CHARACTER].echoes[0].echo = ELITE_ECHO;
+    await nextTick();
+    await nextTick();
+
+    expect(characterStore.characters[CHARACTER].echoes[0].stat).toBe("ATK");
   });
 });
 
