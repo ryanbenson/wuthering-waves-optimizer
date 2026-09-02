@@ -32,5 +32,19 @@ export const useSettingsStore = defineStore("settings", {
     resetEchoRatingWeights() {
       delete this.config.echoRatingWeights;
     },
+    // Most-recently-chosen enemy catalog keys, newest first, capped and
+    // de-duplicated. A plain array assignment rather than `addToConfig` —
+    // lodash `merge` combines arrays index-by-index, which would leave
+    // stale trailing keys behind instead of replacing the list.
+    addRecentEnemyKey(key) {
+      if (!key) return;
+      const existing = Array.isArray(this.config.recentEnemyKeys)
+        ? this.config.recentEnemyKeys
+        : [];
+      this.config.recentEnemyKeys = [
+        key,
+        ...existing.filter((existingKey) => existingKey !== key),
+      ].slice(0, 6);
+    },
   },
 });
