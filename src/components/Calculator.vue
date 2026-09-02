@@ -1321,6 +1321,9 @@ export default defineComponent({
     };
 
     const changeScreen = (screen: string) => {
+      if (screen !== "echoes") {
+        echoEditPanelIndex.value = null;
+      }
       curScreen.value = screen;
       if (screen === "build-card") {
         hasVisitedBuildCard.value = true;
