@@ -197,7 +197,11 @@ export function useEchoEditFields(getTarget: () => EchoEditTarget) {
   // Resetting the main stat when the echo's cost tier changes is a data-
   // integrity rule (a HP%/ATK%/DEF% pick doesn't necessarily exist on the
   // new cost tier), not orchestration — so it lives here rather than in the
-  // host component, mirroring CalculatorEcho.vue's `updateEchoChoice`.
+  // host component, mirroring CalculatorEcho.vue's `updateEchoChoice`. Only
+  // clear it when the previously selected stat is actually absent from the
+  // new cost tier's table — several stats (e.g. ATK, CritDMG) are valid on
+  // more than one tier, so a tier change alone shouldn't silently drop a
+  // still-valid pick.
   watch(
     [echo, echoId],
     ([val, id], previous) => {
@@ -215,7 +219,13 @@ export function useEchoEditFields(getTarget: () => EchoEditTarget) {
         const prevEchoClass = prevEchoData?.class;
         prevEchoCost = prevEchoClass != null ? getCostByClass(prevEchoClass) : null;
       }
-      if (previousVal && !keepStat && echoCost !== prevEchoCost) {
+      if (
+        previousVal &&
+        !keepStat &&
+        echoCost !== prevEchoCost &&
+        stat.value !== "none" &&
+        !getStatsForCost(echoCost).includes(stat.value)
+      ) {
         stat.value = "none";
       }
     },

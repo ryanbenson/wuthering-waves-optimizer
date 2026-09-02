@@ -844,7 +844,12 @@ async function updateEchoChoice(
     const prevEchoClass = prevEchoData?.class;
     prevEchoCost = prevEchoClass ? getCostByClass(prevEchoClass) : null;
   }
-  if (previousEcho && echoCost !== prevEchoCost) {
+  if (
+    previousEcho &&
+    echoCost !== prevEchoCost &&
+    stat.value !== "none" &&
+    !getStats(echoCost ?? "").includes(stat.value)
+  ) {
     stat.value = "none";
   }
 }
