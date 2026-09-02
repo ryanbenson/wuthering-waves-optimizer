@@ -269,7 +269,9 @@
           @custom-buffs-updated="handleCustomBuffs"></CalculatorCustomBuffsWorkspace>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy layout, untouched. -->
         <CalculatorEnemy
+          v-if="!isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
           :character-element="characterElement"
@@ -280,6 +282,18 @@
           :is-fusion-burst-enabled="isFusionBurstEnabled"
           :is-electro-flare-enabled="isElectroFlareEnabled"
           :is-glacio-chafe-enabled="isGlacioChafeEnabled"></CalculatorEnemy>
+        <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned enemy workspace. -->
+        <CalculatorEnemyWorkspace
+          v-else
+          :key="characterBuildKey"
+          :character="character"
+          :character-element="characterElement"
+          @updated-enemy-data="handleUpdatedEnemy"
+          :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
+          :is-aero-erosion-enabled="isAeroErosionEnabled"
+          :is-fusion-burst-enabled="isFusionBurstEnabled"
+          :is-electro-flare-enabled="isElectroFlareEnabled"
+          :is-glacio-chafe-enabled="isGlacioChafeEnabled"></CalculatorEnemyWorkspace>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -511,6 +525,7 @@ import {
   resolveActiveStance,
 } from "../calculator/stances";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
+import CalculatorEnemyWorkspace from "./CalculatorEnemyWorkspace.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorCustomBuffsWorkspace from "./CalculatorCustomBuffsWorkspace.vue";
@@ -595,6 +610,7 @@ export default defineComponent({
     CalculatorDamages,
     CalculatorEchoes,
     CalculatorEnemy,
+    CalculatorEnemyWorkspace,
     CalculatorWeapons,
     WorkspaceWeaponPanel,
     CalculatorCharacterBuffs,
