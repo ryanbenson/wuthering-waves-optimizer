@@ -1,6 +1,6 @@
 /**
  * Pure helpers for the Live Result Bar (Labs-flagged pinned summary strip —
- * see `CalculatorLiveResultBar.vue` / `CalculatorLiveResultDetail.vue`).
+ * see `CalculatorCommandBar.vue` / `CalculatorLiveResultDetail.vue`).
  *
  * Targets are encoded as the same `"Stat:key"` / `"Attack:group|key"` /
  * `"Rotation:id"` strings `CalculatorOptimizerTarget.vue` already uses, so a

@@ -57,7 +57,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 
 // Native <details>/<summary> has no built-in "close on outside click"
-// behavior — see CalculatorLiveResultBar.vue's settingsDetailsEl for the
+// behavior — see CalculatorCommandBar.vue's settingsDetailsEl for the
 // same pattern.
 const progressDetailsEl = ref<HTMLDetailsElement | null>(null);
 function onDocumentPointerDown(event: PointerEvent) {

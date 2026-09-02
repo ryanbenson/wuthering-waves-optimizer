@@ -38,7 +38,7 @@ const props = withDefaults(
     // (no <form> boundary here) — every screen stays mounted (v-show), so
     // a second instance elsewhere in the DOM with the default name would
     // fight this one. Override per consumer when more than one can exist
-    // at once (see CalculatorLiveResultBar.vue).
+    // at once (see CalculatorCommandBar.vue).
     name?: string;
   }>(),
   { currentDamageType: null, name: "options" },

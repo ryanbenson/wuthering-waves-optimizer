@@ -19,12 +19,14 @@
           @change-screen="changeScreen"></CalculatorSubNav>
       </template>
     </Nav>
-    <CalculatorLiveResultBar
+    <CalculatorCommandBar
       v-if="isLiveResultBarEnabled"
       :character="character"
       :character-rarity="chosenChar.value?.basic?.rarity"
       :character-name="chosenChar.value?.basic?.name"
       :character-level="characterLevel"
+      :element="chosenChar?.value?.basic?.element"
+      :weapon-type="weaponType"
       v-model:target="liveResultBarTarget"
       v-model:damage-type="liveResultBarDamageType"
       :stat-keys="liveResultBarStatKeys"
@@ -32,12 +34,24 @@
       :all-damages="allDamages.value"
       :is-detail-open="isLiveResultDetailOpen"
       :is-loading="isLoading"
-      :character-stances="characterStances"
+      :character-stances="!isLoading ? characterStances : []"
       @stat-selected="handleStatSelected"
       @updated-character-stance="handleUpdatedCharacterStance"
+      @open-character-browser="openCharacterBrowser"
+      @manage-builds="openManageBuilds"
+      @character-level-updated="handleCharacterLevelUpdated"
       @toggle-detail="
         isLiveResultDetailOpen = !isLiveResultDetailOpen
-      "></CalculatorLiveResultBar>
+      "></CalculatorCommandBar>
+    <CalculatorCharacterBrowser
+      v-if="isLiveResultBarEnabled"
+      :character="character"
+      ref="characterBrowserRef"
+      @character-browser:chosen-character="handleChosenCharacter" />
+    <CalculatorManageBuilds
+      v-if="isLiveResultBarEnabled"
+      :character="character"
+      ref="manageBuildsRef" />
     <div
       class="calculations__body"
       :class="{ 'calculations__body--legacy': !isLiveResultBarEnabled }">
@@ -88,13 +102,9 @@
           v-else
           :key="characterBuildKey"
           :character="character"
-          :character-name="chosenChar?.value?.basic?.name"
-          :rarity="chosenChar?.value?.basic?.rarity"
-          :element="chosenChar?.value?.basic?.element"
           :weapon-type="weaponType"
           :buffs="filteredCharacterBuffs"
           :resonance-chain-buffs="filteredResonanceChains"
-          :character-stances="characterStances"
           :is-loading="isLoading"
           :attack-info="{
             basic: chosenChar?.value?.basicAttacks,
@@ -103,10 +113,7 @@
             liberation: chosenChar?.value?.liberationAttacks,
             intro: chosenChar?.value?.introAttacks,
           }"
-          @updated-chosen-character="handleUpdatedCharacter"
-          @character-level-updated="handleCharacterLevelUpdated"
           @character-talent-updated="handleCharacterTalentUpdated"
-          @updated-character-stance="handleUpdatedCharacterStance"
           @updated-character-buffs="handleUpdatedCharacterBuffs"
           @updated-character-resonance-chains="handleUpdatedCharacterResonanceChains"
           @change-screen="changeScreen" />
@@ -558,7 +565,9 @@ import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
-import CalculatorLiveResultBar from "./CalculatorLiveResultBar.vue";
+import CalculatorCommandBar from "./CalculatorCommandBar.vue";
+import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
+import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import CalculatorLiveResultDetail from "./CalculatorLiveResultDetail.vue";
 import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
 import {
@@ -604,7 +613,9 @@ export default defineComponent({
     CalculatorSubNav,
     Nav,
     CalculatorBreakdown,
-    CalculatorLiveResultBar,
+    CalculatorCommandBar,
+    CalculatorCharacterBrowser,
+    CalculatorManageBuilds,
     CalculatorLiveResultDetail,
     CalculatorEchoEditPanel,
   },
@@ -737,6 +748,24 @@ export default defineComponent({
         echoEditPanelIndex.value,
       );
     }
+
+    // Character-browser / build-manage modals — mounted here (not inside
+    // CalculatorCharacterWorkspace.vue) because CalculatorCommandBar.vue now
+    // triggers them from every tab, not just the Character tab, since it
+    // renders page-wide as a sibling of .calculations__body.
+    const characterBrowserRef = ref(null);
+    const manageBuildsRef = ref(null);
+    function openCharacterBrowser() {
+      characterBrowserRef.value?.triggerOpenModal();
+    }
+    function openManageBuilds() {
+      manageBuildsRef.value?.triggerOpenModal();
+    }
+    function handleChosenCharacter(nextCharacter) {
+      characterStore.ensureCharacterBuilds(nextCharacter);
+      handleUpdatedCharacter(nextCharacter);
+    }
+
     const liveResultBarStatKeys = computed(
       () => chosenChar.value?.basic?.liveResultBarStats ?? DEFAULT_LIVE_RESULT_BAR_STATS,
     );
@@ -2367,6 +2396,11 @@ export default defineComponent({
       echoesComponentRef,
       handleOpenEchoEditPanel,
       handleEchoEditPanelBrowse,
+      characterBrowserRef,
+      manageBuildsRef,
+      openCharacterBrowser,
+      openManageBuilds,
+      handleChosenCharacter,
     };
   },
 });

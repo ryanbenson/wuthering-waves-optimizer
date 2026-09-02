@@ -21,9 +21,9 @@ describe("Optimizer Workspace (liveResultBar flag): Augusta golden path", () => 
     visitWithFlagEnabled();
     cy.importCharacterData(configOptimizer);
     cy.get("[data-test-nav-calculator]").click();
-    // With the flag on, character selection renders via the Character
-    // workspace (WorkspaceIdentityBar.vue), not the legacy
-    // .character__selection grid the flag-off spec asserts on.
+    // With the flag on, character selection renders via the Command Bar
+    // (CalculatorCommandBar.vue), not the legacy .character__selection
+    // grid the flag-off spec asserts on.
     cy.get('[data-test-workspace-avatar="Augusta"]').should("exist");
     cy.get('[data-test-calculator-nav="optimizer"]').click();
     cy.get(".screen--optimizer").should("be.visible");

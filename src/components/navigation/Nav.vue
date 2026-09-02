@@ -26,18 +26,21 @@
           to="/"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'home' }"
+          title="Calculator"
           data-test-nav-calculator
           @click="handleCalculatorNavClick">
-          <div
-            class="nav-character-avatar"
-            :class="{
-              'border-amber-300': characterRarity === 5,
-              'border-violet-600': characterRarity === 4,
-            }"
-            :style="{
-              backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${displayCharacter}.png)`,
-            }"
-            :data-test-char-avatar="displayCharacter"></div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.75"
+              d="M3 11.5L12 4l9 7.5M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" />
+          </svg>
         </RouterLink>
         <RouterLink
           to="/inventory"
@@ -158,7 +161,7 @@ import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
-import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
+import { getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 
 defineOptions({
@@ -186,11 +189,6 @@ const displayCharacter = computed(() => {
     return activeCharacter.value;
   }
   return getCharactersAvailable().five[0]?.key ?? "Calcharo";
-});
-
-const characterRarity = computed(() => {
-  const meta = allCharactersList.find((char) => char.key === displayCharacter.value);
-  return meta?.rarity ?? 5;
 });
 
 function handleCalculatorNavClick(event) {
@@ -226,16 +224,5 @@ html[data-theme="black"] {
   .navbar {
     background: oklch(var(--b1)) !important;
   }
-}
-
-.nav-character-avatar {
-  width: 40px;
-  height: 40px;
-  background-repeat: no-repeat;
-  display: block;
-  background-size: contain;
-  border-radius: 100%;
-  border-width: 1px;
-  border-style: solid;
 }
 </style>

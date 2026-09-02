@@ -1,17 +1,5 @@
 <template>
   <div class="calculator-character-workspace flex flex-col gap-4">
-    <WorkspaceIdentityBar
-      :character="character"
-      :character-name="characterName || character"
-      :rarity="rarity"
-      :element="element"
-      :weapon-type="weaponType"
-      :character-stances="!isLoading ? characterStances : []"
-      @open-character-browser="openCharacterBrowser"
-      @manage-builds="openManageBuilds"
-      @character-level-updated="$emit('character-level-updated', $event)"
-      @updated-character-stance="$emit('updated-character-stance', $event)" />
-
     <WorkspaceBuildMeta
       :character="character"
       :weapon-type="weaponType"
@@ -38,21 +26,10 @@
           @updated-character-resonance-chains="$emit('updated-character-resonance-chains')" />
       </div>
     </div>
-
-    <CalculatorCharacterBrowser
-      :character="character"
-      ref="characterBrowserRef"
-      @character-browser:chosen-character="handleChosenCharacter" />
-    <CalculatorManageBuilds :character="character" ref="manageBuildsRef" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
-import CalculatorManageBuilds from "../CalculatorManageBuilds.vue";
-import { useCharacterStore } from "../../stores/character";
-import WorkspaceIdentityBar from "./WorkspaceIdentityBar.vue";
 import WorkspaceBuildMeta from "./WorkspaceBuildMeta.vue";
 import WorkspaceForteRail from "./WorkspaceForteRail.vue";
 import WorkspaceBuffs from "./WorkspaceBuffs.vue";
@@ -93,13 +70,9 @@ interface AttackInfo {
 
 interface Props {
   character: string;
-  characterName?: string;
-  rarity?: number;
-  element?: string;
   weaponType?: string;
   buffs?: CharacterBuffListItem[];
   resonanceChainBuffs?: ResonanceChainBuffRow[];
-  characterStances?: string[];
   isLoading?: boolean;
   attackInfo?: {
     basic?: AttackInfo;
@@ -113,36 +86,14 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   buffs: () => [],
   resonanceChainBuffs: () => [],
-  characterStances: () => [],
   isLoading: false,
   attackInfo: () => ({}),
 });
 
-const emit = defineEmits<{
-  "updated-chosen-character": [key: string];
-  "character-level-updated": [level: string];
+defineEmits<{
   "character-talent-updated": [payload: { type: string; value: string }];
-  "updated-character-stance": [stance: string];
   "updated-character-buffs": [];
   "updated-character-resonance-chains": [];
   "change-screen": [screen: string];
 }>();
-
-const characterStore = useCharacterStore();
-
-const characterBrowserRef = ref<{ triggerOpenModal: () => void } | null>(null);
-const manageBuildsRef = ref<{ triggerOpenModal: () => void } | null>(null);
-
-function openCharacterBrowser() {
-  characterBrowserRef.value?.triggerOpenModal();
-}
-
-function openManageBuilds() {
-  manageBuildsRef.value?.triggerOpenModal();
-}
-
-function handleChosenCharacter(nextCharacter: string) {
-  characterStore.ensureCharacterBuilds(nextCharacter);
-  emit("updated-chosen-character", nextCharacter);
-}
 </script>
