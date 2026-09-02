@@ -30,7 +30,7 @@
           data-test-nav-calculator
           @click="handleCalculatorNavClick">
           <svg
-            v-if="isLiveResultBarEnabled"
+            v-if="showTuningIcon"
             xmlns="http://www.w3.org/2000/svg"
             class="size-6"
             fill="none"
@@ -203,6 +203,14 @@ const characterBrowserRef = ref(null);
 
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
+
+// The Command Bar (which already shows the active character's avatar) only
+// mounts on the Calculator ("home") page. On every other page it never
+// renders, so the nav's own avatar stays the only wayfinding cue there even
+// with the flag on — see ADR 0019's "Not done here" note.
+const showTuningIcon = computed(
+  () => isLiveResultBarEnabled.value && props.curPage === "home",
 );
 
 const displayCharacter = computed(() => {
