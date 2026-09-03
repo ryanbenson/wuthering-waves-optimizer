@@ -1,4 +1,17 @@
-export const rotations: RotationPreset[] = [];
+export const rotations: RotationPreset[] = [
+  {
+    name: "Denia S0 Rotation",
+    description: "",
+    author: "fish",
+    data: {"name":"Denia S0 Rotation","description":"","actions":[{"type":"intro","order":1,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"ItsBeenAWhileDMG","isDisabled":false},{"type":"basic","order":2,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage4DMG","isDisabled":false},{"type":"skill","order":3,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"PhantomBubbleStagecraftFormDMG","isDisabled":false},{"type":"liberation","order":4,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"FinalActStagecraftFormDMG","isDisabled":false},{"type":"basic","order":5,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage1DMG","isDisabled":false},{"type":"basic","order":6,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage2DMG","isDisabled":false},{"type":"basic","order":7,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage3DMG","isDisabled":false},{"type":"basic","order":8,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage4DMG","isDisabled":false},{"type":"skill","order":9,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BanishBreakdownFormStage1DMG","isDisabled":false},{"type":"skill","order":10,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BanishBreakdownFormStage2DMG","isDisabled":false},{"type":"liberation","order":11,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"FinalActBreakdownFormDMG","isDisabled":false}],"echo":null}
+  },
+  {
+    name: "Denia S3 Rotation",
+    description: "",
+    author: "fish",
+    data: {"name":"Denia S3 Rotation","description":"","actions":[{"type":"intro","order":1,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"ItsBeenAWhileDMG","isDisabled":false},{"type":"liberation","order":4,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"FinalActStagecraftFormDMG","isDisabled":false},{"type":"basic","order":5,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage1DMG","isDisabled":false},{"type":"basic","order":6,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage2DMG","isDisabled":false},{"type":"basic","order":7,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage3DMG","isDisabled":false},{"type":"basic","order":8,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BasicAttackStagecraftFormStage4DMG","isDisabled":false},{"type":"skill","order":9,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BanishBreakdownFormStage1DMG","isDisabled":false},{"type":"skill","order":10,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"BanishBreakdownFormStage2DMG","isDisabled":false},{"type":"liberation","order":11,"count":1,"buffs":[],"negativeStatusStacks":1,"electroRageStacks":0,"key":"FinalActBreakdownFormDMG","isDisabled":false}],"echo":null}
+  },
+];
 
 export const echoes = [
     {
