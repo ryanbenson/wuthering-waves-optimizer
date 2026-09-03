@@ -52,6 +52,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, navigation |
 | [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, settings, stores |
 | [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, content |
+| [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, routing, content |
 
 ## When to write a new ADR
 

@@ -1,6 +1,11 @@
 <template>
   <Nav cur-page="info" :disable-mobile-nav="true"></Nav>
-  <article class="prose page-info">
+
+  <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy single
+       article, untouched, rendered on every /info/* path (no redirect -
+       nothing links to a /info/* sub-path unless the flag-on mini-nav
+       produced the link, so this is a safe fallback). -->
+  <article v-if="!isLiveResultBarEnabled" class="prose page-info">
     <h1>Wuthering Waves Calculator & Optimizer</h1>
     <p>
       Welcome to the It's pretty simple, configure your character like you would
@@ -107,10 +112,48 @@
       <RouterLink to="/privacy">privacy policy</RouterLink>
     </p>
   </article>
+
+  <!-- Labs flag on: mini-nav shell + nested route content. -->
+  <div v-else class="page-info page-info--v3 flex gap-8">
+    <div class="w-48 shrink-0">
+      <div class="sticky top-4 flex flex-col gap-1">
+        <h1 class="text-2xl font-bold mb-3">Info</h1>
+        <RouterLink
+          v-for="item in navItems"
+          :key="item.path"
+          :to="item.path"
+          class="info-nav-item"
+          :class="{ 'info-nav-item--active': route.path === item.path }"
+          :data-test-info-nav-item="item.path">
+          <span class="info-nav-item__label">{{ item.label }}</span>
+          <span class="info-nav-item__path">{{ item.path }}</span>
+        </RouterLink>
+      </div>
+    </div>
+    <div class="flex-1 min-w-0">
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
+import { useSettingsStore } from "../stores/settings";
+
+const route = useRoute();
+const settingsStore = useSettingsStore();
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
+
+const navItems = [
+  { path: "/info", label: "Overview" },
+  { path: "/info/cv-rv", label: "CV & RV" },
+  { path: "/info/formulas", label: "Formulas" },
+  { path: "/info/credits", label: "Credits & Community" },
+];
 </script>
 
 <style scoped lang="scss">
@@ -119,6 +162,30 @@ import Nav from "../components/navigation/Nav.vue";
   max-width: 640px;
   @media (max-width: 768px) {
     margin-left: 0;
+  }
+
+  &.page-info--v3 {
+    max-width: 920px;
+  }
+}
+
+.info-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  &__path {
+    font-size: 0.66rem;
+    opacity: 0.4;
+    font-family: monospace;
+  }
+
+  &--active {
+    background: color-mix(in oklch, oklch(var(--p)) 16%, oklch(var(--b2)));
   }
 }
 </style>

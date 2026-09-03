@@ -5,6 +5,10 @@ import { describe, it, expect } from "vitest";
 import "@testing-library/jest-dom";
 
 describe("UpdatesWorkspace", () => {
+  // Renders all 400+ historical entries into the DOM (by design - see ADR
+  // 0023, collapsed content must stay real DOM for crawlers), which is
+  // slow enough under full-suite parallel load to flake on the default
+  // 5s timeout even though it reliably finishes in ~2.5s in isolation.
   it("groups the two most recent months as always-visible, everything older under one collapsed 'Earlier' details", () => {
     render(UpdatesWorkspace);
 
@@ -27,7 +31,7 @@ describe("UpdatesWorkspace", () => {
     if (monthCount > 2) {
       expect(earlier?.textContent).toContain("Earlier — back to");
     }
-  });
+  }, 15000);
 
   it("filters to matching days and their whole content when searching", async () => {
     render(UpdatesWorkspace);
