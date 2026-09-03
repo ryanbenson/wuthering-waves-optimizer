@@ -5,7 +5,7 @@
         <span class="font-bold text-base">{{ label }}</span>
         <span class="badge badge-sm badge-primary badge-outline">Labs</span>
       </div>
-      <p class="text-sm text-neutral-content max-w-xl">{{ details }}</p>
+      <p class="text-sm opacity-70 max-w-xl">{{ details }}</p>
     </div>
     <input
       v-model="isEnabled"

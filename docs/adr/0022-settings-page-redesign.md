@@ -81,6 +81,23 @@ made for this whole redesign wave.
   strings instead of being single-purpose — a reasonable tradeoff given how
   small the visual delta is, but worth revisiting if a future redesign
   wave needs a bigger structural difference than classes alone can express.
+  This tradeoff bit once already: the `variant` prop only swapped each
+  panel's outer card wrapper when first written, leaving the *inner*
+  label/description text on legacy's `label-text`/`text-neutral-content`
+  classes instead of the `font-bold text-base` / `text-sm opacity-70`
+  convention `SettingsBackupRestore.vue` actually used — visibly
+  inconsistent once seen side by side in the sidebar. Fixed post-review by
+  making those inner text classes `variant`-conditional too, the same
+  pattern the wrapper already used.
+- Also fixed post-review: the row wrapping `WorkspaceSideNav.vue` and the
+  content panel (`flex gap-6`) never switched to a column layout below the
+  `sm` breakpoint, so on mobile the nav's tap-to-open trigger and the
+  content panel sat side by side in a cramped ~40%-width column each,
+  leaving roughly half the screen empty. Now `flex flex-col sm:flex-row
+  gap-6`, matching the `sm:hidden`/`hidden sm:flex` split
+  `WorkspaceSideNav.vue` itself already used internally. `InfoView.vue`
+  had the identical bug in its own wrapper — same fix, see ADR
+  [0024](./0024-info-page-nested-routes-redesign.md).
 
 ## Related
 

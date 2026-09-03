@@ -1,6 +1,6 @@
 <template>
   <div class="settings-workspace flex flex-col gap-4">
-    <div class="flex gap-6">
+    <div class="flex flex-col sm:flex-row gap-6">
       <WorkspaceSideNav
         title="Settings"
         :groups="sectionGroups"

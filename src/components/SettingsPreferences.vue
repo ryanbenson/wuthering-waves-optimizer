@@ -11,10 +11,10 @@
             class="toggle toggle-primary"
             data-test-hide-wont-build-characters />
           <span>
-            <span class="label-text font-bold block">
+            <span :class="variant === 'v3' ? 'font-bold text-base block' : 'label-text font-bold block'">
               Hide “Won't build” characters
             </span>
-            <span class="text-sm text-neutral-content">
+            <span :class="variant === 'v3' ? 'text-sm opacity-70' : 'text-sm text-neutral-content'">
               Exclude characters marked “Won't build” from the character browser.
             </span>
           </span>
@@ -25,10 +25,10 @@
     <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow'">
       <div :class="variant === 'v3' ? 'flex flex-col gap-4' : 'card-body gap-4'">
         <div>
-          <span class="label-text font-bold block mb-1">
+          <span :class="variant === 'v3' ? 'font-bold text-base block mb-1' : 'label-text font-bold block mb-1'">
             Damage chart default value
           </span>
-          <span class="text-sm text-neutral-content block mb-3">
+          <span :class="variant === 'v3' ? 'text-sm opacity-70 block mb-3' : 'text-sm text-neutral-content block mb-3'">
             New damage charts start on this damage value. You can still change it
             per chart.
           </span>
@@ -47,10 +47,10 @@
         </div>
 
         <div>
-          <span class="label-text font-bold block mb-1">
+          <span :class="variant === 'v3' ? 'font-bold text-base block mb-1' : 'label-text font-bold block mb-1'">
             Damage chart default grouping
           </span>
-          <span class="text-sm text-neutral-content block mb-3">
+          <span :class="variant === 'v3' ? 'text-sm opacity-70 block mb-3' : 'text-sm text-neutral-content block mb-3'">
             New damage charts start grouped this way. You can still change it per
             chart.
           </span>
@@ -69,10 +69,10 @@
         </div>
 
         <div>
-          <span class="label-text font-bold block mb-1">
+          <span :class="variant === 'v3' ? 'font-bold text-base block mb-1' : 'label-text font-bold block mb-1'">
             Optimizer worker count
           </span>
-          <span class="text-sm text-neutral-content block mb-3">
+          <span :class="variant === 'v3' ? 'text-sm opacity-70 block mb-3' : 'text-sm text-neutral-content block mb-3'">
             Number of background threads used to search echo loadouts. More
             workers finish faster but use more CPU, battery, and memory —
             going above your device's CPU core count usually won't help.

@@ -104,6 +104,10 @@ made for this whole redesign wave.
   the flag being on for a given session AND (separately) the flag
   eventually becoming default-on before search engines see any of it. This
   is a known, accepted limitation, not a bug to chase down.
+- Also fixed post-review: this page's own `WorkspaceSideNav.vue` wrapper
+  had the same missing `flex-col`/`sm:flex-row` split as
+  `SettingsWorkspace.vue`'s (ADR [0022](./0022-settings-page-redesign.md)),
+  leaving roughly half the screen empty on mobile. Same fix applied here.
 
 ## Related
 

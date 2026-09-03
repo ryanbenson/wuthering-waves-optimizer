@@ -114,7 +114,7 @@
   </article>
 
   <!-- Labs flag on: shared workspace side nav + nested route content. -->
-  <div v-else class="page-info page-info--v3 flex gap-6">
+  <div v-else class="page-info page-info--v3 flex flex-col sm:flex-row gap-6">
     <WorkspaceSideNav title="Info" :groups="navGroups" />
     <div class="flex-1 min-w-0">
       <RouterView />

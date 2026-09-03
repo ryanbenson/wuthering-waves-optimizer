@@ -7,7 +7,7 @@
       <span v-else class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
         Danger Zone
       </span>
-      <p>This will reset your data to a blank state.</p>
+      <p :class="{ 'text-sm opacity-70': variant === 'v3' }">This will reset your data to a blank state.</p>
       <button @click="confirmDelete" class="btn btn-error" :class="{ 'btn-sm self-start': variant === 'v3' }">
         Delete
       </button>
