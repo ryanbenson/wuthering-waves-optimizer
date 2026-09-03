@@ -45,14 +45,14 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.selectWorkspaceCharacter("Carlotta");
     cy.get('[data-test-calculator-nav="team"]').click();
 
-    cy.get('[data-test-team-buffs-slot-select="1"]').should("be.visible");
-    cy.get('[data-test-team-buffs-slot-select="2"]').should("be.visible");
+    cy.get('[data-test-team-buffs-slot-avatar="1"]').should("be.visible");
+    cy.get('[data-test-team-buffs-slot-avatar="2"]').should("be.visible");
 
     // choose 2 characters for team buffs — sections start expanded (they
     // reuse useFilterPanelOpen, same as Custom Buffs), unlike the legacy
     // page's DaisyUI collapse which starts closed, so no clicks needed here.
-    cy.richSelect('[data-test-team-buffs-slot-select="1"]', "Shorekeeper");
-    cy.richSelect('[data-test-team-buffs-slot-select="2"]', "Zhezhi");
+    cy.selectTeamBuffsSlotCharacter(1, "Shorekeeper");
+    cy.selectTeamBuffsSlotCharacter(2, "Zhezhi");
     cy.get('[data-test-team-buffs-slot-name="1"]').should("contain.text", "Shorekeeper");
     cy.get('[data-test-team-buffs-slot-name="2"]').should("contain.text", "Zhezhi");
 
@@ -126,7 +126,7 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.get('[data-test-team-buffs-buff-enabled="FallacyOfNoReturn"]').should("not.be.checked");
 
     // Reset all clears every enabled buff and both teammate slots.
-    cy.richSelect('[data-test-team-buffs-slot-select="1"]', "Shorekeeper");
+    cy.selectTeamBuffsSlotCharacter(1, "Shorekeeper");
     cy.get('[data-test-team-buffs-buff-enabled="RejuvenatingGlow"]').check();
     cy.get('[data-test-team-buffs-workspace-reset]').click();
     cy.get('[data-test-team-buffs-slot-name="1"]').should("contain.text", "None");
@@ -153,7 +153,7 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     visitWithFlagEnabled();
     cy.selectWorkspaceCharacter("Carlotta");
     cy.get('[data-test-calculator-nav="team"]').click();
-    cy.richSelect('[data-test-team-buffs-slot-select="1"]', "Shorekeeper");
+    cy.selectTeamBuffsSlotCharacter(1, "Shorekeeper");
 
     // Starts open by default. Clicking empty space in the bar closes it.
     cy.get('[data-test-team-buffs-section="team1"]').should("have.attr", "aria-expanded", "true");

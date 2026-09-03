@@ -1,7 +1,7 @@
 function buildTeam(actionCount: number) {
   cy.get("[data-test-team-rotations-new]").click();
   cy.get("[data-test-team-rotation-editor]").should("be.visible");
-  cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+  cy.selectTeamRotationSlotCharacter(0, "Carlotta");
   cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
   cy.get("[data-test-team-rotation-duration]").clear().type("20");
 
@@ -103,7 +103,7 @@ describe("Team Rotations summary and status", () => {
     // Team 1: no duration set (the default for a new team).
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();

@@ -58,4 +58,34 @@ Cypress.Commands.add("selectWorkspaceCharacter", (key: string) => {
   });
 });
 
+// Team Rotations page (also v3-only, no select dropdown): each slot's
+// character avatar opens the same CalculatorCharacterBrowser modal — used
+// both to fill an empty slot and to swap an already-assigned one.
+Cypress.Commands.add(
+  "selectTeamRotationSlotCharacter",
+  (slot: number, key: string) => {
+    cy.get(`[data-test-team-rotation-slot-avatar="${slot}"]`).click({
+      force: true,
+    });
+    cy.get(`[data-test-character-browse-select="${key}"]`).click({
+      force: true,
+    });
+  },
+);
+
+// Team Buffs workspace (also v3-only): each teammate slot's avatar opens the
+// same CalculatorCharacterBrowser modal — used both to fill an empty slot
+// and to swap an already-assigned one.
+Cypress.Commands.add(
+  "selectTeamBuffsSlotCharacter",
+  (slot: number, key: string) => {
+    cy.get(`[data-test-team-buffs-slot-avatar="${slot}"]`).click({
+      force: true,
+    });
+    cy.get(`[data-test-character-browse-select="${key}"]`).click({
+      force: true,
+    });
+  },
+);
+
 export {};

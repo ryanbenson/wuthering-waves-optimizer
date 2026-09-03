@@ -292,13 +292,11 @@ const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
-// The Command Bar (which already shows the active character's avatar) only
-// mounts on the Calculator ("home") page. On every other page it never
-// renders, so the nav's own avatar stays the only wayfinding cue there even
-// with the flag on — see ADR 0019's "Not done here" note.
-const showTuningIcon = computed(
-  () => isLiveResultBarEnabled.value && props.curPage === "home",
-);
+// v3's tuning icon replaces the character-avatar slot everywhere the flag
+// is on, not just "home" — supersedes ADR 0019's "Not done here" note, which
+// kept the avatar on other pages as a wayfinding cue back when the Command
+// Bar (its icon-click replacement) only mounted on the Calculator page.
+const showTuningIcon = computed(() => isLiveResultBarEnabled.value);
 
 const displayCharacter = computed(() => {
   if (activeCharacter.value) {
@@ -312,8 +310,12 @@ const characterRarity = computed(() => {
   return meta?.rarity ?? 5;
 });
 
+// The nav's home icon shows the v3 "levers" tuning icon whenever the flag
+// is on (click is intentionally inert), or the classic character avatar
+// when it's off — clicking the avatar still opens the character chooser,
+// since the classic UI has no other icon-click affordance for it.
 function handleCalculatorNavClick(event) {
-  if (props.curPage === "home") {
+  if (props.curPage === "home" && !showTuningIcon.value) {
     event.preventDefault();
     characterBrowserRef.value?.triggerOpenModal();
   }

@@ -61,20 +61,17 @@
             :key="slot"
             class="card bg-base-100 shadow p-4"
             :data-test-team-rotation-slot="slot">
-            <template v-if="team.characterIds[slot] && !isChangingSlot(slot)">
+            <template v-if="team.characterIds[slot]">
               <div class="flex items-center gap-3 mb-2">
-                <div
-                  class="size-12 rounded-full bg-cover bg-center border shrink-0"
-                  :style="{ backgroundImage: `url(${characterImage(team.characterIds[slot])})` }"></div>
+                <AppHoverZoomAvatar
+                  class="size-12 border"
+                  :image="characterImage(team.characterIds[slot])"
+                  title="Change character"
+                  :data-test-team-rotation-slot-avatar="slot"
+                  @click="openCharacterPicker(slot)" />
                 <div class="flex-1 min-w-0">
                   <div class="font-semibold truncate">{{ displayName(team.characterIds[slot]) }}</div>
                 </div>
-                <button
-                  class="btn btn-ghost btn-xs"
-                  :data-test-team-rotation-slot-change="slot"
-                  @click="startChangeSlot(slot)">
-                  Change
-                </button>
               </div>
               <div v-if="slotStats[slot]" class="grid grid-cols-3 gap-x-2 gap-y-1 mb-2 text-sm">
                 <div class="flex items-center gap-1" v-tooltip="'HP'" data-test-team-rotation-slot-stat="hp">
@@ -129,22 +126,14 @@
             </template>
             <template v-else>
               <span class="label-text mb-2 block">Character {{ slot + 1 }}</span>
-              <AppRichSelect
-                :model-value="null"
-                :options="availableCharacterOptions(slot)"
-                searchable
-                allow-empty
-                empty-label="Choose a character"
-                aria-label="Choose character"
-                :data-test="`team-rotation-slot-select-${slot}`"
-                @update:model-value="(val) => setSlotCharacter(slot, val)" />
-              <button
-                v-if="isChangingSlot(slot)"
-                class="btn btn-ghost btn-xs w-full mt-2"
-                :data-test-team-rotation-slot-cancel-change="slot"
-                @click="cancelChangeSlot(slot)">
-                Cancel
-              </button>
+              <div class="flex flex-col items-center justify-center gap-2 py-6">
+                <AppHoverZoomAvatar
+                  class="size-16 border"
+                  title="Choose a character"
+                  :data-test-team-rotation-slot-avatar="slot"
+                  @click="openCharacterPicker(slot)" />
+                <span class="text-xs opacity-60">Click to choose a character</span>
+              </div>
             </template>
           </div>
         </div>
@@ -196,16 +185,30 @@
             </button>
             <div v-if="hasAnyCharacter" class="mt-2">
               <div class="flex items-center gap-2 mb-1">
-                <label for="quick-add-slot" class="text-xs opacity-70">Adding for:</label>
-                <select
-                  id="quick-add-slot"
-                  v-model.number="quickAddSlot"
-                  class="select select-bordered select-xs"
-                  data-test-team-rotation-quick-add-slot>
-                  <option v-for="slot in [0, 1, 2]" :key="slot" :value="slot" :disabled="!team.characterIds[slot]">
-                    {{ team.characterIds[slot] ? displayName(team.characterIds[slot] as string) : `Slot ${slot + 1} (empty)` }}
-                  </option>
-                </select>
+                <span class="text-xs opacity-70">Adding for:</span>
+                <div class="flex gap-1" data-test-team-rotation-quick-add-slot>
+                  <button
+                    v-for="slot in [0, 1, 2]"
+                    :key="slot"
+                    type="button"
+                    class="size-7 rounded-full bg-cover bg-center border-2 shrink-0 transition-opacity"
+                    :class="
+                      team.characterIds[slot]
+                        ? slot === quickAddSlot
+                          ? 'border-primary ring-2 ring-primary ring-offset-1 ring-offset-base-100 opacity-100'
+                          : 'border-base-300 opacity-40 hover:opacity-80 cursor-pointer'
+                        : 'border-base-300 opacity-10 cursor-not-allowed'
+                    "
+                    :style="
+                      team.characterIds[slot]
+                        ? { backgroundImage: `url(${characterImage(team.characterIds[slot] as string)})` }
+                        : {}
+                    "
+                    :disabled="!team.characterIds[slot]"
+                    :title="team.characterIds[slot] ? displayName(team.characterIds[slot] as string) : `Slot ${slot + 1} (empty)`"
+                    :data-test-team-rotation-quick-add-slot-choice="slot"
+                    @click="quickAddSlot = slot"></button>
+                </div>
               </div>
               <CalculatorRotationQuickAdd :actions="quickAddActionList" @add-actions="handleQuickAddActions" />
             </div>
@@ -270,6 +273,12 @@
       :selected-build-id="pickerSlot !== null ? (team.buildIds?.[pickerSlot] ?? null) : null"
       ref="buildPickerRef"
       @select-build="handleBuildPicked" />
+
+    <CalculatorCharacterBrowser
+      :character="characterPickerSlot !== null ? (team.characterIds[characterPickerSlot] ?? '') : ''"
+      :exclude-keys="characterPickerExcludeKeys"
+      ref="characterPickerRef"
+      @character-browser:chosen-character="handlePickedCharacter" />
 
     <!-- A self-contained drawer, kept structurally separate from the page
     content above (mirroring HomeView.vue's own breakdown drawer): the real
@@ -352,8 +361,9 @@ import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import { displayInt, displayPercentage } from "../utils/numbers";
-import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
+import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
+import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
@@ -374,7 +384,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { buildTeamExportPayload, generateTeamExportFilename } from "../teamRotations/exportImport";
-import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -407,11 +417,6 @@ const { characters } = storeToRefs(characterStore);
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 const { showToast } = useToast();
-
-// Slots the user has clicked "Change" on but not yet picked a replacement
-// for — purely local UI state, no store mutation until a character is
-// actually chosen, so the user can back out without losing the teammate.
-const changingSlots = ref<Set<number>>(new Set());
 
 // The slot most recently used for an action — new actions default here
 // instead of always defaulting to the first configured character.
@@ -496,45 +501,6 @@ function characterImage(characterId: string) {
   return `https://ryanbenson.github.io/wuthering-waves-assets/images/${characterId}.png`;
 }
 
-function availableCharacterOptions(slot: number): AppRichSelectOption[] {
-  const characterIds = (team.value?.characterIds ?? []) as Array<string | null>;
-  const chosenElsewhere = new Set(
-    characterIds.filter((id: string | null, idx: number) => idx !== slot && id),
-  );
-
-  const roster = getCharactersAvailable();
-  const rosterKeySet = new Set([
-    ...roster.five.map((c) => c.key),
-    ...roster.four.map((c) => c.key),
-  ]);
-
-  const mapBucket = (chars: typeof roster.five, group: string): AppRichSelectOption[] =>
-    chars
-      .filter((char) => !chosenElsewhere.has(char.key))
-      .map((char) => ({
-        value: char.key,
-        label: char.name,
-        group,
-        image: characterImage(char.key),
-      }));
-
-  const options = [...mapBucket(roster.five, "5 Star"), ...mapBucket(roster.four, "4 Star")];
-
-  // Preserve a currently-assigned character even if they've since fallen
-  // off the curated picker roster (e.g. a legacy/off-roster key).
-  const currentCharacterId = characterIds[slot];
-  if (currentCharacterId && !rosterKeySet.has(currentCharacterId)) {
-    options.push({
-      value: currentCharacterId,
-      label: displayName(currentCharacterId),
-      group: "Other",
-      image: characterImage(currentCharacterId),
-    });
-  }
-
-  return options;
-}
-
 function setSlotCharacter(slot: number, characterId: unknown) {
   if (typeof characterId !== "string" || !characterId) {
     return;
@@ -543,10 +509,34 @@ function setSlotCharacter(slot: number, characterId: unknown) {
     (action: TeamRotationAction) => action.slot === slot,
   );
   teamRotationsStore.setTeamCharacter(props.teamId, slot, characterId);
-  changingSlots.value.delete(slot);
   if (hadActions) {
     showToast("That teammate's actions were cleared since they belonged to the previous character.", "info");
   }
+}
+
+// Icon-click character picker (mirrors the shared CalculatorCharacterBrowser
+// pattern used elsewhere in v3, e.g. the command bar avatar) — replaces the
+// old per-slot searchable <select>. One shared modal instance is reused
+// across all 3 slots, tracking which slot triggered it.
+const characterPickerRef = ref<InstanceType<typeof CalculatorCharacterBrowser> | null>(null);
+const characterPickerSlot = ref<number | null>(null);
+
+const characterPickerExcludeKeys = computed(() => {
+  const characterIds = (team.value?.characterIds ?? []) as Array<string | null>;
+  return characterIds.filter(
+    (id, idx): id is string => idx !== characterPickerSlot.value && Boolean(id),
+  );
+});
+
+function openCharacterPicker(slot: number) {
+  characterPickerSlot.value = slot;
+  characterPickerRef.value?.triggerOpenModal();
+}
+
+function handlePickedCharacter(characterId: string) {
+  if (characterPickerSlot.value === null) return;
+  setSlotCharacter(characterPickerSlot.value, characterId);
+  characterPickerSlot.value = null;
 }
 
 function activeBuildLabelForSlot(slot: number): string {
@@ -595,20 +585,6 @@ function handleBuildPicked(buildId: string | null) {
     return;
   }
   setSlotBuild(pickerSlot.value, buildId);
-}
-
-function startChangeSlot(slot: number) {
-  changingSlots.value = new Set(changingSlots.value).add(slot);
-}
-
-function cancelChangeSlot(slot: number) {
-  const next = new Set(changingSlots.value);
-  next.delete(slot);
-  changingSlots.value = next;
-}
-
-function isChangingSlot(slot: number) {
-  return changingSlots.value.has(slot);
 }
 
 function configureCharacter(characterId: string) {

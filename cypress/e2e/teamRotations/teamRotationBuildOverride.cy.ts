@@ -54,7 +54,7 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
 
     // Baseline: slot follows Carlotta's active build (Default, no weapon).
@@ -126,7 +126,7 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
 
     // Trigger label reflects the real active build...

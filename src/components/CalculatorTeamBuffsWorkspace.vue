@@ -88,39 +88,25 @@
         class="p-3 flex items-center gap-3"
         :class="{ 'cursor-pointer': selectedCharacter1 }"
         @click="selectedCharacter1 && (openTeam1 = !openTeam1)">
-        <div
-          class="team-buffs-workspace__avatar cursor-pointer shrink-0"
+        <AppHoverZoomAvatar
+          class="team-buffs-workspace__avatar shrink-0"
           :class="{
             'border-amber-300': partyMember1Rarity === 5,
             'border-violet-600': partyMember1Rarity === 4,
           }"
-          :style="{ backgroundImage: `url(${getCharacterImage(selectedCharacter1)})` }"
+          :image="selectedCharacter1 ? getCharacterImage(selectedCharacter1) : null"
+          :title="selectedCharacter1 ? 'Change team member' : 'Choose a team member'"
           data-test-team-buffs-slot-avatar="1"
-          @click.stop="openPartyMember1Browser">
-        </div>
-        <AppRichSelect
-          v-model="selectedCharacter1"
-          :options="partyMember1Options"
-          searchable
-          allow-empty
-          empty-label="None"
-          search-placeholder="Type to find a character…"
-          aria-label="Choose first team member"
-          size="sm"
-          class="w-fit shrink-0"
-          data-test-team-buffs-slot-select="1"
-          data-test-team-buffs-slot-name="1"
-          @click.stop />
+          @click.stop="openPartyMember1Browser" />
+        <span class="text-sm font-medium truncate" data-test-team-buffs-slot-name="1">{{
+          partyMember1DisplayName || "None"
+        }}</span>
         <span v-if="section1.length && activeCount(char1Buffs)" class="badge badge-sm badge-primary font-mono">{{
           activeCount(char1Buffs)
         }}</span>
         <button v-if="selectedCharacter1" type="button" class="btn btn-xs btn-ghost" @click.stop="clearCharacter1">
           Clear
         </button>
-        <CalculatorCharacterBrowser
-          :character="character"
-          ref="partyMemberBrowser1Ref"
-          @character-browser:chosen-character="handlePartyMember1Chosen" />
         <button
           v-if="selectedCharacter1"
           type="button"
@@ -164,6 +150,17 @@
           </div>
         </div>
       </div>
+
+      <!-- Kept outside the toggle row above: the "Use character" button
+      inside this dialog is a DOM descendant of wherever this tag sits, and a
+      click there bubbles like any other — nested inside the row, it would
+      also trigger that row's own click-to-toggle handler right after
+      picking a character, collapsing the section that click was meant to
+      populate. -->
+      <CalculatorCharacterBrowser
+        :character="character"
+        ref="partyMemberBrowser1Ref"
+        @character-browser:chosen-character="handlePartyMember1Chosen" />
     </div>
 
     <!-- Teammate 2 -->
@@ -172,39 +169,25 @@
         class="p-3 flex items-center gap-3"
         :class="{ 'cursor-pointer': selectedCharacter2 }"
         @click="selectedCharacter2 && (openTeam2 = !openTeam2)">
-        <div
-          class="team-buffs-workspace__avatar cursor-pointer shrink-0"
+        <AppHoverZoomAvatar
+          class="team-buffs-workspace__avatar shrink-0"
           :class="{
             'border-amber-300': partyMember2Rarity === 5,
             'border-violet-600': partyMember2Rarity === 4,
           }"
-          :style="{ backgroundImage: `url(${getCharacterImage(selectedCharacter2)})` }"
+          :image="selectedCharacter2 ? getCharacterImage(selectedCharacter2) : null"
+          :title="selectedCharacter2 ? 'Change team member' : 'Choose a team member'"
           data-test-team-buffs-slot-avatar="2"
-          @click.stop="openPartyMember2Browser">
-        </div>
-        <AppRichSelect
-          v-model="selectedCharacter2"
-          :options="partyMember2Options"
-          searchable
-          allow-empty
-          empty-label="None"
-          search-placeholder="Type to find a character…"
-          aria-label="Choose second team member"
-          size="sm"
-          class="w-fit shrink-0"
-          data-test-team-buffs-slot-select="2"
-          data-test-team-buffs-slot-name="2"
-          @click.stop />
+          @click.stop="openPartyMember2Browser" />
+        <span class="text-sm font-medium truncate" data-test-team-buffs-slot-name="2">{{
+          partyMember2DisplayName || "None"
+        }}</span>
         <span v-if="section2.length && activeCount(char2Buffs)" class="badge badge-sm badge-primary font-mono">{{
           activeCount(char2Buffs)
         }}</span>
         <button v-if="selectedCharacter2" type="button" class="btn btn-xs btn-ghost" @click.stop="clearCharacter2">
           Clear
         </button>
-        <CalculatorCharacterBrowser
-          :character="character"
-          ref="partyMemberBrowser2Ref"
-          @character-browser:chosen-character="handlePartyMember2Chosen" />
         <button
           v-if="selectedCharacter2"
           type="button"
@@ -248,6 +231,13 @@
           </div>
         </div>
       </div>
+
+      <!-- Kept outside the toggle row above — see the matching comment on
+      Teammate 1's browser instance. -->
+      <CalculatorCharacterBrowser
+        :character="character"
+        ref="partyMemberBrowser2Ref"
+        @character-browser:chosen-character="handlePartyMember2Chosen" />
     </div>
 
     <!-- Echo Buffs -->
@@ -353,16 +343,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index.ts";
-import {
-  allCharactersList,
-  characterPickerRoster,
-  getCharacterRosterDisplayName,
-  getCharactersAvailable,
-} from "../characters/characters.ts";
-import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
+import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters.ts";
+import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import BuffRow from "./teamBuffsWorkspace/TeamBuffsWorkspaceRow.vue";
 import { useCharacterStore } from "../stores/character";
@@ -694,9 +679,10 @@ async function jumpTo(key: string) {
   el?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-// --- Teammate picker: reuses the existing CalculatorCharacterBrowser modal
-// + AppRichSelect dropdown pairing exactly as the legacy page does — Custom
-// Buffs has no equivalent "pick one of ~45 characters" concern to align to.
+// --- Teammate picker: clicking the avatar opens the shared
+// CalculatorCharacterBrowser modal — consistent with the icon-click pattern
+// used elsewhere in v3 (weapon panel, party page, Command Bar avatar), and
+// replaces the AppRichSelect dropdown this used to pair the avatar with.
 
 const partyMemberBrowser1Ref = ref<{
   triggerOpenModal: () => void;
@@ -706,59 +692,6 @@ const partyMemberBrowser2Ref = ref<{
   triggerOpenModal: () => void;
   triggerCloseModal: () => void;
 } | null>(null);
-
-type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
-const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
-
-const rosterKeySet = computed(
-  () =>
-    new Set([
-      ...characterPickerRoster.five.map((c) => c.key),
-      ...characterPickerRoster.four.map((c) => c.key),
-    ]),
-);
-
-const partyMember1NotOnRoster = computed(() => {
-  const k = selectedCharacter1.value;
-  if (!k || rosterKeySet.value.has(k)) return null;
-  return { key: k, name: getCharacterRosterDisplayName(k) };
-});
-const partyMember2NotOnRoster = computed(() => {
-  const k = selectedCharacter2.value;
-  if (!k || rosterKeySet.value.has(k)) return null;
-  return { key: k, name: getCharacterRosterDisplayName(k) };
-});
-
-function buildPartyMemberOptions(
-  offRosterMember: { key: string; name: string } | null,
-): AppRichSelectOption[] {
-  const mapBucket = (chars: CharacterPickerList["five"], group: string): AppRichSelectOption[] =>
-    chars.map((char) => ({
-      value: char.key,
-      label: char.name,
-      group,
-      image: getCharacterImage(char.key),
-    }));
-
-  const options = [
-    ...mapBucket(charactersList.value.five, "5 Star"),
-    ...mapBucket(charactersList.value.four, "4 Star"),
-  ];
-
-  if (offRosterMember) {
-    options.push({
-      value: offRosterMember.key,
-      label: offRosterMember.name,
-      group: "Other",
-      image: getCharacterImage(offRosterMember.key),
-    });
-  }
-
-  return options;
-}
-
-const partyMember1Options = computed(() => buildPartyMemberOptions(partyMember1NotOnRoster.value));
-const partyMember2Options = computed(() => buildPartyMemberOptions(partyMember2NotOnRoster.value));
 
 const partyMember1DisplayName = computed(() =>
   selectedCharacter1.value ? getCharacterRosterDisplayName(selectedCharacter1.value) : "",
@@ -797,16 +730,9 @@ function clearCharacter2() {
   selectedCharacter2.value = null;
 }
 
-function getCharacterImage(character: string | null) {
-  if (!character) {
-    return `https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png`;
-  }
+function getCharacterImage(character: string) {
   return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
 }
-
-onMounted(() => {
-  charactersList.value = getCharactersAvailable();
-});
 </script>
 
 <style scoped>

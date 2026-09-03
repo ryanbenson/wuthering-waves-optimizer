@@ -119,3 +119,8 @@ stacked components into one thin row. This ADR builds that approved layout.
 - **`Nav.vue`'s small Home-icon avatar is explicitly kept**, not folded into
   this merge — it's the only wayfinding cue for the active character on
   Inventory/Convene/Team Rotations, pages the Command Bar never renders on.
+  **Superseded 2026-09-03:** the flag-on tuning icon now replaces this
+  avatar on every page, not just "home" — the icon-click affordances added
+  elsewhere in v3 (weapon panel, party page, Command Bar avatar) made the
+  nav's own character-swap click redundant, and per-page inconsistency
+  read as a bug rather than an intentional cue.
