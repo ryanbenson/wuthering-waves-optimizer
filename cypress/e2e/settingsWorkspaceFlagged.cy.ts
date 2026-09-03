@@ -37,11 +37,11 @@ describe("Settings Workspace (liveResultBar flag)", () => {
     cy.contains("UI Overhaul 3.0").should("be.visible");
   });
 
-  it("switches sections via the mobile dropdown switcher", () => {
+  it("switches sections via the always-visible mobile pill row", () => {
     cy.viewport(390, 844);
     visitWithFlagEnabled();
 
-    cy.get("[data-test-workspace-nav-mobile-trigger]").click();
+    // No trigger to open first - every pill is already visible.
     cy.get('[data-test-workspace-nav-mobile-item="backup-restore"]').click();
     cy.get('[data-test-settings-export-download]').should("be.visible");
   });

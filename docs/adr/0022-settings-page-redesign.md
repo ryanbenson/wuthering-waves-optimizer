@@ -98,6 +98,17 @@ made for this whole redesign wave.
   `WorkspaceSideNav.vue` itself already used internally. `InfoView.vue`
   had the identical bug in its own wrapper — same fix, see ADR
   [0024](./0024-info-page-nested-routes-redesign.md).
+- Revised again post-review: the mobile tap-to-open dropdown itself (the
+  `InventoryMobileSubNav.vue`-derived pattern from Decision 1) was
+  replaced with an always-visible horizontal scrollable pill row — one
+  `<div class="overflow-x-auto">` of pills, no `<details>`/trigger at all.
+  Feedback was that hiding the section list behind a tap defeated the
+  point of fixing the layout above it; every section should be reachable
+  in one tap, and a compact single row does that without the vertical
+  cost a permanently-expanded list would add. The pill row bleeds past
+  the page's own `3rem` horizontal padding to the true screen edge
+  (`-mx-12 px-12`, matching that padding exactly) so it has real room to
+  scroll rather than being squeezed inside it.
 
 ## Related
 
@@ -111,7 +122,8 @@ made for this whole redesign wave.
 - `src/pages/SettingsView.vue` — the flag swap
 - `cypress/e2e/settingsWorkspaceFlagged.cy.ts` (new) — covers both flag
   states
-- `src/components/navigation/InventoryMobileSubNav.vue` — the mobile
-  dropdown pattern `WorkspaceSideNav.vue`'s mobile switcher originates from
+- `src/components/navigation/InventoryMobileSubNav.vue` — the dropdown
+  pattern `WorkspaceSideNav.vue`'s mobile nav originally copied before it
+  was replaced by the always-visible pill row (historical reference only)
 - ADRs [0013](./0013-live-result-bar-labs-flag.md)–[0021](./0021-utility-nav-dropdown-redesign.md)
   — the shared-flag pattern this follows
