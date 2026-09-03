@@ -55,7 +55,7 @@ describe("UpdatesWorkspace", () => {
     ).toBeInTheDocument();
   });
 
-  it("expand-all opens the collapsed Earlier details", async () => {
+  it("expand all / collapse all toggles the Earlier details and its own label", async () => {
     render(UpdatesWorkspace);
     const earlier = document.querySelector(
       "[data-test-updates-earlier]",
@@ -63,10 +63,17 @@ describe("UpdatesWorkspace", () => {
     if (!earlier) return; // fewer than 3 months of data - nothing to expand
 
     expect(earlier.open).toBe(false);
-    const expandAll = document.querySelector(
+    const toggleButton = document.querySelector(
       "[data-test-updates-expand-all]",
     ) as HTMLElement;
-    await fireEvent.click(expandAll);
+    expect(toggleButton.textContent).toContain("Expand all");
+
+    await fireEvent.click(toggleButton);
     expect(earlier.open).toBe(true);
+    expect(toggleButton.textContent).toContain("Collapse all");
+
+    await fireEvent.click(toggleButton);
+    expect(earlier.open).toBe(false);
+    expect(toggleButton.textContent).toContain("Expand all");
   });
 });

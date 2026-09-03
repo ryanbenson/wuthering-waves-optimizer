@@ -4,12 +4,23 @@
       <h1 class="text-2xl font-bold">Updates</h1>
       <div class="flex items-center gap-4">
         <button
+          v-if="!isSearching && earlierEntries.length"
           type="button"
           class="text-sm font-semibold text-primary flex items-center gap-1"
           data-test-updates-expand-all
-          @click="expandAllSections">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
-          Expand all
+          @click="toggleAllSections">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            class="size-3 updates-workspace__expand-all-icon"
+            :class="{ 'updates-workspace__expand-all-icon--flipped': allExpanded }">
+            <polyline points="7 13 12 18 17 13"></polyline>
+            <polyline points="7 6 12 11 17 6"></polyline>
+          </svg>
+          {{ allExpanded ? "Collapse all" : "Expand all" }}
         </button>
         <label class="input input-bordered input-sm flex items-center gap-2 rounded-full">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-4 opacity-50"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -67,7 +78,11 @@
         </div>
       </div>
 
-      <details v-if="earlierEntries.length" class="updates-workspace__earlier bg-base-200 rounded-xl" data-test-updates-earlier>
+      <details
+        v-if="earlierEntries.length"
+        class="updates-workspace__earlier bg-base-200 rounded-xl"
+        data-test-updates-earlier
+        @toggle="syncExpandedState">
         <summary class="cursor-pointer p-3 flex items-center gap-2 text-sm hover:bg-base-300 rounded-xl">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3.5 opacity-60 shrink-0 updates-workspace__earlier-chevron"><polyline points="9 6 15 12 9 18"></polyline></svg>
           <span class="opacity-70 flex-1">{{ earlierLabel }}</span>
@@ -166,14 +181,38 @@ const earlierLabel = computed(() => {
   return oldest ? `Earlier — back to ${oldest.label}` : "Earlier";
 });
 
-function expandAllSections() {
+// Tracks whether every collapsible section is open, so the button can
+// flip to "Collapse all" - kept in sync both when the button itself acts
+// and when a section is toggled directly by clicking its own <summary>
+// (via the `@toggle` listener above), so the label never lies about what
+// a click will do next.
+const allExpanded = ref(false);
+
+function syncExpandedState() {
+  const detailsEls = rootEl.value?.querySelectorAll("details") ?? [];
+  allExpanded.value =
+    detailsEls.length > 0 &&
+    Array.from(detailsEls).every((details) => details.open);
+}
+
+function toggleAllSections() {
+  const next = !allExpanded.value;
   rootEl.value?.querySelectorAll("details").forEach((details) => {
-    details.open = true;
+    details.open = next;
   });
+  allExpanded.value = next;
 }
 </script>
 
 <style scoped lang="scss">
+.updates-workspace__expand-all-icon {
+  transition: transform 0.15s ease;
+
+  &--flipped {
+    transform: rotate(180deg);
+  }
+}
+
 .updates-workspace__earlier {
   summary {
     list-style: none;

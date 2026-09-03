@@ -34,7 +34,7 @@ describe("Updates Workspace (liveResultBar flag)", () => {
     cy.get("[data-test-updates-day]").should("not.exist");
   });
 
-  it("keeps a collapsed month's content in the DOM (not lazy-fetched) and Expand all reveals it", () => {
+  it("keeps a collapsed month's content in the DOM (not lazy-fetched) and Expand all reveals it, then Collapse all reverses it", () => {
     visitWithFlagEnabled();
 
     // Collapsed by default (native <details>, not a v-if) - its content is
@@ -46,9 +46,35 @@ describe("Updates Workspace (liveResultBar flag)", () => {
     cy.get("[data-test-updates-earlier] [data-test-updates-day]")
       .first()
       .should("exist");
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Expand all");
 
     cy.get("[data-test-updates-expand-all]").click();
     cy.get("[data-test-updates-earlier]").should("have.attr", "open");
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Collapse all");
+
+    cy.get("[data-test-updates-expand-all]").click();
+    cy.get("[data-test-updates-earlier]").should("not.have.attr", "open");
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Expand all");
+  });
+
+  it("relabels to Collapse all when the section is opened by clicking its own summary directly", () => {
+    visitWithFlagEnabled();
+
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Expand all");
+    cy.get("[data-test-updates-earlier] summary").click();
+    cy.get("[data-test-updates-earlier]").should("have.attr", "open");
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Collapse all");
+
+    cy.get("[data-test-updates-earlier] summary").click();
+    cy.get("[data-test-updates-earlier]").should("not.have.attr", "open");
+    cy.get("[data-test-updates-expand-all]").should("contain.text", "Expand all");
+  });
+
+  it("hides the expand/collapse control while searching", () => {
+    visitWithFlagEnabled();
+    cy.get("[data-test-updates-expand-all]").should("be.visible");
+    cy.get("[data-test-updates-search]").type("Jingran");
+    cy.get("[data-test-updates-expand-all]").should("not.exist");
   });
 });
 

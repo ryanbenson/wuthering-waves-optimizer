@@ -61,11 +61,21 @@ made for this whole redesign wave.
    not `v-if`.** This was an explicit requirement from design review:
    visibility-only toggling (not lazy-rendering on open) keeps the content
    crawlable regardless of whether a crawler executes the disclosure
-   interaction. A page-level "Expand all" control (`querySelectorAll`
-   sweep setting `.open = true`, not a Vue-reactive `:open` binding — this
-   sidesteps the controlled/uncontrolled-`<details>` fight of keeping a
-   reactive binding in sync with native user toggles) opens it for anyone
-   who wants the old full-scroll experience back.
+   interaction. A page-level control (`querySelectorAll` sweep setting
+   `.open`, not a Vue-reactive `:open` binding — this sidesteps the
+   controlled/uncontrolled-`<details>` fight of keeping a reactive binding
+   in sync with native user toggles) opens it for anyone who wants the old
+   full-scroll experience back. It toggles between "Expand all" and
+   "Collapse all" — a separate `allExpanded` ref tracks whether every
+   `<details>` is currently open, kept in sync both when the button itself
+   acts and when a section is opened by clicking its own `<summary>`
+   directly (a native `@toggle` listener on the `<details>` re-derives
+   `allExpanded` from actual DOM state), so the label never lies about
+   what the next click will do. Hidden entirely while searching, since
+   search results render with no collapsible sections at all — there's
+   nothing for it to act on. Also gained a rotating chevron on the
+   "Earlier" `<summary>` itself so the section visibly reads as
+   expandable, not just clickable text.
 
 ## Consequences
 
