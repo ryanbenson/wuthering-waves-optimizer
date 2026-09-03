@@ -1,5 +1,18 @@
 <template>
-  <div class="labs-list">
+  <div v-if="variant === 'v3'" class="bg-base-200 rounded-xl p-4 flex items-start justify-between gap-4">
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-base">{{ label }}</span>
+        <span class="badge badge-sm badge-primary badge-outline">Labs</span>
+      </div>
+      <p class="text-sm opacity-70 max-w-xl">{{ details }}</p>
+    </div>
+    <input
+      v-model="isEnabled"
+      type="checkbox"
+      class="toggle toggle-primary mt-1 shrink-0" />
+  </div>
+  <div v-else class="labs-list">
     <div class="form-control mt-4">
       <label class="label cursor-pointer flex gap-4 justify-start">
         <input
@@ -18,11 +31,15 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
 
-const props = defineProps<{
-  labKey: string;
-  label: string;
-  details: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    labKey: string;
+    label: string;
+    details: string;
+    variant?: "legacy" | "v3";
+  }>(),
+  { variant: "legacy" },
+);
 
 const settingsStore = useSettingsStore();
 const { labs } = storeToRefs(settingsStore);

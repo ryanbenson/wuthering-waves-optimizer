@@ -1,24 +1,28 @@
 <template>
-  <h3 class="text-2xl font-bold mb-4">Delete your data</h3>
+  <h3 v-if="variant !== 'v3'" class="text-2xl font-bold mb-4">Delete your data</h3>
 
-  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
-    <div class="card-body">
-      <h3 class="card-title">Delete your data</h3>
-      <p>This will reset your data to a blank state.</p>
-      <button @click="confirmDelete" class="btn btn-error">Delete</button>
+  <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow mb-2'">
+    <div :class="variant === 'v3' ? 'flex flex-col gap-2' : 'card-body'">
+      <h3 v-if="variant !== 'v3'" class="card-title">Delete your data</h3>
+      <span v-else class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
+        Danger Zone
+      </span>
+      <p :class="{ 'text-sm opacity-70': variant === 'v3' }">This will reset your data to a blank state.</p>
+      <button @click="confirmDelete" class="btn btn-error" :class="{ 'btn-sm self-start': variant === 'v3' }">
+        Delete
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
- */
-import { useCharacterStore } from "../stores/character";
-import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { useConfirm } from "../composables/useConfirm";
+import { clearAllUserData } from "../utils/settingsBackup";
+
+withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
+  variant: "legacy",
+});
 
 const { showToast } = useToast();
 const { confirm } = useConfirm();
@@ -34,12 +38,7 @@ async function confirmDelete() {
   });
   if (!confirmed) return;
 
-  localStorage.setItem("character", "");
-  const characterStore = useCharacterStore();
-  characterStore.$hydrate({ runHooks: false });
-  localStorage.setItem("inventory", "");
-  const inventoryStore = useInventoryStore();
-  inventoryStore.$hydrate({ runHooks: false });
+  clearAllUserData();
   showToast("Your data has been deleted!", "success");
   window.setTimeout(() => location.reload(), 1500);
 }

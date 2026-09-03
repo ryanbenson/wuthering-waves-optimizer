@@ -1,45 +1,71 @@
 <template>
-  <h3 class="text-2xl font-bold mb-4">Labs</h3>
-  <h4 class="text-lg">Features that are in progress</h4>
-  <p>
-    Enable any of these features if you want to test them out. Know that they
-    are a in progress and may have bugs or issues.
-    <br />
-    If you find anything, communicate them in the Discord.
-  </p>
-  <template v-if="!labsFeatures.length">
-    <div role="alert" class="alert shadow-lg mt-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="stroke-info h-6 w-6 shrink-0">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <div>
-        <h3 class="font-bold">
-          No labs are currently running, check back soon!
-        </h3>
+  <template v-if="variant === 'v3'">
+    <p class="text-sm opacity-60 mb-4 max-w-xl">
+      Features that are still in progress. Turn any of these on to try them
+      early — expect rough edges, and drop what you find in the Discord.
+    </p>
+    <div class="flex flex-col gap-3">
+      <SettingsLab
+        v-for="lab in labsFeatures"
+        :key="lab.key"
+        :lab-key="lab.key"
+        :label="lab.label"
+        :details="lab.details"
+        variant="v3"></SettingsLab>
+      <div class="bg-base-200/50 rounded-xl p-4 border border-dashed border-base-300">
+        <p class="text-xs opacity-40 text-center">
+          More experiments will land here as they're ready.
+        </p>
       </div>
     </div>
   </template>
   <template v-else>
-    <SettingsLab
-      v-for="lab in labsFeatures"
-      :key="lab.key"
-      :lab-key="lab.key"
-      :label="lab.label"
-      :details="lab.details"></SettingsLab>
+    <h3 class="text-2xl font-bold mb-4">Labs</h3>
+    <h4 class="text-lg">Features that are in progress</h4>
+    <p>
+      Enable any of these features if you want to test them out. Know that they
+      are a in progress and may have bugs or issues.
+      <br />
+      If you find anything, communicate them in the Discord.
+    </p>
+    <template v-if="!labsFeatures.length">
+      <div role="alert" class="alert shadow-lg mt-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="stroke-info h-6 w-6 shrink-0">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <h3 class="font-bold">
+            No labs are currently running, check back soon!
+          </h3>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <SettingsLab
+        v-for="lab in labsFeatures"
+        :key="lab.key"
+        :lab-key="lab.key"
+        :label="lab.label"
+        :details="lab.details"></SettingsLab>
+    </template>
   </template>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
+
+withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
+  variant: "legacy",
+});
 
 type LabFeature = { key: string; label: string; details: string };
 

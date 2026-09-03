@@ -14,6 +14,10 @@ import HomeView from "./pages/HomeView.vue";
 import OptimizerView from "./pages/OptimizerView.vue";
 import UpdatesView from "./pages/UpdatesView.vue";
 import InfoView from "./pages/InfoView.vue";
+import InfoOverview from "./components/info/InfoOverview.vue";
+import InfoCvRv from "./components/info/InfoCvRv.vue";
+import InfoFormulas from "./components/info/InfoFormulas.vue";
+import InfoCredits from "./components/info/InfoCredits.vue";
 import PrivacyView from "./pages/PrivacyView.vue";
 import SettingsView from "./pages/SettingsView.vue";
 import LegalView from "./pages/LegalView.vue";
@@ -26,7 +30,21 @@ const routes = [
   // { path: "/calculator", component: HomeView, name: 'HomeView' },
   { path: "/optimizer", component: OptimizerView, name: "OptimizerView" },
   { path: "/updates", component: UpdatesView, name: "UpdatesView" },
-  { path: "/info", component: InfoView, name: "InfoView" },
+  // Children only render when the liveResultBar "UI Overhaul 3.0" flag is
+  // on - InfoView.vue renders the full legacy article on every one of
+  // these paths when the flag is off (see docs/adr/0024). This is the
+  // first nested route in this router.
+  {
+    path: "/info",
+    component: InfoView,
+    name: "InfoView",
+    children: [
+      { path: "", component: InfoOverview, name: "InfoOverview" },
+      { path: "cv-echo-rating", component: InfoCvRv, name: "InfoCvRv" },
+      { path: "formulas", component: InfoFormulas, name: "InfoFormulas" },
+      { path: "credits", component: InfoCredits, name: "InfoCredits" },
+    ],
+  },
   { path: "/privacy", component: PrivacyView, name: "PrivacyView" },
   { path: "/settings", component: SettingsView, name: "SettingsView" },
   { path: "/legal", component: LegalView, name: "LegalView" },
