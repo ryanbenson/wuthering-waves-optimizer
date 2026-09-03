@@ -25,7 +25,7 @@
           class="btn btn-xs"
           data-test-workspace-weapon-browse
           @click="openBrowser">
-          Browse all weapons
+          Browse weapons
         </button>
       </div>
     </div>
