@@ -20,20 +20,20 @@ describe("Settings Workspace (liveResultBar flag)", () => {
   it("switches sections via the desktop sidebar", () => {
     visitWithFlagEnabled();
 
-    cy.get('[data-test-settings-nav-item="preferences"]').should(
+    cy.get('[data-test-workspace-nav-item="preferences"]').should(
       "have.class",
-      "settings-workspace__side-item--active",
+      "workspace-side-nav__item--active",
     );
     cy.get('[data-test-hide-wont-build-characters]').should("exist");
 
-    cy.get('[data-test-settings-nav-item="backup-restore"]').click();
+    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
     cy.get('[data-test-settings-export-copy]').should("be.visible");
     cy.get(".alert-warning").should("contain.text", "replaces all of your existing data");
 
-    cy.get('[data-test-settings-nav-item="danger-zone"]').click();
+    cy.get('[data-test-workspace-nav-item="danger-zone"]').click();
     cy.contains("button", "Delete").should("be.visible");
 
-    cy.get('[data-test-settings-nav-item="labs"]').click();
+    cy.get('[data-test-workspace-nav-item="labs"]').click();
     cy.contains("UI Overhaul 3.0").should("be.visible");
   });
 
@@ -41,14 +41,14 @@ describe("Settings Workspace (liveResultBar flag)", () => {
     cy.viewport(390, 844);
     visitWithFlagEnabled();
 
-    cy.get("[data-test-settings-mobile-nav-trigger]").click();
-    cy.get('[data-test-settings-mobile-nav-item="backup-restore"]').click();
+    cy.get("[data-test-workspace-nav-mobile-trigger]").click();
+    cy.get('[data-test-workspace-nav-mobile-item="backup-restore"]').click();
     cy.get('[data-test-settings-export-download]').should("be.visible");
   });
 
   it("exports data via download and copy", () => {
     visitWithFlagEnabled();
-    cy.get('[data-test-settings-nav-item="backup-restore"]').click();
+    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
 
     cy.window().then((win) => {
       cy.stub(win.navigator.clipboard, "writeText").as("copy");
@@ -59,7 +59,7 @@ describe("Settings Workspace (liveResultBar flag)", () => {
 
   it("imports and overwrites via the warning-bannered restore panel", () => {
     visitWithFlagEnabled();
-    cy.get('[data-test-settings-nav-item="backup-restore"]').click();
+    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
 
     const payload = JSON.stringify({
       meta: { version: "9", source: "WutheringTools" },
@@ -81,10 +81,10 @@ describe("Settings Workspace (liveResultBar flag)", () => {
     // tests/settings/store.test.ts instead. This just confirms the card
     // reflects and survives a reload while staying on.
     visitWithFlagEnabled();
-    cy.get('[data-test-settings-nav-item="labs"]').click();
+    cy.get('[data-test-workspace-nav-item="labs"]').click();
     cy.get('input[type="checkbox"]').first().should("be.checked");
     cy.reload();
-    cy.get('[data-test-settings-nav-item="labs"]').click();
+    cy.get('[data-test-workspace-nav-item="labs"]').click();
     cy.get('input[type="checkbox"]').first().should("be.checked");
   });
 });
@@ -101,6 +101,6 @@ describe("Settings page (flag off, legacy)", () => {
     cy.get("[data-test-settings-export]").click();
     cy.get("[data-test-settings-export-copy]").should("be.visible");
     // The new grouped/v3-only elements must not leak into the legacy page.
-    cy.get("[data-test-settings-nav-item]").should("not.exist");
+    cy.get("[data-test-workspace-nav-item]").should("not.exist");
   });
 });

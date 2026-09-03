@@ -100,13 +100,14 @@ describe("InfoView (flag on, nested routes)", () => {
     expect(document.title).toContain("Formulas");
   });
 
-  it("renders the CV & RV child at /info/cv-rv", async () => {
+  it("renders the CV & Echo Rating child at /info/cv-rv", async () => {
     const router = renderWithFlagOn();
     await router.push("/info/cv-rv");
     await router.isReady();
 
     expect(screen.getByText(/Crit Rate × 2 \+ Crit DMG/)).toBeInTheDocument();
-    expect(document.title).toContain("CV & RV");
+    expect(screen.getByText("Substat Score (0% to 100%)")).toBeInTheDocument();
+    expect(document.title).toContain("Echo Rating");
   });
 
   it("renders the Credits child at /info/credits", async () => {

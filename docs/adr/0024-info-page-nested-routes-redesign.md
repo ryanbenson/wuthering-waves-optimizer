@@ -75,6 +75,25 @@ made for this whole redesign wave.
    suggest distinct pages that don't yet resolve to distinct crawled
    content. Revisit once the flag is default-on.
 
+5. **The mini-nav became `WorkspaceSideNav.vue`, a real shared component**
+   (post-review revision — the first draft was InfoView-local markup with
+   no icons and a raw path caption under each label). Design feedback
+   asked for the URL captions removed and for Settings' and Info's side
+   navs to look identical rather than two hand-rolled approximations of
+   each other; the cleanest way to guarantee that was one component both
+   mount, not two kept in sync by hand. See ADR
+   [0022](./0022-settings-page-redesign.md)'s Decision 1 for the
+   component's shape (route-driven vs. click-driven items).
+
+6. **CV & RV became CV & Echo Rating.** RV (Roll Value) is deprecated
+   in-app in favor of two more precise scores already shipped elsewhere —
+   Echo Rating (E–SSS letter grade) and Substat Score (0–100%, per
+   character) — so `InfoCvRv.vue` was rewritten to explain those instead,
+   reusing the real `ECHO_RATING_GRADES` data and `getRatingBadgeClasses`
+   from `src/echoes/rating.ts`/`src/composables/useEchoRating.ts` (the same
+   source `CalculatorEchoRatingGuide.vue`'s in-app guide modal uses) rather
+   than hand-copied values that could drift from the real grade bands.
+
 ## Consequences
 
 - Pros: `/info/formulas` (and the other three) are now real, linkable,
@@ -91,9 +110,11 @@ made for this whole redesign wave.
 - `src/composables/useDocumentTitle.ts` (new)
 - `src/components/info/InfoOverview.vue`, `InfoCvRv.vue`, `InfoFormulas.vue`,
   `InfoCredits.vue` (new)
-- `src/pages/InfoView.vue` — the flag swap + mini-nav shell (visual
-  vocabulary shared with `SettingsWorkspace.vue`, ADR
-  [0022](./0022-settings-page-redesign.md))
+- `src/pages/InfoView.vue` — the flag swap, mounts `WorkspaceSideNav.vue`
+- `src/components/WorkspaceSideNav.vue` (new) — shared with
+  `SettingsWorkspace.vue`, ADR [0022](./0022-settings-page-redesign.md)
+- `src/echoes/rating.ts`, `src/composables/useEchoRating.ts` — the real
+  Echo Rating/Substat Score data `InfoCvRv.vue` renders from
 - `src/main.ts` — the `/info` route's `children:` array
 - `tests/pages/InfoView.test.ts`, `cypress/e2e/infoWorkspaceFlagged.cy.ts`
 - ADRs [0013](./0013-live-result-bar-labs-flag.md)–[0023](./0023-updates-page-search-and-grouping-redesign.md)

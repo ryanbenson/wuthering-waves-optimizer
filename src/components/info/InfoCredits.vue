@@ -9,6 +9,14 @@
         <a href="https://discord.gg/pDKjxNjJWW" target="_blank" class="link font-semibold">
           Join the Discord!
         </a>
+        <br />
+        Prefer to browse the source or file an issue directly?
+        <a
+          href="https://github.com/ryanbenson/wuthering-waves-optimizer"
+          target="_blank"
+          class="link font-semibold">
+          View it on GitHub.
+        </a>
       </p>
     </div>
 

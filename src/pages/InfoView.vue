@@ -113,23 +113,9 @@
     </p>
   </article>
 
-  <!-- Labs flag on: mini-nav shell + nested route content. -->
-  <div v-else class="page-info page-info--v3 flex gap-8">
-    <div class="w-48 shrink-0">
-      <div class="sticky top-4 flex flex-col gap-1">
-        <h1 class="text-2xl font-bold mb-3">Info</h1>
-        <RouterLink
-          v-for="item in navItems"
-          :key="item.path"
-          :to="item.path"
-          class="info-nav-item"
-          :class="{ 'info-nav-item--active': route.path === item.path }"
-          :data-test-info-nav-item="item.path">
-          <span class="info-nav-item__label">{{ item.label }}</span>
-          <span class="info-nav-item__path">{{ item.path }}</span>
-        </RouterLink>
-      </div>
-    </div>
+  <!-- Labs flag on: shared workspace side nav + nested route content. -->
+  <div v-else class="page-info page-info--v3 flex gap-6">
+    <WorkspaceSideNav title="Info" :groups="navGroups" />
     <div class="flex-1 min-w-0">
       <RouterView />
     </div>
@@ -138,21 +124,58 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRoute } from "vue-router";
 import Nav from "../components/navigation/Nav.vue";
+import WorkspaceSideNav, {
+  type WorkspaceNavGroup,
+} from "../components/WorkspaceSideNav.vue";
 import { useSettingsStore } from "../stores/settings";
 
-const route = useRoute();
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
-const navItems = [
-  { path: "/info", label: "Overview" },
-  { path: "/info/cv-rv", label: "CV & RV" },
-  { path: "/info/formulas", label: "Formulas" },
-  { path: "/info/credits", label: "Credits & Community" },
+function svgIcon(paths: string) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${paths}</svg>`;
+}
+
+const navGroups: WorkspaceNavGroup[] = [
+  {
+    items: [
+      {
+        id: "overview",
+        label: "Overview",
+        to: "/info",
+        icon: svgIcon(
+          '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>',
+        ),
+      },
+      {
+        id: "cv-rv",
+        label: "CV & Echo Rating",
+        to: "/info/cv-rv",
+        icon: svgIcon(
+          '<circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>',
+        ),
+      },
+      {
+        id: "formulas",
+        label: "Formulas",
+        to: "/info/formulas",
+        icon: svgIcon(
+          '<line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line>',
+        ),
+      },
+      {
+        id: "credits",
+        label: "Credits & Community",
+        to: "/info/credits",
+        icon: svgIcon(
+          '<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>',
+        ),
+      },
+    ],
+  },
 ];
 </script>
 
@@ -166,26 +189,6 @@ const navItems = [
 
   &.page-info--v3 {
     max-width: 920px;
-  }
-}
-
-.info-nav-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 0.55rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-
-  &__path {
-    font-size: 0.66rem;
-    opacity: 0.4;
-    font-family: monospace;
-  }
-
-  &--active {
-    background: color-mix(in oklch, oklch(var(--p)) 16%, oklch(var(--b2)));
   }
 }
 </style>

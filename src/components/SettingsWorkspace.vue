@@ -1,68 +1,11 @@
 <template>
   <div class="settings-workspace flex flex-col gap-4">
-    <h1 class="text-2xl font-bold sm:hidden">Settings</h1>
-
-    <!-- Mobile: tap-to-open section switcher, reusing the same dropdown-menu
-         pattern as InventoryMobileSubNav.vue. -->
-    <details class="settings-workspace__mobile-nav sm:hidden dropdown">
-      <summary
-        tabindex="0"
-        role="button"
-        class="bg-base-200 rounded-lg p-1 pl-3 flex items-center justify-between w-full"
-        data-test-settings-mobile-nav-trigger>
-        <span class="flex items-center gap-2">
-          <span class="size-4 opacity-70 [&_svg]:size-full" v-html="activeSectionMeta.icon"></span>
-          <span class="font-bold text-sm">{{ activeSectionMeta.label }}</span>
-        </span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" class="size-4 opacity-55"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </summary>
-      <ul
-        tabindex="0"
-        class="menu menu-sm dropdown-content bg-base-300 rounded-box z-[1] mt-2 w-full p-2 shadow">
-        <template v-for="group in sectionGroups" :key="group.label">
-          <li class="menu-title text-[.65rem] uppercase tracking-wider opacity-50">
-            {{ group.label }}
-          </li>
-          <li v-for="section in group.items" :key="section.id">
-            <a
-              @click="selectSection(section.id)"
-              :class="{ active: activeSection === section.id }"
-              :data-test-settings-mobile-nav-item="section.id">
-              <span class="size-4 [&_svg]:size-full" v-html="section.icon"></span>
-              {{ section.label }}
-              <span v-if="section.badge" class="badge badge-primary badge-sm ml-auto font-mono">
-                {{ section.badge }}
-              </span>
-            </a>
-          </li>
-        </template>
-      </ul>
-    </details>
-
     <div class="flex gap-6">
-      <!-- Desktop sidebar -->
-      <div class="hidden sm:flex w-52 shrink-0 flex-col gap-6">
-        <h1 class="text-2xl font-bold">Settings</h1>
-        <div v-for="group in sectionGroups" :key="group.label" class="flex flex-col gap-1">
-          <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 px-3 mb-0.5">
-            {{ group.label }}
-          </div>
-          <button
-            v-for="section in group.items"
-            :key="section.id"
-            type="button"
-            class="settings-workspace__side-item"
-            :class="{ 'settings-workspace__side-item--active': activeSection === section.id }"
-            :data-test-settings-nav-item="section.id"
-            @click="selectSection(section.id)">
-            <span class="size-4 [&_svg]:size-full" v-html="section.icon"></span>
-            <span>{{ section.label }}</span>
-            <span v-if="section.badge" class="badge badge-primary badge-sm ml-auto font-mono">
-              {{ section.badge }}
-            </span>
-          </button>
-        </div>
-      </div>
+      <WorkspaceSideNav
+        title="Settings"
+        :groups="sectionGroups"
+        :active-id="activeSection"
+        @select="selectSection" />
 
       <!-- Content -->
       <div class="flex-1 min-w-0 flex flex-col gap-3">
@@ -88,6 +31,7 @@ import SettingsBackupRestore from "./SettingsBackupRestore.vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsLabs from "./SettingsLabs.vue";
 import SettingsPreferences from "./SettingsPreferences.vue";
+import WorkspaceSideNav, { type WorkspaceNavGroup } from "./WorkspaceSideNav.vue";
 
 // Hand-inlined icons (rendered via v-html), matching the convention already
 // used across this redesign wave (Nav.vue, workspace components) rather
@@ -111,9 +55,7 @@ const ICONS = {
   ),
 };
 
-type Section = { id: SectionId; label: string; icon: string; badge?: string };
-
-const sectionGroups: { label: string; items: Section[] }[] = [
+const sectionGroups: WorkspaceNavGroup[] = [
   {
     label: "General",
     items: [{ id: "preferences", label: "Preferences", icon: ICONS.preferences }],
@@ -138,39 +80,7 @@ const activeSectionMeta = computed(
   () => allSections.find((s) => s.id === activeSection.value) ?? allSections[0],
 );
 
-function selectSection(id: SectionId) {
-  activeSection.value = id;
-  const mobileNav = document.querySelector(".settings-workspace__mobile-nav");
-  if (mobileNav) {
-    mobileNav.removeAttribute("open");
-  }
+function selectSection(id: string) {
+  activeSection.value = id as SectionId;
 }
 </script>
-
-<style scoped lang="scss">
-.settings-workspace__side-item {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 0.55rem;
-  font-size: 0.84rem;
-  font-weight: 600;
-  text-align: left;
-  position: relative;
-
-  &--active {
-    background: color-mix(in oklch, oklch(var(--p)) 16%, oklch(var(--b2)));
-    &::before {
-      content: "";
-      position: absolute;
-      left: -0.55rem;
-      top: 0.35rem;
-      bottom: 0.35rem;
-      width: 3px;
-      border-radius: 3px;
-      background: oklch(var(--p));
-    }
-  }
-}
-</style>

@@ -18,22 +18,22 @@ describe("Info nested routes (liveResultBar flag)", () => {
     cy.title().should("contain", "Info");
     cy.contains("work in progress").should("be.visible");
 
-    cy.get('[data-test-info-nav-item="/info/cv-rv"]').click();
+    cy.get('[data-test-workspace-nav-item="cv-rv"]').click();
     cy.location("pathname").should("eq", "/info/cv-rv");
-    cy.title().should("contain", "CV & RV");
+    cy.title().should("contain", "Echo Rating");
     cy.contains("Crit Rate").should("be.visible");
 
-    cy.get('[data-test-info-nav-item="/info/formulas"]').click();
+    cy.get('[data-test-workspace-nav-item="formulas"]').click();
     cy.location("pathname").should("eq", "/info/formulas");
     cy.title().should("contain", "Formulas");
     cy.contains("totalDamageBonus").should("be.visible");
 
-    cy.get('[data-test-info-nav-item="/info/credits"]').click();
+    cy.get('[data-test-workspace-nav-item="credits"]').click();
     cy.location("pathname").should("eq", "/info/credits");
     cy.title().should("contain", "Credits");
     cy.contains("@LavaSnake").should("be.visible");
 
-    cy.get('[data-test-info-nav-item="/info"]').click();
+    cy.get('[data-test-workspace-nav-item="overview"]').click();
     cy.location("pathname").should("eq", "/info");
   });
 
@@ -46,6 +46,6 @@ describe("Info nested routes (liveResultBar flag)", () => {
     // The complete legacy page renders, not a blank/partial one.
     cy.contains("h3", "Formulas").should("be.visible");
     cy.contains("h3", "Shoutouts").should("be.visible");
-    cy.get('[data-test-info-nav-item]').should("not.exist");
+    cy.get('[data-test-workspace-nav-item]').should("not.exist");
   });
 });

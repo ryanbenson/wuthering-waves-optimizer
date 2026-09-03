@@ -39,7 +39,7 @@
           <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
           <ul class="flex flex-col gap-0.5">
             <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-              <span class="opacity-40 mt-1.5 shrink-0" aria-hidden="true">&bull;</span>
+              <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
               <span>{{ item }}</span>
             </li>
           </ul>
@@ -60,16 +60,17 @@
           <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
           <ul class="flex flex-col gap-0.5">
             <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-              <span class="opacity-40 mt-1.5 shrink-0" aria-hidden="true">&bull;</span>
+              <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
               <span>{{ item }}</span>
             </li>
           </ul>
         </div>
       </div>
 
-      <details v-if="earlierEntries.length" class="bg-base-200 rounded-xl" data-test-updates-earlier>
-        <summary class="cursor-pointer p-3 flex items-center justify-between text-sm">
-          <span class="opacity-70">{{ earlierLabel }}</span>
+      <details v-if="earlierEntries.length" class="updates-workspace__earlier bg-base-200 rounded-xl" data-test-updates-earlier>
+        <summary class="cursor-pointer p-3 flex items-center gap-2 text-sm hover:bg-base-300 rounded-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="size-3.5 opacity-60 shrink-0 updates-workspace__earlier-chevron"><polyline points="9 6 15 12 9 18"></polyline></svg>
+          <span class="opacity-70 flex-1">{{ earlierLabel }}</span>
           <span class="badge badge-ghost badge-sm font-mono">{{ earlierEntries.length }} updates</span>
         </summary>
         <!-- No `display` utility on this direct child of <details> - an
@@ -86,7 +87,7 @@
               <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
               <ul class="flex flex-col gap-0.5">
                 <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-                  <span class="opacity-40 mt-1.5 shrink-0" aria-hidden="true">&bull;</span>
+                  <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
                   <span>{{ item }}</span>
                 </li>
               </ul>
@@ -171,3 +172,22 @@ function expandAllSections() {
   });
 }
 </script>
+
+<style scoped lang="scss">
+.updates-workspace__earlier {
+  summary {
+    list-style: none;
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &[open] .updates-workspace__earlier-chevron {
+    transform: rotate(90deg);
+  }
+
+  .updates-workspace__earlier-chevron {
+    transition: transform 0.15s ease;
+  }
+}
+</style>

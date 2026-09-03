@@ -33,17 +33,17 @@ made for this whole redesign wave.
    swap-at-the-mount-point shape `InventoryEchoesBrowser.vue` already uses
    to pick between `InventoryEchoEdit.vue`/`InventoryEchoEditPanel.vue`)
    groups into **General → Preferences**, **Your Data → Backup & Restore +
-   Danger Zone**, **Labs → Labs**. Header bar (`bg-base-200 p-1 pl-3
-   rounded-lg`) and active-item left accent bar reuse the exact
-   `before:bg-primary` styling `Settings.vue`'s own `getActiveClasses()`
-   already used for its horizontal/vertical tab indicator — copied, not
-   shared, since the new sidebar is vertical-only and would otherwise
-   diverge from legacy's responsive split. Mobile collapses the sidebar
-   into a tap-to-open dropdown, copying `InventoryMobileSubNav.vue`'s exact
-   markup pattern (`<ul tabindex="0" class="menu menu-sm dropdown-content
-   bg-base-300 rounded-box z-[1] mt-3 w-52 p-2 shadow">`) with Settings' own
-   three sections, not a shared component — this repo doesn't factor that
-   pattern out even across its 3+ existing near-identical uses.
+   Danger Zone**, **Labs → Labs**. The sidebar itself — desktop column and
+   mobile tap-to-open dropdown alike (the dropdown originally copied
+   `InventoryMobileSubNav.vue`'s markup pattern inline) — was extracted
+   into `WorkspaceSideNav.vue` (see ADR
+   [0024](./0024-info-page-nested-routes-redesign.md)) once Info needed
+   the identical look and interaction, so post-review this is a genuinely
+   shared component between Settings and Info, not two independently
+   hand-rolled copies. It supports both a route-driven item (`to`, for
+   Info's real `RouterLink`s) and a click-driven one (no `to`, emits
+   `select`, for Settings' local section state). The header bar
+   (`bg-base-200 p-1 pl-3 rounded-lg`) stays local to `SettingsWorkspace.vue`.
 
 2. **Export + Import merged into one "Backup & Restore" panel, with an
    explicit warning banner before the destructive path.** This is the one
@@ -85,6 +85,8 @@ made for this whole redesign wave.
 ## Related
 
 - `src/components/SettingsWorkspace.vue`, `SettingsBackupRestore.vue` (new)
+- `src/components/WorkspaceSideNav.vue` (new) — the shared sidebar, also
+  used by `InfoView.vue` (ADR [0024](./0024-info-page-nested-routes-redesign.md))
 - `src/utils/settingsBackup.ts`, `src/utils/downloadFile.ts` — shared logic
   this panel is built on
 - `src/components/SettingsPreferences.vue`, `SettingsDelete.vue`,
@@ -93,6 +95,6 @@ made for this whole redesign wave.
 - `cypress/e2e/settingsWorkspaceFlagged.cy.ts` (new) — covers both flag
   states
 - `src/components/navigation/InventoryMobileSubNav.vue` — the mobile
-  dropdown pattern this reuses
+  dropdown pattern `WorkspaceSideNav.vue`'s mobile switcher originates from
 - ADRs [0013](./0013-live-result-bar-labs-flag.md)–[0021](./0021-utility-nav-dropdown-redesign.md)
   — the shared-flag pattern this follows
