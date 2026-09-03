@@ -1,25 +1,25 @@
 <template>
   <div class="workspace-side-nav">
-    <!-- Mobile: always-visible horizontal scrollable pill row, not a
-         tap-to-open dropdown - every section is one tap away, and it stays
-         a single compact row regardless of item count. -->
-    <div class="workspace-side-nav__mobile sm:hidden -mx-12 px-12 overflow-x-auto">
-      <div class="flex gap-2 w-max pb-1">
+    <!-- Mobile: always-visible full-width segmented tab bar - every section
+         gets an equal-width column (icon + label), so nothing overflows or
+         scrolls and it reads as one bounded nav control, not loose chips. -->
+    <div class="workspace-side-nav__mobile sm:hidden bg-base-200 rounded-xl p-1">
+      <div
+        class="grid gap-0.5"
+        :style="{ gridTemplateColumns: `repeat(${allItems.length}, minmax(0, 1fr))` }">
         <component
           :is="item.to ? 'RouterLink' : 'button'"
           v-for="item in allItems"
           :key="item.id"
           :type="item.to ? undefined : 'button'"
           :to="item.to"
-          class="workspace-side-nav__pill"
-          :class="{ 'workspace-side-nav__pill--active': isActive(item) }"
+          class="workspace-side-nav__tab"
+          :class="{ 'workspace-side-nav__tab--active': isActive(item) }"
           :data-test-workspace-nav-mobile-item="item.id"
           @click="handleSelect(item)">
-          <span class="size-4 [&_svg]:size-full" v-html="item.icon"></span>
-          {{ item.label }}
-          <span v-if="item.badge" class="badge badge-primary badge-sm font-mono">
-            {{ item.badge }}
-          </span>
+          <span class="workspace-side-nav__tab-icon size-5 [&_svg]:size-full" v-html="item.icon"></span>
+          <span v-if="item.badge" class="workspace-side-nav__tab-badge">{{ item.badge }}</span>
+          <span class="workspace-side-nav__tab-label">{{ item.label }}</span>
         </component>
       </div>
     </div>
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 /**
- * Shared desktop sidebar + mobile pill row for v3.0 workspace pages
+ * Shared desktop sidebar + mobile tab bar for v3.0 workspace pages
  * (Settings, Info) so both share exactly one look and interaction model
  * instead of two hand-rolled, slightly-different ones. An item either
  * carries `to` (renders as a RouterLink, active state from the real
@@ -105,29 +105,66 @@ function handleSelect(item: WorkspaceNavItem) {
 // The global stylesheet's default `a { color: #646cff }` (leftover Vite
 // scaffold styling, see Nav.vue's own scoped-style comment about the same
 // issue) otherwise bleeds through every RouterLink-rendered item here.
-.workspace-side-nav__pill {
-  display: inline-flex;
+.workspace-side-nav__tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
-  background: oklch(var(--b2));
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.45rem 0.15rem;
+  border-radius: 0.6rem;
+  min-width: 0;
   color: inherit;
   text-decoration: none;
   border: none;
+  background: transparent;
+  opacity: 0.65;
 
   &:hover {
     color: inherit;
   }
+}
 
-  &--active {
-    background: color-mix(in oklch, oklch(var(--p)) 18%, oklch(var(--b2)));
-    color: color-mix(in oklch, oklch(var(--p)) 60%, white);
-  }
+.workspace-side-nav__tab-icon {
+  opacity: 0.85;
+}
+
+.workspace-side-nav__tab-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.workspace-side-nav__tab-badge {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.55rem;
+  min-width: 0.9rem;
+  height: 0.9rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: oklch(var(--p));
+  color: oklch(var(--pc));
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-side-nav__tab--active {
+  opacity: 1;
+  background: color-mix(in oklch, oklch(var(--p)) 16%, oklch(var(--b1)));
+  color: color-mix(in oklch, oklch(var(--p)) 60%, white);
 }
 
 .workspace-side-nav__item {
