@@ -1,11 +1,16 @@
 <template>
-  <h3 class="text-2xl font-bold mb-4">Delete your data</h3>
+  <h3 v-if="variant !== 'v3'" class="text-2xl font-bold mb-4">Delete your data</h3>
 
-  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
-    <div class="card-body">
-      <h3 class="card-title">Delete your data</h3>
+  <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow mb-2'">
+    <div :class="variant === 'v3' ? 'flex flex-col gap-2' : 'card-body'">
+      <h3 v-if="variant !== 'v3'" class="card-title">Delete your data</h3>
+      <span v-else class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
+        Danger Zone
+      </span>
       <p>This will reset your data to a blank state.</p>
-      <button @click="confirmDelete" class="btn btn-error">Delete</button>
+      <button @click="confirmDelete" class="btn btn-error" :class="{ 'btn-sm self-start': variant === 'v3' }">
+        Delete
+      </button>
     </div>
   </div>
 </template>
@@ -14,6 +19,10 @@
 import { useToast } from "../composables/useToast";
 import { useConfirm } from "../composables/useConfirm";
 import { clearAllUserData } from "../utils/settingsBackup";
+
+withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
+  variant: "legacy",
+});
 
 const { showToast } = useToast();
 const { confirm } = useConfirm();

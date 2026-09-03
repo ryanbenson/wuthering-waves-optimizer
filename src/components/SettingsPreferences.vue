@@ -1,9 +1,9 @@
 <template>
-  <h3 class="text-2xl font-bold mb-4">Preferences</h3>
+  <h3 v-if="variant !== 'v3'" class="text-2xl font-bold mb-4">Preferences</h3>
 
   <div class="flex flex-col gap-4">
-    <div class="card card-bordered card-compact bg-base-100 shadow">
-      <div class="card-body">
+    <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow'">
+      <div :class="variant === 'v3' ? '' : 'card-body'">
         <label class="label cursor-pointer justify-start gap-4">
           <input
             v-model="hideWontBuildCharacters"
@@ -22,8 +22,8 @@
       </div>
     </div>
 
-    <div class="card card-bordered card-compact bg-base-100 shadow">
-      <div class="card-body gap-4">
+    <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow'">
+      <div :class="variant === 'v3' ? 'flex flex-col gap-4' : 'card-body gap-4'">
         <div>
           <span class="label-text font-bold block mb-1">
             Damage chart default value
@@ -113,6 +113,10 @@ import {
   resolveOptimizerWorkerCount,
   type OptimizerWorkerCount,
 } from "../utils/optimizerPreferences";
+
+withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
+  variant: "legacy",
+});
 
 const settingsStore = useSettingsStore();
 const { config } = storeToRefs(settingsStore);
