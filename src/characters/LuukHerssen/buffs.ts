@@ -23,7 +23,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["GavelofEarthshakerDMG"],
+        modifySpecificTalents: ["GavelofEarthshakerDMG", "IchorDepositDMG"],
         modifierValue: 1.1,
       },
     ],
