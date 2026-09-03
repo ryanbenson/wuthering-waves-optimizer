@@ -18,8 +18,8 @@ describe("Info nested routes (liveResultBar flag)", () => {
     cy.title().should("contain", "Info");
     cy.contains("work in progress").should("be.visible");
 
-    cy.get('[data-test-workspace-nav-item="cv-rv"]').click();
-    cy.location("pathname").should("eq", "/info/cv-rv");
+    cy.get('[data-test-workspace-nav-item="cv-echo-rating"]').click();
+    cy.location("pathname").should("eq", "/info/cv-echo-rating");
     cy.title().should("contain", "Echo Rating");
     cy.contains("Crit Rate").should("be.visible");
 

@@ -23,7 +23,7 @@ function makeRouter() {
         component: InfoView,
         children: [
           { path: "", component: InfoOverview, name: "InfoOverview" },
-          { path: "cv-rv", component: InfoCvRv, name: "InfoCvRv" },
+          { path: "cv-echo-rating", component: InfoCvRv, name: "InfoCvRv" },
           { path: "formulas", component: InfoFormulas, name: "InfoFormulas" },
           { path: "credits", component: InfoCredits, name: "InfoCredits" },
         ],
@@ -100,9 +100,9 @@ describe("InfoView (flag on, nested routes)", () => {
     expect(document.title).toContain("Formulas");
   });
 
-  it("renders the CV & Echo Rating child at /info/cv-rv", async () => {
+  it("renders the CV & Echo Rating child at /info/cv-echo-rating", async () => {
     const router = renderWithFlagOn();
-    await router.push("/info/cv-rv");
+    await router.push("/info/cv-echo-rating");
     await router.isReady();
 
     expect(screen.getByText(/Crit Rate × 2 \+ Crit DMG/)).toBeInTheDocument();

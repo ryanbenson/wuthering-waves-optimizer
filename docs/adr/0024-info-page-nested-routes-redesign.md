@@ -42,7 +42,7 @@ made for this whole redesign wave.
 
 1. **Real nested routes, the first `children:` array in this router.**
    `/info`'s route in `main.ts` gained `children: [{ path: "" }, { path:
-   "cv-rv" }, { path: "formulas" }, { path: "credits" }]`, each pointing at
+   "cv-echo-rating" }, { path: "formulas" }, { path: "credits" }]`, each pointing at
    a new component under `src/components/info/`. This is a first for the
    codebase (grepped — no route anywhere else uses `children`), so it's
    called out explicitly here rather than assumed obvious.
@@ -60,7 +60,7 @@ made for this whole redesign wave.
    no redirect, no guard.** Since legacy `InfoView.vue` already contains
    every section in one place, `v-else` on `isLiveResultBarEnabled` just
    renders that same untouched article regardless of which child route
-   matched. This works because nothing links to `/info/cv-rv` etc. unless
+   matched. This works because nothing links to `/info/cv-echo-rating` etc. unless
    the flag-on mini-nav produced the link in the first place — a stray
    bookmark or an old link just shows the full page, not a blank child
    outlet or a 404. Locked in by an explicit Cypress case (visit

@@ -151,9 +151,9 @@ const navGroups: WorkspaceNavGroup[] = [
         ),
       },
       {
-        id: "cv-rv",
+        id: "cv-echo-rating",
         label: "CV & Echo Rating",
-        to: "/info/cv-rv",
+        to: "/info/cv-echo-rating",
         icon: svgIcon(
           '<circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path>',
         ),

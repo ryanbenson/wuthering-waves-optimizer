@@ -40,7 +40,7 @@ const routes = [
     name: "InfoView",
     children: [
       { path: "", component: InfoOverview, name: "InfoOverview" },
-      { path: "cv-rv", component: InfoCvRv, name: "InfoCvRv" },
+      { path: "cv-echo-rating", component: InfoCvRv, name: "InfoCvRv" },
       { path: "formulas", component: InfoFormulas, name: "InfoFormulas" },
       { path: "credits", component: InfoCredits, name: "InfoCredits" },
     ],
