@@ -36,10 +36,13 @@
           class="weapon__identity flex flex-wrap items-center gap-6 bg-base-200 rounded-xl p-4"
           data-test-workspace-weapon-equipped>
           <div class="flex items-center gap-3 min-w-[12rem]">
-            <div
-              class="rounded-full border-2 bg-cover bg-center size-16 shrink-0"
+            <AppHoverZoomAvatar
+              class="size-16 border-2"
               :class="rarityBorderClasses(weaponRarity)"
-              :style="weaponImageStyles"></div>
+              :image="weaponImage"
+              title="Choose a different weapon"
+              data-test-workspace-weapon-open-browser
+              @click="openBrowser" />
             <div class="min-w-0">
               <div class="flex items-baseline gap-1.5">
                 <h4 class="font-bold text-lg leading-tight truncate">
@@ -160,8 +163,21 @@
             @updated-weapon-stats="handleUpdatedWeaponStats" />
         </div>
       </div>
-      <div v-else class="text-sm opacity-60" data-test-workspace-weapon-empty>
-        No weapon equipped yet — choose one below.
+      <div
+        v-else
+        class="weapon__identity flex flex-wrap items-center gap-4 bg-base-200 rounded-xl p-4"
+        data-test-workspace-weapon-empty>
+        <AppHoverZoomAvatar
+          class="size-16"
+          title="Choose a weapon"
+          data-test-workspace-weapon-open-browser-empty
+          @click="openBrowser" />
+        <div class="min-w-0">
+          <p class="font-semibold">No weapon equipped</p>
+          <p class="text-sm opacity-60">
+            Click the icon to browse and equip a weapon.
+          </p>
+        </div>
       </div>
 
       <div v-if="recommendedEntries.length" class="flex flex-col gap-3">
@@ -253,6 +269,7 @@ import {
   type WeaponSwapCandidate,
 } from "../../weapons/weaponImpact";
 import CalculatorWeaponsPassive from "../CalculatorWeaponsPassive.vue";
+import AppHoverZoomAvatar from "../AppHoverZoomAvatar.vue";
 import WorkspaceWeaponBrowser from "./WorkspaceWeaponBrowser.vue";
 import WorkspaceWeaponPreview from "./WorkspaceWeaponPreview.vue";
 import { useCharacterStore } from "../../stores/character";
@@ -495,11 +512,13 @@ const weaponModifierValue = computed(() => {
   return displayPercentage(value * 100);
 });
 
-const weaponImageStyles = computed(() => ({
-  backgroundImage: chosenWeapon.value?.info?.image
-    ? `url(${chosenWeapon.value.info.image})`
-    : `url(${WEAPON_IMAGE_BASE}/${weapon.value}.png)`,
-}));
+const weaponImage = computed(() =>
+  chosenWeapon.value?.info?.image
+    ? chosenWeapon.value.info.image
+    : weapon.value
+      ? `${WEAPON_IMAGE_BASE}/${weapon.value}.png`
+      : null,
+);
 
 function rarityBorderClasses(rarity: number | string | undefined) {
   const r = Number(rarity);

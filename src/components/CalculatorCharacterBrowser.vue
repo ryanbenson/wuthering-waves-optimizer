@@ -5,7 +5,9 @@
     </form>
     <div v-if="isOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+        <button
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          data-test-character-browser-close>
           ✕
         </button>
       </form>
@@ -197,9 +199,10 @@ type ListedCharacter = (typeof allCharactersList)[number];
 
 interface Props {
   character: string;
+  excludeKeys?: string[];
 }
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), { excludeKeys: () => [] });
 
 const characterStore = useCharacterStore();
 const { characters, favoriteCharacters } = storeToRefs(characterStore);
@@ -286,6 +289,11 @@ const charactersList = computed((): ListedCharacter[] => {
   if (filterFavorites.value) {
     characterList = characterList.filter((c) =>
       favoriteCharacters.value.includes(c.key),
+    );
+  }
+  if (props.excludeKeys.length) {
+    characterList = characterList.filter(
+      (c) => !props.excludeKeys.includes(c.key),
     );
   }
   return characterList;

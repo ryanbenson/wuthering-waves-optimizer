@@ -4,20 +4,17 @@
     data-test-live-result-bar>
     <!-- Identity + config (inputs): who this is and how it's set up. -->
     <div class="flex items-center gap-2 shrink-0 min-w-0">
-      <button
-        type="button"
-        class="live-result-bar__avatar size-14 rounded-full bg-cover bg-center border-2 shrink-0"
+      <AppHoverZoomAvatar
+        class="live-result-bar__avatar size-14 border-2"
         :class="{
           'border-amber-300': characterRarity === 5,
           'border-violet-600': characterRarity === 4,
           'border-base-300': characterRarity !== 5 && characterRarity !== 4,
         }"
-        :style="{
-          backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png)`,
-        }"
+        :image="`https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`"
         title="Choose a different character"
         :data-test-workspace-avatar="character"
-        @click="emit('open-character-browser')"></button>
+        @click="emit('open-character-browser')" />
 
       <div class="leading-tight min-w-0">
         <div class="flex items-center gap-1.5 min-w-0">
@@ -229,6 +226,7 @@ import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
+import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import WorkspaceLevelStepper from "./characterWorkspace/WorkspaceLevelStepper.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import {

@@ -18,6 +18,11 @@ declare global {
         options?: { search?: string },
       ): Chainable<void>;
       selectWorkspaceCharacter(key: string): Chainable<void>;
+      selectTeamRotationSlotCharacter(
+        slot: number,
+        key: string,
+      ): Chainable<void>;
+      selectTeamBuffsSlotCharacter(slot: number, key: string): Chainable<void>;
     }
   }
 }

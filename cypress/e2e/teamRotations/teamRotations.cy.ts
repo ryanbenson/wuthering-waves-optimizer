@@ -25,9 +25,9 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
 
     // Assign both characters to slots 0 and 1
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
-    cy.richSelect('[data-test="team-rotation-slot-select-1"]', "Chixia");
+    cy.selectTeamRotationSlotCharacter(1, "Chixia");
     cy.get('[data-test-team-rotation-slot="1"]').should("contain.text", "Chixia");
 
     // Add an action for Carlotta (slot 0, the default for new actions)
@@ -139,9 +139,10 @@ describe("Team Rotations", () => {
     );
 
     // Changing a teammate can be backed out of without losing the current
-    // pick or their actions
-    cy.get('[data-test-team-rotation-slot-change="0"]').click();
-    cy.get('[data-test-team-rotation-slot-cancel-change="0"]').click();
+    // pick or their actions — closing the browser without choosing a card
+    // leaves the slot untouched
+    cy.get('[data-test-team-rotation-slot-avatar="0"]').click();
+    cy.get("[data-test-character-browser-close]").click({ force: true });
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should(
       "exist",
@@ -197,7 +198,7 @@ describe("Team Rotations", () => {
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
 
     // Enemy settings default to a closed, small-text summary bar rather than
     // a plain "Enemy Settings" title
@@ -285,7 +286,7 @@ describe("Team Rotations", () => {
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
@@ -304,7 +305,7 @@ describe("Team Rotations", () => {
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
@@ -327,7 +328,7 @@ describe("Team Rotations", () => {
     configureCharacterWithWeapon("Carlotta");
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
 
     const addActionWithAttack = (attackKey: string) => {
       cy.get("[data-test-team-rotation-add-action]").click();
@@ -364,8 +365,8 @@ describe("Team Rotations", () => {
     configureCharacterWithWeapon("Chixia");
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
-    cy.richSelect('[data-test="team-rotation-slot-select-1"]', "Chixia");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
+    cy.selectTeamRotationSlotCharacter(1, "Chixia");
 
     // Action 1: Carlotta
     cy.get("[data-test-team-rotation-add-action]").click();
@@ -419,7 +420,7 @@ describe("Team Rotations", () => {
     configureCharacterWithWeapon("Carlotta");
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
 
     // Add a real attack to the first action so the team has nonzero damage —
     // otherwise TeamRotationDamageBar's segments (filtered to value > 0) are
@@ -507,7 +508,7 @@ describe("Team Rotations", () => {
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
   }
 
   it("lists a character's own saved rotations and presets in the import dialog", () => {
@@ -600,7 +601,7 @@ describe("Team Rotations", () => {
     // Import that rotation into a fresh team.
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
     cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains(".card", "BuffedImport")
@@ -631,7 +632,7 @@ describe("Team Rotations export/import", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-name]").clear().type("My Export Team");
-    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
