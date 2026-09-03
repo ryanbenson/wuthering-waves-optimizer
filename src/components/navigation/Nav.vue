@@ -108,7 +108,10 @@
                     d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
                 </svg>
               </summary>
-              <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+              <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy flat list, untouched. -->
+              <ul
+                v-if="!isLiveResultBarEnabled"
+                class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
                 <li class="mb-2">
                   <RouterLink
                     to="/settings"
@@ -155,6 +158,73 @@
                     href="https://discord.gg/pDKjxNjJWW"
                     target="_blank"
                     @click="toggleOptionsMenu">
+                    Discord
+                  </a>
+                </li>
+              </ul>
+
+              <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: grouped, icon dropdown. -->
+              <ul
+                v-else
+                class="subnav subnav--v3 bg-base-300 rounded-t-none p-2 right-0 z-50 w-52"
+                data-test-options-menu-v3>
+                <li class="subnav__eyebrow">Workspace</li>
+                <li class="mb-1">
+                  <RouterLink
+                    to="/settings"
+                    @click="toggleOptionsMenu"
+                    :class="{ active: curPage === 'settings' }"
+                    data-test-options-settings>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+                    Settings
+                  </RouterLink>
+                </li>
+
+                <li class="subnav__eyebrow">Resources</li>
+                <li class="mb-1">
+                  <RouterLink
+                    to="/info"
+                    @click="toggleOptionsMenu"
+                    :class="{ active: curPage === 'info' }">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    Info
+                  </RouterLink>
+                </li>
+                <li class="mb-1">
+                  <RouterLink
+                    to="/updates"
+                    @click="toggleOptionsMenu"
+                    :class="{ active: curPage === 'updates' }">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 01-3.46 0"></path></svg>
+                    Updates
+                  </RouterLink>
+                </li>
+                <li class="mb-1">
+                  <RouterLink
+                    to="/privacy"
+                    @click="toggleOptionsMenu"
+                    :class="{ active: curPage === 'privacy' }">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    Privacy
+                  </RouterLink>
+                </li>
+                <li class="mb-1">
+                  <RouterLink
+                    to="/legal"
+                    @click="toggleOptionsMenu"
+                    :class="{ active: curPage === 'legal' }">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    Legal
+                  </RouterLink>
+                </li>
+
+                <li class="subnav__eyebrow">Community</li>
+                <li>
+                  <a
+                    href="https://discord.gg/pDKjxNjJWW"
+                    target="_blank"
+                    @click="toggleOptionsMenu">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path></svg>
                     Discord
                   </a>
                 </li>
@@ -262,6 +332,22 @@ function toggleOptionsMenu() {
 .options-menu {
   summary:after {
     display: none;
+  }
+}
+
+.subnav--v3 {
+  .subnav__eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    padding: 0.35rem 0.6rem 0.15rem;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
   }
 }
 
