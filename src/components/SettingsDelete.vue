@@ -11,14 +11,9 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
- */
-import { useCharacterStore } from "../stores/character";
-import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { useConfirm } from "../composables/useConfirm";
+import { clearAllUserData } from "../utils/settingsBackup";
 
 const { showToast } = useToast();
 const { confirm } = useConfirm();
@@ -34,12 +29,7 @@ async function confirmDelete() {
   });
   if (!confirmed) return;
 
-  localStorage.setItem("character", "");
-  const characterStore = useCharacterStore();
-  characterStore.$hydrate({ runHooks: false });
-  localStorage.setItem("inventory", "");
-  const inventoryStore = useInventoryStore();
-  inventoryStore.$hydrate({ runHooks: false });
+  clearAllUserData();
   showToast("Your data has been deleted!", "success");
   window.setTimeout(() => location.reload(), 1500);
 }

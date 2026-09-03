@@ -26,43 +26,17 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Version 1 — character payload only (no meta wrapper)
- * Version 2 — { meta, data: { character, inventory } }
- * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
- * Version 5+ — data also includes { teamRotations }
- *
- * meta.version is the single data-version timeline.
- */
 import { useToast } from "../composables/useToast";
-import { getExportDataVersion } from "../migrations";
+import { downloadBlob } from "../utils/downloadFile";
+import { getExportData, generateExportFilename } from "../utils/settingsBackup";
 
 const { showToast } = useToast();
-
-/**
- * Gets all of the data to save
- */
-function getData() {
-  const meta = {
-    version: String(getExportDataVersion()),
-    source: "WutheringTools",
-  };
-  const data = {
-    character: localStorage.getItem("character"),
-    inventory: localStorage.getItem("inventory"),
-    teamRotations: localStorage.getItem("teamRotations"),
-  };
-  return {
-    meta,
-    data,
-  };
-}
 
 /**
  * Handler to copy the contents of the character data into the user's clipboard
  */
 function copyCharacterData() {
-  const data = getData();
+  const data = getExportData();
   navigator.clipboard.writeText(JSON.stringify(data));
   showToast("Character data has been copied to your clipboard", "success");
 }
@@ -71,52 +45,9 @@ function copyCharacterData() {
  * Handler to download the character data as a JSON file
  */
 function downloadCharacterData() {
-  const data = getData();
-  const blob = new Blob([JSON.stringify(data)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = generateFilename();
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  const data = getExportData();
+  downloadBlob(JSON.stringify(data), generateExportFilename());
   showToast("Character data has been downloaded", "success");
-}
-
-/**
- * Gets a filename for the JSON file
- */
-function generateFilename() {
-  const date = new Date();
-  const dateFormatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  });
-
-  const parts = dateFormatter.formatToParts(date);
-  const partsValues = {
-    month: "",
-    day: "",
-    year: "",
-  };
-  parts.forEach(({ type, value }) => {
-    if (type === "month") {
-      partsValues.month = value;
-    }
-    if (type === "day") {
-      partsValues.day = value;
-    }
-    if (type === "year") {
-      partsValues.year = value;
-    }
-  });
-  const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
-  return `character_data_${dateStr}.json`;
 }
 </script>
 

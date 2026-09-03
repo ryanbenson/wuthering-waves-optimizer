@@ -58,26 +58,17 @@
 
 <script setup lang="ts">
 /**
- * Version 1 — character payload only (no meta wrapper)
- * Version 2 — { meta, data: { character, inventory } }
- * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
- * Version 5+ — data also includes { teamRotations }
- *
  * On import we apply pending transforms from meta.version, then mark current.
+ * See src/utils/settingsBackup.ts for the shared import/export/version logic.
  */
 import { ref } from "vue";
-import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { useTeamRotationsStore } from "../stores/teamRotations";
-import { randomString } from "../utils/strings";
 import { useToast } from "../composables/useToast";
 import {
-  applyMigrationTransforms,
-  CURRENT_DATA_VERSION,
-  hasNestedExportFormat,
-  parseMetaDataVersion,
-  setStoredDataVersion,
-} from "../migrations";
+  applyImportedDatabase,
+  importEchoesFromRaw,
+  isJsonString,
+} from "../utils/settingsBackup";
 
 const { showToast } = useToast();
 
@@ -86,75 +77,6 @@ const importEchoesAddRawText = ref("");
 const fileData = ref<string | null>(null);
 
 const inventoryStore = useInventoryStore();
-
-/**
- * Provides the data to import based on changes to the structures
- */
-function getImportData(data: string | object, toParse = false) {
-  let parsedData: unknown = data;
-  if (toParse) {
-    parsedData = JSON.parse(data as string);
-  }
-  const returnData: {
-    character: unknown;
-    inventory: unknown;
-    teamRotations: unknown;
-    dataVersion: number;
-  } = {
-    character: undefined,
-    inventory: undefined,
-    teamRotations: undefined,
-    dataVersion: 1,
-  };
-  const pd = parsedData as {
-    meta?: { version?: string | number };
-    data?: { character?: unknown; inventory?: unknown; teamRotations?: unknown };
-  };
-  if (pd?.meta && hasNestedExportFormat(pd.meta)) {
-    returnData.character = pd?.data?.character;
-    returnData.inventory = pd?.data?.inventory;
-    returnData.teamRotations = pd?.data?.teamRotations;
-    returnData.dataVersion = parseMetaDataVersion(pd.meta);
-  } else {
-    returnData.character = parsedData;
-    returnData.inventory = { echoes: [], equipped: {} };
-    returnData.dataVersion = 1;
-  }
-  return returnData;
-}
-
-function parseStorePayload(payload: unknown, fromDataVersion: number): unknown {
-  let value = payload;
-  if (typeof value === "string") {
-    value = JSON.parse(applyMigrationTransforms(value, fromDataVersion));
-  } else if (value != null && typeof value === "object") {
-    value = JSON.parse(
-      applyMigrationTransforms(JSON.stringify(value), fromDataVersion),
-    );
-  }
-  return value;
-}
-
-function applyImportedDatabase(raw: string) {
-  const importData = getImportData(raw, true);
-  const characterStore = useCharacterStore();
-  const inventoryStoreLocal = useInventoryStore();
-  const teamRotationsStore = useTeamRotationsStore();
-
-  characterStore.hardSetState(
-    parseStorePayload(importData.character, importData.dataVersion) as never,
-  );
-  inventoryStoreLocal.hardSetState(
-    parseStorePayload(importData.inventory, importData.dataVersion) as never,
-  );
-  // Older exports (pre-version-5) never had team data — hardSetState
-  // already treats undefined as "no teams" via `data?.teams ?? []`.
-  teamRotationsStore.hardSetState(
-    parseStorePayload(importData.teamRotations, importData.dataVersion) as never,
-  );
-  // Transforms above bring data to the latest schema
-  setStoredDataVersion(CURRENT_DATA_VERSION);
-}
 
 /**
  * Imports the raw character data through a given string in the input
@@ -214,34 +136,12 @@ function confirmUpload() {
   window.setTimeout(() => location.reload(), 1500);
 }
 
-function isJsonString(str: string | null) {
-  if (str == null) return false;
-  try {
-    JSON.parse(str);
-  } catch {
-    return false;
-  }
-  return true;
-}
-
 async function importEchoesAddRaw() {
   try {
-    const normalized = applyMigrationTransforms(importEchoesAddRawText.value);
-    const data = JSON.parse(normalized) as unknown[];
-    let amount = 0;
-    for (const echo of data) {
-      let id = randomString();
-      const anyCollisions = inventoryStore.echoById(id);
-      if (anyCollisions.length > 0) {
-        id = randomString();
-      }
-      const echoItem = {
-        echoId: id,
-        ...(echo as object),
-      };
-      await inventoryStore.saveEcho(echoItem as never);
-      amount++;
-    }
+    const amount = await importEchoesFromRaw(
+      importEchoesAddRawText.value,
+      inventoryStore,
+    );
     showToast(`Imported ${amount} echoes.`, "success");
   } catch (e) {
     showToast(`Failed to import echoes: ${e}`, "error");
