@@ -1,0 +1,81 @@
+import { useInventoryStore } from "../stores/inventory";
+import { useCharacterStore } from "../stores/character";
+
+export type AssignEchoResult =
+  | { ok: true }
+  | { ok: false; reason: "already-equipped" | "missing-echo" };
+
+/**
+ * Equipping an inventory echo into one of a character's 5 slots.
+ *
+ * Extracted so the legacy browser (`CalculatorEchoesBrowser.vue`) and the v3
+ * browser (`characterWorkspace/WorkspaceEchoesBrowser.vue`) share one
+ * definition of this write rather than each keeping their own copy. The
+ * three store calls are order-dependent — `removeCharacterEcho` first clears
+ * the outgoing echo's equipped-by bookkeeping, then the slot is rewritten,
+ * then the incoming echo is marked equipped — so a divergent second copy
+ * would corrupt persisted build data in only one of the two paths, which is
+ * exactly the class of bug that is hardest to notice.
+ */
+export function useEchoSlotAssignment() {
+  const inventoryStore = useInventoryStore();
+  const characterStore = useCharacterStore();
+
+  /** True when `echoId` already sits in any of this character's 5 slots. */
+  function isEchoEquippedByCharacter(character: string, echoId: string): boolean {
+    const characterEchoes = characterStore.characters?.[character]?.echoes;
+    for (let index = 0; index < 5; index++) {
+      if (characterEchoes?.[index]?.echoId === echoId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async function assignEchoToCharacterSlot(
+    character: string,
+    index: number,
+    echoId: string,
+  ): Promise<AssignEchoResult> {
+    if (isEchoEquippedByCharacter(character, echoId)) {
+      return { ok: false, reason: "already-equipped" };
+    }
+    const chosenEcho = inventoryStore.getEchoById(echoId);
+    if (!chosenEcho) {
+      return { ok: false, reason: "missing-echo" };
+    }
+
+    await characterStore.removeCharacterEcho(character, index);
+    // The slot becomes a pure pointer: every stat field is cleared so nothing
+    // stale is left inline on the character record for `resolveCharacterEchoes`
+    // to prefer over the real inventory echo.
+    const echoData = {
+      echo: null,
+      type: null,
+      rank: null,
+      stat: null,
+      echoId: chosenEcho.echoId,
+      echoSet: null,
+      echoSubStatsType1: null,
+      echoSubStatsValue1: null,
+      echoSubStatsType2: null,
+      echoSubStatsValue2: null,
+      echoSubStatsType3: null,
+      echoSubStatsValue3: null,
+      echoSubStatsType4: null,
+      echoSubStatsValue4: null,
+      echoSubStatsType5: null,
+      echoSubStatsValue5: null,
+    };
+    const data = { echoes: {} };
+    (data.echoes as any)[index] = echoData;
+    await characterStore.setCharacterData(character, data);
+    const equippedData = {};
+    (equippedData as any)[character] = index;
+    await inventoryStore.setEquippedData(echoId, equippedData);
+
+    return { ok: true };
+  }
+
+  return { isEchoEquippedByCharacter, assignEchoToCharacterSlot };
+}

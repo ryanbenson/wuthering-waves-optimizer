@@ -3880,6 +3880,20 @@ export const allEnemiesList: ListedEnemy[] = (
   resist: e.resist,
 }));
 
+/**
+ * The seven resistance types in canonical display order — shared so the
+ * enemy workspace panel and the browse modal list them identically.
+ */
+export const RESIST_ELEMENTS: (keyof ResistStats)[] = [
+  "Aero",
+  "Electro",
+  "Fusion",
+  "Glacio",
+  "Havoc",
+  "Physical",
+  "Spectro",
+];
+
 /** Resist percent in data (e.g. 10) → fraction used by the calculator (e.g. 0.1). */
 export function getEnemyResistFractionForElement(
   resist: ResistStats,

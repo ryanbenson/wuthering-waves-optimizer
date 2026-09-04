@@ -1,136 +1,151 @@
 <template>
-  <dialog
-    id="modal-workspace-weapon-browser"
-    class="modal"
-    data-test-workspace-weapon-browser>
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
-      <form
-        method="dialog"
-        @click="handleClose"
-        data-test-workspace-weapon-browser-close>
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4 flex flex-col gap-4">
-        <h3 class="text-lg font-semibold">Browse weapons</h3>
-
-        <div class="flex flex-wrap items-center gap-2">
+  <AppChooserModal
+    ref="modalRef"
+    title="Browse weapons"
+    close-test-attr="data-test-workspace-weapon-browser-close"
+    @close="reset">
+    <template #toolbar>
+      <AppFilterPanel
+        panel-key="workspace-weapons"
+        :active-count="activeFilterCount"
+        :clear-disabled="!activeFilterCount"
+        @clear="resetFilters">
+        <template #bar>
           <input
             v-model="search"
-            type="text"
+            type="search"
             placeholder="Search weapons…"
-            class="input input-bordered input-sm flex-1 min-w-48"
+            class="input input-bordered input-sm flex-1 min-w-40"
+            aria-label="Search weapons"
             data-test-workspace-weapon-browser-search />
-          <div class="flex gap-1">
-            <button
-              v-for="r in [5, 4, 3, 2, 1]"
-              :key="r"
-              type="button"
-              class="btn btn-sm"
-              :class="rarityFilter === r ? 'btn-active' : ''"
-              :data-test-workspace-weapon-browser-filter-rarity="r"
-              @click="toggleRarityFilter(r)">
-              {{ r }}✦
-            </button>
-          </div>
           <select
             v-model="sortBy"
             class="select select-bordered select-sm"
+            aria-label="Sort weapons"
             data-test-workspace-weapon-browser-sort>
             <option value="impact">Sort: Damage impact</option>
             <option value="rarity">Sort: Rarity</option>
             <option value="name">Sort: Name</option>
           </select>
-        </div>
-
-        <div v-if="impactsLoading" class="text-xs opacity-60">
-          Estimating damage impact…
-        </div>
-
-        <template v-if="!weaponsSorted.length">
-          <div
-            class="py-12 text-center w-full opacity-60"
-            data-test-workspace-weapon-browser-empty>
-            No weapons found
-          </div>
         </template>
-        <template v-else>
-          <div
-            class="flex flex-col gap-2"
-            data-test-workspace-weapon-browser-list>
-            <div
-              v-for="weaponRow in weaponsSorted"
-              :key="weaponRow.key"
-              class="card card-bordered card-compact bg-base-200 shadow cursor-pointer hover:bg-base-300"
-              :class="{
-                'border-l-4 border-l-primary': weaponRow.key === currentWeapon,
-              }"
-              :data-test-workspace-weapon-browser-row="weaponRow.key"
-              @click="openPreview(weaponRow.key)">
-              <div
-                class="card-body flex flex-col md:flex-row md:items-center gap-2 md:gap-3 py-2">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="rounded-full border-2 bg-cover bg-center size-11 shrink-0"
-                    :class="rarityBorderClasses(weaponRow.rarity)"
-                    :style="{
-                      backgroundImage: `url(${WEAPON_IMAGE_BASE}/${weaponRow.key}.png)`,
-                    }"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold text-sm">
-                        {{ weaponRow.name }}
-                      </span>
-                      <span
-                        class="text-xs"
-                        :class="rarityTextClasses(weaponRow.rarity)">
-                        {{ "★".repeat(weaponRow.rarity) }}
-                      </span>
-                      <span
-                        v-if="weaponRow.key === signatureWeapon"
-                        class="badge badge-sm badge-primary">
-                        Signature
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="flex items-center justify-between md:justify-end gap-2 md:ml-auto">
-                  <span
-                    v-if="weaponRow.key === currentWeapon"
-                    class="badge badge-primary">
-                    Equipped
-                  </span>
-                  <span
-                    v-else-if="impactByKey[weaponRow.key]"
-                    class="badge"
-                    :class="impactBadgeClasses(impactByKey[weaponRow.key])">
-                    {{ formatImpact(impactByKey[weaponRow.key]) }}
-                  </span>
-                  <button
-                    v-if="weaponRow.key !== currentWeapon"
-                    type="button"
-                    class="btn btn-primary btn-sm"
-                    :data-test-workspace-weapon-browser-equip="weaponRow.key"
-                    @click.stop="chooseWeapon(weaponRow.key)">
-                    Equip
-                  </button>
-                </div>
-              </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-medium opacity-60">Rarity</span>
+            <div class="flex gap-1">
+              <button
+                v-for="r in [5, 4, 3, 2, 1]"
+                :key="r"
+                type="button"
+                class="btn btn-sm"
+                :class="rarityFilter === r ? 'btn-active' : ''"
+                :data-test-workspace-weapon-browser-filter-rarity="r"
+                @click="toggleRarityFilter(r)">
+                {{ r }}✦
+              </button>
             </div>
           </div>
-        </template>
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-medium opacity-60">Main stat</span>
+            <div class="min-w-[10rem]">
+              <AppRichSelect
+                v-model="mainStatFilter"
+                :options="mainStatFilterOptions"
+                allow-empty
+                empty-label="Any main stat"
+                aria-label="Filter by weapon main stat"
+                data-test="workspace-weapon-browser-main-stat" />
+            </div>
+          </div>
+        </div>
+      </AppFilterPanel>
+
+      <div class="flex items-center justify-between gap-2 mt-2">
+        <span class="text-xs opacity-60" data-test-workspace-weapon-browser-count>
+          {{ weaponsSorted.length }}
+          {{ weaponsSorted.length === 1 ? "weapon" : "weapons" }}
+        </span>
+        <span v-if="impactsLoading" class="text-xs opacity-60">
+          Estimating damage impact…
+        </span>
+      </div>
+    </template>
+
+    <div
+      v-if="!weaponsSorted.length"
+      class="py-12 text-center w-full opacity-60"
+      data-test-workspace-weapon-browser-empty>
+      No weapons found
+    </div>
+    <div
+      v-else
+      class="flex flex-col gap-2"
+      data-test-workspace-weapon-browser-list>
+      <div
+        v-for="weaponRow in weaponsSorted"
+        :key="weaponRow.key"
+        class="card card-bordered card-compact bg-base-200 shadow hover:bg-base-300 transition-colors"
+        :class="{ 'border-l-4 border-l-primary': weaponRow.key === currentWeapon }"
+        :data-test-workspace-weapon-browser-row="weaponRow.key">
+        <div class="card-body flex-row items-center gap-3 py-2">
+          <button
+            type="button"
+            class="flex items-center gap-3 flex-1 min-w-0 text-left"
+            :data-test-workspace-weapon-browser-preview="weaponRow.key"
+            @click="openPreview(weaponRow.key)">
+            <div
+              class="rounded-full border-2 bg-cover bg-center size-11 shrink-0"
+              :class="rarityBorderClasses(weaponRow.rarity)"
+              :style="{
+                backgroundImage: `url(${WEAPON_IMAGE_BASE}/${weaponRow.key}.png)`,
+              }"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-semibold text-sm">{{ weaponRow.name }}</span>
+                <span class="text-xs" :class="rarityTextClasses(weaponRow.rarity)">
+                  {{ "★".repeat(weaponRow.rarity) }}
+                </span>
+                <span
+                  v-if="weaponRow.key === signatureWeapon"
+                  class="badge badge-sm badge-primary">
+                  Signature
+                </span>
+              </div>
+              <div v-if="weaponRow.mainStat" class="text-xs opacity-60 mt-0.5">
+                {{ getWeaponMainStatLabel(weaponRow.mainStat) }}
+              </div>
+            </div>
+          </button>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <span
+              v-if="weaponRow.key === currentWeapon"
+              class="badge badge-primary">
+              Equipped
+            </span>
+            <span
+              v-else-if="impactByKey[weaponRow.key]"
+              class="badge"
+              :class="impactBadgeClasses(impactByKey[weaponRow.key])">
+              {{ formatImpact(impactByKey[weaponRow.key]) }}
+            </span>
+            <button
+              v-if="weaponRow.key !== currentWeapon"
+              type="button"
+              class="btn btn-primary btn-sm"
+              :data-test-workspace-weapon-browser-equip="weaponRow.key"
+              @click="chooseWeapon(weaponRow.key)">
+              Equip
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </dialog>
+  </AppChooserModal>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
@@ -139,21 +154,26 @@ import {
   type WeaponImpactRange,
   type WeaponSwapCandidate,
 } from "../../weapons/weaponImpact";
+import { getWeaponMainStatLabel } from "../../weapons/weapons";
+import AppChooserModal from "../AppChooserModal.vue";
+import AppFilterPanel from "../AppFilterPanel.vue";
+import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
-type WeaponRow = { key: string; name: string; rarity: number };
+type WeaponListEntry = { key: string; name: string; mainStat?: string };
+type WeaponRow = { key: string; name: string; rarity: number; mainStat?: string };
 
 const props = defineProps<{
   character: string;
   weaponType?: string;
   weaponsList: {
-    five?: Array<{ key: string; name: string }>;
-    four?: Array<{ key: string; name: string }>;
-    three?: Array<{ key: string; name: string }>;
-    two?: Array<{ key: string; name: string }>;
-    one?: Array<{ key: string; name: string }>;
+    five?: WeaponListEntry[];
+    four?: WeaponListEntry[];
+    three?: WeaponListEntry[];
+    two?: WeaponListEntry[];
+    one?: WeaponListEntry[];
   };
   signatureWeapon?: string;
   currentWeapon?: string | null;
@@ -169,9 +189,10 @@ const { characters } = storeToRefs(characterStore);
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 
-const isOpen = ref(false);
+const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const search = ref("");
 const rarityFilter = ref<number | null>(null);
+const mainStatFilter = ref<string | null>(null);
 const sortBy = ref<"impact" | "rarity" | "name">("impact");
 const impactByKey = ref<Record<string, WeaponImpactRange | null>>({});
 const impactsLoading = ref(false);
@@ -184,10 +205,32 @@ const weaponsAll = computed((): WeaponRow[] => [
   ...(props.weaponsList?.one ?? []).map((w) => ({ ...w, rarity: 1 })),
 ]);
 
+/** Only the stats this character's own weapon pool actually offers. */
+const mainStatFilterOptions = computed((): AppRichSelectOption[] => {
+  const stats = [...new Set(weaponsAll.value.map((w) => w.mainStat).filter(Boolean))];
+  return stats
+    .map((stat) => ({
+      value: stat as string,
+      label: getWeaponMainStatLabel(stat as string),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+});
+
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (search.value.trim()) count += 1;
+  if (rarityFilter.value !== null) count += 1;
+  if (mainStatFilter.value) count += 1;
+  return count;
+});
+
 const weaponsFiltered = computed(() => {
   let list = weaponsAll.value;
   if (rarityFilter.value !== null) {
     list = list.filter((w) => w.rarity === rarityFilter.value);
+  }
+  if (mainStatFilter.value) {
+    list = list.filter((w) => w.mainStat === mainStatFilter.value);
   }
   if (search.value.trim()) {
     const needle = search.value.trim().toLowerCase();
@@ -202,9 +245,7 @@ const weaponsSorted = computed(() => {
     return list.sort((a, b) => a.name.localeCompare(b.name));
   }
   if (sortBy.value === "rarity") {
-    return list.sort(
-      (a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name),
-    );
+    return list.sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name));
   }
   // "impact": the currently-equipped weapon isn't in impactByKey (comparing
   // it to itself is trivially 0), but it should still sort at its real
@@ -295,33 +336,24 @@ async function loadImpacts() {
 }
 
 async function triggerOpenModal() {
-  isOpen.value = true;
-  await nextTick();
-  const modalEl = document.getElementById(
-    "modal-workspace-weapon-browser",
-  ) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  await modalRef.value?.triggerOpenModal();
   void loadImpacts();
 }
 
 function triggerCloseModal() {
-  const modalEl = document.getElementById(
-    "modal-workspace-weapon-browser",
-  ) as HTMLDialogElement | null;
-  modalEl?.close();
-  isOpen.value = false;
+  modalRef.value?.triggerCloseModal();
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
 
 function reset() {
   search.value = "";
-  rarityFilter.value = null;
+  resetFilters();
 }
 
-function handleClose() {
-  reset();
-  triggerCloseModal();
+function resetFilters() {
+  rarityFilter.value = null;
+  mainStatFilter.value = null;
 }
 
 function toggleRarityFilter(rarity: number) {
@@ -330,12 +362,14 @@ function toggleRarityFilter(rarity: number) {
 
 function chooseWeapon(key: string) {
   emit("weapon-browser:chosen-weapon", key);
-  handleClose();
+  reset();
+  triggerCloseModal();
 }
 
 function openPreview(key: string) {
   if (key === props.currentWeapon) return;
   emit("weapon-browser:preview", key);
-  handleClose();
+  reset();
+  triggerCloseModal();
 }
 </script>

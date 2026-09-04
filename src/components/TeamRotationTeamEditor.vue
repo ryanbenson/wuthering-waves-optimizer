@@ -274,7 +274,7 @@
       ref="buildPickerRef"
       @select-build="handleBuildPicked" />
 
-    <CalculatorCharacterBrowser
+    <WorkspaceCharacterBrowser
       :character="characterPickerSlot !== null ? (team.characterIds[characterPickerSlot] ?? '') : ''"
       :exclude-keys="characterPickerExcludeKeys"
       ref="characterPickerRef"
@@ -363,7 +363,7 @@ import { randomString } from "../utils/strings";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
-import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
+import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
@@ -514,11 +514,11 @@ function setSlotCharacter(slot: number, characterId: unknown) {
   }
 }
 
-// Icon-click character picker (mirrors the shared CalculatorCharacterBrowser
+// Icon-click character picker (mirrors the shared WorkspaceCharacterBrowser
 // pattern used elsewhere in v3, e.g. the command bar avatar) — replaces the
 // old per-slot searchable <select>. One shared modal instance is reused
 // across all 3 slots, tracking which slot triggered it.
-const characterPickerRef = ref<InstanceType<typeof CalculatorCharacterBrowser> | null>(null);
+const characterPickerRef = ref<InstanceType<typeof WorkspaceCharacterBrowser> | null>(null);
 const characterPickerSlot = ref<number | null>(null);
 
 const characterPickerExcludeKeys = computed(() => {

@@ -79,9 +79,10 @@
         </div>
       </div>
 
-      <CalculatorEnemyBrowser
+      <WorkspaceEnemyBrowser
         ref="enemyBrowserRef"
         :character-element="props.characterElement"
+        :current-enemy="enemyBrowserKey || null"
         @enemy-browser:chosen-enemy="onEnemyChosenFromBrowser" />
 
       <div v-if="selectedEnemyEntry" class="border-t border-base-300 pt-3" data-test-enemy-workspace-resist>
@@ -277,10 +278,10 @@ import { characterElementsSetImageMap } from "../characters/characters";
 import enemiesCatalog, {
   getEnemyResistFractionForElement,
   mapEnemyTypeToBrowserCategory,
+  RESIST_ELEMENTS,
   type Enemy,
-  type ResistStats,
 } from "../enemies/index";
-import CalculatorEnemyBrowser from "./CalculatorEnemyBrowser.vue";
+import WorkspaceEnemyBrowser from "./WorkspaceEnemyBrowser.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -399,16 +400,6 @@ function isMajorTick(value: number, max: number): boolean {
   const step = max > 9 ? 2 : 1;
   return value === 0 || value === max || value % step === 0;
 }
-
-const RESIST_ELEMENTS: (keyof ResistStats)[] = [
-  "Aero",
-  "Electro",
-  "Fusion",
-  "Glacio",
-  "Havoc",
-  "Physical",
-  "Spectro",
-];
 
 function elementIcon(element: string): string | null {
   return characterElementsSetImageMap[element] ?? null;

@@ -157,7 +157,7 @@
       also trigger that row's own click-to-toggle handler right after
       picking a character, collapsing the section that click was meant to
       populate. -->
-      <CalculatorCharacterBrowser
+      <WorkspaceCharacterBrowser
         :character="character"
         ref="partyMemberBrowser1Ref"
         @character-browser:chosen-character="handlePartyMember1Chosen" />
@@ -234,7 +234,7 @@
 
       <!-- Kept outside the toggle row above — see the matching comment on
       Teammate 1's browser instance. -->
-      <CalculatorCharacterBrowser
+      <WorkspaceCharacterBrowser
         :character="character"
         ref="partyMemberBrowser2Ref"
         @character-browser:chosen-character="handlePartyMember2Chosen" />
@@ -348,7 +348,7 @@ import { storeToRefs } from "pinia";
 import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index.ts";
 import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters.ts";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
-import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
+import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import BuffRow from "./teamBuffsWorkspace/TeamBuffsWorkspaceRow.vue";
 import { useCharacterStore } from "../stores/character";
 import {
@@ -679,8 +679,8 @@ async function jumpTo(key: string) {
   el?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-// --- Teammate picker: clicking the avatar opens the shared
-// CalculatorCharacterBrowser modal — consistent with the icon-click pattern
+// --- Teammate picker: clicking the avatar opens the v3
+// WorkspaceCharacterBrowser modal — consistent with the icon-click pattern
 // used elsewhere in v3 (weapon panel, party page, Command Bar avatar), and
 // replaces the AppRichSelect dropdown this used to pair the avatar with.
 

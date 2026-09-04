@@ -3,7 +3,16 @@
     <CalculatorEchoImporter
       ref="echoesImporter"
       :character="character"></CalculatorEchoImporter>
+    <!-- The v3 browser adds swap-impact badges and sort-by-impact; the
+    legacy one stays exactly as-is for the un-flagged calculator. Both emit
+    the same event, so the post-assign bookkeeping below is shared. -->
+    <WorkspaceEchoesBrowser
+      v-if="isLiveResultBarEnabled"
+      ref="echoesBrowser"
+      :character="character"
+      @chosen-echo-inventory="handleChosenEchoInventory" />
     <CalculatorEchoesBrowser
+      v-else
       ref="echoesBrowser"
       :character="character"
       @chosen-echo-inventory="
@@ -184,6 +193,7 @@ import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
+import WorkspaceEchoesBrowser from "./characterWorkspace/WorkspaceEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";

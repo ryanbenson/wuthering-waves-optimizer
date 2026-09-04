@@ -192,24 +192,59 @@
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
       </form>
       <div class="py-4">
-        <div
-          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-          <span class="mr-2">Filter</span>
-          <button
-            v-for="echoSetKey in echoSetsList"
-            :key="echoSetKey"
-            @click="toggleEchoSetFilter(echoSetKey)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isEchoSetFilterActive(echoSetKey) }">
-            <img
-              :src="getEchoSetIcon(echoSetKey)"
-              class="size-7 m-width-7"
-              :class="echoSetKey" />
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
+        <AppFilterPanel
+          panel-key="echo-edit-picker"
+          class="mb-4"
+          :active-count="pickerActiveFilterCount"
+          :clear-disabled="!pickerActiveFilterCount"
+          @clear="resetFilters">
+          <template #bar>
+            <input
+              v-model="echoSearch"
+              type="search"
+              placeholder="Search echoes…"
+              class="input input-bordered input-sm flex-1 min-w-40"
+              aria-label="Search echoes"
+              data-test-echo-picker-search />
+          </template>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-medium opacity-60">Cost</span>
+            <div class="join">
+              <button
+                v-for="cost in ECHO_COST_TIERS"
+                :key="cost"
+                type="button"
+                class="btn btn-sm join-item"
+                :class="{ 'btn-active': echoCostFilter === cost }"
+                :data-test-echo-picker-cost="cost"
+                @click="echoCostFilter = echoCostFilter === cost ? null : cost">
+                {{ cost }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="echoes__filters echo-filters__sets flex align-center gap-1 items-center flex-wrap"
+            :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+            <span class="text-xs font-medium opacity-60 mr-1">Set</span>
+            <button
+              v-for="echoSetKey in echoSetsList"
+              :key="echoSetKey"
+              type="button"
+              @click="toggleEchoSetFilter(echoSetKey)"
+              class="rounded p-[.3rem]"
+              :class="{ 'btn-active': isEchoSetFilterActive(echoSetKey) }">
+              <img
+                :src="getEchoSetIcon(echoSetKey)"
+                class="size-7 m-width-7"
+                :class="echoSetKey" />
+            </button>
+          </div>
+        </AppFilterPanel>
+        <div class="text-xs opacity-60 mb-2" data-test-echo-picker-count>
+          {{ allEchoesListFiltered.length }}
+          {{ allEchoesListFiltered.length === 1 ? "echo" : "echoes" }}
         </div>
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -228,7 +263,12 @@
                 class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
                 :style="{ backgroundImage: `url(${echoesToChoose.image})` }"></div>
               <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
-              <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
+              <h3 class="text-sm flex items-center gap-1.5">
+                <span>{{ echoesToChoose.class }}</span>
+                <span class="badge badge-sm font-mono">
+                  Cost {{ getCostByClass(echoesToChoose.class) }}
+                </span>
+              </h3>
               <div class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
                 <div
                   v-for="echoSetItem in echoesToChoose.sets"
@@ -261,8 +301,9 @@ import {
 } from "../echoes/stats";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
-import { mainEchoesData } from "../echoes/index.ts";
+import { mainEchoesData, getCostByClass } from "../echoes/index.ts";
 import AppRichSelect from "./AppRichSelect.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
 import EchoSubstatSlider from "./EchoSubstatSlider.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
@@ -440,6 +481,8 @@ const pickerModalId = computed(
 );
 const isPickerOpen = ref(false);
 const echoSetFilter = ref<string | null>(null);
+const echoSearch = ref("");
+const echoCostFilter = ref<number | null>(null);
 
 async function openEchoPicker() {
   isPickerOpen.value = true;
@@ -449,7 +492,7 @@ async function openEchoPicker() {
 }
 
 function closeEchoChooser() {
-  echoSetFilter.value = null;
+  resetFilters();
   const modalEl = document.getElementById(pickerModalId.value);
   (modalEl as HTMLDialogElement | null)?.close();
   isPickerOpen.value = false;
@@ -478,7 +521,24 @@ function isEchoSetFilterActive(echoSetKey: string) {
 
 function resetFilters() {
   echoSetFilter.value = null;
+  echoSearch.value = "";
+  echoCostFilter.value = null;
 }
+
+const pickerActiveFilterCount = computed(() => {
+  let count = 0;
+  if (echoSetFilter.value) count += 1;
+  if (echoSearch.value.trim()) count += 1;
+  if (echoCostFilter.value != null) count += 1;
+  return count;
+});
+
+/**
+ * Cost tiers offered by the filter. Every slot can hold any cost — the only
+ * constraint the app enforces is the 12-point total across all 5 slots — so
+ * this deliberately lists all three rather than narrowing by slot position.
+ */
+const ECHO_COST_TIERS = [4, 3, 1];
 
 type EchoListEntry = { key: string; name: string; class: string; sets: string[]; image?: string };
 const classOrder: Record<string, number> = { Calamity: 0, Overlord: 1, Elite: 2, Common: 3 };
@@ -486,6 +546,15 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
   let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
   if (echoSetFilter.value) {
     allEchoes = allEchoes.filter((e) => e.sets.includes(echoSetFilter.value!));
+  }
+  if (echoCostFilter.value != null) {
+    allEchoes = allEchoes.filter(
+      (e) => getCostByClass(e.class) === echoCostFilter.value,
+    );
+  }
+  const needle = echoSearch.value.trim().toLowerCase();
+  if (needle) {
+    allEchoes = allEchoes.filter((e) => e.name.toLowerCase().includes(needle));
   }
   return [...allEchoes].sort((a, b) => {
     const cmp = classOrder[a.class] - classOrder[b.class];
