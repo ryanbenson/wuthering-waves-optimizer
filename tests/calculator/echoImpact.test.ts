@@ -20,7 +20,8 @@ vi.mock("../../src/characters/characters", async (importOriginal) => {
   };
 });
 
-const { estimateEchoSwapImpact, estimateEchoSwapImpactBatch } = await import("../../src/echoes/echoImpact");
+const { estimateEchoSwapImpact, estimateEchoSwapImpactBatch, resolveNewlyActiveSetPassivesOverride } =
+  await import("../../src/echoes/echoImpact");
 
 const enemyConfig: TeamEnemyConfig = {
   enemyLevel: 90,
@@ -436,5 +437,131 @@ describe("estimateEchoSwapImpactBatch", () => {
     expect(baselines[0]).toBeCloseTo(baselines[1] as number);
     // And the ordering between them still holds through the batch path.
     expect(results.get("strong4")!.delta).toBeGreaterThan(results.get("weak4")!.delta);
+  });
+});
+
+describe("resolveNewlyActiveSetPassivesOverride", () => {
+  // Regression test for a third real reported bug: a swap that restored a
+  // 5pc set bonus was estimated at "+2,315 · +2.4%" against a real ~+80K.
+  // The set-bonus *label* (echoSetBonus) was already being recomputed
+  // correctly (see the describe block above), but a conditional bonus's
+  // passives (most 5pc/3pc bonuses; alwaysEnabled: false) still resolve
+  // against characterData.echoSetPassives — a per-passive-key toggle/stacks
+  // config the player sets by hand once the bonus's card exists in the UI.
+  // A synthetic swap has no such interaction, so the newly-unlocked bonus's
+  // passives were scoring as off/zero-stacked even though echoSetBonus
+  // correctly named them as active.
+  it("force-enables a newly-applicable bonus's passives at max stacks", () => {
+    const override = resolveNewlyActiveSetPassivesOverride(
+      {},
+      { setBonusOnePiece: null, setBonusOne: null, setBonusTwo: null },
+      { setBonusOnePiece: null, setBonusOne: "Freezing Frost 2 Set", setBonusTwo: "Freezing Frost 5 Set" },
+    );
+
+    // Freezing Frost 2 Set's own passive is alwaysEnabled, so it needs no
+    // override — resolveEchoSetPassiveInstance forces it on regardless.
+    // Freezing Frost 5 Set's passive is the conditional one this fix exists
+    // for: hasStacks, maxStacks: 3, alwaysEnabled: false.
+    expect(override.FreezingFrost5SetGlacio).toEqual({ isEnabled: true, stacks: 3 });
+  });
+
+  it("leaves a bonus's passives alone when the swap doesn't change that slot", () => {
+    const override = resolveNewlyActiveSetPassivesOverride(
+      { SomeOtherPassive: { isEnabled: false, stacks: 1 } },
+      { setBonusOnePiece: null, setBonusOne: "Freezing Frost 2 Set", setBonusTwo: "Freezing Frost 5 Set" },
+      { setBonusOnePiece: null, setBonusOne: "Freezing Frost 2 Set", setBonusTwo: "Freezing Frost 5 Set" },
+    );
+
+    // Same bonus before and after this swap (e.g. a within-set substat-only
+    // swap) — nothing about it is "newly" active, so the player's real
+    // stored toggle/stacks must be preserved untouched, not force-maxed.
+    expect(override).toEqual({ SomeOtherPassive: { isEnabled: false, stacks: 1 } });
+  });
+
+  it("preserves untouched stored passives alongside a newly-forced one", () => {
+    const override = resolveNewlyActiveSetPassivesOverride(
+      { UnrelatedPassive: { isEnabled: true, stacks: 2 } },
+      { setBonusOnePiece: null, setBonusOne: null, setBonusTwo: "Molten Rift 5 Set" },
+      { setBonusOnePiece: null, setBonusOne: null, setBonusTwo: "Freezing Frost 5 Set" },
+    );
+
+    expect(override.UnrelatedPassive).toEqual({ isEnabled: true, stacks: 2 });
+    expect(override.FreezingFrost5SetGlacio).toEqual({ isEnabled: true, stacks: 3 });
+  });
+
+  it("does nothing when no bonus slot actually changed", () => {
+    const before = { setBonusOnePiece: null, setBonusOne: "Freezing Frost 2 Set", setBonusTwo: "Freezing Frost 5 Set" };
+    const override = resolveNewlyActiveSetPassivesOverride(
+      { FreezingFrost5SetGlacio: { isEnabled: true, stacks: 1 } },
+      before,
+      { ...before },
+    );
+
+    // The player's own real stack count (1, not maxed) is respected when
+    // this specific swap didn't touch that bonus at all.
+    expect(override.FreezingFrost5SetGlacio).toEqual({ isEnabled: true, stacks: 1 });
+  });
+});
+
+describe("estimateEchoSwapImpact — conditional 5pc set-bonus passive", () => {
+  // End-to-end version of the same bug: Carlotta (Glacio) going from 4x
+  // Freezing Frost + 1 off-set echo to a full 5x Freezing Frost build.
+  // Freezing Frost 2 Set is alwaysEnabled (+10% Glacio); Freezing Frost 5
+  // Set is the conditional one this fix targets (hasStacks, maxStacks: 3,
+  // alwaysEnabled: false, +10% Glacio per stack).
+  const CARLOTTA_ROTATION = {
+    id: "r1",
+    name: "Test rotation",
+    duration: 10,
+    actions: [{ id: "a1", type: "basic", key: "BasicAttackStage1DMG", count: 1 }],
+  };
+
+  const OFF_SET_MAIN = {
+    echo: "Main4", type: 4, echoId: "off-set", echoSet: "OtherSet", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 50,
+  };
+  const COMPLETES_5PC_MAIN = {
+    echo: "Main4", type: 4, echoId: "completes-5pc", echoSet: "FreezingFrost", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 50,
+  };
+  const OTHER_FREEZING_FROST = [
+    { echo: "ThreeA", type: 3, echoId: "ff-3a", echoSet: "FreezingFrost", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "ThreeB", type: 3, echoId: "ff-3b", echoSet: "FreezingFrost", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "OneA", type: 1, echoId: "ff-1a", echoSet: "FreezingFrost", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+    { echo: "OneB", type: 1, echoId: "ff-1b", echoSet: "FreezingFrost", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+  ];
+  const CARLOTTA_INVENTORY = [OFF_SET_MAIN, COMPLETES_5PC_MAIN, ...OTHER_FREEZING_FROST];
+
+  function carlottaWearingOffSetMain() {
+    return {
+      Carlotta: {
+        rotations: [CARLOTTA_ROTATION],
+        echoes: {
+          0: { echoId: "off-set" },
+          1: { echoId: "ff-3a" },
+          2: { echoId: "ff-3b" },
+          3: { echoId: "ff-1a" },
+          4: { echoId: "ff-1b" },
+        },
+      },
+    };
+  }
+
+  it("credits the conditional 5pc passive, not just the always-enabled 2pc portion", async () => {
+    const result = await estimateEchoSwapImpact(
+      "Carlotta",
+      carlottaWearingOffSetMain(),
+      { echoId: "completes-5pc", slotIndex: 0 },
+      enemyConfig,
+      CARLOTTA_INVENTORY,
+    );
+
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeGreaterThan(0);
+    // 2pc alone (+10% Glacio) was already correctly credited before this
+    // fix (it's alwaysEnabled). The 5pc's own +30% (3 stacks x 10%) on top
+    // of that roughly quadruples the total Glacio-DMG-bonus swing — a
+    // generous but real lower bound that a 2pc-only credit could not reach.
+    expect(result!.pct).toBeGreaterThan(0.2);
   });
 });
