@@ -79,7 +79,11 @@ const ATTACK_DAMAGE_FIELD: Record<LiveResultBarDamageType, string> = {
   Average: "avgDamage",
   Crit: "critDamage",
 };
-const ROTATION_DAMAGE_FIELD: Record<LiveResultBarDamageType, string> = {
+// Exported for src/calculator/rotationComparison.ts, which needs to pick the
+// same damage-aggregation field a swap-impact estimate is compared against
+// (Normal/Average/Crit) as whatever the user currently has the Live Result
+// Bar showing for this character — not always "Average".
+export const ROTATION_DAMAGE_FIELD: Record<LiveResultBarDamageType, string> = {
   Normal: "normalDamage",
   Average: "avgDamage",
   Crit: "critDamage",

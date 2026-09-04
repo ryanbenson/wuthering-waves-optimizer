@@ -1,14 +1,11 @@
 <template>
   <div class="calculations">
     <Nav cur-page="inventory">
-      <!-- @vue-expect-error Nav.vue is a plain-JS <script setup> component;
-           its named slots aren't typed, so vue-tsc can't see #mobile/#default here. -->
       <template #mobile>
         <InventoryMobileSubNav
           @change-screen="changeScreen"
           :screen="curScreen"></InventoryMobileSubNav>
       </template>
-      <!-- @vue-expect-error see note above -->
       <template #default>
         <InventorySubNav
             :screen="curScreen"

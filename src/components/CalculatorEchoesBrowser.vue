@@ -197,7 +197,6 @@ import {
   statsTable,
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
-import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
 import { getEchoRatingGrade } from "../echoes/rating";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
@@ -214,6 +213,7 @@ import {
 } from "../utils/richSelectOptions";
 import { useToast } from "../composables/useToast";
 import { useUiDensity } from "../composables/useUiDensity";
+import { useEchoSlotAssignment } from "../composables/useEchoSlotAssignment";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
@@ -221,11 +221,10 @@ const props = defineProps<{ character: string }>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
-const characterStore = useCharacterStore();
 const settingsStore = useSettingsStore();
+const { assignEchoToCharacterSlot } = useEchoSlotAssignment();
 const { echoes, echoIdsEquippedByAnyChars } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars } = inventoryStore;
-const { characters } = storeToRefs(characterStore);
 
 const echoIndex = ref<number | null>(null);
 const costFilter = ref<number | null>(null);
@@ -281,10 +280,6 @@ watch(
   },
 );
 
-const currentCharacter = computed(
-  () => (characters.value?.[props.character] as Record<string, any>) ?? {},
-);
-const currentCharacterEchoes = computed(() => currentCharacter.value?.echoes ?? {});
 const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
 const echoesList = computed(() => {
       let allEchoes = echoes.value ?? [];
@@ -429,41 +424,19 @@ function handleClose() {
       triggerCloseModal();
     }
 async function assignEcho(echoId: string) {
-      const isUsed = isEchoUsedByChar(echoId);
-      if (isUsed) {
-        showToast("Echo is already being used.", "warning");
+      const result = await assignEchoToCharacterSlot(
+        props.character,
+        echoIndex.value as number,
+        echoId,
+      );
+      if (!result.ok) {
+        if (result.reason === "already-equipped") {
+          showToast("Echo is already being used.", "warning");
+        } else {
+          console.error("Could not find echo", echoId);
+        }
         return;
       }
-      const chosenEcho = inventoryStore.getEchoById(echoId);
-      if (!chosenEcho) {
-        console.error("Could not find echo", echoId);
-        return;
-      }
-      await characterStore.removeCharacterEcho(props.character, echoIndex.value);
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: null,
-        stat: null,
-        echoId: chosenEcho.echoId,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      const data = { echoes: {} };
-      (data.echoes as any)[echoIndex.value as number] = echoData;
-      await characterStore.setCharacterData(props.character, data);
-      const equippedData = {};
-      (equippedData as any)[props.character] = echoIndex.value;
-      await inventoryStore.setEquippedData(echoId, equippedData);
       triggerCloseModal();
       emit("chosen-echo-inventory");
     }
@@ -487,25 +460,6 @@ function getCharsEquipped(e: { echoId: string }) {
 function getCharImg(character: string) {
       return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
     }
-function isEchoUsedByChar(echoId: string) {
-      if (currentCharacterEchoes.value?.[0]?.echoId === echoId) {
-        return true;
-      }
-      if (currentCharacterEchoes.value?.[1]?.echoId === echoId) {
-        return true;
-      }
-      if (currentCharacterEchoes.value?.[2]?.echoId === echoId) {
-        return true;
-      }
-      if (currentCharacterEchoes.value?.[3]?.echoId === echoId) {
-        return true;
-      }
-      if (currentCharacterEchoes.value?.[4]?.echoId === echoId) {
-        return true;
-      }
-      return false;
-    }
-
 defineExpose({
   triggerOpenModal,
   triggerCloseModal,

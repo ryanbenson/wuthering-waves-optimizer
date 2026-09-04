@@ -1,11 +1,16 @@
 import {
   calcCharacterRotationDamage,
   type CharacterRotationInput,
+  type DamageAggregation,
 } from "../calculator/characterRotation";
+import {
+  resolveComparisonRotation,
+  type ComparisonTargetOptions,
+} from "../calculator/rotationComparison";
 import { getCharByName } from "../characters/characters";
 import { getWeaponByName } from "./weapons";
-import { FALLBACK_ATTACK_GROUP_PRIORITY } from "../calculator/liveResultBar";
 import type { TeamEnemyConfig } from "../calculator/buildCharacterContext";
+import { ROTATION_DAMAGE_FIELD, type LiveResultBarDamageType } from "../calculator/liveResultBar";
 
 export interface WeaponSwapCandidate {
   weaponKey: string;
@@ -25,42 +30,35 @@ export interface WeaponImpactRange {
   fullyBuffedPct: number;
 }
 
-/**
- * Picks what to compare weapons against: the character's first saved
- * rotation if one exists (mirrors `buildLiveResultBarTarget`'s
- * `{type: "rotation"}` preference — first saved rotation, no further
- * ranking), else a synthetic one-action "rotation" built from the highest-
- * priority attack group that actually has attacks (mirrors
- * `fallbackLiveResultBarTarget`'s group priority, but resolved directly
- * against the character's own attack definitions instead of already-
- * computed `allDamages`, since this runs headlessly). Returns `null` when
- * neither exists — callers should treat that as "nothing to compare
- * against" rather than guessing.
- */
-async function resolveComparisonRotation(
+export interface WeaponImpactOptions extends ComparisonTargetOptions {
+  /**
+   * Which damage-aggregation field to compare (Normal/Average/Crit) — should
+   * match whatever the caller currently has the Live Result Bar showing for
+   * this character (`liveResultBarDamageType`), not always "Average".
+   */
+  damageType?: LiveResultBarDamageType;
+}
+
+function resolveWeaponComparisonRotation(
   characterId: string,
   characters: Record<string, any>,
+  options: ComparisonTargetOptions,
 ): Promise<CharacterRotationInput | null> {
-  const characterData = characters?.[characterId] ?? {};
-  const savedRotations = characterData.rotations as CharacterRotationInput[] | undefined;
-  if (savedRotations?.length) {
-    return savedRotations[0];
-  }
+  return resolveComparisonRotation(
+    characterId,
+    characters,
+    "weapon-impact-preview",
+    "Weapon impact preview",
+    options,
+  );
+}
 
-  const chosenChar = (await getCharByName(characterId)) as Record<string, any> | null;
-  for (const group of FALLBACK_ATTACK_GROUP_PRIORITY) {
-    const list = chosenChar?.[group]?.attacks;
-    if (Array.isArray(list) && list.length) {
-      const type = group.slice(0, -"Attacks".length);
-      return {
-        id: "weapon-impact-preview",
-        name: "Weapon impact preview",
-        duration: null,
-        actions: [{ id: "preview", key: list[0].key, type, count: 1 }],
-      };
-    }
-  }
-  return null;
+function readDamage(
+  result: { damageAggregation: DamageAggregation },
+  damageType: LiveResultBarDamageType,
+): number {
+  const field = ROTATION_DAMAGE_FIELD[damageType] as keyof DamageAggregation;
+  return result.damageAggregation[field] ?? 0;
 }
 
 async function resolveCandidateWeaponConfig(
@@ -116,6 +114,7 @@ async function estimateOneCandidate(
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[],
   baselineDamage: number,
+  damageType: LiveResultBarDamageType,
 ): Promise<WeaponImpactRange> {
   const { syntheticCharacters } = await resolveCandidateWeaponConfig(characterId, characters, candidate);
   const [statOnlyResult, fullyBuffedResult] = await Promise.all([
@@ -142,8 +141,8 @@ async function estimateOneCandidate(
   ]);
   return toImpactRange(
     baselineDamage,
-    statOnlyResult.damageAggregation.avgDamage ?? 0,
-    fullyBuffedResult.damageAggregation.avgDamage ?? 0,
+    readDamage(statOnlyResult, damageType),
+    readDamage(fullyBuffedResult, damageType),
   );
 }
 
@@ -172,8 +171,10 @@ export async function estimateWeaponSwapImpact(
   candidate: WeaponSwapCandidate,
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: WeaponImpactOptions = {},
 ): Promise<WeaponImpactRange | null> {
-  const rotation = await resolveComparisonRotation(characterId, characters);
+  const damageType = options.damageType ?? "Average";
+  const rotation = await resolveWeaponComparisonRotation(characterId, characters, options);
   if (!rotation) {
     return null;
   }
@@ -192,7 +193,8 @@ export async function estimateWeaponSwapImpact(
     candidate,
     enemyConfig,
     inventoryEchoes,
-    baselineResult.damageAggregation.avgDamage ?? 0,
+    readDamage(baselineResult, damageType),
+    damageType,
   );
 }
 
@@ -209,12 +211,14 @@ export async function estimateWeaponSwapImpactBatch(
   candidates: WeaponSwapCandidate[],
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: WeaponImpactOptions = {},
 ): Promise<Map<string, WeaponImpactRange | null>> {
   const results = new Map<string, WeaponImpactRange | null>();
   if (!candidates.length) {
     return results;
   }
-  const rotation = await resolveComparisonRotation(characterId, characters);
+  const damageType = options.damageType ?? "Average";
+  const rotation = await resolveWeaponComparisonRotation(characterId, characters, options);
   if (!rotation) {
     return results;
   }
@@ -226,7 +230,7 @@ export async function estimateWeaponSwapImpactBatch(
     enemyConfig,
     inventoryEchoes,
   );
-  const baselineDamage = baselineResult.damageAggregation.avgDamage ?? 0;
+  const baselineDamage = readDamage(baselineResult, damageType);
 
   await Promise.all(
     candidates.map(async (candidate) => {
@@ -239,6 +243,7 @@ export async function estimateWeaponSwapImpactBatch(
           enemyConfig,
           inventoryEchoes,
           baselineDamage,
+          damageType,
         );
         results.set(candidate.weaponKey, range);
       } catch {

@@ -43,7 +43,7 @@
       @toggle-detail="
         isLiveResultDetailOpen = !isLiveResultDetailOpen
       "></CalculatorCommandBar>
-    <CalculatorCharacterBrowser
+    <WorkspaceCharacterBrowser
       v-if="isLiveResultBarEnabled"
       :character="character"
       ref="characterBrowserRef"
@@ -581,7 +581,7 @@ import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import CalculatorCommandBar from "./CalculatorCommandBar.vue";
-import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
+import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import CalculatorLiveResultDetail from "./CalculatorLiveResultDetail.vue";
 import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
@@ -630,7 +630,7 @@ export default defineComponent({
     Nav,
     CalculatorBreakdown,
     CalculatorCommandBar,
-    CalculatorCharacterBrowser,
+    WorkspaceCharacterBrowser,
     CalculatorManageBuilds,
     CalculatorLiveResultDetail,
     CalculatorEchoEditPanel,
