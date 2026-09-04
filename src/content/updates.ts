@@ -12,6 +12,55 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-04",
+    dateLabel: "September 4, 2026",
+    items: [
+      "v3 UI: Redesigned all of the modals, they're consistent now, provide more insights",
+      "v3 UI: Cool new feature, when you're browsing for an echo from your inventory, it tells you if it's better or worse if you swap the existing echo with it 🎉",
+    ],
+  },
+  {
+    date: "2026-09-03",
+    dateLabel: "September 3, 2026",
+    items: [
+      "Fixed Luuk's self buff, it wasn't properly buffing the MV for Ichor Deposit",
+      "Adds rotations for Denia and Jingran, and updated Qingxiao's rotation",
+      "v3 UI: Updated the settings and info pages, added link to github, Fixed weapon button",
+    ],
+  },
+  {
+    date: "2026-09-02",
+    dateLabel: "September 2, 2026",
+    items: [
+      "Updated the v3.0 UI, i moved the basic character info to be in the anchored area for the damage monitor and stats. so you can see and adjust basic stuff on any sub page. that also de-duped some stuff across the pages, especially the main page for self buffs/chains where you had the avatar 3 times ",
+      "In existing and v3.0 UI: fixed an issue where if you changed an echo and it changed the cost, it would always clear out your main stat. I changed it to where if the main stat could stay the same (e.g. ATK%), then it wouldn't clear it out. it was mostly to prevent a 1-cost echo from having elemental dmg bonus, etc.",
+      "Updated v3 UI: reworked the enemy page UI",
+    ],
+  },
+  {
+    date: "2026-09-01",
+    dateLabel: "September 1, 2026",
+    items: [
+      "Updated QX substat priorities and included basic and lib along with heavy and made flat attack slightly higher",
+      "v3 UI: Updated the optimizer and team buffs pages",
+      "v3 UI: The mode switch is on the top bar throughout the character setup so you can toggle it without having to go back to the main character page. i also added a note in the builds if it's using a specific mode. If you use the toggle switch to enable a resonance chain, it'll activate the previous ones, and highlight the chain icons too. i moved Energy regen to the top of the substat priorities list on the echoes page. i removed the unnecessary pointer cursor on the build card page",
+    ],
+  },
+  {
+    date: "2026-08-31",
+    dateLabel: "August 31, 2026",
+    items: [
+      "More progress on the re-imagined UI: finished the weapons section. it now has a list of recommended weapons (slowly filling this out) from signature, other 5* weapons and 4* weapons. it also tells you how much better/worse those recommended weapons are as a quick reference. and it does the same in the weapon browser, it says how much more or less damage you'll do with that weapon against your target damage (rotation, or single attack), and you can get a quick preview of the weapon details and diffs before you equip it",
+    ],
+  },
+  {
+    date: "2026-08-30",
+    dateLabel: "August 30, 2026",
+    items: [
+      "More progress on the re-imagined UI: Reworked the custom buffs. it buckets buffs together for easier way to find what you're looking for, you can search to find a buff, it highlights what's used, summarizes what you put in, and similar to other things, it tells you exactly the effect of the buff on your damage, and you can hide the panels and it remembers if you hid/opened a panel",
+    ],
+  },
+  {
     date: "2026-08-29",
     dateLabel: "August 29, 2026",
     items: [
