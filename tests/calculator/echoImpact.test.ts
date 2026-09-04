@@ -20,6 +20,43 @@ vi.mock("../../src/characters/characters", async (importOriginal) => {
   };
 });
 
+// Two synthetic main echoes for testing mainEcho buff staleness: one with a
+// simple +50% Glacio DMG buff (no specificCharacters restriction, so it
+// applies to any character — tested against Carlotta, who is Glacio), one
+// with none. Real main-echo buffs vary in shape (some gate on
+// `specificCharacters`, some `hasStacks`), but this covers the exact
+// mechanism the bug/fix are about — mainEcho.echo staying stale, and a
+// newly-selected echo's buff never getting its toggle forced on the way
+// `CalculatorMainEchoBuff.vue`'s mount-time watcher does for a real,
+// non-headless render.
+vi.mock("../../src/echoes/index", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../src/echoes/index")>();
+  return {
+    ...actual,
+    mainEchoesData: {
+      ...actual.mainEchoesData,
+      // modifierValue is a decimal fraction (applyMainEchoBuffEffects
+      // multiplies by 100 internally) — mirrors a real main echo's shape,
+      // e.g. Dreamless's own buff uses modifierValue: 0.5 for 50%.
+      TestBuffEcho: {
+        key: "TestBuffEcho",
+        name: "Test Buff Echo",
+        class: "Calamity",
+        details: "",
+        alwaysEnabled: true,
+        modifiers: [{ modifier: "Glacio", modifierValue: 0.5 }],
+      },
+      TestNoBuffEcho: {
+        key: "TestNoBuffEcho",
+        name: "Test No-Buff Echo",
+        class: "Calamity",
+        details: "",
+        modifiers: [],
+      },
+    },
+  };
+});
+
 const { estimateEchoSwapImpact, estimateEchoSwapImpactBatch, resolveNewlyActiveSetPassivesOverride } =
   await import("../../src/echoes/echoImpact");
 
@@ -563,5 +600,143 @@ describe("estimateEchoSwapImpact — conditional 5pc set-bonus passive", () => {
     // of that roughly quadruples the total Glacio-DMG-bonus swing — a
     // generous but real lower bound that a 2pc-only credit could not reach.
     expect(result!.pct).toBeGreaterThan(0.2);
+  });
+});
+
+describe("estimateEchoSwapImpact — main echo (slot 0) staleness", () => {
+  // Regression test for a fourth real reported bug: swapping slot 0 (the
+  // main echo) away from a buffed echo underestimated the real loss
+  // (27K estimated vs a real 41K); swapping *to* a buffed echo
+  // under-credited the gain the same way. Root cause — characterData
+  // .mainEcho.echo is a separately-stored field (like echoSetBonus), only
+  // kept in sync in the real UI by CalculatorEchoTile.vue emitting
+  // main-echo:updated for slot 0. A synthetic swap left it frozen at
+  // whatever it was before, so the candidate's calc kept evaluating the
+  // *previous* main echo's buff (or lack of one) regardless of which echo
+  // was actually swapped into slot 0.
+  const ROTATION = {
+    id: "r1",
+    name: "Test rotation",
+    duration: 10,
+    actions: [{ id: "a1", type: "basic", key: "BasicAttackStage1DMG", count: 1 }],
+  };
+
+  const BUFF_ECHO = {
+    echo: "TestBuffEcho", type: 4, echoId: "buff-echo", echoSet: "TestSet", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 30,
+  };
+  const BUFF_ECHO_OTHER_ROLL = {
+    echo: "TestBuffEcho", type: 4, echoId: "buff-echo-2", echoSet: "TestSet", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 30,
+  };
+  const NO_BUFF_ECHO = {
+    echo: "TestNoBuffEcho", type: 4, echoId: "no-buff-echo", echoSet: "TestSet", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 30,
+  };
+  const REST = [
+    { echo: "ThreeA", type: 3, echoId: "rest-3a", echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "ThreeA", type: 3, echoId: "rest-3a-2", echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "ThreeB", type: 3, echoId: "rest-3b", echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "OneA", type: 1, echoId: "rest-1a", echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+    { echo: "OneB", type: 1, echoId: "rest-1b", echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+  ];
+  const INVENTORY = [BUFF_ECHO, BUFF_ECHO_OTHER_ROLL, NO_BUFF_ECHO, ...REST];
+
+  function charactersWithMainEcho(mainEchoId: string) {
+    // A "buff-echo" baseline represents a build that's already had this
+    // main echo equipped for a while — in the real UI, alwaysEnabled: true
+    // auto-toggles isEnabled on mount (CalculatorMainEchoBuff.vue), so a
+    // realistic *current, committed* build already has this set, unlike a
+    // fresh synthetic candidate that never got that mount-time effect.
+    const isBuffEcho = mainEchoId !== "no-buff-echo";
+    return {
+      Carlotta: {
+        rotations: [ROTATION],
+        mainEcho: {
+          echo: isBuffEcho ? "TestBuffEcho" : "TestNoBuffEcho",
+          ...(isBuffEcho ? { buffs: { TestBuffEcho: { isEnabled: true } } } : {}),
+        },
+        echoes: {
+          0: { echoId: mainEchoId },
+          1: { echoId: "rest-3a" },
+          2: { echoId: "rest-3b" },
+          3: { echoId: "rest-1a" },
+          4: { echoId: "rest-1b" },
+        },
+      },
+    };
+  }
+
+  it("credits the gain when swapping to a main echo with a buff", async () => {
+    const result = await estimateEchoSwapImpact(
+      "Carlotta",
+      charactersWithMainEcho("no-buff-echo"),
+      { echoId: "buff-echo", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeGreaterThan(0);
+  });
+
+  it("credits the loss when swapping away from a main echo with a buff", async () => {
+    const result = await estimateEchoSwapImpact(
+      "Carlotta",
+      charactersWithMainEcho("buff-echo"),
+      { echoId: "no-buff-echo", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeLessThan(0);
+  });
+
+  it("agrees numerically: the gain and the loss are the same magnitude", async () => {
+    const gain = await estimateEchoSwapImpact(
+      "Carlotta",
+      charactersWithMainEcho("no-buff-echo"),
+      { echoId: "buff-echo", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    const loss = await estimateEchoSwapImpact(
+      "Carlotta",
+      charactersWithMainEcho("buff-echo"),
+      { echoId: "no-buff-echo", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(gain!.delta).toBeCloseTo(-loss!.delta, -1);
+  });
+
+  it("does not reset the buff toggle when swapping to a different instance of the same main echo", async () => {
+    const result = await estimateEchoSwapImpact(
+      "Carlotta",
+      charactersWithMainEcho("buff-echo"),
+      { echoId: "buff-echo-2", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    // Same echo type (TestBuffEcho) before and after — mainEcho.echo never
+    // changes, so this is a pure substat-only swap with an identical (~0)
+    // substat line: no reason for the buff's contribution to move at all.
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeCloseTo(0);
+  });
+
+  it("does nothing for a non-slot-0 swap even if the character has a main echo buff", async () => {
+    const characters = charactersWithMainEcho("buff-echo");
+    // rest-3a -> rest-3a-2: a different owned instance, identical substat
+    // line — isolates "does touching a non-slot-0 slot disturb the main
+    // echo buff at all" from any raw-stat swing of its own.
+    const result = await estimateEchoSwapImpact(
+      "Carlotta",
+      characters,
+      { echoId: "rest-3a-2", slotIndex: 1 },
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeCloseTo(0);
   });
 });

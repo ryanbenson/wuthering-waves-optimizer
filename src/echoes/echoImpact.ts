@@ -19,6 +19,8 @@ import {
   setBonusEffectsOne,
   setBonusEffectsTwo,
 } from "./sets";
+import { mainEchoesData } from "./index";
+import { getMainEchoBuffs } from "./mainEchoBuffs";
 
 export type EchoSetBonusSelection = {
   setBonusOnePiece?: string | null;
@@ -148,6 +150,20 @@ function readDamage(
  * (`optimizer.ts`'s `computeLoadoutFinalStats`) — unless the character has a
  * manually pinned override (`setOverride`), which the real UI also leaves
  * alone (`CalculatorEchoes.vue`'s `if (setOverride.value) return;`).
+ *
+ * `characterData.mainEcho.echo` is the same story for slot 0 specifically:
+ * a separately-stored field (only its *name*, `.echo` — `.rank` is an
+ * independent user preference, untouched by which boss occupies the slot,
+ * so it's carried over as-is) driving the main echo's own unique buff
+ * (`buildCharacterContext.ts`'s `getMainEchoBuffs`/`applyMainEchoBuffEffects`),
+ * kept in sync in the real UI by `CalculatorEchoTile.vue` emitting
+ * `main-echo:updated` whenever slot 0's echo changes
+ * (`CalculatorEchoes.vue`'s `handleMainEchoUpdated`). Reported: swapping
+ * away from a main echo with a buff estimated a 27K loss against a real
+ * 41K; swapping *to* one under-credited the gain the same way — both
+ * directions are explained by the candidate's calc still evaluating the
+ * *previous* main echo's buff (or lack of one) because nothing here ever
+ * touched it for a slot-0 swap.
  */
 function resolveCandidateEchoConfig(
   characterId: string,
@@ -174,6 +190,34 @@ function resolveCandidateEchoConfig(
         echoSetBonus,
       );
 
+  let mainEcho = characterData.mainEcho;
+  if (candidate.slotIndex === 0) {
+    const candidateEchoType = inventoryEchoes.find((e) => e?.echoId === candidate.echoId)?.echo ?? null;
+    const previousEchoType = characterData.mainEcho?.echo ?? null;
+    if (candidateEchoType !== previousEchoType) {
+      // A genuinely different boss, not just a different roll of the same
+      // one — its buff(s) were never toggled for this build (their card
+      // didn't exist to toggle), and unlike echoSetPassives above there is
+      // no "always on" free pass in the normal resolution path here either
+      // (isMainEchoBuffEnabled is a pure stored-toggle lookup; the real UI's
+      // auto-enable for alwaysEnabled buffs is a mount-time watcher in
+      // CalculatorMainEchoBuff.vue, which a headless clone never runs). Same
+      // "assume a rational player takes the credit" stance as
+      // resolveNewlyActiveSetPassivesOverride, applied to every buff the
+      // new echo has.
+      const newMainEchoDef = candidateEchoType ? (mainEchoesData as Record<string, any>)[candidateEchoType] : null;
+      const buffs = Object.fromEntries(
+        getMainEchoBuffs(newMainEchoDef).map((buff) => [
+          buff.key,
+          { isEnabled: true, stacks: buff.maxStacks ?? 0 },
+        ]),
+      );
+      mainEcho = { ...(characterData.mainEcho ?? {}), echo: candidateEchoType, buffs };
+    }
+    // Same boss, different owned instance — mainEcho.echo is unchanged, so
+    // the player's real toggle state for it is left exactly as-is.
+  }
+
   return {
     syntheticCharacters: {
       ...characters,
@@ -182,6 +226,7 @@ function resolveCandidateEchoConfig(
         echoes: nextEchoPointers,
         echoSetBonus,
         echoSetPassives,
+        mainEcho,
       },
     },
   };
