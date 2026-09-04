@@ -129,6 +129,33 @@ function readDamage(
 }
 
 /**
+ * Swap-recompute contract for `resolveCandidateEchoConfig` (and the weapon
+ * equivalent, `resolveCandidateWeaponConfig` in `weaponImpact.ts`): every
+ * field on `characters[characterId]` that `buildCharacterCalculationContext`
+ * treats as a pre-resolved, cached-by-real-UI-reactivity input — rather than
+ * deriving fresh from the equipped echoes/weapon itself — must be recomputed
+ * or overridden here for a synthetic swap clone to be accurate. As of this
+ * writing that list is exactly:
+ *
+ * - `echoSetBonus` — which 1pc/2pc/3pc/5pc bonuses apply.
+ * - `echoSetPassives` — per-passive `isEnabled`/`stacks` toggle state for any
+ *   bonus the swap newly makes available (see
+ *   `resolveNewlyActiveSetPassivesOverride` below).
+ * - `mainEcho` (`.echo`/`.buffs`, slot 0 only) — which boss and which of its
+ *   buffs are toggled on.
+ *
+ * If a future feature adds another such cached/derived field to
+ * `buildCharacterCalculationContext`'s inputs (see
+ * `docs/adr/0011-headless-character-calculation-context.md`), extend this
+ * list and `resolveCandidateEchoConfig` together — don't let a new field go
+ * unhandled here, that's exactly the bug class the fixes referenced
+ * throughout this file were closing one at a time. Prefer reusing whatever
+ * pure derivation function the real UI already uses for that field (as this
+ * file already does for `getSetBonusEffects`/`getMainEchoBuffs`) over
+ * hand-rolling a second implementation.
+ */
+
+/**
  * Applies a candidate echo to one slot on a shallow clone of `characters` —
  * never the real store record. Only the pointer (`echoId`) is written, which
  * is exactly what `resolveCharacterEchoes` reads: it looks the id up in
@@ -302,6 +329,21 @@ async function estimateOneCandidate(
  * rotation, which is what actually produced the originally-reported bug
  * (an estimated damage change several times larger than what equipping the
  * echo actually did).
+ *
+ * Known accepted limitation: even with every cached field above kept in
+ * sync, real reported deltas have run ~5-10% larger than the estimate, in
+ * one consistent direction, for builds where none of the bugs above
+ * applied. Checked and ruled out as the cause: a second calculation
+ * pipeline — `calcCharacterRotationDamage` (used here) and Calculator.vue's
+ * own live recompute both bottom out in the same pure
+ * `getCalculationContext`/`calcDamages` call chain (`attacks.ts`), so
+ * there's no live-only post-processing step this file fails to replicate.
+ * The remaining, most likely explanation is inherent to comparing against
+ * one sampled rotation/action rather than the fuller timing/stacking a real
+ * extended play session accumulates (energy/stack buildup, proc timing,
+ * etc. that a single evaluated rotation only partially captures). Treat
+ * this as a known, bounded approximation of "how much will this swap move
+ * my number," not a bug to keep chasing without a new concrete lead.
  *
  * Reuses the existing headless pipeline (ADR 0011,
  * `buildCharacterCalculationContext` / `calcCharacterRotationDamage`) — no
