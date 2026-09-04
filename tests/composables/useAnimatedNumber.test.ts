@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { nextTick, ref } from "vue";
 import { useAnimatedNumber } from "../../src/composables/useAnimatedNumber";
 
@@ -109,5 +109,70 @@ describe("useAnimatedNumber", () => {
     source.value = 1200;
     await nextTick();
     expect(delta.value).toBe(200);
+  });
+
+  describe("multi-tick settle (same action, separate reactive flushes)", () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    // Regression test for a third variant of the reported bug, found after
+    // the identity fix above: even with the *same* target/damageType
+    // throughout, one build change can legitimately settle across more than
+    // one reactive tick — an echo's own stats land on the write that swaps
+    // it in, but a *derived*, separately-stored value like echoSetBonus is
+    // recomputed by a different watcher chain reacting to that change, one
+    // tick later (see useEchoSlotAssignment.ts's doc comment). Diffing each
+    // tick against only its immediately-preceding value reports just the
+    // *last* segment. Reported: a real -45K drop (an echo swap that broke a
+    // 5pc set bonus) showed only "-17K" — the raw-stat segment alone.
+    it("sums a same-action settle into one cumulative delta, not just its last segment", async () => {
+      const source = ref<number | null>(100000);
+      const identity = ref("Rotation:r1::Average");
+      const { delta } = useAnimatedNumber(source, identity);
+
+      // Tick 1: the swapped echo's own (worse) stats land — a -17K segment.
+      source.value = 83000;
+      await nextTick();
+      expect(delta.value).toBe(-17000);
+
+      // Tick 2, moments later (same action settling): the set bonus catches
+      // up and drops out — a further -28K segment. Real total: -45K.
+      source.value = 55000;
+      await nextTick();
+      expect(delta.value).toBe(-45000);
+    });
+
+    it("keeps summing across more than two segments of the same settle", async () => {
+      const source = ref<number | null>(100000);
+      const { delta } = useAnimatedNumber(source);
+
+      source.value = 95000; // -5K
+      await nextTick();
+      source.value = 90000; // further -5K
+      await nextTick();
+      source.value = 70000; // further -20K
+      await nextTick();
+
+      expect(delta.value).toBe(-30000);
+    });
+
+    it("does not merge two genuinely separate actions into one delta", async () => {
+      vi.useFakeTimers();
+      const source = ref<number | null>(100000);
+      const { delta } = useAnimatedNumber(source);
+
+      source.value = 90000;
+      await nextTick();
+      expect(delta.value).toBe(-10000);
+
+      // Let the burst window fully elapse — a later, unrelated action should
+      // be measured on its own, not folded into the earlier one.
+      vi.advanceTimersByTime(1000);
+
+      source.value = 95000;
+      await nextTick();
+      expect(delta.value).toBe(5000);
+    });
   });
 });
