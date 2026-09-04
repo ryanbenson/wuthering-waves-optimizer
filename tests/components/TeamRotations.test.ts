@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import { render, waitFor } from "@testing-library/vue";
+import { render, waitFor, fireEvent } from "@testing-library/vue";
 import TeamRotations from "../../src/components/TeamRotations.vue";
 import { useTeamRotationsStore } from "../../src/stores/teamRotations";
 import { calcTeamRotationDamage } from "../../src/calculator/teamRotation";
+
+const ACTIVE_TEAM_ID_KEY = "teamRotationsActiveTeamId";
 
 vi.mock("../../src/calculator/teamRotation", () => ({
   calcTeamRotationDamage: vi.fn().mockResolvedValue({
@@ -98,5 +100,58 @@ describe("TeamRotations per-team stats recompute (#438)", () => {
     await waitFor(() => {
       expect(container.querySelectorAll('[data-test-team-rotations-item="Team 1"]')).toHaveLength(0);
     });
+  });
+});
+
+describe("TeamRotations active-team session memory (#507)", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    calcTeamRotationDamageMock.mockClear();
+    sessionStorage.clear();
+  });
+
+  it("remembers the selected team across a remount, e.g. after navigating away and back", async () => {
+    const store = useTeamRotationsStore();
+    const team1 = store.createTeam("Team 1");
+    store.createTeam("Team 2");
+
+    const { container, unmount } = renderTeamRotations();
+    await waitFor(() => expect(calcTeamRotationDamageMock).toHaveBeenCalledTimes(2));
+
+    await fireEvent.click(container.querySelector('[data-test-team-rotations-item="Team 1"]')!);
+    expect(sessionStorage.getItem(ACTIVE_TEAM_ID_KEY)).toBe(team1.id);
+
+    unmount();
+
+    renderTeamRotations();
+    await waitFor(() => expect(calcTeamRotationDamageMock).toHaveBeenCalledTimes(2));
+    expect(document.querySelector("[data-test-team-rotation-back]")).toBeTruthy();
+    expect(document.querySelector("[data-test-team-rotations-list]")).toBeFalsy();
+  });
+
+  it("clears the remembered team once the user explicitly returns to the team list", async () => {
+    const store = useTeamRotationsStore();
+    store.createTeam("Team 1");
+
+    const { container } = renderTeamRotations();
+    await waitFor(() => expect(calcTeamRotationDamageMock).toHaveBeenCalledTimes(1));
+
+    await fireEvent.click(container.querySelector('[data-test-team-rotations-item="Team 1"]')!);
+    expect(sessionStorage.getItem(ACTIVE_TEAM_ID_KEY)).not.toBeNull();
+
+    await fireEvent.click(container.querySelector("[data-test-team-rotation-back]")!);
+    expect(sessionStorage.getItem(ACTIVE_TEAM_ID_KEY)).toBeNull();
+    expect(container.querySelector("[data-test-team-rotations-list]")).toBeTruthy();
+  });
+
+  it("falls back to the team list when the remembered team id no longer exists", async () => {
+    sessionStorage.setItem(ACTIVE_TEAM_ID_KEY, "deleted-team-id");
+    const store = useTeamRotationsStore();
+    store.createTeam("Team 1");
+
+    const { container } = renderTeamRotations();
+    await waitFor(() => expect(calcTeamRotationDamageMock).toHaveBeenCalledTimes(1));
+
+    expect(container.querySelector("[data-test-team-rotations-list]")).toBeTruthy();
   });
 });

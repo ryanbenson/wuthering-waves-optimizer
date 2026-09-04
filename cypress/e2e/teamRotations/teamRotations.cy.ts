@@ -154,8 +154,15 @@ describe("Team Rotations", () => {
     cy.location("pathname").should("eq", "/");
     cy.get(".character__selection.Carlotta").should("exist");
 
-    // Back to Team Rotations: the main page shows the team list, not the editor
+    // Back to Team Rotations: the same team is remembered for the session
+    // (#507), so this returns to the editor rather than dropping to the list
     cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.get("[data-test-team-rotations-list]").should("not.exist");
+
+    // Explicitly backing out shows the team list again, with the built
+    // team's total damage summarized
+    cy.get("[data-test-team-rotation-back]").click();
     cy.get("[data-test-team-rotations-list]").should("be.visible");
     cy.get("[data-test-team-rotations-item]").should("exist").and("contain.text", "action");
     cy.get("[data-test-team-rotations-total-dmg]").should(($el) => {
