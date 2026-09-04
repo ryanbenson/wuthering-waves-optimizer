@@ -1,12 +1,17 @@
 import {
   calcCharacterRotationDamage,
   type CharacterRotationInput,
+  type DamageAggregation,
 } from "../calculator/characterRotation";
-import { resolveComparisonRotation } from "../calculator/rotationComparison";
+import {
+  resolveComparisonRotation,
+  type ComparisonTargetOptions,
+} from "../calculator/rotationComparison";
 import {
   resolveCharacterEchoes,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
+import { ROTATION_DAMAGE_FIELD, type LiveResultBarDamageType } from "../calculator/liveResultBar";
 import { getSetBonusEffects, getSetsFromEchoes } from "./sets";
 
 export interface EchoSwapCandidate {
@@ -23,16 +28,37 @@ export interface EchoImpactDelta {
   pct: number;
 }
 
+export interface EchoImpactOptions extends ComparisonTargetOptions {
+  /**
+   * Which damage-aggregation field to compare (Normal/Average/Crit) — should
+   * match whatever the caller currently has the Live Result Bar showing for
+   * this character (`liveResultBarDamageType`), not always "Average", or the
+   * estimate can disagree with the real number even when it picks the
+   * exact-right rotation.
+   */
+  damageType?: LiveResultBarDamageType;
+}
+
 function resolveEchoComparisonRotation(
   characterId: string,
   characters: Record<string, any>,
+  options: ComparisonTargetOptions,
 ): Promise<CharacterRotationInput | null> {
   return resolveComparisonRotation(
     characterId,
     characters,
     "echo-impact-preview",
     "Echo impact preview",
+    options,
   );
+}
+
+function readDamage(
+  result: { damageAggregation: DamageAggregation },
+  damageType: LiveResultBarDamageType,
+): number {
+  const field = ROTATION_DAMAGE_FIELD[damageType] as keyof DamageAggregation;
+  return result.damageAggregation[field] ?? 0;
 }
 
 /**
@@ -105,6 +131,7 @@ async function estimateOneCandidate(
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[],
   baselineDamage: number,
+  damageType: LiveResultBarDamageType,
 ): Promise<EchoImpactDelta> {
   const { syntheticCharacters } = resolveCandidateEchoConfig(
     characterId,
@@ -120,7 +147,7 @@ async function estimateOneCandidate(
     enemyConfig,
     inventoryEchoes,
   );
-  return toImpactDelta(baselineDamage, result.damageAggregation.avgDamage ?? 0);
+  return toImpactDelta(baselineDamage, readDamage(result, damageType));
 }
 
 /**
@@ -137,6 +164,19 @@ async function estimateOneCandidate(
  * a swap that completes or breaks a set bonus would be scored against the
  * pre-swap bonus and come out badly wrong.
  *
+ * `options.target`/`options.damageType` should mirror whatever the caller
+ * currently has the Live Result Bar showing for this character
+ * (`liveResultBarTarget`/`liveResultBarDamageType`, persisted per-character
+ * in `settingsStore.config.liveResultBarByCharacter`). Without them, this
+ * falls back to a "first saved rotation, else a representative single
+ * attack" guess (see `resolveComparisonRotation`) that can measure a
+ * completely different, non-displayed number — a rotation-sensitive stat
+ * (e.g. Crit Rate pushing some attacks over the 100% cap) can swing wildly
+ * differently on a guessed single hit than across the user's real, full
+ * rotation, which is what actually produced the originally-reported bug
+ * (an estimated damage change several times larger than what equipping the
+ * echo actually did).
+ *
  * Reuses the existing headless pipeline (ADR 0011,
  * `buildCharacterCalculationContext` / `calcCharacterRotationDamage`) — no
  * new damage math, and the store is never touched. Returns `null` when
@@ -152,8 +192,10 @@ export async function estimateEchoSwapImpact(
   candidate: EchoSwapCandidate,
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: EchoImpactOptions = {},
 ): Promise<EchoImpactDelta | null> {
-  const rotation = await resolveEchoComparisonRotation(characterId, characters);
+  const damageType = options.damageType ?? "Average";
+  const rotation = await resolveEchoComparisonRotation(characterId, characters, options);
   if (!rotation) {
     return null;
   }
@@ -172,7 +214,8 @@ export async function estimateEchoSwapImpact(
     candidate,
     enemyConfig,
     inventoryEchoes,
-    baselineResult.damageAggregation.avgDamage ?? 0,
+    readDamage(baselineResult, damageType),
+    damageType,
   );
 }
 
@@ -193,12 +236,14 @@ export async function estimateEchoSwapImpactBatch(
   candidates: EchoSwapCandidate[],
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: EchoImpactOptions = {},
 ): Promise<Map<string, EchoImpactDelta | null>> {
   const results = new Map<string, EchoImpactDelta | null>();
   if (!candidates.length) {
     return results;
   }
-  const rotation = await resolveEchoComparisonRotation(characterId, characters);
+  const damageType = options.damageType ?? "Average";
+  const rotation = await resolveEchoComparisonRotation(characterId, characters, options);
   if (!rotation) {
     return results;
   }
@@ -210,7 +255,7 @@ export async function estimateEchoSwapImpactBatch(
     enemyConfig,
     inventoryEchoes,
   );
-  const baselineDamage = baselineResult.damageAggregation.avgDamage ?? 0;
+  const baselineDamage = readDamage(baselineResult, damageType);
 
   await Promise.all(
     candidates.map(async (candidate) => {
@@ -223,6 +268,7 @@ export async function estimateEchoSwapImpactBatch(
           enemyConfig,
           inventoryEchoes,
           baselineDamage,
+          damageType,
         );
         results.set(candidate.echoId, delta);
       } catch {

@@ -381,6 +381,24 @@ const totalPages = computed(() =>
   Math.max(1, Math.ceil(echoesList.value.length / perPage)),
 );
 
+/**
+ * The exact rotation/attack + damage-type mode the Live Result Bar is
+ * currently showing for this character (persisted per-character in
+ * settingsStore.config.liveResultBarByCharacter — see Calculator.vue).
+ * Passed through so the impact estimate measures the same number the user
+ * is actually watching, instead of guessing "first saved rotation", which
+ * can silently be a completely different (and much more/less
+ * stat-sensitive) rotation — the root cause of a reported case where the
+ * estimate overstated a real damage change by several times.
+ */
+const liveResultBarPreference = computed(() => {
+  const saved = settingsStore.config?.liveResultBarByCharacter?.[props.character];
+  return {
+    target: saved?.target ?? null,
+    damageType: saved?.damageType ?? "Average",
+  };
+});
+
 const enemyConfig = computed(() => {
   const data = characters.value[props.character] ?? {};
   return {
@@ -419,6 +437,7 @@ async function loadImpactsFor(items: any[]) {
       candidates,
       enemyConfig.value,
       echoes.value ?? [],
+      liveResultBarPreference.value,
     );
     if (token !== impactRequestToken) return;
     const next = { ...impactByEchoId.value };

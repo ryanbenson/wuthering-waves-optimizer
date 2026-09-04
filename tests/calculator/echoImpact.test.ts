@@ -154,6 +154,131 @@ describe("estimateEchoSwapImpact", () => {
   });
 });
 
+describe("estimateEchoSwapImpact — comparison target", () => {
+  // Regression test for a second real reported bug: even after the
+  // set-bonus fix, an estimate for a same-set/same-main-echo substat-only
+  // swap still disagreed sharply with the real in-game damage change. Root
+  // cause — resolveComparisonRotation always used the character's *first*
+  // saved rotation, but the number the user was actually watching (the
+  // Live Result Bar) can be pinned to a *different* saved rotation or a
+  // single attack, persisted separately in
+  // settingsStore.config.liveResultBarByCharacter. A stat like Crit Rate
+  // can swing very differently on one rotation than another (e.g. pushing
+  // some attacks over the 100% crit cap on one but not the other), so
+  // measuring the wrong rotation produces a plausible-looking but wrong
+  // number. These tests prove an explicit `target` is honored over the
+  // "first saved rotation" guess.
+  const ROTATION_R1 = {
+    id: "r1",
+    name: "First rotation",
+    duration: 10,
+    actions: [{ id: "a1", type: "basic", key: "MoonringBasicAttack1DMG", count: 1 }],
+  };
+  const ROTATION_R2 = {
+    id: "r2",
+    name: "Second rotation",
+    duration: 10,
+    actions: [{ id: "a1", type: "skill", key: "PulseofOriginsDMG", count: 1 }],
+  };
+
+  function charactersWithTwoRotations() {
+    return {
+      Iuno: {
+        rotations: [ROTATION_R1, ROTATION_R2],
+        echoes: {
+          0: { echoId: "weak4" },
+          1: { echoId: "t3a" },
+          2: { echoId: "t3b" },
+          3: { echoId: "o1a" },
+          4: { echoId: "o1b" },
+        },
+      },
+    };
+  }
+
+  it("defaults to the first saved rotation when no target is given", async () => {
+    const withoutTarget = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    const explicitlyR1 = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Rotation:r1" },
+    );
+    expect(withoutTarget!.baselineDamage).toBeCloseTo(explicitlyR1!.baselineDamage);
+  });
+
+  it("uses the explicit target's rotation instead of the first saved one", async () => {
+    const r1Result = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Rotation:r1" },
+    );
+    const r2Result = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Rotation:r2" },
+    );
+    // Different attacks (basic vs skill) — different baseline damage proves
+    // the target actually selected a different rotation, not just ignored.
+    expect(r1Result!.baselineDamage).not.toBeCloseTo(r2Result!.baselineDamage, -1);
+  });
+
+  it("uses an explicit single-attack target instead of a rotation", async () => {
+    const attackResult = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Attack:skillAttacks|PulseofOriginsDMG" },
+    );
+    const rotationR2Result = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Rotation:r2" },
+    );
+    // r2 is a single-action rotation wrapping the same attack, so a direct
+    // Attack: target on that same attack should agree with it.
+    expect(attackResult!.baselineDamage).toBeCloseTo(rotationR2Result!.baselineDamage);
+  });
+
+  it("falls through to the default when the target is stale (deleted rotation)", async () => {
+    const result = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+      { target: "Rotation:no-such-id" },
+    );
+    const defaultResult = await estimateEchoSwapImpact(
+      "Iuno",
+      charactersWithTwoRotations(),
+      { echoId: "strong4", slotIndex: 0 },
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(result!.baselineDamage).toBeCloseTo(defaultResult!.baselineDamage);
+  });
+});
+
 describe("estimateEchoSwapImpact — echo-set-bonus recomputation", () => {
   // Regression test for a real reported bug: swapping in a candidate that
   // *completes* a 2pc set bonus was scored using the pre-swap (no-bonus)

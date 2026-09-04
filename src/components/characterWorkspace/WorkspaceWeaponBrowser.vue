@@ -149,6 +149,7 @@ import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../../stores/character";
 import { useInventoryStore } from "../../stores/inventory";
+import { useSettingsStore } from "../../stores/settings";
 import {
   estimateWeaponSwapImpactBatch,
   type WeaponImpactRange,
@@ -188,6 +189,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
+const settingsStore = useSettingsStore();
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const search = ref("");
@@ -307,6 +309,21 @@ const enemyConfig = computed(() => {
 });
 
 /**
+ * The exact rotation/attack + damage-type mode the Live Result Bar is
+ * currently showing for this character — see the matching computed in
+ * WorkspaceEchoesBrowser.vue for why this matters (measuring "first saved
+ * rotation" instead of what's actually displayed can produce a badly wrong
+ * estimate for a rotation-sensitive stat).
+ */
+const liveResultBarPreference = computed(() => {
+  const saved = settingsStore.config?.liveResultBarByCharacter?.[props.character];
+  return {
+    target: saved?.target ?? null,
+    damageType: saved?.damageType ?? "Average",
+  };
+});
+
+/**
  * Computed once when the modal opens (not reactively per keystroke) — a
  * full weapon-type list can be 20-40+ entries, each needing its own
  * headless context rebuild.
@@ -324,6 +341,7 @@ async function loadImpacts() {
       candidates,
       enemyConfig.value,
       inventoryEchoes.value,
+      liveResultBarPreference.value,
     );
     const next: Record<string, WeaponImpactRange | null> = {};
     for (const [key, range] of results.entries()) {
