@@ -184,8 +184,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { mainEchoesData, getEchoData, getMainEchoBuffs, mergeMainEchoBuffStats } from "../echoes/index.ts";
-import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
-import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
+import { getSetBonusEffects } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoTile from "./CalculatorEchoTile.vue";
 import CalculatorEchoInsightsPanel from "./CalculatorEchoInsightsPanel.vue";
@@ -384,75 +383,10 @@ async function handleEchoSetChosen({ set, index }: { set: string | null; index: 
 }
 
 async function updateEchoSets() {
-  const counts = echoSetsChosen.value
-    .filter((v) => v !== null)
-    .reduce((acc: Record<string, number>, val) => {
-      const key = val as string;
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {});
-
-  const buildBonusSet = (source: string[], targetCountLabel: string) =>
-    new Set(
-      source
-        .map((bonus) => {
-          const match = bonus.match(new RegExp(`^(.+) ${targetCountLabel}$`));
-          return match
-            ? Object.keys(echoSetLabelMap).find((key) => getEchoSetLabelByType(key) === match[1])
-            : null;
-        })
-        .filter(Boolean),
-    );
-
-  const has1SetBonus = buildBonusSet(oneSetBonuses, "1 Set");
-  const has2SetBonus = buildBonusSet(twoSetBonuses, "2 Set");
-  const has3SetBonus = buildBonusSet(threeSetBonuses, "3 Set");
-  const has5SetBonus = buildBonusSet(fiveSetBonuses, "5 Set");
-
-  const availableBonuses: Array<{ bonus: string; priority: number; setType: string }> = [];
-  const oneSetOptions: Array<{ bonus: string; setType: string }> = [];
-  for (const [setType, count] of Object.entries(counts)) {
-    const setLabel = getEchoSetLabelByType(setType);
-    if (count >= 1 && has1SetBonus.has(setType)) oneSetOptions.push({ bonus: `${setLabel} 1 Set`, setType });
-    if (count >= 5 && has5SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
-    if (count >= 3 && has3SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
-    if (count >= 2 && has2SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
-  }
-  oneSetOptions.sort((a, b) => a.setType.localeCompare(b.setType));
-
-  const twoSetOptions = availableBonuses.filter((b) => b.bonus.includes("2 Set"));
-  const higherTierBonuses = availableBonuses.filter((b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"));
-  twoSetOptions.sort((a, b) => a.setType.localeCompare(b.setType));
-  higherTierBonuses.sort((a, b) => (a.priority !== b.priority ? b.priority - a.priority : a.setType.localeCompare(b.setType)));
-
-  const setBonusOnePieceVal: string | null =
-    oneSetOptions.length > 0 ? oneSetOptions[0].bonus : null;
-  let setBonusOneVal: string | null = twoSetOptions.length > 0 ? twoSetOptions[0].bonus : null;
-  let setBonusTwoVal: string | null = null;
-  const usedSetTypes = setBonusOneVal ? new Set([twoSetOptions[0].setType]) : new Set<string>();
-
-  for (const { bonus, setType } of higherTierBonuses) {
-    if (!usedSetTypes.has(setType) || setBonusOneVal?.includes(getEchoSetLabelByType(setType))) {
-      setBonusTwoVal = bonus;
-      break;
-    }
-  }
-  if (!setBonusTwoVal) {
-    for (const { bonus, setType } of twoSetOptions.slice(1)) {
-      if (!usedSetTypes.has(setType)) {
-        setBonusTwoVal = bonus;
-        break;
-      }
-    }
-  }
-
   if (setOverride.value) return;
+  const { setBonusOnePiece, setBonusOne, setBonusTwo } = getSetBonusEffects(echoSetsChosen.value);
   await characterStore.setCharacterData(props.character, {
-    echoSetBonus: {
-      setBonusOnePiece: setBonusOnePieceVal,
-      setBonusOne: setBonusOneVal,
-      setBonusTwo: setBonusTwoVal,
-    },
+    echoSetBonus: { setBonusOnePiece, setBonusOne, setBonusTwo },
   });
 }
 

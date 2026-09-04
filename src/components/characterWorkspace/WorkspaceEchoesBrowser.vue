@@ -452,14 +452,27 @@ async function loadImpactsFor(items: any[]) {
   }
 }
 
-// Browsing normally: keep the visible page's badges filled in.
+// Browsing normally: keep the visible page's badges filled in. Always runs,
+// even while sorted by impact — that sort's own widen-to-full-list call
+// below already covers the current page too, and loadImpactsFor is a no-op
+// for anything already cached, so this never duplicates real work; skipping
+// it here (as an earlier version did) left the visible page's badges
+// missing whenever the *filtered set* changed without sortBy itself
+// changing — e.g. switching the echo-set filter while already sorted by
+// impact never re-triggered the sortBy watcher below, since sortBy's own
+// value hadn't moved.
 watch(paginatedEchoesList, (items) => {
-  if (sortBy.value === "impact") return;
   void loadImpactsFor(items);
 });
 
-// Sorting by impact needs a number for every row, not just the visible page.
-watch(sortBy, (mode) => {
+// Sorting by impact needs a number for every row, not just the visible
+// page, to sort correctly. Re-widen to the full filtered list both when the
+// user switches into impact sort *and* whenever the filtered set itself
+// changes while already sorted by impact — a filter change surfaces echoes
+// nothing has computed a delta for yet, and without this, watching sortBy
+// alone left them permanently uncomputed (and mis-sorted) until the user
+// left and re-entered impact sort mode.
+watch([sortBy, echoesFiltered], ([mode]) => {
   if (mode !== "impact") return;
   void loadImpactsFor(echoesFiltered.value);
 });

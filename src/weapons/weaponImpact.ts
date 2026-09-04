@@ -61,6 +61,18 @@ function readDamage(
   return result.damageAggregation[field] ?? 0;
 }
 
+/**
+ * Unlike `resolveCandidateEchoConfig` in `src/echoes/echoImpact.ts`, this
+ * needs no cached-field recompute list: `buildCharacterCalculationContext`
+ * derives weapon passive strength live from `weaponPassiveMode` on every
+ * call rather than reading it from a stored, echo-swap-style pointer field on
+ * `characters[characterId]` — which is exactly why weapon impact stays a
+ * `statOnly`/`fullyBuffed` bracket instead of echo's single exact delta (see
+ * the module doc comment below). If a future change gives weapons their own
+ * stored/cached derived field the same way echoes have `echoSetBonus`, add
+ * an equivalent contract comment here and keep both lists honest — see
+ * `docs/adr/0011-headless-character-calculation-context.md`.
+ */
 async function resolveCandidateWeaponConfig(
   characterId: string,
   characters: Record<string, any>,

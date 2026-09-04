@@ -63,6 +63,36 @@ function visitWithSeededInventory() {
   });
 }
 
+// Same shape as seedEcho, but on a different real set — MidnightVeil rather
+// than FreezingFrost — for the impact-sort/set-filter regression below.
+function seedOtherSetEcho(echoId: string, atk: number) {
+  return { ...seedEcho(echoId, atk), echoSet: "MidnightVeil" };
+}
+
+function visitWithTwoSetInventory() {
+  cy.visit("/", {
+    onBeforeLoad(win) {
+      win.localStorage.setItem(
+        "settings",
+        JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+      );
+      win.localStorage.setItem(
+        "inventory",
+        JSON.stringify({
+          echoes: [
+            seedEcho("chooser-weak", 30),
+            seedEcho("chooser-strong", 120),
+            seedOtherSetEcho("chooser-other-set", 80),
+          ],
+          equipped: {},
+          echoPresets: [],
+          equippedPresets: {},
+        }),
+      );
+    },
+  });
+}
+
 describe("v3 chooser modals (liveResultBar flag)", () => {
   it("picks a character through the shared shell, using the preserved selectors", () => {
     visitWithFlagEnabled();
@@ -139,6 +169,62 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
       force: true,
     });
     cy.get("[data-test-workspace-echoes-browser-list]").should("not.exist");
+  });
+
+  // Regression test for a reported bug. Reproduction needs a *reopen* in
+  // the middle — opening the browse modal always wipes impactByEchoId (a
+  // different, correct fix from earlier: a stale cache from the modal's
+  // last session must never carry over), then repopulates only the
+  // *current page*, not the full filtered list. So:
+  //   1. Sort by impact, filter to set B, equip one of its echoes (closes
+  //      the modal). At this point the full unfiltered list had already
+  //      been widened once (the sortBy->"impact" transition), so set A's
+  //      echoes were incidentally already cached too — not yet a visible
+  //      bug.
+  //   2. Reopen the browser for the same slot. impactByEchoId is wiped and
+  //      only the current page (still filtered to set B) is recomputed —
+  //      set A's cached deltas from step 1 are gone.
+  //   3. Switch the filter to set A *without* touching sortBy or closing
+  //      the modal. Nothing re-triggers a computation for set A's now-
+  //      visible echoes: the page-level watcher bailed out whenever sortBy
+  //      was "impact", and the sortBy watcher only re-runs when sortBy's
+  //      own value changes, not when the filtered set does. Their badges
+  //      never appear. Toggling the sort dropdown to "Inventory order" and
+  //      back worked around it, which was the tell this was a watcher
+  //      wiring bug, not a calculation bug.
+  it("keeps showing impact badges after switching set filters while sorted by impact", () => {
+    visitWithTwoSetInventory();
+    cy.selectWorkspaceCharacter("Carlotta");
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
+
+    cy.get("[data-test-workspace-echoes-browser-sort]").select("impact", { force: true });
+    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
+    cy.get("[data-test-workspace-echoes-browser-impact='chooser-other-set']", {
+      timeout: 15000,
+    }).should("exist");
+    cy.get("[data-test-workspace-echoes-browser-use='chooser-other-set']").click({
+      force: true,
+    });
+    cy.get("[data-test-workspace-echoes-browser-list]").should("not.exist");
+
+    // Reopen for the same slot — this wipes the cache built up above.
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
+
+    // Filter changes to FreezingFrost without ever touching sortBy (still
+    // "impact") or closing the modal — both of its echoes must still get
+    // badges.
+    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
+    cy.get(".echo-filters__sets button.FreezingFrost").click({ force: true });
+    cy.get("[data-test-workspace-echoes-browser-impact='chooser-strong']", {
+      timeout: 15000,
+    }).should("exist");
+    cy.get("[data-test-workspace-echoes-browser-impact='chooser-weak']").should("exist");
   });
 
   it("shows resistance chips in the enemy browser and selects an enemy", () => {
