@@ -313,7 +313,16 @@ const heroLabel = computed(() => resolved.value?.label ?? "No target selected");
 const heroValueSource = computed(() =>
   props.isLoading ? null : (resolved.value?.value ?? null),
 );
-const { displayValue, delta } = useAnimatedNumber(heroValueSource);
+// What heroValueSource currently measures — target + damage-type mode
+// together fully determine that. Calculator.vue can silently reselect
+// `target` (e.g. the previously-pinned attack/rotation transiently fails to
+// resolve mid-recompute and falls back to a different one), and the user can
+// toggle damage type directly; either swaps the underlying quantity without
+// it being a real "the build got better/worse" event. Passed to
+// useAnimatedNumber so it snaps to the new number instead of flashing a
+// delta between two unrelated quantities.
+const heroValueIdentity = computed(() => `${props.target ?? ""}::${props.damageType}`);
+const { displayValue, delta } = useAnimatedNumber(heroValueSource, heroValueIdentity);
 const heroDisplay = computed(() =>
   displayValue.value === null ? "–" : displayInt(displayValue.value),
 );
