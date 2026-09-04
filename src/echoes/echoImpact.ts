@@ -3,7 +3,11 @@ import {
   type CharacterRotationInput,
 } from "../calculator/characterRotation";
 import { resolveComparisonRotation } from "../calculator/rotationComparison";
-import type { TeamEnemyConfig } from "../calculator/buildCharacterContext";
+import {
+  resolveCharacterEchoes,
+  type TeamEnemyConfig,
+} from "../calculator/buildCharacterContext";
+import { getSetBonusEffects, getSetsFromEchoes } from "./sets";
 
 export interface EchoSwapCandidate {
   /** An inventory echo's `echoId` — must already exist in `inventoryEchoes`. */
@@ -39,22 +43,45 @@ function resolveEchoComparisonRotation(
  * fields need copying here (and copying them would risk going stale against
  * the inventory, the same trap the character-record placeholder fields
  * already fell into).
+ *
+ * `echoSetBonus` — which 1pc/2pc/3pc/5pc bonuses actually apply — is a
+ * separate stored field, not something `buildCharacterCalculationContext`
+ * derives from the 5 slots itself; in the real app it's kept in sync by
+ * `CalculatorEchoes.vue`'s `updateEchoSets()` reacting to each slot's set
+ * changing. A synthetic swap has no such reactivity, so left alone this
+ * field would stay frozen at its pre-swap value — invisible to a swap that
+ * completes, breaks, or shifts a set bonus, which is exactly the kind of
+ * swap whose damage impact is most worth estimating correctly. Recompute it
+ * here with `getSetBonusEffects`/`getSetsFromEchoes`, the same pure
+ * derivation the Optimizer already uses to score a candidate loadout
+ * (`optimizer.ts`'s `computeLoadoutFinalStats`) — unless the character has a
+ * manually pinned override (`setOverride`), which the real UI also leaves
+ * alone (`CalculatorEchoes.vue`'s `if (setOverride.value) return;`).
  */
 function resolveCandidateEchoConfig(
   characterId: string,
   characters: Record<string, any>,
   candidate: EchoSwapCandidate,
+  inventoryEchoes: any[],
 ): { syntheticCharacters: Record<string, any> } {
   const characterData = characters?.[characterId] ?? {};
+  const nextEchoPointers = {
+    ...(characterData.echoes ?? {}),
+    [candidate.slotIndex]: { echoId: candidate.echoId },
+  };
+  const echoSetBonus = characterData.setOverride
+    ? characterData.echoSetBonus
+    : getSetBonusEffects(
+        getSetsFromEchoes(resolveCharacterEchoes(nextEchoPointers, inventoryEchoes)),
+      );
+
   return {
     syntheticCharacters: {
       ...characters,
       [characterId]: {
         ...characterData,
-        echoes: {
-          ...(characterData.echoes ?? {}),
-          [candidate.slotIndex]: { echoId: candidate.echoId },
-        },
+        echoes: nextEchoPointers,
+        echoSetBonus,
       },
     },
   };
@@ -79,7 +106,12 @@ async function estimateOneCandidate(
   inventoryEchoes: any[],
   baselineDamage: number,
 ): Promise<EchoImpactDelta> {
-  const { syntheticCharacters } = resolveCandidateEchoConfig(characterId, characters, candidate);
+  const { syntheticCharacters } = resolveCandidateEchoConfig(
+    characterId,
+    characters,
+    candidate,
+    inventoryEchoes,
+  );
   const result = await calcCharacterRotationDamage(
     rotation,
     null,
@@ -100,8 +132,10 @@ async function estimateOneCandidate(
  * may not be active in play (hence `weaponPassiveMode`), but an echo has no
  * equivalent on/off axis — set bonuses and main-echo buffs resolve
  * unconditionally from whatever is equipped, so one calculation gives the
- * real answer. Swapping across sets is handled for free by that same
- * resolution: the candidate's set is simply what the pipeline sees.
+ * real answer. Swapping across sets is handled by recomputing which set
+ * bonuses apply post-swap (see `resolveCandidateEchoConfig`) — without that,
+ * a swap that completes or breaks a set bonus would be scored against the
+ * pre-swap bonus and come out badly wrong.
  *
  * Reuses the existing headless pipeline (ADR 0011,
  * `buildCharacterCalculationContext` / `calcCharacterRotationDamage`) — no

@@ -263,8 +263,8 @@
                 class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
                 :style="{ backgroundImage: `url(${echoesToChoose.image})` }"></div>
               <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
-              <h3 class="text-sm flex items-center gap-1.5">
-                <span>{{ echoesToChoose.class }}</span>
+              <h3 class="flex items-center gap-1.5">
+                <span class="badge badge-sm badge-ghost">{{ echoesToChoose.class }}</span>
                 <span class="badge badge-sm font-mono">
                   Cost {{ getCostByClass(echoesToChoose.class) }}
                 </span>

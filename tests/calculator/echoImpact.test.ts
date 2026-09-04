@@ -154,6 +154,115 @@ describe("estimateEchoSwapImpact", () => {
   });
 });
 
+describe("estimateEchoSwapImpact — echo-set-bonus recomputation", () => {
+  // Regression test for a real reported bug: swapping in a candidate that
+  // *completes* a 2pc set bonus was scored using the pre-swap (no-bonus)
+  // echoSetBonus, making the estimate far more negative than reality. Danjin
+  // is Havoc, and Midnight Veil's 2pc bonus is an alwaysEnabled +10% Havoc
+  // DMG (src/echoes/sets.ts) — a bonus this fixture can actually observe.
+  const DANJIN_ROTATION = {
+    id: "r1",
+    name: "Test rotation",
+    duration: 10,
+    actions: [{ id: "a1", type: "basic", key: "Part1DMG", count: 1 }],
+  };
+
+  const OFF_SET_MAIN = {
+    echo: "Main4", type: 4, echoId: "off-set", echoSet: "OtherSet", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 50,
+  };
+  // Same raw stat line as OFF_SET_MAIN — isolates the set-bonus completion
+  // as the only variable between the two candidates.
+  const COMPLETES_SET_MAIN = {
+    echo: "Main4", type: 4, echoId: "completes-set", echoSet: "MidnightVeil", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 50,
+  };
+  const OTHER_MIDNIGHT_VEIL_ECHO = {
+    echo: "ThreeA", type: 3, echoId: "existing-mv", echoSet: "MidnightVeil", rank: 5, stat: "ATK",
+    echoSubStatsType1: "ATK", echoSubStatsValue1: 30,
+  };
+  const REST = [
+    { echo: "ThreeB", type: 3, echoId: "rest-3b", echoSet: "OtherSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    { echo: "OneA", type: 1, echoId: "rest-1a", echoSet: "OtherSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+    { echo: "OneB", type: 1, echoId: "rest-1b", echoSet: "OtherSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 10 },
+  ];
+  const DANJIN_INVENTORY = [OFF_SET_MAIN, COMPLETES_SET_MAIN, OTHER_MIDNIGHT_VEIL_ECHO, ...REST];
+
+  // Slot 0 starts off-set; slot 1 already carries the character's only other
+  // Midnight Veil echo, so swapping slot 0 to a Midnight Veil echo takes the
+  // build from 1 (no bonus) to 2 (2pc bonus active).
+  function danjinWearingOffSetMain() {
+    return {
+      Danjin: {
+        rotations: [DANJIN_ROTATION],
+        echoes: {
+          0: { echoId: "off-set" },
+          1: { echoId: "existing-mv" },
+          2: { echoId: "rest-3b" },
+          3: { echoId: "rest-1a" },
+          4: { echoId: "rest-1b" },
+        },
+      },
+    };
+  }
+
+  it("credits a swap that completes a 2pc set bonus, not just the raw substat swing", async () => {
+    const characters = danjinWearingOffSetMain();
+
+    // Same-set substat-only swap: identical ATK line, both off-set, so this
+    // isolates "how much does the raw substat swing alone move the needle".
+    const substatOnlyResult = await estimateEchoSwapImpact(
+      "Danjin",
+      characters,
+      { echoId: "off-set", slotIndex: 0 },
+      enemyConfig,
+      DANJIN_INVENTORY,
+    );
+    expect(substatOnlyResult!.delta).toBeCloseTo(0);
+
+    // The real candidate: same raw ATK substat, but completes the 2pc bonus.
+    const setCompletingResult = await estimateEchoSwapImpact(
+      "Danjin",
+      characters,
+      { echoId: "completes-set", slotIndex: 0 },
+      enemyConfig,
+      DANJIN_INVENTORY,
+    );
+
+    expect(setCompletingResult).not.toBeNull();
+    // The whole point: completing the set bonus must show up as a *gain*,
+    // not get scored against the stale pre-swap (no-bonus) baseline as a
+    // wash or a loss.
+    expect(setCompletingResult!.delta).toBeGreaterThan(0);
+    // +10% Havoc DMG, alwaysEnabled — should be close to a flat 10% swing
+    // on top of the (~zero) substat-only baseline.
+    expect(setCompletingResult!.pct).toBeCloseTo(0.1, 1);
+  });
+
+  it("leaves echoSetBonus alone when the character has a manual override pinned", async () => {
+    const characters = danjinWearingOffSetMain();
+    (characters.Danjin as any).setOverride = true;
+    (characters.Danjin as any).echoSetBonus = {
+      setBonusOnePiece: null,
+      setBonusOne: null,
+      setBonusTwo: null,
+    };
+
+    const result = await estimateEchoSwapImpact(
+      "Danjin",
+      characters,
+      { echoId: "completes-set", slotIndex: 0 },
+      enemyConfig,
+      DANJIN_INVENTORY,
+    );
+
+    // With the override pinned to "no bonus", completing the 2pc set on
+    // paper must NOT grant the 10% Havoc DMG — the override wins.
+    expect(result).not.toBeNull();
+    expect(result!.delta).toBeCloseTo(0);
+  });
+});
+
 describe("estimateEchoSwapImpactBatch", () => {
   it("returns an empty map when there are no candidates", async () => {
     const result = await estimateEchoSwapImpactBatch("Iuno", { Iuno: {} }, [], enemyConfig, INVENTORY);
