@@ -466,6 +466,12 @@ watch(sortBy, (mode) => {
 
 // A different slot means every cached delta was measured against the wrong
 // baseline — drop them rather than showing numbers for the previous slot.
+// (Cache-clearing on *open* itself lives in triggerOpenModal below, since
+// this watcher alone only fires when echoIndex's value actually changes —
+// re-opening the modal on the *same* slot after some other change to the
+// build elsewhere left every cached delta silently stale, still measured
+// against whatever baseline was current the last time this slot's modal
+// was opened.)
 watch(echoIndex, () => {
   impactByEchoId.value = {};
   impactRequestToken += 1;
@@ -553,6 +559,13 @@ function getCharImg(character: string) {
 }
 
 async function triggerOpenModal(index: number) {
+  // Always start from a clean slate: the character's build (this slot's own
+  // echo, another slot's set bonus, a buff toggle — anything) can have
+  // changed since this modal was last open, even for the exact same slot
+  // index, so any impact number computed during a previous session is
+  // measured against a baseline that's no longer current.
+  impactByEchoId.value = {};
+  impactRequestToken += 1;
   echoIndex.value = index;
   await modalRef.value?.triggerOpenModal();
   void loadImpactsFor(paginatedEchoesList.value);
