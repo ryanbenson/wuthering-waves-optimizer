@@ -258,7 +258,7 @@
   </Teleport>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
@@ -282,11 +282,19 @@ const props = defineProps({
   },
 });
 
+// Every consumer that fills these (Calculator.vue, Inventory.vue, ...) uses
+// `<template #mobile>`/`<template #default>` — without this, vue-tsc has no
+// way to know those slot names are valid on `<Nav>` and rejects them.
+defineSlots<{
+  default?(): any;
+  mobile?(): any;
+}>();
+
 const characterStore = useCharacterStore();
 const { activeCharacter } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
 
-const characterBrowserRef = ref(null);
+const characterBrowserRef = ref<InstanceType<typeof CalculatorCharacterBrowser> | null>(null);
 
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
@@ -314,14 +322,14 @@ const characterRarity = computed(() => {
 // is on (click is intentionally inert), or the classic character avatar
 // when it's off — clicking the avatar still opens the character chooser,
 // since the classic UI has no other icon-click affordance for it.
-function handleCalculatorNavClick(event) {
+function handleCalculatorNavClick(event: MouseEvent) {
   if (props.curPage === "home" && !showTuningIcon.value) {
     event.preventDefault();
     characterBrowserRef.value?.triggerOpenModal();
   }
 }
 
-function handleChosenCharacter(characterKey) {
+function handleChosenCharacter(characterKey: string) {
   characterStore.setActiveCharacter(characterKey);
 }
 
