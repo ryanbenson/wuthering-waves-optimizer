@@ -156,7 +156,7 @@
                 <AppRichSelect
                   class="flex-1 min-w-0"
                   :model-value="slot.type.value === 'none' ? null : slot.type.value"
-                  :options="substatOptions"
+                  :options="getSubstatOptions(i)"
                   allow-empty
                   :disabled="isEchoLocked"
                   empty-label="Choose substat"
@@ -450,6 +450,24 @@ const substatOptions = subStats.map((key) => ({
   label: getReadableSubStatLabel(key),
   group: FAMILY_LABELS[getSubstatFamily(key)],
 }));
+
+// Each substat can only appear in one slot on a given echo — disable an
+// option in slot `i`'s list once it's already chosen in a different slot,
+// so picking a duplicate isn't possible from the dropdown.
+function getSubstatOptions(i: number) {
+  const usedElsewhere = new Set(
+    slots
+      .filter((_, j) => j !== i)
+      .map((s) => s.type.value)
+      .filter((t) => t && t !== "none"),
+  );
+  if (!usedElsewhere.size) return substatOptions;
+  return substatOptions.map((option) =>
+    usedElsewhere.has(option.value as string)
+      ? { ...option, disabled: true }
+      : option,
+  );
+}
 
 function isSlotFilled(i: number) {
   const t = slots[i].type.value;
