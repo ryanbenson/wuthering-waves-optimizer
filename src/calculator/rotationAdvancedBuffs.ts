@@ -98,6 +98,19 @@ export function mainEchoBuffOverrideDiffersFromCharacter(
  * each of them. Simpler than a new data model, and the existing per-action
  * advancedConfig pipeline needs no changes to support it.
  */
+function applyAdvancedConfigPatch(
+  existing: RotationAdvancedConfig,
+  category: AdvancedConfigCategory,
+  key: string | null,
+  override: RotationBuffOverride,
+): RotationAdvancedConfig {
+  if (category === "mainEchoBuff") {
+    return { ...existing, mainEchoBuff: { ...override } };
+  }
+  const nextCategory = { ...(existing[category] ?? {}), [key as string]: { ...override } };
+  return { ...existing, [category]: nextCategory };
+}
+
 export function applyBulkAdvancedConfigOverride<T extends { id: string; advancedConfig?: RotationAdvancedConfig }>(
   actions: T[],
   actionIds: string[],
@@ -106,15 +119,58 @@ export function applyBulkAdvancedConfigOverride<T extends { id: string; advanced
   override: RotationBuffOverride,
 ): T[] {
   const idSet = new Set(actionIds);
-  return actions.map((action) => {
-    if (!idSet.has(action.id)) return action;
-    const advancedConfig = action.advancedConfig ?? {};
-    if (category === "mainEchoBuff") {
-      return { ...action, advancedConfig: { ...advancedConfig, mainEchoBuff: { ...override } } };
+  return actions.map((action) =>
+    idSet.has(action.id)
+      ? { ...action, advancedConfig: applyAdvancedConfigPatch(action.advancedConfig ?? {}, category, key, override) }
+      : action,
+  );
+}
+
+/**
+ * Adds/updates exactly one field (a category+key, or the lone mainEchoBuff
+ * value) inside a REAL persisted `advancedConfig` — the write-path
+ * counterpart to `mergeAdvancedConfigForDisplay` below. Callers must pass the
+ * action's actual `advancedConfig` (never a merged/displayed value) as
+ * `existing`, so every other key that wasn't already explicitly persisted
+ * stays absent and keeps resolving live at both calc time
+ * (`applyAdvancedOverrides`) and display time (`mergeAdvancedConfigForDisplay`).
+ */
+export function applyAdvancedConfigOverride(
+  existing: RotationAdvancedConfig | undefined,
+  category: AdvancedConfigCategory,
+  key: string | null,
+  override: RotationBuffOverride,
+): RotationAdvancedConfig {
+  return applyAdvancedConfigPatch(existing ?? {}, category, key, override);
+}
+
+/**
+ * Removes exactly one persisted override field, letting it fall back to the
+ * character's live value again — the per-field counterpart to resetting an
+ * action's entire `advancedConfig` to `undefined`. Returns `undefined` (not
+ * `{}`) once the last override is removed, so `hasAdvancedConfigOverrides`
+ * correctly reports "synced" again instead of "customized with an empty
+ * config".
+ */
+export function removeAdvancedConfigOverride(
+  existing: RotationAdvancedConfig | undefined,
+  category: AdvancedConfigCategory,
+  key: string | null,
+): RotationAdvancedConfig | undefined {
+  if (!existing) return undefined;
+  let next: RotationAdvancedConfig;
+  if (category === "mainEchoBuff") {
+    const { mainEchoBuff, ...rest } = existing;
+    next = rest;
+  } else {
+    const categoryMap = { ...(existing[category] ?? {}) };
+    delete categoryMap[key as string];
+    next = { ...existing, [category]: categoryMap };
+    if (Object.keys(categoryMap).length === 0) {
+      delete next[category];
     }
-    const nextCategory = { ...(advancedConfig[category] ?? {}), [key as string]: { ...override } };
-    return { ...action, advancedConfig: { ...advancedConfig, [category]: nextCategory } };
-  });
+  }
+  return hasAdvancedConfigOverrides(next) ? next : undefined;
 }
 
 /**
@@ -124,7 +180,7 @@ export function applyBulkAdvancedConfigOverride<T extends { id: string; advanced
  * Keys not present in `overrides` fall through to the character's own
  * stored config unchanged.
  */
-function mergeBuffConfig(
+export function mergeBuffConfig(
   base: Record<string, RotationBuffOverride> | undefined,
   overrides: Record<string, RotationBuffOverride> | undefined,
 ): Record<string, RotationBuffOverride> {
@@ -134,6 +190,87 @@ function mergeBuffConfig(
     merged[key] = { ...(merged[key] ?? {}), ...value };
   }
   return merged;
+}
+
+/**
+ * Builds what the advanced buff panel should show: the character's live
+ * current state (a full snapshot, so every known key has a concrete value)
+ * with any *persisted* per-field overrides layered on top, key by key.
+ * Unlike a top-level `action.advancedConfig ?? snapshot` fallback, this
+ * always merges — a persisted override for one key never hides the live
+ * value for every other key in the same or another category. Uses the exact
+ * same per-key `mergeBuffConfig` semantics that `applyAdvancedOverrides` uses
+ * at calc time, so what's displayed and what's calculated never diverge.
+ */
+export function mergeAdvancedConfigForDisplay(
+  snapshot: RotationAdvancedConfig,
+  overrides: RotationAdvancedConfig | undefined | null,
+): RotationAdvancedConfig {
+  return {
+    buffs: mergeBuffConfig(snapshot.buffs, overrides?.buffs),
+    weaponPassives: mergeBuffConfig(snapshot.weaponPassives, overrides?.weaponPassives),
+    echoSetPassives: mergeBuffConfig(snapshot.echoSetPassives, overrides?.echoSetPassives),
+    mainEchoBuff: overrides?.mainEchoBuff
+      ? { ...(snapshot.mainEchoBuff ?? {}), ...overrides.mainEchoBuff }
+      : snapshot.mainEchoBuff,
+    teamBuffs: mergeBuffConfig(snapshot.teamBuffs, overrides?.teamBuffs),
+    resonanceChains: mergeBuffConfig(snapshot.resonanceChains, overrides?.resonanceChains),
+  };
+}
+
+/**
+ * Counts how many individual fields an action's `advancedConfig` actually
+ * overrides, and how many it *could* override given the character's
+ * definitions — used to derive whether an action is synced, partially
+ * synced, or fully customized (see `getAdvancedConfigSyncState`) without a
+ * separate persisted "mode" field.
+ */
+export function countOverriddenAdvancedConfigFields(config: RotationAdvancedConfig | undefined | null): number {
+  if (!config) return 0;
+  let count = config.mainEchoBuff ? 1 : 0;
+  count += Object.keys(config.buffs ?? {}).length;
+  count += Object.keys(config.weaponPassives ?? {}).length;
+  count += Object.keys(config.echoSetPassives ?? {}).length;
+  count += Object.keys(config.teamBuffs ?? {}).length;
+  count += Object.keys(config.resonanceChains ?? {}).length;
+  return count;
+}
+
+export function countPossibleAdvancedConfigFields(
+  definitions: CharacterCalculationContext["definitions"] | null | undefined,
+): number {
+  if (!definitions) return 0;
+  const echoSetPassiveCount =
+    (definitions.echoSetPassivesOnePiece?.length ?? 0) +
+    (definitions.echoSetPassivesOne?.length ?? 0) +
+    (definitions.echoSetPassivesTwo?.length ?? 0);
+  return (
+    (definitions.buffs?.length ?? 0) +
+    (definitions.weaponPassives?.length ?? 0) +
+    echoSetPassiveCount +
+    (definitions.teamBuffs?.length ?? 0) +
+    (definitions.resonanceChains?.length ?? 0) +
+    (definitions.mainEchoDef ? 1 : 0)
+  );
+}
+
+export type AdvancedConfigSyncState = "synced" | "partial" | "full-custom";
+
+/**
+ * Derives an action's sync state from its actual override count rather than
+ * a stored mode flag: 0 overrides is "synced", every possible field
+ * overridden is "full-custom" (typically via the "Detach completely" action,
+ * which bakes a full `buildAdvancedConfigSnapshot`), anything in between is
+ * "partial".
+ */
+export function getAdvancedConfigSyncState(
+  config: RotationAdvancedConfig | undefined | null,
+  definitions: CharacterCalculationContext["definitions"] | null | undefined,
+): AdvancedConfigSyncState {
+  const overridden = countOverriddenAdvancedConfigFields(config);
+  if (overridden === 0) return "synced";
+  const possible = countPossibleAdvancedConfigFields(definitions);
+  return possible > 0 && overridden >= possible ? "full-custom" : "partial";
 }
 
 /**

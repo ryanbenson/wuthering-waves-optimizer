@@ -13,9 +13,11 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.buffs?.[def.key]"
+        :is-overridden="Boolean(overrides?.buffs?.[def.key])"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="(v) => updateCategory('buffs', def.key, v)"
+        @reset="onResetField('buffs', def.key)"
         @bulk-apply="(payload) => onBulkApply('buffs', def.key, payload)" />
     </div>
 
@@ -32,9 +34,11 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.weaponPassives?.[def.key]"
+        :is-overridden="Boolean(overrides?.weaponPassives?.[def.key])"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="(v) => updateCategory('weaponPassives', def.key, v)"
+        @reset="onResetField('weaponPassives', def.key)"
         @bulk-apply="(payload) => onBulkApply('weaponPassives', def.key, payload)" />
     </div>
 
@@ -51,9 +55,11 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.echoSetPassives?.[def.key]"
+        :is-overridden="Boolean(overrides?.echoSetPassives?.[def.key])"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="(v) => updateCategory('echoSetPassives', def.key, v)"
+        @reset="onResetField('echoSetPassives', def.key)"
         @bulk-apply="(payload) => onBulkApply('echoSetPassives', def.key, payload)" />
     </div>
 
@@ -68,9 +74,11 @@
         :max-stacks="mainEchoDef.maxStacks"
         :always-enabled="mainEchoDef.alwaysEnabled"
         :model-value="modelValue.mainEchoBuff"
+        :is-overridden="Boolean(overrides?.mainEchoBuff)"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="updateMainEchoBuff"
+        @reset="onResetField('mainEchoBuff', null)"
         @bulk-apply="(payload) => onBulkApply('mainEchoBuff', null, payload)" />
     </div>
 
@@ -87,9 +95,11 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.teamBuffs?.[def.key]"
+        :is-overridden="Boolean(overrides?.teamBuffs?.[def.key])"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="(v) => updateCategory('teamBuffs', def.key, v)"
+        @reset="onResetField('teamBuffs', def.key)"
         @bulk-apply="(payload) => onBulkApply('teamBuffs', def.key, payload)" />
     </div>
 
@@ -106,9 +116,11 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.resonanceChains?.[def.key]"
+        :is-overridden="Boolean(overrides?.resonanceChains?.[def.key])"
         :range-actions="rangeActions"
         :action-id="actionId"
         @update:model-value="(v) => updateCategory('resonanceChains', def.key, v)"
+        @reset="onResetField('resonanceChains', def.key)"
         @bulk-apply="(payload) => onBulkApply('resonanceChains', def.key, payload)" />
     </div>
 
@@ -131,6 +143,10 @@ type BuffCategory = "buffs" | "weaponPassives" | "echoSetPassives" | "teamBuffs"
 const props = withDefaults(
   defineProps<{
     modelValue: RotationAdvancedConfig;
+    /** The action's REAL persisted overrides (not the merged display value)
+     * — used only to tell each row whether ITS key is actually overridden,
+     * so the per-row "revert to sync" control knows when to appear. */
+    overrides?: RotationAdvancedConfig | null;
     buffDefs?: any[];
     weaponPassiveDefs?: any[];
     echoSetPassiveDefs?: any[];
@@ -141,6 +157,7 @@ const props = withDefaults(
     actionId?: string;
   }>(),
   {
+    overrides: null,
     buffDefs: () => [],
     weaponPassiveDefs: () => [],
     echoSetPassiveDefs: () => [],
@@ -153,7 +170,8 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:modelValue": [value: RotationAdvancedConfig];
+  "update:modelValue": [payload: { category: AdvancedConfigCategory; key: string | null; value: AdvancedBuffOverride }];
+  "reset-field": [payload: { category: AdvancedConfigCategory; key: string | null }];
   "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
 
@@ -167,13 +185,19 @@ const isEmpty = computed(
     !props.resonanceChainDefs.length,
 );
 
+// Emits only the one field that changed — never the whole modelValue — so
+// the parent can write a sparse patch into the action's real advancedConfig
+// instead of re-baking every other field's currently-displayed value.
 function updateCategory(category: BuffCategory, key: string, value: AdvancedBuffOverride) {
-  const nextCategory = { ...(props.modelValue[category] ?? {}), [key]: value };
-  emit("update:modelValue", { ...props.modelValue, [category]: nextCategory });
+  emit("update:modelValue", { category, key, value });
 }
 
 function updateMainEchoBuff(value: AdvancedBuffOverride) {
-  emit("update:modelValue", { ...props.modelValue, mainEchoBuff: value });
+  emit("update:modelValue", { category: "mainEchoBuff", key: null, value });
+}
+
+function onResetField(category: AdvancedConfigCategory, key: string | null) {
+  emit("reset-field", { category, key });
 }
 
 function onBulkApply(

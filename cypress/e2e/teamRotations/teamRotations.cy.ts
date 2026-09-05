@@ -322,13 +322,30 @@ describe("Team Rotations", () => {
     // The resync button only exists once the buff panel is open.
     cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
     cy.get("[data-test-team-rotation-action-resync]").should("be.disabled");
+    cy.get("[data-test-advanced-buff-toggle]").eq(1).invoke("prop", "checked").as("secondToggleBeforeState");
     cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
 
-    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Customized buffs");
+    // Only the touched buff detaches (issue #508) — the pill reports a
+    // partial override, and the untouched second buff's checkbox still
+    // reflects the character's live state.
+    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Partially synced");
+    cy.get("@secondToggleBeforeState").then((wasChecked) => {
+      cy.get("[data-test-advanced-buff-toggle]").eq(1).invoke("prop", "checked").should("eq", wasChecked);
+    });
+
     cy.get("[data-test-team-rotation-action-resync]").should("be.enabled").click();
 
     cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Synced with character");
     cy.get("[data-test-team-rotation-action-resync]").should("be.disabled");
+
+    // "Detach completely" bakes every field on purpose, flipping the pill to
+    // "Fully customized"; the per-row "Sync" reset then un-detaches one field.
+    cy.get("[data-test-team-rotation-action-detach]").click();
+    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Fully customized");
+    cy.get("[data-test-team-rotation-action-detach]").should("be.disabled");
+
+    cy.get("[data-test-advanced-buff-reset]").first().click({ force: true });
+    cy.get("[data-test-team-rotation-action-sync-status]").should("not.contain.text", "Fully customized");
   });
 
   it("bulk-applies a buff's on/off state across a range of actions via its Duration control", () => {
