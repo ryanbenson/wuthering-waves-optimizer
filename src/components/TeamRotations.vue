@@ -589,8 +589,28 @@ const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 
-const selectedTeamId = ref<string | null>(null);
+// Remembers the active team for the current browser session (sessionStorage,
+// not localStorage) so leaving to another page — e.g. "Configure Character"
+// routing to "/" — and returning to /teams re-mounts this component back
+// into the same team instead of dropping to the team list (#507). Validated
+// against the live team list since the stored id can point at a team that
+// was deleted (in this tab or another) since it was saved.
+const ACTIVE_TEAM_ID_KEY = "teamRotationsActiveTeamId";
+const storedActiveTeamId = sessionStorage.getItem(ACTIVE_TEAM_ID_KEY);
+const selectedTeamId = ref<string | null>(
+  storedActiveTeamId && teams.value.some((team: any) => team.id === storedActiveTeamId)
+    ? storedActiveTeamId
+    : null,
+);
 const showSummary = ref(false);
+
+watch(selectedTeamId, (teamId) => {
+  if (teamId) {
+    sessionStorage.setItem(ACTIVE_TEAM_ID_KEY, teamId);
+  } else {
+    sessionStorage.removeItem(ACTIVE_TEAM_ID_KEY);
+  }
+});
 
 const VIEW_MODE_KEY = "teamRotationsViewMode";
 const viewMode = ref<"grid" | "list">(
