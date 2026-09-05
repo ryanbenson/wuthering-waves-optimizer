@@ -106,6 +106,29 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get('[data-test-echo-edit-slot="4"]').should("contain.text", "Choose substat");
   });
 
+  it("disables a substat already used in another slot, so it can't be picked twice", () => {
+    // Extra viewport height for the same reason as the slider spec below:
+    // slot 1's dropdown can flip to open upward and overlap the fixed Rank
+    // header at the default spec viewport.
+    cy.viewport(1280, 1000);
+    openBrantEchoesTab();
+    cy.get('[data-test-echo-item="0"]').click();
+    pickEcho("BellBorneGeochelone");
+
+    cy.get('[data-test="echo-edit-slot-type-0"]').click();
+    pickFromOpenMenu("Crit Rate");
+
+    cy.get('[data-test="echo-edit-slot-type-1"]').click();
+    cy.get(".app-rich-select__menu:visible")
+      .contains(".app-rich-select__option", "Crit Rate")
+      .should("have.class", "opacity-40")
+      .and("have.class", "pointer-events-none");
+
+    // Clicking the disabled option is a no-op — slot 1 stays unassigned.
+    cy.get(".app-rich-select__menu:visible").contains(".app-rich-select__option", "Crit Rate").click({ force: true });
+    cy.get('[data-test-echo-edit-slot="1"]').should("contain.text", "Choose substat");
+  });
+
   it("dragging a substat's slider snaps to the real roll table and updates the tile", () => {
     openBrantEchoesTab();
     // Extra viewport height: slot 0's dropdown sits close enough to the
