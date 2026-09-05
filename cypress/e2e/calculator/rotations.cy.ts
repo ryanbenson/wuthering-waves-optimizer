@@ -124,7 +124,11 @@ describe("Calculator Rotations", () => {
     cy.get("@action1").find("[data-test-rotation-action-configure-buffs]").click();
     cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
     cy.get("@action1").find("[data-test-rotation-action-resync]").should("be.disabled");
-    cy.get("[data-test-advanced-buff-toggle]").first().as("firstToggle");
+    cy.get("[data-test-advanced-buff-toggle]").eq(0).as("firstToggle");
+    cy.get("[data-test-advanced-buff-toggle]").eq(1).as("secondToggle");
+    cy.get("@secondToggle")
+      .invoke("prop", "checked")
+      .as("secondToggleBeforeState");
     cy.get("@firstToggle")
       .invoke("prop", "checked")
       .then((wasChecked) => {
@@ -137,10 +141,19 @@ describe("Calculator Rotations", () => {
     // Toggling a buff doesn't blow up the rest of the page — damages still render.
     testStats(carlottaRotationStats, cy);
 
-    // The pill flips to "customized" and the resync button becomes usable.
+    // The pill flips to "partially synced" (issue #508) — only the one
+    // touched buff detached, everything else keeps following the character.
     cy.get("@action1")
       .find("[data-test-rotation-action-sync-status]")
-      .should("contain.text", "Customized buffs");
+      .should("contain.text", "Partially synced");
+
+    // The untouched second buff's checkbox still reflects the character's
+    // live value — the direct regression check for "one toggle used to bake
+    // every buff's current value into advancedConfig."
+    cy.get("@secondToggleBeforeState").then((wasChecked) => {
+      cy.get("@secondToggle").invoke("prop", "checked").should("eq", wasChecked);
+    });
+
     cy.get("@action1")
       .find("[data-test-rotation-action-resync]")
       .should("be.enabled")
@@ -153,6 +166,21 @@ describe("Calculator Rotations", () => {
     cy.get("@action1")
       .find("[data-test-rotation-action-resync]")
       .should("be.disabled");
+
+    // "Detach completely" bakes every field on purpose (the old bug's shape,
+    // now an explicit, deliberate action) and flips the pill to "Fully customized".
+    cy.get("@action1").find("[data-test-rotation-action-detach]").click();
+    cy.get("@action1")
+      .find("[data-test-rotation-action-sync-status]")
+      .should("contain.text", "Fully customized");
+    cy.get("@action1").find("[data-test-rotation-action-detach]").should("be.disabled");
+
+    // Per-row "Sync" reset appears once a field is overridden, and reverting
+    // it drops the badge back out of "Fully customized".
+    cy.get("[data-test-advanced-buff-reset]").first().click({ force: true });
+    cy.get("@action1")
+      .find("[data-test-rotation-action-sync-status]")
+      .should("not.contain.text", "Fully customized");
   });
 });
 

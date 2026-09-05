@@ -31,6 +31,15 @@
         @click.stop.prevent="showDurationPanel = !showDurationPanel">
         Duration
       </button>
+      <button
+        v-if="isOverridden"
+        type="button"
+        class="btn btn-xs btn-ghost shrink-0"
+        title="Revert this buff to follow the character's current setting"
+        :data-test-advanced-buff-reset="dataTestKey"
+        @click.stop.prevent="$emit('reset')">
+        ↺ Sync
+      </button>
     </label>
 
     <div
@@ -109,6 +118,10 @@ const props = withDefaults(
     maxStacks?: number;
     alwaysEnabled?: boolean;
     modelValue?: AdvancedBuffOverride;
+    /** Whether this specific field is actually persisted as an override on
+     * the action (not just reflecting the character's live value) — shows
+     * the per-row "Sync" revert control when true. */
+    isOverridden?: boolean;
     /** The whole team's actions in sequence — used to build the "lasts for
      * X actions" / "until action Y" range options. Omitted (or a
      * single-action list) hides the Duration control entirely. */
@@ -122,6 +135,7 @@ const props = withDefaults(
     maxStacks: 0,
     alwaysEnabled: false,
     modelValue: undefined,
+    isOverridden: false,
     rangeActions: () => [],
     actionId: undefined,
   },
@@ -130,6 +144,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   "update:modelValue": [value: AdvancedBuffOverride];
   "bulk-apply": [payload: { override: AdvancedBuffOverride; actionIds: string[] }];
+  reset: [];
 }>();
 
 const isEnabled = computed(() => props.alwaysEnabled || (props.modelValue?.isEnabled ?? false));

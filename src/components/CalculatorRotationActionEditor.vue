@@ -33,14 +33,14 @@
     <template v-if="definitions" #extra-buttons>
       <span
         class="badge badge-xs"
-        :class="isCustomized ? 'badge-warning' : 'badge-ghost'"
+        :class="syncState === 'synced' ? 'badge-ghost' : 'badge-warning'"
         :data-test-rotation-action-sync-status="action.id"
         v-tooltip="
-          isCustomized
-            ? 'This action has its own buff overrides — changing the character\'s buffs won\'t affect it'
-            : 'This action follows the character\'s current buff settings automatically'
+          syncState === 'synced'
+            ? 'This action follows the character\'s current buff settings automatically'
+            : 'This action has its own buff overrides — changing the character\'s buffs won\'t affect the fields you\'ve customized here (everything else still follows the character)'
         ">
-        {{ isCustomized ? "Customized buffs" : "Synced with character" }}
+        {{ badgeText }}
       </span>
       <button
         v-if="!isLiveResultBarEnabled"
@@ -65,14 +65,24 @@
           <button
             type="button"
             class="btn btn-xs btn-neutral self-start"
-            :disabled="!isCustomized"
+            :disabled="syncState === 'synced'"
             :data-test-rotation-action-resync="action.id"
             @click="resyncWithCharacter">
             Stay synced with character
           </button>
+          <button
+            type="button"
+            class="btn btn-xs btn-neutral self-start"
+            :disabled="syncState === 'full-custom'"
+            title="Bake every current buff/passive value into this action, fully detaching it from the character"
+            :data-test-rotation-action-detach="action.id"
+            @click="detachCompletely">
+            Detach completely
+          </button>
         </div>
         <TeamRotationAdvancedBuffs
           :model-value="displayedAdvancedConfig"
+          :overrides="action.advancedConfig ?? null"
           :buff-defs="definitions?.buffs ?? []"
           :weapon-passive-defs="definitions?.weaponPassives ?? []"
           :echo-set-passive-defs="echoSetPassiveDefs"
@@ -82,6 +92,7 @@
           :range-actions="rangeActions"
           :action-id="action.id"
           @update:model-value="onAdvancedConfigUpdate"
+          @reset-field="onResetAdvancedField"
           @bulk-apply="onBulkApply" />
       </div>
     </template>
@@ -96,9 +107,14 @@ import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import {
   buildAdvancedConfigSnapshot,
-  hasAdvancedConfigOverrides,
+  mergeAdvancedConfigForDisplay,
+  applyAdvancedConfigOverride,
+  removeAdvancedConfigOverride,
+  getAdvancedConfigSyncState,
+  countOverriddenAdvancedConfigFields,
   type AdvancedConfigCategory,
   type RotationAdvancedConfig,
+  type RotationBuffOverride,
 } from "../calculator/rotationAdvancedBuffs";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 
@@ -191,8 +207,16 @@ const echoSetPassiveDefs = computed(() => {
 // its own persisted override — merely opening the panel doesn't write
 // anything; only a real toggle (onAdvancedConfigUpdate) persists a config.
 const currentSnapshot = computed(() => buildAdvancedConfigSnapshot(props.characterBuildData, props.definitions, "current"));
-const displayedAdvancedConfig = computed(() => props.action.advancedConfig ?? currentSnapshot.value);
-const isCustomized = computed(() => hasAdvancedConfigOverrides(props.action.advancedConfig));
+const displayedAdvancedConfig = computed(() =>
+  mergeAdvancedConfigForDisplay(currentSnapshot.value, props.action.advancedConfig),
+);
+const syncState = computed(() => getAdvancedConfigSyncState(props.action.advancedConfig, props.definitions ?? null));
+const isCustomized = computed(() => syncState.value !== "synced");
+const badgeText = computed(() => {
+  if (syncState.value === "synced") return "Synced with character";
+  if (syncState.value === "full-custom") return "Fully customized";
+  return `Partially synced (${countOverriddenAdvancedConfigFields(props.action.advancedConfig)} overrides)`;
+});
 
 // Rotation Flow (Labs) — resolves the currently-enabled advancedConfig
 // entries into display chips for CalculatorRotationAction's unified list.
@@ -241,17 +265,19 @@ const advancedBuffChips = computed<AdvancedBuffChip[]>(() => {
 
 function onToggleAdvancedBuff(payload: { category: string; key: string }) {
   const category = payload.category as AdvancedConfigCategory;
-  const currentConfig = displayedAdvancedConfig.value;
-  const nextConfig: RotationAdvancedConfig =
+  // Read the CURRENT (merged/live) value only to preserve e.g. a stacks
+  // count the user is looking at — but write it as a single explicit
+  // override into the REAL persisted advancedConfig, not the merged one.
+  const currentValue =
     category === "mainEchoBuff"
-      ? { ...currentConfig, mainEchoBuff: { ...(currentConfig.mainEchoBuff ?? {}), isEnabled: false } }
-      : {
-          ...currentConfig,
-          [category]: {
-            ...(currentConfig[category] ?? {}),
-            [payload.key]: { ...(currentConfig[category]?.[payload.key] ?? {}), isEnabled: false },
-          },
-        };
+      ? displayedAdvancedConfig.value.mainEchoBuff
+      : displayedAdvancedConfig.value[category]?.[payload.key];
+  const nextConfig = applyAdvancedConfigOverride(
+    props.action.advancedConfig,
+    category,
+    category === "mainEchoBuff" ? null : payload.key,
+    { ...(currentValue ?? {}), isEnabled: false },
+  );
   emit("action-update", { ...props.action, advancedConfig: nextConfig });
 }
 
@@ -271,8 +297,22 @@ function onSequenceUpdate(payload: Record<string, unknown>) {
   emit("action-update:sequence", payload);
 }
 
-function onAdvancedConfigUpdate(value: RotationAdvancedConfig) {
-  emit("action-update", { ...props.action, advancedConfig: value });
+function onAdvancedConfigUpdate(patch: { category: AdvancedConfigCategory; key: string | null; value: RotationBuffOverride }) {
+  const nextConfig = applyAdvancedConfigOverride(props.action.advancedConfig, patch.category, patch.key, patch.value);
+  emit("action-update", { ...props.action, advancedConfig: nextConfig });
+}
+
+function onResetAdvancedField(payload: { category: AdvancedConfigCategory; key: string | null }) {
+  const nextConfig = removeAdvancedConfigOverride(props.action.advancedConfig, payload.category, payload.key);
+  // Explicit `undefined` (not omitted) — same reasoning as resyncWithCharacter:
+  // the parent merges { ...existing, ...payload }, an omitted key would leave
+  // the old advancedConfig in place untouched.
+  emit("action-update", { ...props.action, advancedConfig: nextConfig });
+}
+
+function detachCompletely() {
+  const snapshot = buildAdvancedConfigSnapshot(props.characterBuildData, props.definitions, "current");
+  emit("action-update", { ...props.action, advancedConfig: snapshot });
 }
 
 function onBulkApply(payload: {
