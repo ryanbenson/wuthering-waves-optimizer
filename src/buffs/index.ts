@@ -2895,6 +2895,48 @@ CD: 20s`,
     inputBase: true,
     modifierBasedOn: "Energy Regen",
   },
+  {
+    key: "FlashofElectricReflection",
+    name: "Flash of Electric Reflection",
+    details: `When the Resonator inflicts Electro Flare on enemies, they gain the following effects: Gain 10% Electro DMG Bonus for 15s. While this effect is active, casting Outro Skill grants the incoming Resonator 25% Electro DMG Bonus for 15s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlashofElectricReflection.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "FlowerofTingedYearning",
+    name: "Flower of Tinged Yearning",
+    details: `Healing a Resonator in the team increases the ATK of all Resonators in the team by 10% for 30s. Effects of the same name cannot be stacked.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlowerofTingedYearning.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "FlowerofTingedYearningUnison",
+    name: "Flower of Tinged Yearning (Unison)",
+    details: `While the effect is active, if the Resonator gains Unison or triggers Unison Response, their ATK is further increased by 15%.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlowerofTingedYearning.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.15,
+      },
+    ],
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
@@ -3205,6 +3247,28 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/30%/35%/40%/45%. Effects of the same name do not stack.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Unspoken Rue",
+    key: "UnspokenRue",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UnspokenRue.png",
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierByRefinement: {
+          "1": 0.4,
+          "2": 0.5,
+          "3": 0.6,
+          "4": 0.7,
+          "5": 0.8,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `When the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains 40%/50%/60%/70%/80% Electro DMG Bonus for 14/14/14/14/14s. Switching to another Resonator ends this effect early.`,
     alwaysEnabled: false,
   },
 ];

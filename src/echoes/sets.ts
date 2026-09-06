@@ -32,6 +32,9 @@ export const twoSetBonuses: string[] = [
   "Song of Feathered Trace 2 Set",
   "Heart of Evil's Purge 2 Set",
   "Lamp of Nether Road 2 Set",
+  "Heart of Sworn Vigil 2 Set",
+  "Flash of Electric Reflection 2 Set",
+  "Flower of Tinged Yearning 2 Set"
 ];
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
@@ -69,6 +72,9 @@ export const fiveSetBonuses: string[] = [
   "Song of Feathered Trace 5 Set",
   "Heart of Evil's Purge 5 Set",
   "Lamp of Nether Road 5 Set",
+  "Heart of Sworn Vigil 5 Set",
+  "Flash of Electric Reflection 5 Set",
+  "Flower of Tinged Yearning 5 Set",
 ];
 
 /** Reverse map: set display label -> set type key (built once) */
@@ -899,6 +905,66 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
       },
     ],
     details: `HP + 10%`,
+  },
+  "Heart of Sworn Vigil 2 Set": {
+    name: "Heart of Sworn Vigil",
+    key: "HeartofSwornVigil2Set",
+    passives: [
+      {
+        key: "HeartofSwornVigilElectro",
+        details: `Electro DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Electro",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Electro DMG + 10%`,
+  },
+  "Flash of Electric Reflection 2 Set": {
+    name: "Flash of Electric Reflection",
+    key: "FlashofElectricReflection2Set",
+    passives: [
+      {
+        key: "FlashofElectricReflectionElectro",
+        details: `Electro DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Electro",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Electro DMG + 10%`,
+  },
+  "Flower of Tinged Yearning 2 Set": {
+    name: "Flower of Tinged Yearning",
+    key: "FlowerofTingedYearning2Set",
+    passives: [
+      {
+        key: "FlowerofTingedYearning",
+        details: `Healing + 10%`,
+        modifiers: [
+          {
+            modifier: "HealingBonus",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Healing + 10%`,
   },
 };
 
@@ -1732,6 +1798,83 @@ When Snowfall is removed, only one of the effects above can be triggered.`,
       },
     ],
     details: `Upon gaining a Shield, gain 5% increase in Crit. Rate for 5s, max 4 stacks. This effect can be triggered every 0.5s. At max stacks, gain 15% Fusion DMG Bonus.`,
+  },
+  "Heart of Sworn Vigil 5 Set": {
+    name: "Heart of Sworn Vigil",
+    key: "HeartofSwornVigil5Set",
+    passives: [
+      {
+        key: "HeartofSwornVigilElectro",
+        details: `Inflicting Electro Flare on the target, obtaining Unison, or triggering Unison Response increases the Resonator's Crit. Rate by 15% and grants them 22.5% Electro DMG for 30s.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 15,
+          },
+          {
+            modifier: "Electro",
+            modifierValue: 22.5,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Inflicting Electro Flare on the target, obtaining Unison, or triggering Unison Response increases the Resonator's Crit. Rate by 15% and grants them 22.5% Electro DMG for 30s.`,
+  },
+  "Flash of Electric Reflection 5 Set": {
+    name: "Flash of Electric Reflection",
+    key: "FlashofElectricReflection5Set",
+    passives: [
+      {
+        key: "FlashofElectricReflection",
+        details: `When the Resonator inflicts Electro Flare on enemies, they gain the following effects: Gain 10% Electro DMG Bonus for 15s. While this effect is active, casting Outro Skill grants the incoming Resonator 25% Electro DMG Bonus for 15s.`,
+        modifiers: [
+          {
+            modifier: "Electro",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `When the Resonator inflicts Electro Flare on enemies, they gain the following effects: Gain 10% Electro DMG Bonus for 15s. While this effect is active, casting Outro Skill grants the incoming Resonator 25% Electro DMG Bonus for 15s.`,
+  },
+  "Flower of Tinged Yearning 5 Set": {
+    name: "Flower of Tinged Yearning",
+    key: "FlowerofTingedYearning5Set",
+    passives: [
+      {
+        key: "FlowerofTingedYearningATK",
+        details: `Healing a Resonator in the team increases the ATK of all Resonators in the team by 10% for 30s. Effects of the same name cannot be stacked.`,
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+      {
+        key: "FlowerofTingedYearningATK2",
+        details: `While the effect is active, if the Resonator gains Unison or triggers Unison Response, their ATK is further increased by 15%.`,
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 15,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Healing a Resonator in the team increases the ATK of all Resonators in the team by 10% for 30s. Effects of the same name cannot be stacked. While the effect is active, if the Resonator gains Unison or triggers Unison Response, their ATK is further increased by 15%.`,
   },
 };
 
