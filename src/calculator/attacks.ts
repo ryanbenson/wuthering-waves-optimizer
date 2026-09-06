@@ -1064,8 +1064,9 @@ export const calculateAttackDamage = (
   }
   const customBuffTotalDamage = n(context.buffs.customBuffs?.TotalDamage);
   const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
+  const teamBuffsTotalDamage = context.buffs.teamBuffsData?.TotalDamage ?? 0;
   const totalDamageMultiplier =
-    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
+    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage + teamBuffsTotalDamage;
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +

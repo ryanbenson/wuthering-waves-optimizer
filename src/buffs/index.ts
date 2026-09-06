@@ -2574,6 +2574,57 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Hsin: [
+    {
+      key: `OutroSkillHerselfaThousandLanterns`,
+      name: `Outro Skill: Herself a Thousand Lanterns`,
+      details: `<div>While in Resonance Mode - Unison, Resonators in the team other than Hsin gain Shared Light when they gain Unison. After Hsin casts Outro Skill, Resonators with Shared Light gain 20% All DMG Amplification for 30s.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinT.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillHerselfaThousandLanterns`,
+      name: `Outro Skill: Herself a Thousand Lanterns`,
+      details: `<div>While in Resonance Mode - Electro Flare, Electro DMG dealt by Resonators in the team other than Hsin is Amplified by 20% for 20s.
+The above effects end early when Hsin switches Resonance Mode.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinT.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Electro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `UnisonBoon`,
+      name: `Unison Boon`,
+      details: `<div>Each stack of Unison Boon increase the total DMG dealt by Resonators with the Unison Response ability in the team by 3%, stacking up to 2 times.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "TotalDamage",
+          modifierValue: 0.03,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 2,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
