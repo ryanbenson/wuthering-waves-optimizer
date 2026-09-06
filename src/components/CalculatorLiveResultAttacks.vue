@@ -42,6 +42,9 @@ const GROUP_DISPLAY_ORDER: Array<{ key: string; label: string }> = [
   { key: "introAttacks", label: "Intro Attacks" },
   { key: "outroAttacks", label: "Outro Attacks" },
   { key: "tuneBreakAttacks", label: "Tune Break Attacks" },
+  { key: "echoSetAttacks", label: "Echo Set Attacks" },
+  { key: "utilityAttacks", label: "Utility Attacks" },
+  { key: "elementalReactions", label: "Elemental Effects" },
   { key: "echoAttacks", label: "Echo Attacks" },
 ];
 
