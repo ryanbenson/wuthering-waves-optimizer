@@ -493,7 +493,7 @@ const STATUS_DEFS = computed(() => [
   { key: "spectroFrazzleStacks" as const, label: "Spectro Frazzle", small: "Stacks", max: 13, relevant: props.isSpectroFrazzleEnabled },
   { key: "aeroErosionStacks" as const, label: "Aero Erosion", small: "Stacks", max: 12, relevant: props.isAeroErosionEnabled },
   { key: "fusionBurstStacks" as const, label: "Fusion Burst", small: "Stacks", max: 13, relevant: props.isFusionBurstEnabled },
-  { key: "electroFlareStacks" as const, label: "Electro Flare", small: "Stacks", max: 13, relevant: props.isElectroFlareEnabled },
+  { key: "electroFlareStacks" as const, label: "Electro Flare", small: "Stacks", max: 16, relevant: props.isElectroFlareEnabled },
   { key: "electroRageStacks" as const, label: "Electro Rage", small: "Stacks", max: 13, relevant: props.isElectroFlareEnabled },
   { key: "glacioChafeStacks" as const, label: "Glacio Chafe", small: "Stacks", max: 13, relevant: props.isGlacioChafeEnabled },
 ]);

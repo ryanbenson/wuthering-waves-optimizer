@@ -12,5 +12,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     electroFlare: true,
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    stances: ["Unison", "Electro Flare"],
   };
 }

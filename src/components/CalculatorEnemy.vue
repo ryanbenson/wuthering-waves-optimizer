@@ -285,7 +285,7 @@
         id="electroFlareStacks"
         type="range"
         min="0"
-        max="13"
+        max="16"
         step="1"
         class="range range-xs"
         :class="rangeClasses"

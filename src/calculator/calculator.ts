@@ -1823,6 +1823,9 @@ export function getElectroFlareMotionValueByStacks(stacks: number): number {
     "11": 55447,
     "12": 69308,
     "13": 83170,
+    "14": 97032,
+    "15": 110894,
+    "16": 124756,
   }
   return motionValueByStacksMap?.[stacks] ?? 0;
 }
