@@ -1,0 +1,58 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Bound Obsession, Forged Mind",
+  description: `<div><span class="Title">Resonance Skill - Furled Canopy: Sealed Delusion</span></span><br><br>While in the <span style="color:#ffd12f;" class="font-bold">Awakened Mind</span> state, when <span style="color:#ffd12f;" class="font-bold">Delusion</span> reaches 800 points, <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Furled Canopy: Sealed Delusion</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>, considered <span style="color:#ffd12f;" class="font-bold">Basic Attack DMG</span>.<br>- Casting this skill sends Suoming into <span style="color:#ffd12f;" class="font-bold">Deep Mind</span> and clears all <span style="color:#ffd12f;" class="font-bold">Delusion</span>.<br><br><span class="Title">Resonance Skill - Unfurled Canopy: Unforsaken Mind</span></span><br><br>While in the <span style="color:#ffd12f;" class="font-bold">Deep Mind</span> state, when <span style="color:#ffd12f;" class="font-bold">Delusion</span> reaches 800 points, <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Unfurled Canopy: Unforsaken Mind</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>, considered <span style="color:#ffd12f;" class="font-bold">Basic Attack DMG</span>.<br><br><span class="Title">Basic Attack - Umbral Canopy: Engraved Heart</span></span><br><br>After casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Unfurled Canopy: Unforsaken Mind</span>, <span style="color:#ffd12f;" class="font-bold">Basic Attack</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Basic Attack - Umbral Canopy: Engraved Heart</span>. Press or hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> or <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to cast this skill. Attack targets within range, dealing <span style="color:#ebb0ff;">Electro DMG</span>, considered <span style="color:#ffd12f;" class="font-bold">Basic Attack DMG</span>.<br>- Casting this skill sends Suoming into <span style="color:#ffd12f;" class="font-bold">Calamity Mind</span> and clears all <span style="color:#ffd12f;" class="font-bold">Delusion</span>; she enters <span style="color:#ffd12f;" class="font-bold">Awakened Mind</span> once the skill ends.<br>- When casting this skill, hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> or <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to continuously attack the target for a certain period.<br>- While casting this skill, Suoming is immune to interruption. During this time she cannot move, sprint, jump, dodge, or cast <span style="color:#ffd12f;" class="font-bold">Basic Attack</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Liberation</span>, <span style="color:#ffd12f;" class="font-bold">Dodge Counter</span>, <span style="color:#ffd12f;" class="font-bold">Plunging Attack</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack</span>, or <span style="color:#ffd12f;" class="font-bold">Intro Skill</span>, and Resonator switching is also restricted.<br><br><span class="Title">Unison</span></span><br><br>When Suoming has <span style="color:#ffd12f;" class="font-bold">Unison</span>, switching to another Resonator will remove her <span style="color:#ffd12f;" class="font-bold">Unison</span> to trigger Suoming's Outro Skill and the incoming Resonator's Intro Skill. When Suoming's Concerto Energy is full and she has <span style="color:#ffd12f;" class="font-bold">Unison</span>, only the <span style="color:#ffd12f;" class="font-bold">Unison</span> effect is consumed.<br><br><span class="Title">Unison Response</span></span><br><br>Suoming can trigger <span style="color:#ffd12f;" class="font-bold">Unison Response</span>.<br>When a Resonator in the team has <span style="color:#ffd12f;" class="font-bold">Unison</span>, swiching to Suoming grants all Resonators in the team 1 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> for 30s.<br>Suoming can grant up to 1 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> this way. Gaining it again only resets the duration.<br><br><span class="Title">Unison Boon</span></span><br><br>Each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> increases DMG dealt by Resonators in the team who can trigger <span style="color:#ffd12f;" class="font-bold">Unison Response</span> by 3%, up to 2 stacks.<br><br><span class="Title">Delusion Gain Rules</span></span><br><br>Can hold up to 800 points of Delusion.<br>- Hitting a target with <span style="color:#ffd12f;" class="font-bold">Basic Attack</span>, <span style="color:#ffd12f;" class="font-bold">Basic Attack - Unfurled Canopy</span>, or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Unfurled Canopy: Whirling Thunder</span> grants Delusion.<br>- Casting <span style="color:#ffd12f;" class="font-bold">Resonance Liberation</span> grants 200 points of Delusion.<br>- Casting <span style="color:#ffd12f;" class="font-bold">Intro Skill - Unfurled Canopy: Thunder Rending</span> or <span style="color:#ffd12f;" class="font-bold">Intro Skill - Unfurled Canopy: Whirling Thunder (Unison)</span> grants 200 points of Delusion.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingY.webp",
+  attacks: [
+    {
+      key: "ResonanceSkillFurledCanopySealedDelusionDMG",
+      label: "Resonance Skill - Furled Canopy: Sealed Delusion DMG",
+      talents: {
+        "1": "31.58%*2+15.79%*4",
+        "2": "34.17%*2+17.09%*4",
+        "3": "36.76%*2+18.38%*4",
+        "4": "40.39%*2+20.20%*4",
+        "5": "42.97%*2+21.49%*4",
+        "6": "45.95%*2+22.98%*4",
+        "7": "50.10%*2+25.05%*4",
+        "8": "54.24%*2+27.12%*4",
+        "9": "58.38%*2+29.19%*4",
+        "10": "62.78%*2+31.39%*4",
+      },
+      type: "Basic",
+    },
+    {
+      key: "ResonanceSkillUnfurledCanopyUnforsakenMindDMG",
+      label: "Resonance Skill - Unfurled Canopy: Unforsaken Mind DMG",
+      talents: {
+        "1": "76.79%",
+        "2": "83.09%",
+        "3": "89.39%",
+        "4": "98.20%",
+        "5": "104.50%",
+        "6": "111.74%",
+        "7": "121.82%",
+        "8": "131.89%",
+        "9": "141.97%",
+        "10": "152.67%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "BasicAttackUmbralCanopyEngravedHeartDMG",
+      label: "Basic Attack - Umbral Canopy: Engraved Heart DMG",
+      talents: {
+        "1": "78.04%+39.02%*2+78.04%+78.04%+39.02%*2",
+        "2": "84.44%+42.22%*2+84.44%+84.44%+42.22%*2",
+        "3": "90.83%+45.42%*2+90.83%+90.83%+45.42%*2",
+        "4": "99.79%+49.90%*2+99.79%+99.79%+49.90%*2",
+        "5": "106.19%+53.10%*2+106.19%+106.19%+53.10%*2",
+        "6": "113.55%+56.78%*2+113.55%+113.55%+56.78%*2",
+        "7": "123.79%+61.90%*2+123.79%+123.79%+61.90%*2",
+        "8": "134.03%+67.02%*2+134.03%+134.03%+67.02%*2",
+        "9": "144.26%+72.13%*2+144.26%+144.26%+72.13%*2",
+        "10": "155.14%+77.57%*2+155.14%+155.14%+77.57%*2",
+      },
+      type: "Basic",
+    }
+  ],
+};

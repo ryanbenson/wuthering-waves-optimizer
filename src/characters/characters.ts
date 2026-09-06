@@ -24,6 +24,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Encore", name: "Encore" },
     { key: "Galbrena", name: "Galbrena" },
     { key: "Hiyuki", name: "Hiyuki" },
+    { key: "Hsin", name: "Hsin" },
     { key: "Iuno", name: "Iuno" },
     { key: "Jianxin", name: "Jianxin" },
     { key: "Jingran", name: "Jingran" },
@@ -53,6 +54,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Shorekeeper", name: "Shorekeeper" },
     { key: "Sigrika", name: "Sigrika" },
     { key: "Suisui", name: "Suisui" },
+    { key: "Suoming", name: "Suoming" },
     { key: "Verina", name: "Verina" },
     { key: "XiangliYao", name: "Xiangli Yao" },
     { key: "YangyangXuanling", name: "Yangyang: Xuanling" },
@@ -186,6 +188,13 @@ export const allCharactersList = [
     element: "Glacio",
     rarity: 5,
     weapon: "Sword",
+  },
+  {
+    key: "Hsin",
+    name: "Hsin",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Rectifier",
   },
   {
     key: "Iuno",
@@ -389,6 +398,13 @@ export const allCharactersList = [
     element: "Glacio",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Suoming",
+    name: "Suoming",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Verina",

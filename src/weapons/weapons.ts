@@ -12,6 +12,7 @@ export const swordsList = {
     { key: "LaserShearer", name: "Laser Shearer", mainStat: "EnergyRegen" },
     { key: "RedSpring", name: "Red Spring", mainStat: "CritRate" },
     { key: "UnflickeringValor", name: "Unflickering Valor", mainStat: "EnergyRegen" },
+    { key: "UnspokenRue", name: "Unspoken Rue" },
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction", mainStat: "ATK" },
@@ -33,7 +34,9 @@ export const swordsList = {
   two: [
     { key: "TyroSword", name: "Tyro Sword", mainStat: "ATK" },
   ],
-  one: [ ],
+  one: [
+    { key: "TrainingSword", name: "Training Sword", mainStat: "ATK" },
+  ],
 };
 
 const broadbladesList = {
@@ -68,11 +71,14 @@ const broadbladesList = {
   two: [
     { key: "TyroBroadblade", name: "Tyro Broadblade", mainStat: "ATK" },
   ],
-  one: [ ],
+  one: [
+    { key: "TrainingBroadblade", name: "Training Broadblade", mainStat: "ATK" },
+  ],
 };
 
 const rectifiersList = {
   five: [
+    { key: "BloomingJadehaven", name: "Blooming Jadehaven" },
     { key: "BosonAstrolabe", name: "Boson Astrolabe", mainStat: "EnergyRegen" },
     { key: "CosmicRipples", name: "Cosmic Ripples", mainStat: "ATK" },
     { key: "FirstlightsHerald", name: "Firstlight's Herald", mainStat: "EnergyRegen" },
@@ -106,7 +112,9 @@ const rectifiersList = {
   two: [
     { key: "TyroRectifier", name: "Tyro Rectifier", mainStat: "ATK" },
   ],
-  one: [ ],
+  one: [
+    { key: "TrainingRectifier", name: "Training Rectifier", mainStat: "ATK" },
+  ],
 };
 
 const pistolsList = {
