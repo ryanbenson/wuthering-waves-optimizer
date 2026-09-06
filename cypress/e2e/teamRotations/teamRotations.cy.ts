@@ -740,10 +740,24 @@ describe("Team Rotations export/import", () => {
     cy.get("[data-test-team-rotation-export-download]").click();
   });
 
-  it("List Presets shows the empty state when no presets are defined yet", () => {
+  it("List Presets lists the curated presets and imports one as a new team", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-presets]").click();
-    cy.get("[data-test-team-rotations-presets]").should("contain.text", "No team presets");
+    cy.get("[data-test-team-rotations-presets]").should("not.contain.text", "No team presets");
+
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Qingxiao S0R1 Hypercarry"]')
+      .find("[data-test-team-rotations-preset-import]")
+      .click();
+
+    // Importing a preset opens the new team, composition filled in, no actions.
+    cy.get("[data-test-team-rotation-name]").should(
+      "have.value",
+      "WuWaBuilds Qingxiao S0R1 Hypercarry",
+    );
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Qingxiao");
+    cy.get('[data-test-team-rotation-slot="1"]').should("contain.text", "Denia");
+    cy.get('[data-test-team-rotation-slot="2"]').should("contain.text", "Mornye");
+    cy.get("[data-test-team-rotation-action]").should("not.exist");
   });
 });
