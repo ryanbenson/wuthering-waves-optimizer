@@ -12,6 +12,30 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-07",
+    dateLabel: "September 7, 2026",
+    items: [
+      "Updated the team presets UI, has filters and searching, favorites and more space now that there's >70 of them",
+    ],
+  },
+  {
+    date: "2026-09-06",
+    dateLabel: "September 6, 2026",
+    items: [
+      "@WuWaBuilds just added a ton of team presets (>70)! 🙏 thanks for doing that!",
+      "v3 UI: Fixed v3 UI attacks tab, it was missing NS actions",
+    ],
+  },
+  {
+    date: "2026-09-05",
+    dateLabel: "September 5, 2026",
+    items: [
+      "Fixed preset rotation for Mornye",
+      "Added teams navigation enhancement. so if you click configure on a character from a team, then go back to teams, you go back into that previous team screen",
+      "v3 UI: Fixed bug where you could select a substat more than once in a single echo",
+    ],
+  },
+  {
     date: "2026-09-04",
     dateLabel: "September 4, 2026",
     items: [
