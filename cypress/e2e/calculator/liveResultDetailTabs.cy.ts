@@ -4,6 +4,8 @@
 // (target/damage-type picker, panel pin, stat-chip parity) stay in
 // liveResultBar.cy.ts; this spec covers the tab/accordion/width UI itself.
 
+import { config as cartethyiaConfig } from "./data/Cartethyia/data";
+
 function enableLiveResultBarLab() {
   cy.visit("/", {
     onBeforeLoad(win) {
@@ -88,6 +90,47 @@ describe("Live Result panel tabs (Labs flag)", () => {
       "have.attr",
       "aria-expanded",
       "true",
+    );
+  });
+
+  it("Attacks tab includes the Elemental Effects group (negative-status attacks) when the character has one enabled", () => {
+    // Cartethyia's saved fixture has aeroErosion enabled with 6 stacks, so
+    // allDamages.elementalReactions is populated — regression coverage for
+    // GROUP_DISPLAY_ORDER previously omitting "elementalReactions" (as well
+    // as "echoSetAttacks"/"utilityAttacks"), which silently hid Electro
+    // Flare/Fusion Burst/etc. from this accordion even though the legacy
+    // CalculatorDamages.vue panel always rendered them.
+    //
+    // Import with the labs flag off — with it on, Settings renders the
+    // "UI Overhaul 3.0" SettingsWorkspace sidebar shell instead of the
+    // legacy tab strip cy.importCharacterData drives (see
+    // settingsWorkspaceFlagged.cy.ts) — then enable the flag afterward via
+    // the real Labs toggle UI (a raw localStorage write + reload races the
+    // app's own persistedstate autosave and doesn't reliably stick).
+    cy.visit("/");
+    cy.importCharacterData(cartethyiaConfig);
+    cy.get("[data-test-nav-calculator]").click();
+    cy.get(".character__selection.Cartethyia").should("be.visible");
+
+    cy.get("[data-test-options-menu]").click();
+    cy.get("[data-test-options-settings]").click();
+    cy.get("[data-test-settings-labs]").click();
+    cy.get('input[type="checkbox"]').first().check();
+
+    cy.get("[data-test-nav-calculator]").click();
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+
+    cy.get("[data-test-live-result-bar-toggle]").click();
+    cy.get("[data-test-live-result-detail]").should("be.visible");
+    cy.get("[data-test-live-result-detail-tab-attacks]").click();
+
+    cy.get('[data-test-live-result-attack-group-key="elementalReactions"]')
+      .should("be.visible")
+      .and("contain.text", "Elemental Effects");
+    cy.get('[data-test-live-result-attack-group-key="elementalReactions"] [data-test-live-result-attack-group-toggle]').click();
+    cy.get('[data-test-live-result-attack-group-key="elementalReactions"]').should(
+      "contain.text",
+      "Aero Erosion",
     );
   });
 
