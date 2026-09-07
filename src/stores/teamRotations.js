@@ -20,6 +20,9 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
   state: () => ({
     teams: [],
     favoriteTeamIds: [],
+    // Curated preset names the user has starred in the Team presets browser —
+    // keyed by preset.name since presets have no id (see teamRotations/presets.ts).
+    favoritePresetNames: [],
   }),
   getters: {
     getTeamById: (state) => {
@@ -27,6 +30,9 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
     },
     isFavoriteTeam: (state) => {
       return (teamId) => state.favoriteTeamIds.includes(teamId);
+    },
+    isFavoritePreset: (state) => {
+      return (presetName) => state.favoritePresetNames.includes(presetName);
     },
   },
   actions: {
@@ -92,6 +98,14 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
       }
       this.favoriteTeamIds.splice(index, 1);
     },
+    toggleFavoritePreset(presetName) {
+      const index = this.favoritePresetNames.indexOf(presetName);
+      if (index === -1) {
+        this.favoritePresetNames.push(presetName);
+        return;
+      }
+      this.favoritePresetNames.splice(index, 1);
+    },
     setTeamCharacter(teamId, slot, characterId) {
       const team = this.teams.find((t) => t.id === teamId);
       if (!team) {
@@ -140,6 +154,7 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
     hardSetState(data) {
       this.teams = data?.teams ?? [];
       this.favoriteTeamIds = data?.favoriteTeamIds ?? [];
+      this.favoritePresetNames = data?.favoritePresetNames ?? [];
     },
   },
 });
