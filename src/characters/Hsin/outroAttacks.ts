@@ -6,7 +6,7 @@ export const outroAttacks = {
     {
       key: "HerselfAThousandLanternsDMG",
       label: "Herself a Thousand Lanterns DMG",
-      talent: "20%*30",
+      talent: "100%",
       type: "Outro",
     }
   ],

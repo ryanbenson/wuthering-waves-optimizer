@@ -3309,17 +3309,17 @@ export const allWeaponTeamBuffs = [
       {
         modifier: "Electro",
         modifierByRefinement: {
-          "1": 0.4,
-          "2": 0.5,
-          "3": 0.6,
-          "4": 0.7,
-          "5": 0.8,
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
         },
       },
     ],
     minStacks: 0,
     maxStacks: 0,
-    details: `When the wielder consumes Concerto Energy, grants the Yearning Mind effect and removes Binding Mind: the wielder additionally gains 40%/50%/60%/70%/80% Electro DMG Bonus for 14/14/14/14/14s. Switching to another Resonator ends this effect early.`,
+    details: `Upon obtaining Unison, grants the Binding Mind effect and removes Yearning Mind: Resonators in the team gain 24%/30%/36%/42%/48% Electro DMG Bonus for 30/30/30/30/30s. Effects of the same name cannot stack.`,
     alwaysEnabled: false,
   },
 ];
