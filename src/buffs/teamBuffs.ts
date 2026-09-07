@@ -216,6 +216,12 @@ export function resolveTeamBuffInstance(
   if (uniqueKey === "PactofNeonlightLeap") {
     data["ATK"] = 0.15;
   }
+  if (uniqueKey === "S2BreakingThunderSlayingEvil") {
+    // Casting Outro Skill grants a flat 10% Crit. DMG on activation, on top
+    // of the 6%/Unison Boon stack handled by the generic hasStacks path
+    // below.
+    data["CritDMG"] = 0.1;
+  }
   if (uniqueKey === "InherentSkillEtchedColorsOffTuneBuildupRate") {
     if (stacksVal >= 1) {
       const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(stacksVal);

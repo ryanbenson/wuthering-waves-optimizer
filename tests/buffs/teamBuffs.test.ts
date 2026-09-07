@@ -128,6 +128,20 @@ describe("resolveTeamBuffInstance", () => {
     expect(result.data).toEqual({ ATK: 0.15 });
   });
 
+  it("hardcodes S2BreakingThunderSlayingEvil's flat 10% Crit. DMG on activation, plus 6% per Unison Boon stack", () => {
+    const def: TeamBuffDef = {
+      key: "S2BreakingThunderSlayingEvil",
+      hasStacks: true,
+      modifiers: [{ modifier: "CritDMG", modifierValue: 0.06 }],
+    };
+
+    const zeroStacks = resolveTeamBuffInstance(def, { isEnabled: true, stacks: 0 }, "Jinhsi", {}, {});
+    expect(zeroStacks.data).toEqual({ CritDMG: 0.1 });
+
+    const maxStacks = resolveTeamBuffInstance(def, { isEnabled: true, stacks: 4 }, "Jinhsi", {}, {});
+    expect(maxStacks.data.CritDMG).toBeCloseTo(0.34);
+  });
+
   it("computes InherentSkillEtchedColorsOffTuneBuildupRate's tune-break boost from stacks", () => {
     const def: TeamBuffDef = { key: "InherentSkillEtchedColorsOffTuneBuildupRate", modifiers: [] };
     const result = resolveTeamBuffInstance(

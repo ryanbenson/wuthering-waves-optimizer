@@ -20,6 +20,7 @@ interface ResonanceChains {
   SequenceNode3DreamsFadeSwordAbides?: ResonanceChainEntry;
   SequenceNode2LikePetalsThatFallWithoutASound?: ResonanceChainEntry;
   SequenceNode6TheMoonOwesItsLightToTheLiving?: ResonanceChainEntry;
+  SequenceNode6NineShadowsAtHerSide?: ResonanceChainEntry;
 }
 
 export function getEffectiveMaxStacks(
@@ -89,6 +90,15 @@ export function getEffectiveMaxStacks(
     }
     if (resonanceChains?.SequenceNode6TheMoonOwesItsLightToTheLiving?.isEnabled) {
       effectiveMaxStacks += 1;
+    }
+  }
+
+  if (character === "Suoming" && uniqueKey === "UnisonBoon") {
+    // Sequence Node 6: Nine Shadows at Her Side raises the max stacks of
+    // Unison Boon from 2 to 4 (the per-stack value increase is handled in
+    // stats.ts's computeSelfBuffs).
+    if (resonanceChains?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
+      effectiveMaxStacks = 4;
     }
   }
 

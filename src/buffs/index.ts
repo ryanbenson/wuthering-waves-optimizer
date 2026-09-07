@@ -2708,6 +2708,22 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
       maxStacks: 2,
       alwaysEnabled: false,
     },
+    {
+      key: `S2BreakingThunderSlayingEvil`,
+      name: `S2: Breaking Thunder, Slaying Evil`,
+      details: `<div>Casting Outro Skill increases the incoming Resonator's Crit. DMG by 10%, plus an additional 6% for each stack of Unison Boon they have, up to 24%. This effect lasts for 30s or until the Resonator is switched out.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.06,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 4,
+      alwaysEnabled: false,
+    },
   ],
 };
 

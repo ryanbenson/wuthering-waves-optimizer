@@ -1097,6 +1097,27 @@ export const computeSelfBuffs = (
         }
       }
     }
+    // Suoming Sequence Node 6: Nine Shadows at Her Side increases the effect
+    // of each Unison Boon stack by 50% (3% -> 4.5% Total DMG per stack); the
+    // max stacks increase (2 -> 4) is handled in effectiveBuffStacks.ts.
+    if (character === "Suoming" && key === "UnisonBoon") {
+      const unisonBoonStacks = buffData?.stacks ?? 0;
+      if (
+        unisonBoonStacks > 0 &&
+        resonanceChainsConfig?.SequenceNode6NineShadowsAtHerSide?.isEnabled
+      ) {
+        data["TotalDamage"] =
+          (data["TotalDamage"] || 0) + unisonBoonStacks * 0.015;
+      }
+    }
+    // Suoming Sequence Node 6: Nine Shadows at Her Side further increases
+    // Crit. DMG by 80% while Seal Master (from Inherent Skill: Sunken Seal,
+    // Forged Lock) is active.
+    if (character === "Suoming" && key === "InherentSkillSunkenSealForgedLock") {
+      if (resonanceChainsConfig?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
+        data["CritDMG"] = (data["CritDMG"] || 0) + 0.8;
+      }
+    }
     if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {
       if (buffData?.stacks >= 1) {
         const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(

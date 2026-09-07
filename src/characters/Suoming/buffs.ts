@@ -160,5 +160,20 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+  },
+  {
+    key: `UnisonBoon`,
+    name: `Unison Boon`,
+    details: `<div>Each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> increases the total DMG dealt by Resonators with the Unison Response ability in the team by 3%, stacking up to 2 times.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "TotalDamage",
+        modifierValue: 0.03,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 2,
+    alwaysEnabled: false,
   }
 ];
