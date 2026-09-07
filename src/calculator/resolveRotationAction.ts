@@ -83,5 +83,18 @@ export function resolveRotationActionToAttackData(
     actionData.stacks = Number(action.negativeStatusStacks ?? 1);
   }
 
+  if (
+    actionType === "forteCircuit" &&
+    (actionKey === "HeartOfThunderInstantDMG" ||
+      actionKey === "HeartOfThunderDelayedDMG")
+  ) {
+    // target's current Electro Flare stacks
+    actionData.stacks = Number(action.negativeStatusStacks ?? 1);
+  }
+  if (actionType === "forteCircuit" && actionKey === "HeartOfThunderDelayedDMG") {
+    // Heart of Thunder stacks consumed this time
+    actionData.heartOfThunderStacks = Number(action.heartOfThunderStacks ?? 0);
+  }
+
   return actionData;
 }

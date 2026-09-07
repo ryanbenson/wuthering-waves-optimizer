@@ -87,6 +87,24 @@ export const forteCircuitAttacks = {
         "10": "179.43%*4+17.95%+35.89%*2+44.86%*2",
       },
       type: "Skill",
+    },
+    {
+      key: "HeartOfThunderInstantDMG",
+      label: "Heart of Thunder: Instant Electro Flare DMG",
+      type: "ElementalEffect",
+      element: "Electro",
+      subType: "ElectroFlare",
+      talent: "",
+      requiresResonanceChain: "ResonanceModeElectroFlareHeartOfThunderInstantDMG",
+    },
+    {
+      key: "HeartOfThunderDelayedDMG",
+      label: "Heart of Thunder: Delayed Electro Flare DMG",
+      type: "ElementalEffect",
+      element: "Electro",
+      subType: "ElectroFlare",
+      talent: "",
+      requiresResonanceChain: "ResonanceModeElectroFlareHeartOfThunderDelayedDMG",
     }
   ],
 };

@@ -7,6 +7,7 @@ import {
   getBonusDamageValue,
   getEnemyResistValue,
   getSpectroFrazzleDamage,
+  getElectroFlareDamage,
   calcDamage,
 } from "../../src/calculator/calculator";
 
@@ -352,6 +353,54 @@ describe("#getSpectroFrazzleDamage resist ignore", () => {
     expect(withReduction.totalDamageContext.resistModifier).not.toEqual(
       getEnemyResistValue(enemyResist, resistanceReduction, 0.1),
     );
+  });
+});
+
+describe("#getElectroFlareDamage Hsin Heart of Thunder kit multiplier composition", () => {
+  // Hsin's Heart of Thunder procs pass talentModifierMultiply = kitMultiplier - 1
+  // into getElectroFlareDamage, relying on (1 + talentModifierMultiply) === kitMultiplier
+  // when no other buff contributes to the multiplier.
+  const charLevel = "90";
+  const enemyLevel = 90;
+  const enemyResist = 0.1;
+
+  function baseDamageAt(stacks: number, talentModifierMultiply: number) {
+    return getElectroFlareDamage(
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      0,
+      0,
+      talentModifierMultiply,
+      0,
+      0,
+      1,
+      1,
+      stacks,
+      0,
+    ).totalDamage;
+  }
+
+  it("instant proc (200% kit multiplier) exactly doubles the base Electro Flare damage", () => {
+    for (const stacks of [1, 8, 16]) {
+      const base = baseDamageAt(stacks, 0);
+      const instantProc = baseDamageAt(stacks, 2.0 - 1);
+      expect(instantProc).toBeCloseTo(base * 2, 6);
+    }
+  });
+
+  it("delayed proc (40% x stacks consumed) scales the base Electro Flare damage linearly", () => {
+    const stacks = 10;
+    const base = baseDamageAt(stacks, 0);
+    for (const consumed of [0, 1, 5, 100]) {
+      const kitMultiplier = 0.4 * consumed;
+      const delayedProc = baseDamageAt(stacks, kitMultiplier - 1);
+      expect(delayedProc).toBeCloseTo(base * kitMultiplier, 6);
+    }
+  });
+
+  it("produces zero damage at 0 target Electro Flare stacks regardless of kit multiplier", () => {
+    expect(baseDamageAt(0, 2.0 - 1)).toEqual(0);
   });
 });
 

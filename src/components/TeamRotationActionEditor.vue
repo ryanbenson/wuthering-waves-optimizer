@@ -37,6 +37,7 @@
         :rotation-main-echo-rank="mainEchoRankForSlot[action.slot] ?? null"
         :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
         :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
+        :heart-of-thunder-stacks="Number(action.heartOfThunderStacks ?? 0)"
         :show-disabled-option="false"
         :can-reorder="canReorder"
         :advanced-buff-chips="advancedBuffChips"

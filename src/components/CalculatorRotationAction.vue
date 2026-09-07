@@ -246,6 +246,27 @@
               class="range range-xs"
               @input="onElectroRageStacksInput" />
           </div>
+          <div
+            v-if="isHeartOfThunderDelayedProc"
+            class="flex flex-col gap-2 flex-1 min-w-[140px]">
+            <label
+              class="text-base font-medium opacity-90"
+              for="heartOfThunderStacksInput">
+              Heart of Thunder stacks
+              <span class="text-xl font-bold text-primary">{{
+                heartOfThunderStacksLocal
+              }}</span>
+            </label>
+            <input
+              id="heartOfThunderStacksInput"
+              v-model.number="heartOfThunderStacksLocal"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              class="range range-xs"
+              @input="onHeartOfThunderStacksInput" />
+          </div>
         </div>
       </div>
     </div>
@@ -400,6 +421,7 @@ const props = withDefaults(
     actionMainEchoRank?: number | null;
     negativeStatusStacks?: number;
     electroRageStacks?: number;
+    heartOfThunderStacks?: number;
     /** Hides "Disabled" — used by Team Rotations, where it isn't supported yet. */
     showDisabledOption?: boolean;
     canReorder?: boolean;
@@ -423,6 +445,7 @@ const props = withDefaults(
     actionMainEchoRank: null,
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    heartOfThunderStacks: 0,
     showDisabledOption: true,
     canReorder: false,
     advancedBuffChips: () => [],
@@ -466,6 +489,7 @@ const disabled = ref(false);
 const buffData = ref<BuffRow[]>([]);
 const negativeStatusStacksLocal = ref(1);
 const electroRageStacksLocal = ref(0);
+const heartOfThunderStacksLocal = ref(0);
 
 const currentCharacter = computed(
   () =>
@@ -499,6 +523,8 @@ const negativeStatusAttacksList = computed(() => negativeStatusAttacks);
 
 const ELEMENTAL_EFFECT_STACK_ATTACK_KEYS = new Set([
   "ElementalEffectGlacioBite",
+  "HeartOfThunderInstantDMG",
+  "HeartOfThunderDelayedDMG",
 ]);
 
 const isNegativeStatusSkill = computed(
@@ -517,9 +543,22 @@ const isElectroFlareNegativeStatus = computed(
     actionKeyValue.value === "ElementalEffectElectroFlare",
 );
 
+const isHeartOfThunderDelayedProc = computed(
+  () => actionKeyValue.value === "HeartOfThunderDelayedDMG",
+);
+
+const ELECTRO_FLARE_STACK_ATTACK_KEYS = new Set([
+  "ElementalEffectElectroFlare",
+  "HeartOfThunderInstantDMG",
+  "HeartOfThunderDelayedDMG",
+]);
+
 const negativeStatusStackMax = computed(() => {
   if (actionKeyValue.value === "ElementalEffectAeroErosion") {
     return 12;
+  }
+  if (ELECTRO_FLARE_STACK_ATTACK_KEYS.has(actionKeyValue.value ?? "")) {
+    return 16;
   }
   return 13;
 });
@@ -731,6 +770,7 @@ function buildActionPayload(orderOverride: number | string | null = null) {
     isDisabled: disabled.value,
     negativeStatusStacks: negativeStatusStacksLocal.value,
     electroRageStacks: electroRageStacksLocal.value,
+    heartOfThunderStacks: heartOfThunderStacksLocal.value,
   };
   if (actionSkillType.value === "echoAttacks") {
     action.mainEcho = props.actionMainEcho || props.rotationMainEcho;
@@ -785,6 +825,18 @@ function onElectroRageStacksInput() {
     v = 13;
   }
   electroRageStacksLocal.value = v;
+  emit("action-update", buildActionPayload());
+}
+
+function onHeartOfThunderStacksInput() {
+  let v = Number(heartOfThunderStacksLocal.value);
+  if (Number.isNaN(v) || v < 0) {
+    v = 0;
+  }
+  if (v > 100) {
+    v = 100;
+  }
+  heartOfThunderStacksLocal.value = v;
   emit("action-update", buildActionPayload());
 }
 
@@ -924,6 +976,10 @@ onMounted(() => {
   electroRageStacksLocal.value =
     props.electroRageStacks !== undefined && props.electroRageStacks !== null
       ? props.electroRageStacks
+      : 0;
+  heartOfThunderStacksLocal.value =
+    props.heartOfThunderStacks !== undefined && props.heartOfThunderStacks !== null
+      ? props.heartOfThunderStacks
       : 0;
 });
 </script>

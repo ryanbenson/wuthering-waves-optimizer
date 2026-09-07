@@ -500,6 +500,14 @@ export const computeSelfBuffs = (
     if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
+    // Runs before the hasStacks stacks<=0 "continue" below so the delayed
+    // proc stays selectable/enabled in rotations even at 0 Heart of Thunder
+    // stacks consumed (it just deals 0 damage there, per the kit formula).
+    if (character === "Hsin" && key === "ResonanceModeElectroFlareHeartOfThunderDelayedDMG") {
+      data.EnableAttack.push("ResonanceModeElectroFlareHeartOfThunderDelayedDMG");
+      data.specificTalentBuffs["HeartOfThunderDelayedDMG:heartOfThunderStacks"] =
+        buffData?.stacks ?? 0;
+    }
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
     const modifiersData = buff?.modifiers ?? [];

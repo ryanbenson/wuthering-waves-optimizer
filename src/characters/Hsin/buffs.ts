@@ -70,6 +70,36 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: `ResonanceModeElectroFlareHeartOfThunderInstantDMG`,
+    name: `Resonance Mode - Electro Flare: Heart of Thunder (Instant)`,
+    stance: "Electro Flare",
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, when <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Illumining Form</span> hits a target, if Hsin has at least 5 stacks of <span style="color:#ffd12f;" class="font-bold">Heart of Thunder</span>, consume 5 stacks to trigger 1 instance of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG, with its DMG Multiplier equal to 200% times the <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG Multiplier corresponding to the target's current <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> stacks.<br>Uses the target's current Electro Flare stacks from the Enemy panel by default; add this attack to a rotation action to override with a specific "Stacks" value instead.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["ResonanceModeElectroFlareHeartOfThunderInstantDMG"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `ResonanceModeElectroFlareHeartOfThunderDelayedDMG`,
+    name: `Resonance Mode - Electro Flare: Heart of Thunder (Delayed)`,
+    stance: "Electro Flare",
+    details: `<div>Some time after casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Illumining Form</span> while in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Electro Flare</span>, Hsin consumes all remaining stacks of <span style="color:#ffd12f;" class="font-bold">Heart of Thunder</span> at once to trigger 1 instance of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG, with its DMG Multiplier equal to 40% times the number of <span style="color:#ffd12f;" class="font-bold">Heart of Thunder</span> stacks consumed this time, times the <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> DMG Multiplier corresponding to the target's current <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> stacks.</div>`,
+    hasStacks: true,
+    // EnableAttack + heartOfThunderStacks are handled unconditionally in
+    // computeSelfBuffs (stats.ts) so this attack stays enabled even at 0
+    // stacks, instead of the generic hasStacks stacks<=0 skip.
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 100,
+    alwaysEnabled: false,
+  },
+  {
     key: `StatBonusCritRate1`,
     name: `Stat Bonus: Crit. Rate+`,
     details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
