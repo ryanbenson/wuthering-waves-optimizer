@@ -551,6 +551,11 @@ export function getCharacterRosterDisplayName(characterKey: string): string {
   return characterKey;
 }
 
+/** Portrait image URL for a character key. */
+export function characterPortraitUrl(characterKey: string): string {
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${characterKey}.png`;
+}
+
 export const characterElementsSetImageMap: Record<string, string> = {
   Glacio:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",

@@ -760,4 +760,67 @@ describe("Team Rotations export/import", () => {
     cy.get('[data-test-team-rotation-slot="2"]').should("contain.text", "Mornye");
     cy.get("[data-test-team-rotation-action]").should("not.exist");
   });
+
+  it("List Presets: search, character filter, element filter and favoriting narrow and mark the grid", () => {
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get('[data-test="team-rotations-overflow-menu"]').click();
+    cy.get("[data-test-team-rotations-toggle-presets]").click();
+
+    // Search matches the preset's own name.
+    cy.get("[data-test-team-rotations-presets-search]").type("Camellya");
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Camellya S0R1 Hypercarry"]').should(
+      "exist",
+    );
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Aemeath S0R1 Hypercarry"]').should(
+      "not.exist",
+    );
+    cy.get("[data-test-team-rotations-presets-search]").clear();
+
+    // The character filter reads characterIds directly, so it finds a
+    // character filling a support slot even though the preset's name never
+    // mentions them — "WuWaBuilds Aemeath S0R1 Hypercarry" carries Mornye as
+    // its third support and would never match a plain text search for her.
+    cy.richSelect("[data-test-team-rotations-presets-character-filter]", "Mornye");
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Aemeath S0R1 Hypercarry"]').should(
+      "exist",
+    );
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Camellya S0R1 Hypercarry"]').should(
+      "not.exist",
+    );
+    // Two AppFilterPanel instances are mounted at once here — the page's own
+    // and the modal's — so scope to the modal to avoid an ambiguous match.
+    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+
+    // The element filter matches any character in the team, not just the carry.
+    cy.get('[data-test-team-rotations-presets-element-filter="Havoc"]').click();
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Camellya S0R1 Hypercarry"]').should(
+      "exist",
+    );
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Aemeath S0R1 Hypercarry"]').should(
+      "not.exist",
+    );
+    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+    cy.get("[data-test-team-rotations-presets-search]").should("have.value", "");
+
+    // Favoriting a preset (the shared heart button) works independently of filtering.
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Qingxiao S0R1 Hypercarry"]')
+      .find("[data-test-favorite]")
+      .should("have.attr", "aria-label", "Add to favorites")
+      .click()
+      .should("have.attr", "aria-label", "Remove from favorites");
+
+    // The Favorites filter narrows to just what's been starred.
+    cy.get("[data-test-team-rotations-presets-favorites-filter]").click();
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Qingxiao S0R1 Hypercarry"]').should(
+      "exist",
+    );
+    cy.get('[data-test-team-rotations-preset="WuWaBuilds Camellya S0R1 Hypercarry"]').should(
+      "not.exist",
+    );
+    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+    cy.get("[data-test-team-rotations-presets-favorites-filter]").should(
+      "not.have.class",
+      "btn-active",
+    );
+  });
 });
