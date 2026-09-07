@@ -153,8 +153,15 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
-    modelValue: AppRichSelectValue;
+    // Single-select v-model — ignored when `multiple` is true (use
+    // `selectedValues`/`v-model:selected-values` instead). Kept as a
+    // non-widened type so every existing single-select caller's typed
+    // `@update:modelValue` handler stays valid untouched.
+    modelValue?: AppRichSelectValue;
+    // Multi-select v-model — only read/written when `multiple` is true.
+    selectedValues?: AppRichSelectValue[];
     options: AppRichSelectOption[];
+    multiple?: boolean;
     searchable?: boolean;
     searchPlaceholder?: string;
     allowEmpty?: boolean;
@@ -167,6 +174,9 @@ const props = withDefaults(
     dataTest?: string;
   }>(),
   {
+    modelValue: null,
+    selectedValues: () => [],
+    multiple: false,
     searchable: false,
     searchPlaceholder: "Type to find…",
     allowEmpty: false,
@@ -182,6 +192,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   "update:modelValue": [value: AppRichSelectValue];
+  "update:selectedValues": [value: AppRichSelectValue[]];
 }>();
 
 const attrs = useAttrs();
@@ -244,7 +255,9 @@ const MENU_GAP_PX = 4;
 
 const allOptions = computed((): AppRichSelectOption[] => {
   const options = [...props.options];
-  if (props.allowEmpty) {
+  // The synthetic "clear" option only makes sense for a single value — a
+  // multi-select clears via the outer filter panel's "Clear all" instead.
+  if (props.allowEmpty && !props.multiple) {
     options.unshift({
       value: null,
       label: props.emptyLabel,
@@ -253,11 +266,33 @@ const allOptions = computed((): AppRichSelectOption[] => {
   return options;
 });
 
-const selectedOption = computed(() =>
-  allOptions.value.find((option) => option.value === props.modelValue) ?? null,
-);
+const selectedOption = computed(() => {
+  if (props.multiple) {
+    return null;
+  }
+  return (
+    allOptions.value.find((option) => option.value === props.modelValue) ??
+    null
+  );
+});
 
 const selectedLabel = computed(() => {
+  if (props.multiple) {
+    const values = props.selectedValues;
+    if (!values.length) {
+      return props.emptyLabel;
+    }
+    if (values.length <= 2) {
+      return values
+        .map(
+          (value) =>
+            allOptions.value.find((option) => option.value === value)
+              ?.label ?? String(value),
+        )
+        .join(", ");
+    }
+    return `${values.length} selected`;
+  }
   if (selectedOption.value) {
     return selectedOption.value.label;
   }
@@ -327,7 +362,7 @@ const visibleGroups = computed((): OptionGroup[] => {
 });
 
 watch(
-  () => props.modelValue,
+  () => (props.multiple ? props.selectedValues : props.modelValue),
   () => {
     searchQuery.value = "";
   },
@@ -351,11 +386,22 @@ watch(searchQuery, async () => {
 });
 
 function isSelected(value: AppRichSelectValue) {
+  if (props.multiple) {
+    return props.selectedValues.includes(value);
+  }
   return value === props.modelValue;
 }
 
 function selectOption(option: AppRichSelectOption) {
   if (option.disabled || props.disabled) {
+    return;
+  }
+  if (props.multiple) {
+    const next = props.selectedValues.includes(option.value)
+      ? props.selectedValues.filter((value) => value !== option.value)
+      : [...props.selectedValues, option.value];
+    emit("update:selectedValues", next);
+    // Keep the menu open so several substats can be toggled in one pass.
     return;
   }
   emit("update:modelValue", option.value);

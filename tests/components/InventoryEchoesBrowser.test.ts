@@ -189,6 +189,93 @@ describe("InventoryEchoesBrowser rating filter", () => {
   });
 });
 
+describe("InventoryEchoesBrowser substat filter", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [
+      makeInventoryEcho("has-crit-rate", ELITE_ECHO, 3, "EnergyRegen", {
+        echoSubStatsType1: "CritRate",
+        echoSubStatsValue1: 7.5,
+        echoSubStatsType2: "ATK",
+        echoSubStatsValue2: 9.4,
+      }),
+      makeInventoryEcho("has-crit-dmg", ELITE_ECHO, 3, "EnergyRegen", {
+        echoSubStatsType1: "CritDMG",
+        echoSubStatsValue1: 16.2,
+        echoSubStatsType2: "ATK",
+        echoSubStatsValue2: 9.4,
+      }),
+      makeInventoryEcho("has-neither", ELITE_ECHO, 3, "EnergyRegen", {
+        echoSubStatsType1: "HP",
+        echoSubStatsValue1: 8,
+        echoSubStatsType2: "DEF",
+        echoSubStatsValue2: 8,
+      }),
+    ];
+  });
+
+  // Several AppRichSelect instances share the same option values (e.g.
+  // "CritRate" is both a substat and a possible main stat), so option
+  // lookups must be scoped to the substat filter's own dropdown root rather
+  // than the whole container.
+  async function openSubstatFilter(container: HTMLElement) {
+    const trigger = container.querySelector<HTMLElement>(
+      '[aria-label="Substat filter"]',
+    )!;
+    await fireEvent.click(trigger);
+    return trigger.closest<HTMLElement>(".app-rich-select")!;
+  }
+
+  it("filters the list down to echoes carrying the selected substat", async () => {
+    const { container } = renderBrowser({ AppRichSelect: false });
+    expect(container.querySelectorAll("[data-test-card]").length).toBe(3);
+
+    const substatRoot = await openSubstatFilter(container);
+    const option = substatRoot.querySelector<HTMLElement>(
+      '[data-test-rich-select-option="CritRate"]',
+    )!;
+    await fireEvent.click(option);
+
+    const ids = Array.from(container.querySelectorAll("[data-test-card]")).map(
+      (el) => el.getAttribute("data-echo-id"),
+    );
+    expect(ids).toEqual(["has-crit-rate"]);
+  });
+
+  it("matches ANY selected substat when more than one is chosen", async () => {
+    const { container } = renderBrowser({ AppRichSelect: false });
+
+    const substatRoot = await openSubstatFilter(container);
+    await fireEvent.click(
+      substatRoot.querySelector('[data-test-rich-select-option="CritRate"]')!,
+    );
+    await fireEvent.click(
+      substatRoot.querySelector('[data-test-rich-select-option="CritDMG"]')!,
+    );
+
+    const ids = Array.from(container.querySelectorAll("[data-test-card]"))
+      .map((el) => el.getAttribute("data-echo-id"))
+      .sort();
+    expect(ids).toEqual(["has-crit-dmg", "has-crit-rate"]);
+  });
+
+  it("resets the substat filter when Clear all is clicked", async () => {
+    const { container, getByText } = renderBrowser({ AppRichSelect: false });
+
+    const substatRoot = await openSubstatFilter(container);
+    await fireEvent.click(
+      substatRoot.querySelector('[data-test-rich-select-option="CritRate"]')!,
+    );
+    expect(container.querySelectorAll("[data-test-card]").length).toBe(1);
+
+    const clearButton = getByText("Clear all").closest("button")!;
+    await fireEvent.click(clearButton);
+
+    expect(container.querySelectorAll("[data-test-card]").length).toBe(3);
+  });
+});
+
 describe("InventoryEchoesBrowser bulk delete confirmation", () => {
   beforeEach(() => {
     setActivePinia(createPinia());

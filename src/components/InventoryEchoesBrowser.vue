@@ -119,6 +119,15 @@
           empty-label="Echo"
           aria-label="Echo filter"
           class="w-fit min-w-[200px]" />
+        <AppRichSelect
+          v-model:selected-values="substatFilter"
+          :options="substatFilterOptions"
+          multiple
+          searchable
+          allow-empty
+          empty-label="Substat"
+          aria-label="Substat filter"
+          class="w-fit min-w-[160px]" />
       </div>
 
       <!-- Status flags -->
@@ -633,8 +642,10 @@ import {
   getEchoCritValue,
   getEchoRollValue,
   getEchoSetIconByType,
+  getEchoSubStatEntries,
   getReadableSubStatLabel,
   statsTable,
+  subStats,
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
@@ -709,6 +720,7 @@ const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
 const duplicatesFilter = ref(false);
 const incompleteFilter = ref(false);
+const substatFilter = ref<string[]>([]);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
@@ -733,6 +745,7 @@ const activeFilterCount = computed(() => {
   if (favoriteFilter.value) count += 1;
   if (duplicatesFilter.value) count += 1;
   if (incompleteFilter.value) count += 1;
+  if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
   if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
@@ -811,6 +824,7 @@ watch(
     favoriteFilter,
     duplicatesFilter,
     incompleteFilter,
+    substatFilter,
     cvMin,
     cvMax,
     rvMin,
@@ -870,6 +884,13 @@ const echoesList = computed(() => {
   }
   if (incompleteFilter.value) {
     allEchoes = allEchoes.filter((e) => isEchoIncomplete(e));
+  }
+  if (substatFilter.value.length > 0) {
+    allEchoes = allEchoes.filter((e) =>
+      getEchoSubStatEntries(e).some(([type]) =>
+        substatFilter.value.includes(type),
+      ),
+    );
   }
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
   const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
@@ -947,6 +968,9 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
 const echoSelectOptions = computed((): AppRichSelectOption[] =>
   buildEchoSelectOptions(mainEchoOptions.value),
 );
+const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
+  getReadableSubStatLabel(String(stat)),
+);
 
 function getEchoSetImage(set: string) {
   return getEchoSetIconByType(set);
@@ -1009,6 +1033,7 @@ function resetFilters() {
   favoriteFilter.value = false;
   duplicatesFilter.value = false;
   incompleteFilter.value = false;
+  substatFilter.value = [];
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;
