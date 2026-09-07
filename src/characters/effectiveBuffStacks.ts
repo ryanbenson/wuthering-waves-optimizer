@@ -2,6 +2,14 @@ interface ResonanceChainEntry {
   isEnabled?: boolean;
 }
 
+interface SelfBuffEntry {
+  isEnabled?: boolean;
+}
+
+interface SelfBuffs {
+  InherentSkillGleaningSimpleJoysUnison?: SelfBuffEntry;
+}
+
 interface ResonanceChains {
   SequenceNode1StainedinScorchedEarth?: ResonanceChainEntry;
   SequenceNode6EngravedinRadiantLight?: ResonanceChainEntry;
@@ -11,6 +19,7 @@ interface ResonanceChains {
   SequenceNode3ThroughDarkandWindtheErlkingFollows?: ResonanceChainEntry;
   SequenceNode3DreamsFadeSwordAbides?: ResonanceChainEntry;
   SequenceNode2LikePetalsThatFallWithoutASound?: ResonanceChainEntry;
+  SequenceNode6TheMoonOwesItsLightToTheLiving?: ResonanceChainEntry;
 }
 
 export function getEffectiveMaxStacks(
@@ -18,6 +27,7 @@ export function getEffectiveMaxStacks(
   uniqueKey: string,
   maxStacks: number | undefined,
   resonanceChains: ResonanceChains | undefined,
+  selfBuffs: SelfBuffs | undefined = undefined,
 ): number {
   let effectiveMaxStacks = maxStacks || 1;
 
@@ -68,6 +78,17 @@ export function getEffectiveMaxStacks(
   if (character === "Qingxiao" && uniqueKey === "Mindlock") {
     if (resonanceChains?.SequenceNode2LikePetalsThatFallWithoutASound?.isEnabled) {
       effectiveMaxStacks = 25;
+    }
+  }
+
+  if (character === "Hsin" && uniqueKey === "UnisonBoon") {
+    // Inherent Skill: Gleaning Simple Joys and Sequence Node 6 each
+    // independently grant +1 max Unison Boon stacks; both stack additively.
+    if (selfBuffs?.InherentSkillGleaningSimpleJoysUnison?.isEnabled) {
+      effectiveMaxStacks += 1;
+    }
+    if (resonanceChains?.SequenceNode6TheMoonOwesItsLightToTheLiving?.isEnabled) {
+      effectiveMaxStacks += 1;
     }
   }
 

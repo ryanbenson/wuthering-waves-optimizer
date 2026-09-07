@@ -1067,6 +1067,36 @@ export const computeSelfBuffs = (
         }
       }
     }
+    // Unison Boon's own stack count also drives per-stack bonuses on two
+    // Sequence Node 1/3 Unison-branch modifiers, on top of their flat
+    // resonance-chain modifiers declared normally.
+    if (character === "Hsin" && key === "UnisonBoon") {
+      const unisonBoonStacks = buffData?.stacks ?? 0;
+      if (unisonBoonStacks > 0 && activeStance === "Unison") {
+        if (
+          resonanceChainsConfig?.SequenceNode1ABoatToCrossTheRisingTideUnison
+            ?.isEnabled
+        ) {
+          [
+            "IntroSkillAnsweringFormManifoldUnisonDMG",
+            "IntroSkillIlluminingFormManifoldUnisonDMG",
+          ].forEach((talentKey) => {
+            data.specificTalentBuffs[`${talentKey}:talentModifierMultiply`] =
+              (data.specificTalentBuffs[`${talentKey}:talentModifierMultiply`] ||
+                0) +
+              unisonBoonStacks * 0.1;
+          });
+        }
+        if (
+          resonanceChainsConfig?.SequenceNode3ADreamOfReturnAmongTheHillsUnison
+            ?.isEnabled
+        ) {
+          data.specificTalentBuffs["PillarsAcrossHeavenDMG:CritDMG"] =
+            (data.specificTalentBuffs["PillarsAcrossHeavenDMG:CritDMG"] || 0) +
+            unisonBoonStacks * 0.15;
+        }
+      }
+    }
     if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {
       if (buffData?.stacks >= 1) {
         const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(

@@ -402,6 +402,32 @@ describe("#getElectroFlareDamage Hsin Heart of Thunder kit multiplier compositio
   it("produces zero damage at 0 target Electro Flare stacks regardless of kit multiplier", () => {
     expect(baseDamageAt(0, 2.0 - 1)).toEqual(0);
   });
+
+  it("Sequence Node 1's upgraded instant proc (260% kit multiplier) is exactly 2.6x the base", () => {
+    for (const stacks of [1, 8, 16]) {
+      const base = baseDamageAt(stacks, 0);
+      const instantProc = baseDamageAt(stacks, 2.6 - 1);
+      expect(instantProc).toBeCloseTo(base * 2.6, 6);
+    }
+  });
+
+  it("Sequence Node 1's upgraded delayed proc (52% x stacks consumed) scales linearly", () => {
+    const stacks = 10;
+    const base = baseDamageAt(stacks, 0);
+    for (const consumed of [0, 1, 5, 100]) {
+      const kitMultiplier = 0.52 * consumed;
+      const delayedProc = baseDamageAt(stacks, kitMultiplier - 1);
+      expect(delayedProc).toBeCloseTo(base * kitMultiplier, 6);
+    }
+  });
+
+  it("Sequence Node 3's Pillars Across Heaven proc (1500% kit multiplier) is exactly 15x the base", () => {
+    for (const stacks of [1, 8, 16]) {
+      const base = baseDamageAt(stacks, 0);
+      const proc = baseDamageAt(stacks, 15.0 - 1);
+      expect(proc).toBeCloseTo(base * 15.0, 6);
+    }
+  });
 });
 
 describe("#calcDamage talentModifierAdd multi-hit distribution", () => {

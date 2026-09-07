@@ -525,6 +525,7 @@ const ELEMENTAL_EFFECT_STACK_ATTACK_KEYS = new Set([
   "ElementalEffectGlacioBite",
   "HeartOfThunderInstantDMG",
   "HeartOfThunderDelayedDMG",
+  "SequenceNode3PillarsAcrossHeavenElectroFlareDMG",
 ]);
 
 const isNegativeStatusSkill = computed(
@@ -551,6 +552,7 @@ const ELECTRO_FLARE_STACK_ATTACK_KEYS = new Set([
   "ElementalEffectElectroFlare",
   "HeartOfThunderInstantDMG",
   "HeartOfThunderDelayedDMG",
+  "SequenceNode3PillarsAcrossHeavenElectroFlareDMG",
 ]);
 
 const negativeStatusStackMax = computed(() => {

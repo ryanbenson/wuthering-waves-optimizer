@@ -105,6 +105,15 @@ export const forteCircuitAttacks = {
       subType: "ElectroFlare",
       talent: "",
       requiresResonanceChain: "ResonanceModeElectroFlareHeartOfThunderDelayedDMG",
+    },
+    {
+      key: "SequenceNode3PillarsAcrossHeavenElectroFlareDMG",
+      label: "Sequence Node 3: Pillars Across Heaven Electro Flare DMG",
+      type: "ElementalEffect",
+      element: "Electro",
+      subType: "ElectroFlare",
+      talent: "",
+      requiresResonanceChain: "SequenceNode3ADreamOfReturnAmongTheHillsElectroFlare",
     }
   ],
 };

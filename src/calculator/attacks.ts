@@ -1065,8 +1065,16 @@ export const calculateAttackDamage = (
   const customBuffTotalDamage = n(context.buffs.customBuffs?.TotalDamage);
   const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
   const teamBuffsTotalDamage = context.buffs.teamBuffsData?.TotalDamage ?? 0;
+  const selfBuffTotalDamage = context.buffs.charBuffsData?.TotalDamage ?? 0;
+  const resonanceChainTotalDamage =
+    context.buffs.charResonanceChainsData?.TotalDamage ?? 0;
   const totalDamageMultiplier =
-    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage + teamBuffsTotalDamage;
+    strainTotalDamage +
+    customBuffTotalDamage +
+    actionBuffTotalDamage +
+    teamBuffsTotalDamage +
+    selfBuffTotalDamage +
+    resonanceChainTotalDamage;
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +
@@ -1312,15 +1320,16 @@ export const calculateAttackDamage = (
     return elementalEffectDmg;
   }
 
-  // Hsin's Heart of Thunder procs: a hardcoded kit multiplier (200% fixed
-  // for the instant proc, or 40% x stacks consumed for the delayed proc)
+  // Hsin's Heart of Thunder procs (and Sequence Node 3's bonus Electro
+  // Flare proc off Pillars Across Heaven): a hardcoded kit multiplier
   // layered on top of the standard Electro Flare stacks-based MV, via the
   // generic getElectroFlareDamage formula. Must stay before the generic
   // ElementalEffect + ElectroFlare dispatch below (it would otherwise
   // handle these attacks with no kit multiplier applied).
   if (
     attack.key === "HeartOfThunderInstantDMG" ||
-    attack.key === "HeartOfThunderDelayedDMG"
+    attack.key === "HeartOfThunderDelayedDMG" ||
+    attack.key === "SequenceNode3PillarsAcrossHeavenElectroFlareDMG"
   ) {
     let heartOfThunderDeepenWeaponBuffs =
       context.equipment.weapon.weaponPassiveStats?.[
@@ -1375,10 +1384,22 @@ export const calculateAttackDamage = (
         "HeartOfThunderDelayedDMG:heartOfThunderStacks"
       ] ??
       0;
-    const kitMultiplier =
-      attack.key === "HeartOfThunderInstantDMG"
-        ? 2.0
-        : 0.4 * heartOfThunderStacksConsumed;
+    // Sequence Node 1 upgrades the Heart of Thunder procs' kit multipliers
+    // (200%->260%, 40%->52% per stack consumed) once unlocked.
+    const sequenceNode1Enabled =
+      context.global.characters?.[context.character.characterKey]
+        ?.resonanceChains?.SequenceNode1ABoatToCrossTheRisingTide?.isEnabled ??
+      false;
+    let kitMultiplier: number;
+    if (attack.key === "HeartOfThunderInstantDMG") {
+      kitMultiplier = sequenceNode1Enabled ? 2.6 : 2.0;
+    } else if (attack.key === "HeartOfThunderDelayedDMG") {
+      kitMultiplier =
+        (sequenceNode1Enabled ? 0.52 : 0.4) * heartOfThunderStacksConsumed;
+    } else {
+      // SequenceNode3PillarsAcrossHeavenElectroFlareDMG: fixed 1500%.
+      kitMultiplier = 15.0;
+    }
     // Relies on totalTalentModifierMultiply defaulting to 0 for these
     // unique attack keys (nothing else targets them today). A future
     // talentModifierMultiplySetValue override on these keys would replace

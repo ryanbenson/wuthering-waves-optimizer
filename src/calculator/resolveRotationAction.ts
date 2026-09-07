@@ -86,7 +86,8 @@ export function resolveRotationActionToAttackData(
   if (
     actionType === "forteCircuit" &&
     (actionKey === "HeartOfThunderInstantDMG" ||
-      actionKey === "HeartOfThunderDelayedDMG")
+      actionKey === "HeartOfThunderDelayedDMG" ||
+      actionKey === "SequenceNode3PillarsAcrossHeavenElectroFlareDMG")
   ) {
     // target's current Electro Flare stacks
     actionData.stacks = Number(action.negativeStatusStacks ?? 1);

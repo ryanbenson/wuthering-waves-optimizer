@@ -151,6 +151,7 @@ const effectiveBuffData = computed((): EffectiveBuffData => {
     props.uniqueKey,
     props.maxStacks,
     currentCharacter.value?.resonanceChains,
+    currentCharacter.value?.buffs,
   );
   let effectiveStacks = stacks.value || 0;
 
