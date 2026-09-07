@@ -2625,6 +2625,90 @@ The above effects end early when Hsin switches Resonance Mode.</div>`,
       alwaysEnabled: false,
     },
   ],
+  Suoming: [
+    {
+      key: `SunkenSealForgedLock`,
+      name: `Sunken Seal, Forged Lock`,
+      details: `<div>When Suoming has Unison and is switched out, she gains the Aligned Seals effect for 30s.
+While this effect is active, Suoming's Outro Skill grants the incoming Resonator 30% Electro DMG Bonus. This effect lasts for 8s or until the Resonator is switched out.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Electro",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `SunkenSealForgedLockUnison`,
+      name: `Sunken Seal, Forged Lock. (Unison)`,
+      details: `<div>When Suoming has Unison and is switched out, she gains the Aligned Seals effect for 30s.
+While this effect is active, Suoming's Outro Skill grants the incoming Resonator an additional 20% for each stack of Unison Boon they have, up to 40%. This effect lasts for 8s or until the Resonator is switched out.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 2,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillCanopyRumble`,
+      name: `Outro Skill: Canopy Rumble`,
+      details: `<div>The incoming Resonator gains 20% Electro DMG Amplification</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingY.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Electro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillCanopyRumbleUnison`,
+      name: `Outro Skill: Canopy Rumble (Unison)`,
+      details: `<div>The incoming Resonator, while having Unison Boon, they gain 25% Resonance Skill DMG Amplification for 8s or until the Resonator is switched out.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingY.webp`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `UnisonBoon`,
+      name: `Unison Boon`,
+      details: `<div>Each stack of Unison Boon increase the total DMG dealt by Resonators with the Unison Response ability in the team by 3%, stacking up to 2 times.</div>`,
+      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "TotalDamage",
+          modifierValue: 0.03,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 2,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
