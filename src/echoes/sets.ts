@@ -80,6 +80,19 @@ const echoSetLabelToKey = (() => {
   return map;
 })();
 
+/**
+ * Resolves a set *bonus* label (e.g. "Freezing Frost 5 Set", as stored in
+ * character.echoSetBonus) back to the short set type key (e.g.
+ * "FreezingFrost") needed for icon lookups (getEchoSetIconByType). Every
+ * bonus label ends in "N Set", so strip that suffix and reuse the same
+ * label -> key map built above.
+ */
+export function getEchoSetKeyFromBonusLabel(label: string): string | null {
+  const match = label.match(/^(.+) \d+ Set$/);
+  if (!match) return null;
+  return echoSetLabelToKey.get(match[1]) ?? null;
+}
+
 function setKeysFromBonusLabels(
   bonuses: string[],
   setCountSuffix: string,
