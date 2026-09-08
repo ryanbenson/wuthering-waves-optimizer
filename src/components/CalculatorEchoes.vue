@@ -121,7 +121,11 @@
         @open-echoes-browser="handleOpenEchoesBrowser"
         @on-echo-removed="handleEchoRemoved"></CalculatorEcho>
     </div>
-    <div class="set-bonus-selector mt-6 mb-2">
+    <CalculatorEchoSetBonusPanel
+      v-if="isLiveResultBarEnabled"
+      :character="character"
+      @set-bonus-stats="handleSetBonusPanelStats"></CalculatorEchoSetBonusPanel>
+    <div v-else class="set-bonus-selector mt-6 mb-2">
       <div class="set-bonus-selector__header flex justify-between items-center">
         <h2 class="text-lg font-bold">Set Bonuses</h2>
         <div class="form-control">
@@ -151,33 +155,40 @@
         @update-stats="handleSetBonusTwoData"
         data-test-echoes-set-two></CalculatorEchoesSetBonusTwo>
     </div>
-    <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
-    <div class="main__echo relative mt-12">
-      <h3
-        v-if="echoName"
-        class="main-echo__name"
-        :class="{
-          'text-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
-          'text-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
-          'text-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
-          'text-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-        }">
-        {{ echoName }}
-      </h3>
-      <CalculatorMainEchoBuff
-        v-for="buff in mainEchoBuffList"
-        :key="buff.key"
-        :character="character"
-        :buff-key="buff.key"
-        :details="buff.details"
-        :effects="buff.effects"
-        :has-stacks="buff.hasStacks"
-        :min-stacks="buff.minStacks"
-        :max-stacks="buff.maxStacks"
-        :always-enabled="buff.alwaysEnabled"
-        storage-mode="calculator"
-        @updated-buff-stats="handleMainEchoBuffStats" />
-    </div>
+
+    <CalculatorMainEchoPanel
+      v-if="isLiveResultBarEnabled"
+      :character="character"
+      @updated-buff-stats="handleMainEchoBuffStats"></CalculatorMainEchoPanel>
+    <template v-else>
+      <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
+      <div class="main__echo relative mt-12">
+        <h3
+          v-if="echoName"
+          class="main-echo__name"
+          :class="{
+            'text-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'text-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'text-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'text-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+          }">
+          {{ echoName }}
+        </h3>
+        <CalculatorMainEchoBuff
+          v-for="buff in mainEchoBuffList"
+          :key="buff.key"
+          :character="character"
+          :buff-key="buff.key"
+          :details="buff.details"
+          :effects="buff.effects"
+          :has-stacks="buff.hasStacks"
+          :min-stacks="buff.minStacks"
+          :max-stacks="buff.maxStacks"
+          :always-enabled="buff.alwaysEnabled"
+          storage-mode="calculator"
+          @updated-buff-stats="handleMainEchoBuffStats" />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -191,6 +202,8 @@ import CalculatorEchoInsightsPanel from "./CalculatorEchoInsightsPanel.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
+import CalculatorEchoSetBonusPanel from "./CalculatorEchoSetBonusPanel.vue";
+import CalculatorMainEchoPanel from "./CalculatorMainEchoPanel.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import WorkspaceEchoesBrowser from "./characterWorkspace/WorkspaceEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
@@ -352,6 +365,19 @@ function handleSetBonusOneData(data: Record<string, any>) {
 }
 function handleSetBonusTwoData(data: Record<string, any>) {
   setBonusTwo.value = JSON.parse(JSON.stringify(data));
+  updateTotalStats();
+}
+function handleSetBonusPanelStats({
+  slot,
+  stats,
+}: {
+  slot: "onePiece" | "one" | "two";
+  stats: Record<string, any>;
+}) {
+  const cloned = JSON.parse(JSON.stringify(stats));
+  if (slot === "onePiece") setBonusOnePiece.value = cloned;
+  else if (slot === "one") setBonusOne.value = cloned;
+  else setBonusTwo.value = cloned;
   updateTotalStats();
 }
 function handleEchoStats({ index, stats }: { index: number; stats: Record<string, any> }) {

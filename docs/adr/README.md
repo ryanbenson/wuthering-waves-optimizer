@@ -54,6 +54,9 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, content |
 | [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, routing, content |
 | [0025](./0025-privacy-legal-formatting-consistency.md) | Privacy & Legal formatting consistency (Labs-flagged, shares the `liveResultBar` flag) | accepted | components, content |
+| [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, echoes, weapons, enemies |
+| [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | team-rotations, components |
+| [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, echoes |
 
 ## When to write a new ADR
 
