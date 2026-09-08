@@ -46,6 +46,15 @@
               empty-label="Show all"
               aria-label="Equipped filter"
               class="w-fit" />
+            <AppRichSelect
+              v-model:selected-values="substatFilter"
+              :options="substatFilterOptions"
+              multiple
+              searchable
+              allow-empty
+              empty-label="Substat"
+              aria-label="Substat filter"
+              class="w-fit min-w-[160px]" />
             <div class="join">
               <button
                 type="button"
@@ -193,8 +202,10 @@ import {
   getEchoCritValue,
   getEchoRollValue,
   getEchoSetIconByType,
+  getEchoSubStatEntries,
   getReadableSubStatLabel,
   statsTable,
+  subStats,
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
@@ -233,6 +244,7 @@ const echo = ref<string | null>(null);
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const favoriteFilter = ref(false);
+const substatFilter = ref<string[]>([]);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
@@ -254,6 +266,7 @@ const activeFilterCount = computed(() => {
   if (mainStatFilter.value) count += 1;
   if (equippedFilter.value) count += 1;
   if (favoriteFilter.value) count += 1;
+  if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
   if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
@@ -268,6 +281,7 @@ watch(
     favoriteFilter,
     equippedFilter,
     costFilter,
+    substatFilter,
     cvMin,
     cvMax,
     rvMin,
@@ -315,6 +329,13 @@ const echoesList = computed(() => {
       }
       if (favoriteFilter.value) {
         allEchoes = allEchoes.filter((item: any) => item.favorite);
+      }
+      if (substatFilter.value.length > 0) {
+        allEchoes = allEchoes.filter((item: any) =>
+          getEchoSubStatEntries(item).some(([type]) =>
+            substatFilter.value.includes(type),
+          ),
+        );
       }
 
       const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
@@ -388,6 +409,9 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
 const echoSelectOptions = computed((): AppRichSelectOption[] =>
   buildEchoSelectOptions(mainEchoOptions.value),
 );
+const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
+  getReadableSubStatLabel(String(stat)),
+);
 
 function getEchoSetImage(set: string) {
   return getEchoSetIconByType(set);
@@ -447,6 +471,7 @@ function resetFilters() {
       costFilter.value = null;
       equippedFilter.value = null;
       favoriteFilter.value = false;
+      substatFilter.value = [];
       cvMin.value = 0;
       cvMax.value = ECHO_CV_MAX;
       rvMin.value = 0;
