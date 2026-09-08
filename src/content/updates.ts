@@ -17,6 +17,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Adds ability to filter echoes by specific substats! So you can now find echoes that have Crit Rate, etc.",
       "v3 UI: Redesigned the echo set and main echo UI",
+      "v3 UI: Updates how sequence toggles interact",
     ],
   },
   {
