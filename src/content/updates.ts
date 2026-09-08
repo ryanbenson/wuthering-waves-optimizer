@@ -12,6 +12,14 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-08",
+    dateLabel: "September 8, 2026",
+    items: [
+      "Adds ability to filter echoes by specific substats! So you can now find echoes that have Crit Rate, etc.",
+      "v3 UI: Redesigned the echo set and main echo UI",
+    ],
+  },
+  {
     date: "2026-09-07",
     dateLabel: "September 7, 2026",
     items: [
