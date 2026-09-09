@@ -34,6 +34,18 @@
               @input="ensureMaxStacks" />
             <span class="label-text ml-2">Stacks</span>
             <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost ml-1"
+              @click.stop.prevent="setMaxStacks"
+              :data-test-resonance-chain-stacks-max="uniqueKey"
+              :title="
+                realisticMaxStacks !== undefined && realisticMaxStacks < maxStacks
+                  ? `Set to a realistically achievable ${realisticMaxStacks} stacks instead of the raw ${maxStacks} cap`
+                  : undefined
+              ">
+              Max
+            </button>
           </label>
         </div>
       </div>
@@ -62,6 +74,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../stores/character";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -90,6 +103,7 @@ const props = withDefaults(
     hasStacks?: boolean;
     minStacks?: number;
     maxStacks?: number;
+    realisticMaxStacks?: number;
     modifiers?: unknown[];
     buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
   }>(),
@@ -196,6 +210,10 @@ function ensureMaxStacks() {
   if (stacks.value > props.maxStacks) {
     stacks.value = props.maxStacks;
   }
+}
+
+function setMaxStacks() {
+  stacks.value = getRealisticMaxStacks(props.maxStacks, props.realisticMaxStacks);
 }
 
 function toggleEnabled() {

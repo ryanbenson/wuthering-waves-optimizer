@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
+import { getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../../stores/character";
 
 interface AttackTargetOption {
@@ -123,6 +124,7 @@ interface ResonanceChainBuffRow {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   buffAttackTargetSelection?: AttackTargetSelection;
 }
 
@@ -321,7 +323,7 @@ function maxAll() {
   for (const buff of props.buffs) {
     const update: { isEnabled: boolean; stacks?: number } = { isEnabled: true };
     if (buff.hasStacks) {
-      update.stacks = Number(buff.maxStacks) || 0;
+      update.stacks = getRealisticMaxStacks(Number(buff.maxStacks) || 0, buff.realisticMaxStacks);
     }
     updates[buff.key] = update;
   }

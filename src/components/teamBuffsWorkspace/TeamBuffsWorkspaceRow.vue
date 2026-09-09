@@ -41,8 +41,13 @@
             type="button"
             class="btn btn-xs btn-ghost"
             @click="emit('set-max-stacks')"
-            :data-test-team-buffs-buff-stacks-max="def.key">
-            Max ({{ def.maxStacks }})
+            :data-test-team-buffs-buff-stacks-max="def.key"
+            :title="
+              hasLowerRealisticMax
+                ? `Set to a realistically achievable ${def.realisticMaxStacks} stacks instead of the raw ${def.maxStacks} cap`
+                : undefined
+            ">
+            Max ({{ hasLowerRealisticMax ? def.realisticMaxStacks : def.maxStacks }})
           </button>
         </template>
         <template v-if="def.hasRefinements">
@@ -95,4 +100,8 @@ const emit = defineEmits<{
 }>();
 
 const sequenceNodeRequirement = computed(() => getSequenceNodeRequirement(props.def.name));
+
+const hasLowerRealisticMax = computed(
+  () => props.def.realisticMaxStacks !== undefined && props.def.realisticMaxStacks < props.def.maxStacks,
+);
 </script>

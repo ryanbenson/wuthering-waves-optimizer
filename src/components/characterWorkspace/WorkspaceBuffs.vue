@@ -53,6 +53,7 @@
         :has-stacks="buff.hasStacks"
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
+        :realistic-max-stacks="buff.realisticMaxStacks"
         :modifiers="buff.modifiers" />
     </div>
   </div>
@@ -61,7 +62,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { getEffectiveMaxStacks } from "../../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import { isStatBonusBuff } from "../../characters/statBonusBuffs";
 import { getReadableSubStatLabel, getSubStatIconByType } from "../../echoes/stats";
 import { useCharacterStore } from "../../stores/character";
@@ -81,6 +82,7 @@ interface CharacterBuffListItem {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   modifiers?: BuffModifier[];
 }
 
@@ -174,7 +176,8 @@ function maxAll() {
   for (const buff of props.buffs) {
     const update: { isEnabled: boolean; stacks?: number } = { isEnabled: true };
     if (buff.hasStacks) {
-      update.stacks = getEffectiveMaxStacks(props.character, buff.key, buff.maxStacks, resonanceChains);
+      const effectiveMaxStacks = getEffectiveMaxStacks(props.character, buff.key, buff.maxStacks, resonanceChains);
+      update.stacks = getRealisticMaxStacks(effectiveMaxStacks, buff.realisticMaxStacks);
     }
     updates[buff.key] = update;
   }

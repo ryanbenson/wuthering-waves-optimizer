@@ -49,7 +49,12 @@
                 type="button"
                 class="btn btn-xs btn-ghost ml-1"
                 @click.stop.prevent="setMaxStacks"
-                :data-test-party-buff-stacks-max="uniqueKey">
+                :data-test-party-buff-stacks-max="uniqueKey"
+                :title="
+                  realisticMaxStacks !== undefined && realisticMaxStacks < maxStacks
+                    ? `Set to a realistically achievable ${realisticMaxStacks} stacks instead of the raw ${maxStacks} cap`
+                    : undefined
+                ">
                 Max
               </button>
             </label>
@@ -94,6 +99,7 @@ import { useCharacterStore } from "../stores/character";
 import AppRichSelect from "./AppRichSelect.vue";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 import { resolveTeamBuffInstance, type PartyBuffModifier } from "../buffs/teamBuffs";
+import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
 export type { PartyBuffModifier };
 
@@ -107,6 +113,7 @@ const props = withDefaults(
     hasStacks?: boolean;
     minStacks?: number;
     maxStacks?: number;
+    realisticMaxStacks?: number;
     modifiers?: PartyBuffModifier[];
     talentData?: Record<string, string>;
     hasRefinements?: boolean;
@@ -267,7 +274,7 @@ function ensureMaxStacks() {
 }
 
 function setMaxStacks() {
-  stacks.value = props.maxStacks;
+  stacks.value = getRealisticMaxStacks(props.maxStacks, props.realisticMaxStacks);
   updatedStats();
 }
 

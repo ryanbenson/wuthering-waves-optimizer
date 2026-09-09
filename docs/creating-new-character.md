@@ -24,6 +24,12 @@ Here are some common buffs that you'll run into, things like multiplier changes,
 
 Note that Vulnerability is usually a rare buff, and the wording is inconsistent (e.g. Carte self buff uses the same text, but it's not vulnerability). Vulnerability is `specialMultiplier`.
 
+### `realisticMaxStacks` (optional)
+
+`maxStacks` must always be the real, verified in-game cap (see the "Base talent multiplier additional" example below — Zani's `SequenceNode3EachDayANewCommute` really can reach 150 stacks per its own text). Some buffs' real cap is technically correct but not realistically reachable in a normal rotation/team — hitting the "Max" button then jams stacks to a number no plausible combo produces.
+
+For that case, add an optional `realisticMaxStacks` alongside `maxStacks` set to a value you've actually verified against a real rotation (not a guess): it becomes the target for that buff's "Max" button everywhere in the app (self buffs, resonance chains, team buffs), while `maxStacks` still governs the slider's outer bound and the store data limit. Leave it unset unless you have a rotation-verified number — an unverified `realisticMaxStacks` is worse than no cap at all, since it looks authoritative to users. See ADR [0029](./adr/0029-buff-realistic-max-stacks.md) for why this is a manually-authored field rather than something the app computes automatically.
+
 ### Base talent multiplier
 
 When you need to add a multiplier to the base talent value (e.g. Changli R5)

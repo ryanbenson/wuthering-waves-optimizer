@@ -178,6 +178,7 @@
             :has-stacks="buff.hasStacks"
             :min-stacks="buff.minStacks"
             :max-stacks="buff.maxStacks"
+            :realistic-max-stacks="buff.realisticMaxStacks"
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
@@ -218,6 +219,7 @@
             :has-stacks="buff.hasStacks"
             :min-stacks="buff.minStacks"
             :max-stacks="buff.maxStacks"
+            :realistic-max-stacks="buff.realisticMaxStacks"
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
@@ -251,6 +253,7 @@
           :has-stacks="buff.hasStacks"
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
+          :realistic-max-stacks="buff.realisticMaxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="echoBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
@@ -284,6 +287,7 @@
           :has-stacks="buff.hasStacks"
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
+          :realistic-max-stacks="buff.realisticMaxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="weaponBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
@@ -352,6 +356,7 @@ type PartyBuffDef = {
   modifiers: PartyBuffModifier[];
   minStacks: number;
   maxStacks: number;
+  realisticMaxStacks?: number;
   alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
