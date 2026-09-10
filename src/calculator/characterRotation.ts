@@ -7,6 +7,7 @@ import {
   type TeamEnemyConfig,
 } from "./buildCharacterContext";
 import { applyAdvancedOverrides, hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import { hasEnemyStacksOverride, mergeEnemyStacksOverride, type EnemyStacksOverride } from "./rotationEnemyStacksOverride";
 import { resolveCharactersForBuild } from "./buildOverride";
 
 // Lives here (rather than teamRotation.ts) so calcTeamRotationDamage can
@@ -52,6 +53,7 @@ export interface CharacterRotationAction {
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   advancedConfig?: RotationAdvancedConfig;
+  enemyStacksOverride?: EnemyStacksOverride;
 }
 
 export interface CharacterRotationInput {
@@ -128,8 +130,12 @@ export async function calcCharacterRotationDamage(
   const effectiveCharacters = resolveCharactersForBuild(characters, characterId, buildId);
   const characterData = effectiveCharacters?.[characterId] ?? {};
   const activeActions = rotation.actions.filter((action) => !action.isDisabled);
-  const overrideActions = activeActions.filter((action) => hasAdvancedConfigOverrides(action.advancedConfig));
-  const plainActions = activeActions.filter((action) => !hasAdvancedConfigOverrides(action.advancedConfig));
+  const overrideActions = activeActions.filter(
+    (action) => hasAdvancedConfigOverrides(action.advancedConfig) || hasEnemyStacksOverride(action.enemyStacksOverride),
+  );
+  const plainActions = activeActions.filter(
+    (action) => !hasAdvancedConfigOverrides(action.advancedConfig) && !hasEnemyStacksOverride(action.enemyStacksOverride),
+  );
 
   let attacks: any[] = [];
   let damageAggregation: DamageAggregation = { ...EMPTY_DAMAGE_AGGREGATION };
@@ -161,7 +167,8 @@ export async function calcCharacterRotationDamage(
       ...effectiveCharacters,
       [characterId]: applyAdvancedOverrides(characterData, action.advancedConfig),
     };
-    const built = await buildCharacterCalculationContext(characterId, overriddenCharacters, enemyConfig, inventoryEchoes, options);
+    const effectiveEnemyConfig = mergeEnemyStacksOverride(enemyConfig, action.enemyStacksOverride);
+    const built = await buildCharacterCalculationContext(characterId, overriddenCharacters, effectiveEnemyConfig, inventoryEchoes, options);
     const attack = resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel);
     if (attack == null) continue;
     built.context.rotationsList = [
