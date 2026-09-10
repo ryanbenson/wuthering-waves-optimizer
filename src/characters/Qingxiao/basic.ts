@@ -15,7 +15,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "RedSpring", label: "Alternate" },
       { key: "EmeraldOfGenesis", label: "Standard" },
       { key: "FeatherEdge", label: "BP" },
-      { key: "CommandOofConviction", label: "4*" },
+      { key: "CommandOfConviction", label: "4*" },
     ],
   };
 }
