@@ -276,6 +276,7 @@ import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
+import { trackEvent } from "../../utils/analytics";
 
 defineOptions({
   name: "Nav",
@@ -354,6 +355,7 @@ function toggleOptionsMenu() {
 // SettingsLab.vue's toggle flips, just reachable without a trip to Settings.
 function switchToClassicUi() {
   settingsStore.upsertLab({ liveResultBar: { isEnabled: false } });
+  trackEvent("v3-ui-disabled", { source: "nav" });
   toggleOptionsMenu();
 }
 </script>

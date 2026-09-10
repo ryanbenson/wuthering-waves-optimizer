@@ -77,6 +77,43 @@ describe("AppUpdateBanner", () => {
     expect(getByText("What's new in the v3 UI")).toBeTruthy();
   });
 
+  it("the modal renders a feature card with an image for each v3 highlight", async () => {
+    const { getByText, container } = renderBanner();
+    await fireEvent.click(getByText("See what's new"));
+    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    expect(getByText("Character control panel")).toBeTruthy();
+    expect(getByText("Inventory")).toBeTruthy();
+    // 9 feature cards, 11 images across them (echoes and custom/team buffs
+    // each carry 2; the rest, including the damage monitor's single gif, 1).
+    expect(dialog.querySelectorAll(".card").length).toBe(9);
+    expect(dialog.querySelectorAll(".v3-feature-figure img").length).toBe(11);
+  });
+
+  it("swaps a broken feature image for a labeled placeholder", async () => {
+    const { getByText, container } = renderBanner();
+    await fireEvent.click(getByText("See what's new"));
+    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    const figure = dialog.querySelector(".v3-feature-figure")!;
+    const img = figure.querySelector("img")!;
+    await fireEvent.error(img);
+    expect(figure.querySelector("img")).toBeNull();
+    expect(figure.querySelector(".v3-feature-figure__placeholder")).toBeTruthy();
+  });
+
+  it("clicking a feature image opens it full size in a lightbox", async () => {
+    const { getByText, container } = renderBanner();
+    await fireEvent.click(getByText("See what's new"));
+    const featureImageBtn = container.querySelector<HTMLButtonElement>(".v3-feature-figure__item")!;
+    const expectedAlt = featureImageBtn.querySelector("img")!.getAttribute("alt");
+
+    await fireEvent.click(featureImageBtn);
+
+    const lightbox = container.querySelector("[data-test-image-lightbox]")!;
+    expect(lightbox.hasAttribute("open")).toBe(true);
+    const lightboxImg = lightbox.querySelector<HTMLImageElement>("img")!;
+    expect(lightboxImg.getAttribute("alt")).toBe(expectedAlt);
+  });
+
   it("the modal's 'Full changelog' link points at /updates", async () => {
     const { getByText } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
