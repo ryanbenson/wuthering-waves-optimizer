@@ -435,3 +435,57 @@ describe("buildCharacterCalculationContext", () => {
     });
   });
 });
+
+describe("resolveTeamEnemyConfig", () => {
+  // Regression test: the echo/weapon-swap preview panels used to hand-roll a
+  // TeamEnemyConfig with only enemyLevel/enemyResist/enemyType, silently
+  // dropping every buff-stack field (e.g. strainStacks for Tune Strain). That
+  // made preview damage diverge from the equipped/live calculation whenever
+  // the user had non-zero enemy buff stacks configured.
+  it("carries every enemy buff-stack field through from stored character data", async () => {
+    const { resolveTeamEnemyConfig } = await import("../../src/calculator/buildCharacterContext");
+    const result = resolveTeamEnemyConfig({
+      enemyLevel: 100,
+      enemyResist: 0.2,
+      enemyType: "Elite",
+      strainStacks: 3,
+      havocBaneStacks: 2,
+      spectroFrazzleStacks: 1,
+      aeroErosionStacks: 4,
+      fusionBurstStacks: 5,
+      electroFlareStacks: 6,
+      electroRageStacks: 7,
+      glacioChafeStacks: 8,
+    });
+    expect(result).toEqual({
+      enemyLevel: 100,
+      enemyResist: 0.2,
+      enemyType: "Elite",
+      strainStacks: 3,
+      havocBaneStacks: 2,
+      spectroFrazzleStacks: 1,
+      aeroErosionStacks: 4,
+      fusionBurstStacks: 5,
+      electroFlareStacks: 6,
+      electroRageStacks: 7,
+      glacioChafeStacks: 8,
+    });
+  });
+
+  it("defaults missing fields, including stacks, to their zero/base values", async () => {
+    const { resolveTeamEnemyConfig } = await import("../../src/calculator/buildCharacterContext");
+    expect(resolveTeamEnemyConfig(undefined)).toEqual({
+      enemyLevel: 90,
+      enemyResist: 0.1,
+      enemyType: "Calamity",
+      strainStacks: 0,
+      havocBaneStacks: 0,
+      spectroFrazzleStacks: 0,
+      aeroErosionStacks: 0,
+      fusionBurstStacks: 0,
+      electroFlareStacks: 0,
+      electroRageStacks: 0,
+      glacioChafeStacks: 0,
+    });
+  });
+});
