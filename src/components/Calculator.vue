@@ -2430,7 +2430,11 @@ export default defineComponent({
   display: grid;
   // grid-template-columns: 80px 1fr 1fr;
   grid-template-columns: 1fr 1fr;
-  height: calc(100vh - 80px);
+  // Must mirror AppLayout.vue's .contain height calc, which subtracts the
+  // live AppUpdateBanner height via --announce-banner-h (0px when the
+  // banner is hidden/unmounted). Falling out of sync here overflows the
+  // parent and clips the bottom of both panels whenever the banner shows.
+  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
 
   @media (max-width: 768px) {
     display: block;
