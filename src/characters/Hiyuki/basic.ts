@@ -19,7 +19,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "BlazingBrilliance", label: "Alternate" },
       { key: "EmeraldOfGenesis", label: "Standard" },
       { key: "FeatherEdge", label: "BP" },
-      { key: "FablesOfWisdom", label: "4*" },
+      { key: "FablesofWisdom", label: "4*" },
     ],
   };
 }
