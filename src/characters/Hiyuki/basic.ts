@@ -15,6 +15,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "Frostburn",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "BlazingBrilliance", label: "Alternate" },
+      { key: "EmeraldOfGenesis", label: "Standard" },
+      { key: "FeatherEdge", label: "BP" },
+      { key: "FablesofWisdom", label: "4*" },
+    ],
   };
 }

@@ -227,6 +227,7 @@ import {
   type EchoImpactDelta,
   type EchoSwapCandidate,
 } from "../../echoes/echoImpact";
+import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { useInventoryStore } from "../../stores/inventory";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
@@ -419,14 +420,7 @@ const liveResultBarPreference = computed(() => {
   };
 });
 
-const enemyConfig = computed(() => {
-  const data = characters.value[props.character] ?? {};
-  return {
-    enemyLevel: data.enemyLevel ?? 90,
-    enemyResist: data.enemyResist ?? 0.1,
-    enemyType: data.enemyType ?? "Calamity",
-  };
-});
+const enemyConfig = computed(() => resolveTeamEnemyConfig(characters.value[props.character]));
 
 /**
  * Each candidate costs a full headless context rebuild (~1-6ms), so this is

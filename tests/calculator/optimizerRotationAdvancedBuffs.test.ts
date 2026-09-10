@@ -533,3 +533,81 @@ describe("optimize() Rotation target — advancedConfig overrides", () => {
     );
   }, 20000);
 });
+
+describe("optimize() Rotation target — enemy stacks overrides", () => {
+  it("matches calcCharacterRotationDamage (the live Character Rotation display) for a rotation mixing plain and enemyStacksOverride actions", async () => {
+    const characters = {
+      Calcharo: {
+        echoes: { 0: fixedEchoes[0], 1: fixedEchoes[1], 2: fixedEchoes[2], 3: fixedEchoes[3], 4: fixedEchoes[4] },
+      },
+    };
+
+    const actions: CharacterRotationAction[] = [
+      { id: "a1", order: 0, type: "basic", key: "Part1Damage", count: 1 },
+      {
+        id: "a2",
+        order: 1,
+        type: "basic",
+        key: "Part1Damage",
+        count: 1,
+        // havocBaneStacks is 0 for the whole run (buildOptimizerContext below)
+        // — this action alone should see the def-reduction boost, in both
+        // pipelines.
+        enemyStacksOverride: { havocBaneStacks: { isEnabled: true, stacks: 9 } },
+      },
+    ];
+
+    // Ground truth: the live Character Rotation display's own pipeline.
+    const built = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+    const groundTruth = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions },
+      { chosenChar: built.chosenChar, characterLevel: built.characterLevel, context: built.context },
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    // Optimizer path: same character/rotation, search space forced to the
+    // exact same 5-echo loadout the character has "equipped" above.
+    const optimizerContext = await buildOptimizerContext("Calcharo", characters);
+    optimizerContext.getRotationById = (_char: string, rotationId: string) =>
+      rotationId === "r1" ? { id: "r1", name: "Rotation", duration: 10, actions } : null;
+
+    const results = optimize(
+      fixedEchoes,
+      optimizerContext,
+      [],
+      1,
+      ["Main4"],
+      [],
+      {},
+      {},
+      "Rotation:r1",
+      "Average",
+    );
+
+    expect(results.length).toBeGreaterThan(0);
+    const optimizerRotation = results[0].context.attacks;
+
+    expect(optimizerRotation.attacks).toHaveLength(2);
+    expect(optimizerRotation.attacks.map((a: any) => a.id)).toEqual(["a1", "a2"]);
+
+    const [gtPlain, gtOverride] = groundTruth.attacks;
+    const [optPlain, optOverride] = optimizerRotation.attacks;
+    // The overridden action (a2, Havoc Bane forced to 9 stacks) must do more
+    // damage than the plain one (a1) in both pipelines...
+    expect(gtOverride.damage.totalDamage).toBeGreaterThan(gtPlain.damage.totalDamage);
+    expect(optOverride.damage.totalDamage).toBeGreaterThan(optPlain.damage.totalDamage);
+
+    // ...and, the actual regression guard: the optimizer's numbers must
+    // match the live display's numbers exactly, action for action — this is
+    // the same class of bug as the echo/weapon swap-preview panels once
+    // silently ignoring enemy buff stacks entirely.
+    expect(optPlain.damage.totalDamage).toBeCloseTo(gtPlain.damage.totalDamage, 5);
+    expect(optOverride.damage.totalDamage).toBeCloseTo(gtOverride.damage.totalDamage, 5);
+    expect(optimizerRotation.damageAggregation.normalDamage).toBeCloseTo(
+      groundTruth.damageAggregation.normalDamage,
+      5,
+    );
+  });
+});

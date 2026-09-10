@@ -156,6 +156,7 @@ import {
   type WeaponSwapCandidate,
 } from "../../weapons/weaponImpact";
 import { getWeaponMainStatLabel } from "../../weapons/weapons";
+import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import AppChooserModal from "../AppChooserModal.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
@@ -299,14 +300,7 @@ function impactBadgeClasses(range: WeaponImpactRange | null | undefined) {
   return range.fullyBuffedPct >= 0 ? "badge-success" : "badge-error";
 }
 
-const enemyConfig = computed(() => {
-  const data = characters.value[props.character] ?? {};
-  return {
-    enemyLevel: data.enemyLevel ?? 90,
-    enemyResist: data.enemyResist ?? 0.1,
-    enemyType: data.enemyType ?? "Calamity",
-  };
-});
+const enemyConfig = computed(() => resolveTeamEnemyConfig(characters.value[props.character]));
 
 /**
  * The exact rotation/attack + damage-type mode the Live Result Bar is

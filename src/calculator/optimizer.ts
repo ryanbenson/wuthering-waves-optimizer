@@ -21,6 +21,7 @@ import {
   type OptimizerRotationOverrideAction,
 } from "../calculator/rotationData";
 import { applyAdvancedOverrides } from "./rotationAdvancedBuffs";
+import { mergeEnemyStacksOverride, type EnemyStackKey } from "./rotationEnemyStacksOverride";
 import { resolveTeamBuffInstance, aggregateTeamBuffStats, type TeamBuffDef } from "../buffs/teamBuffs";
 import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
@@ -651,6 +652,10 @@ export interface OverrideBuffVariant {
    * just from the resolved buff data. */
   buffsConfig: Record<string, any>;
   resonanceChainsConfig: Record<string, any>;
+  /** This action's enemy-stack values with any `enemyStacksOverride` merged
+   * on top of the run-wide context — never differs from the run-wide values
+   * for enemyLevel/enemyResist/enemyType, which aren't stack fields. */
+  effectiveEnemyStacks: Record<EnemyStackKey, number>;
 }
 
 /**
@@ -673,8 +678,19 @@ export function computeOverrideBuffVariants(
   const variants = new Map<string, OverrideBuffVariant>();
   const characterData = context.characters?.[context.character] ?? {};
 
-  for (const { actionId, advancedConfig } of overrideActions) {
+  for (const { actionId, advancedConfig, enemyStacksOverride } of overrideActions) {
     const merged = applyAdvancedOverrides(characterData, advancedConfig);
+    const baseEnemyStacks: Record<EnemyStackKey, number> = {
+      strainStacks: context.strainStacks ?? 0,
+      havocBaneStacks: context.havocBaneStacks ?? 0,
+      spectroFrazzleStacks: context.spectroFrazzleStacks ?? 0,
+      aeroErosionStacks: context.aeroErosionStacks ?? 0,
+      fusionBurstStacks: context.fusionBurstStacks ?? 0,
+      electroFlareStacks: context.electroFlareStacks ?? 0,
+      electroRageStacks: context.electroRageStacks ?? 0,
+      glacioChafeStacks: context.glacioChafeStacks ?? 0,
+    };
+    const effectiveEnemyStacks = mergeEnemyStacksOverride(baseEnemyStacks, enemyStacksOverride);
 
     const selfBuffsData = computeSelfBuffs(
       merged.buffs ?? {},
@@ -683,7 +699,7 @@ export function computeOverrideBuffVariants(
       context.talentData ?? {},
       context.character ?? "",
       context.activeStance ?? null,
-      { havocBaneStacks: context.havocBaneStacks ?? 0 },
+      { havocBaneStacks: effectiveEnemyStacks.havocBaneStacks },
     );
     const resonanceChainsBuffsData = computeResonanceChainsBuffs(
       merged.resonanceChains ?? {},
@@ -737,6 +753,7 @@ export function computeOverrideBuffVariants(
       echoSetPassivesConfig: merged.echoSetPassives ?? {},
       buffsConfig: merged.buffs ?? {},
       resonanceChainsConfig: merged.resonanceChains ?? {},
+      effectiveEnemyStacks,
     });
   }
 
@@ -860,7 +877,7 @@ export function scoreOptimizerRotation(
       });
 
       const optimizerContext = buildOptimizerCalculationContext(
-        context,
+        { ...context, ...variant.effectiveEnemyStacks },
         overrideFinalStats,
         overrideCombinedEchoBuffs,
         {

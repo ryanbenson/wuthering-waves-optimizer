@@ -1,10 +1,12 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import { hasEnemyStacksOverride, type EnemyStacksOverride } from "./rotationEnemyStacksOverride";
 
 export interface OptimizerRotationOverrideAction {
   actionId: string;
   attack: any;
   advancedConfig: RotationAdvancedConfig;
+  enemyStacksOverride?: EnemyStacksOverride;
 }
 
 export interface OptimizerRotationData {
@@ -53,8 +55,13 @@ export function buildOptimizerRotationData(
     const attack = resolveRotationActionToAttackData(action, chosenChar, characterLevel);
     if (!attack) continue;
 
-    if (hasAdvancedConfigOverrides(action.advancedConfig)) {
-      overrideActions.push({ actionId: action.id, attack, advancedConfig: action.advancedConfig });
+    if (hasAdvancedConfigOverrides(action.advancedConfig) || hasEnemyStacksOverride(action.enemyStacksOverride)) {
+      overrideActions.push({
+        actionId: action.id,
+        attack,
+        advancedConfig: action.advancedConfig,
+        enemyStacksOverride: action.enemyStacksOverride,
+      });
     } else {
       plainAttacks.push(attack);
     }

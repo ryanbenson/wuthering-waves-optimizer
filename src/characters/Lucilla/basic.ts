@@ -16,6 +16,15 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "FreezeFrame",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "WhispersofSirens", label: "Alternate" },
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "LetheanElegy", label: "Alternate" },
+      { key: "RimeDrapedSprouts", label: "Stat stick" },
+      { key: "ForgedDwarfStar", label: "Stat stick" },
+      { key: "RadiantDawn", label: "BP" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "WaltzinMasquerade", label: "4*" },
+    ],
   };
 }

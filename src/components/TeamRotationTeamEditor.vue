@@ -234,6 +234,7 @@
                 :main-echo-rank-for-slot="mainEchoRankForSlot"
                 :definitions-for-slot="definitionsForSlot"
                 :character-data-for-slot="characterDataForSlot"
+                :team-enemy-config="team.enemyConfig"
                 :previous-action="previousActionByActionId[action.id] ?? null"
                 :range-actions="orderedActionRangeList"
                 :can-reorder="canReorderActions"
@@ -244,6 +245,7 @@
                 @remove="handleActionRemove"
                 @duplicate="handleActionDuplicate"
                 @bulk-apply="handleBulkApplyBuff"
+                @bulk-apply-enemy-stacks="handleBulkApplyEnemyStacks"
                 @drag-reorder-start="onActionDragStart(Number(index))"
                 @drag-reorder-end="onActionDragEnd" />
             </div>
@@ -404,6 +406,7 @@ import {
   hasAdvancedConfigOverrides,
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
+import { applyBulkEnemyStacksOverride, type EnemyStackKey } from "../calculator/rotationEnemyStacksOverride";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
@@ -1047,6 +1050,20 @@ function handleBulkApplyBuff(payload: {
     payload.key,
     payload.override,
   );
+  teamRotationsStore.setTeamActions(props.teamId, updatedActions);
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
+
+function handleBulkApplyEnemyStacks(payload: {
+  key: EnemyStackKey;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  if (!team.value) return;
+  const updatedActions = applyBulkEnemyStacksOverride(team.value.actions, payload.actionIds, payload.key, payload.override);
   teamRotationsStore.setTeamActions(props.teamId, updatedActions);
   showToast(
     `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,

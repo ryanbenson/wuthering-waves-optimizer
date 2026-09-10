@@ -356,6 +356,41 @@ describe("calcTeamRotationDamage", () => {
 
     expect(result.perCharacter).toEqual({});
   });
+
+  it("a per-action enemyStacksOverride survives the slot/order handling and produces the expected per-action divergence", async () => {
+    const plainAction: TeamRotationAction = {
+      id: "action-1",
+      slot: 0,
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+    };
+    const overriddenAction: TeamRotationAction = {
+      id: "action-2",
+      slot: 0,
+      order: 1,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      enemyStacksOverride: { havocBaneStacks: { isEnabled: true, stacks: 9 } },
+    };
+
+    const result = await calcTeamRotationDamage(
+      {
+        characterIds: ["Calcharo", null, null],
+        actions: [plainAction, overriddenAction],
+        duration: 10,
+      },
+      characters,
+      enemyConfig,
+    );
+
+    expect(result.actionResults).toHaveLength(2);
+    const plainResult = result.actionResults.find((r) => r.order === 0)!;
+    const overriddenResult = result.actionResults.find((r) => r.order === 1)!;
+    expect(overriddenResult.attack.damage.totalDamage).toBeGreaterThan(plainResult.attack.damage.totalDamage);
+  });
 });
 
 describe("buildAdvancedConfigSnapshot (via calcTeamRotationDamage)", () => {

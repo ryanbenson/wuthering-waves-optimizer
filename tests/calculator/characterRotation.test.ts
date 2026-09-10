@@ -4,6 +4,7 @@ import { buildCharacterCalculationContext } from "../../src/calculator/buildChar
 import { resolveRotationActionToAttackData } from "../../src/calculator/resolveRotationAction";
 import { calcDamages } from "../../src/calculator/attacks";
 import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext";
+import type { EnemyStacksOverride } from "../../src/calculator/rotationEnemyStacksOverride";
 
 const enemyConfig: TeamEnemyConfig = {
   enemyLevel: 90,
@@ -253,6 +254,46 @@ describe("calcCharacterRotationDamage buildId override (issue #278)", () => {
     );
   });
 
+  it("uses the character's live data, not a stale builds[] entry, when buildId equals the active build (issue #534)", async () => {
+    // A Team Rotation slot can be pinned to a build that also happens to be
+    // currently active (e.g. picked explicitly from the build picker rather
+    // than left on "Follow active build"). `builds[]` is only refreshed on
+    // switch-away (`equipBuild` in `stores/character.js`), so a buff toggled
+    // live while that build stays active must still apply here, not the
+    // stale unbuffed snapshot still sitting in `builds[]`.
+    const staleActiveBuild = { id: "stale-active-build", name: "Stale Active", buffs: {} };
+    const charactersWithStaleActiveEntry = {
+      Calcharo: {
+        buffs: { StatBonusATK1: { isEnabled: true } }, // live/current state
+        builds: [staleActiveBuild],
+        activeBuildId: "stale-active-build",
+      },
+    };
+
+    const pinnedToActiveResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      charactersWithStaleActiveEntry,
+      enemyConfig,
+      [],
+      "stale-active-build",
+    );
+    const liveResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      charactersWithStaleActiveEntry,
+      enemyConfig,
+      [],
+      null,
+    );
+
+    expect(pinnedToActiveResult.attacks[0].damage.totalDamage).toBeCloseTo(
+      liveResult.attacks[0].damage.totalDamage,
+    );
+  });
+
   it("composes with a per-action advancedConfig override on top of the targeted build's data", async () => {
     const overriddenAction: CharacterRotationAction = {
       ...action,
@@ -281,5 +322,130 @@ describe("calcCharacterRotationDamage buildId override (issue #278)", () => {
     );
 
     expect(result.attacks[0].damage.totalDamage).toBeCloseTo(plainResult.attacks[0].damage.totalDamage);
+  });
+});
+
+describe("calcCharacterRotationDamage — per-action enemyStacksOverride", () => {
+  it("an action with only an enemyStacksOverride (no advancedConfig) routes through the rebuild path and changes damage", async () => {
+    const characters = { Calcharo: {} };
+    const baseContext = await baseContextFor(characters);
+    const plainAction: CharacterRotationAction = { id: "a1", order: 0, type: "basic", key: "Part1Damage", count: 1 };
+    const overriddenAction: CharacterRotationAction = {
+      id: "a2",
+      order: 1,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      enemyStacksOverride: { havocBaneStacks: { isEnabled: true, stacks: 9 } },
+    };
+
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [plainAction, overriddenAction] },
+      baseContext,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    expect(result.attacks).toHaveLength(2);
+    const [plain, overridden] = result.attacks;
+    // Higher Havoc Bane stacks -> more enemy DEF reduction -> more damage.
+    expect(overridden.damage.totalDamage).toBeGreaterThan(plain.damage.totalDamage);
+  });
+
+  it("matches a manually-merged TeamEnemyConfig — enemyLevel/enemyResist/enemyType stay the shared rotation value", async () => {
+    const characters = { Calcharo: {} };
+    const baseContext = await baseContextFor(characters);
+    const action: CharacterRotationAction = {
+      id: "a1",
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      enemyStacksOverride: { strainStacks: { isEnabled: true, stacks: 5 } },
+    };
+
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      baseContext,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    const manuallyMergedEnemyConfig: TeamEnemyConfig = { ...enemyConfig, strainStacks: 5 };
+    const manualContext = await buildCharacterCalculationContext("Calcharo", characters, manuallyMergedEnemyConfig);
+    const expectedAttack = resolveRotationActionToAttackData(action, manualContext.chosenChar, manualContext.characterLevel);
+    manualContext.context.rotationsList = [
+      { id: "expected", name: "expected", duration: 10, order: 0, attacks: [expectedAttack] },
+    ];
+    const expected = calcDamages(manualContext.context);
+
+    expect(result.attacks[0].damage.totalDamage).toBeCloseTo(expected.rotations[0].attacks[0].damage.totalDamage);
+    // enemyLevel/enemyResist/enemyType are untouched by the override — sanity
+    // check that the shared rotation-wide enemyConfig values were used, not
+    // some other (incorrect) default.
+    expect(manuallyMergedEnemyConfig.enemyLevel).toBe(enemyConfig.enemyLevel);
+    expect(manuallyMergedEnemyConfig.enemyResist).toBe(enemyConfig.enemyResist);
+    expect(manuallyMergedEnemyConfig.enemyType).toBe(enemyConfig.enemyType);
+  });
+
+  it("composes with advancedConfig on the same action — both apply simultaneously", async () => {
+    const characters = { Calcharo: {} };
+    const baseContext = await baseContextFor(characters);
+    const action: CharacterRotationAction = {
+      id: "a1",
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      advancedConfig: { buffs: { StatBonusATK1: { isEnabled: true } } },
+      enemyStacksOverride: { havocBaneStacks: { isEnabled: true, stacks: 9 } },
+    };
+    const buffOnlyAction: CharacterRotationAction = { ...action, id: "a2", enemyStacksOverride: undefined };
+    const stacksOnlyAction: CharacterRotationAction = { ...action, id: "a3", advancedConfig: undefined };
+
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action, buffOnlyAction, stacksOnlyAction] },
+      baseContext,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    const [both, buffOnly, stacksOnly] = result.attacks;
+    // Both individual effects increase damage, and combining them increases
+    // it further than either alone.
+    expect(both.damage.totalDamage).toBeGreaterThan(buffOnly.damage.totalDamage);
+    expect(both.damage.totalDamage).toBeGreaterThan(stacksOnly.damage.totalDamage);
+  });
+
+  it("preserves original action order when mixing plain / advancedConfig-only / enemyStacksOverride-only actions", async () => {
+    const characters = { Calcharo: {} };
+    const baseContext = await baseContextFor(characters);
+    const stacksOverride: EnemyStacksOverride = { havocBaneStacks: { isEnabled: true, stacks: 9 } };
+    const actions: CharacterRotationAction[] = [
+      { id: "a1", order: 0, type: "basic", key: "Part1Damage", count: 1, enemyStacksOverride: stacksOverride },
+      { id: "a2", order: 1, type: "basic", key: "Part1Damage", count: 1 },
+      {
+        id: "a3",
+        order: 2,
+        type: "basic",
+        key: "Part1Damage",
+        count: 1,
+        advancedConfig: { buffs: { StatBonusATK1: { isEnabled: true } } },
+      },
+      { id: "a4", order: 3, type: "basic", key: "Part1Damage", count: 1, enemyStacksOverride: stacksOverride },
+    ];
+
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions },
+      baseContext,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    expect(result.attacks.map((a: any) => a.id)).toEqual(["a1", "a2", "a3", "a4"]);
   });
 });
