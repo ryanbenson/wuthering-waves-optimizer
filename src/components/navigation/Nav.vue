@@ -187,6 +187,16 @@
                     Settings
                   </RouterLink>
                 </li>
+                <li class="mb-1">
+                  <button
+                    type="button"
+                    class="w-full flex items-center gap-[0.55rem]"
+                    data-test-options-classic-ui
+                    @click="switchToClassicUi">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M19 12H5"></path><path d="M11 18l-6-6 6-6"></path></svg>
+                    Switch to classic UI
+                  </button>
+                </li>
 
                 <li class="subnav__eyebrow">Resources</li>
                 <li class="mb-1">
@@ -338,6 +348,13 @@ function toggleOptionsMenu() {
   if (optionsMenu) {
     optionsMenu.removeAttribute("open");
   }
+}
+
+// Quick escape hatch back to the legacy UI while trying v3 - the same flag
+// SettingsLab.vue's toggle flips, just reachable without a trip to Settings.
+function switchToClassicUi() {
+  settingsStore.upsertLab({ liveResultBar: { isEnabled: false } });
+  toggleOptionsMenu();
 }
 </script>
 
