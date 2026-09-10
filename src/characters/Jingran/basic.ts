@@ -1,6 +1,6 @@
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Stay tuned",
+    name: "Jingran",
     rarity: 5,
     weapon: "Broadblades",
     avatarUrl: "StayTuned.png",
