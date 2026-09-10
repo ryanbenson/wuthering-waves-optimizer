@@ -447,6 +447,7 @@
                 @remove-action="handleRemoveAction"
                 @duplicate-action="handleDuplicateAction"
                 @bulk-apply="handleBulkApplyBuff"
+                @bulk-apply-enemy-stacks="handleBulkApplyEnemyStacks"
                 @drag-reorder-start="onActionDragStart(index)"
                 @drag-reorder-end="onActionDragEnd"
                 :data-test-rotation-action-by-parent-name="nameValue"
@@ -515,6 +516,11 @@ import {
   type AdvancedConfigCategory,
   type RotationAdvancedConfig,
 } from "../calculator/rotationAdvancedBuffs";
+import {
+  applyBulkEnemyStacksOverride,
+  type EnemyStackKey,
+  type EnemyStacksOverride,
+} from "../calculator/rotationEnemyStacksOverride";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
@@ -522,7 +528,11 @@ import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
 
-type RotationActionRow = Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig };
+type RotationActionRow = Record<string, unknown> & {
+  id: string;
+  advancedConfig?: RotationAdvancedConfig;
+  enemyStacksOverride?: EnemyStacksOverride;
+};
 
 type EchoGridRow = {
   key: string;
@@ -810,6 +820,19 @@ function handleBulkApplyBuff(payload: {
     payload.key,
     payload.override,
   );
+  emitRotation();
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
+
+function handleBulkApplyEnemyStacks(payload: {
+  key: EnemyStackKey;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  actionsList.value = applyBulkEnemyStacksOverride(actionsList.value, payload.actionIds, payload.key, payload.override);
   emitRotation();
   showToast(
     `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,

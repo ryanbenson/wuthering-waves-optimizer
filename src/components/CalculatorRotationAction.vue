@@ -101,6 +101,18 @@
         <button
           v-if="isLiveResultBarEnabled"
           type="button"
+          class="btn btn-xs btn-neutral gap-1"
+          data-test-rotation-action-manage-enemy
+          @click.stop="toggleManageEnemy">
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
+            class="size-3"
+            alt="" />
+          {{ showManageEnemy ? "Hide" : "Manage" }} Enemy
+        </button>
+        <button
+          v-if="isLiveResultBarEnabled"
+          type="button"
           class="btn btn-xs btn-neutral"
           title="Duplicate this action"
           data-test-rotation-action-duplicate
@@ -447,6 +459,10 @@ const emit = defineEmits<{
   /** Rotation Flow (Labs) only — keeps the wrapper's "Configure Buffs" panel
    * open/closed in sync with this component's own unified buffs panel. */
   "toggle-manage-buffs": [payload: { open: boolean }];
+  /** Rotation Flow (Labs) only — the enemy-settings panel is entirely
+   * wrapper-owned (no leaf-side panel to mirror, unlike buffs), so this just
+   * tells the wrapper to show/hide its "Configure Enemy Settings" panel. */
+  "toggle-manage-enemy": [payload: { open: boolean }];
 }>();
 
 const characterStore = useCharacterStore();
@@ -458,6 +474,7 @@ const isLiveResultBarEnabled = computed(
 
 const isEditing = ref(false);
 const showManualBuffs = ref(false);
+const showManageEnemy = ref(false);
 const actionKeyValue = ref<string | null>(null);
 const actionSkillType = ref<string | null>(null);
 const sequence = ref(0);
@@ -823,6 +840,11 @@ function duplicateAction() {
 function toggleManageBuffs() {
   showManualBuffs.value = !showManualBuffs.value;
   emit("toggle-manage-buffs", { open: showManualBuffs.value });
+}
+
+function toggleManageEnemy() {
+  showManageEnemy.value = !showManageEnemy.value;
+  emit("toggle-manage-enemy", { open: showManageEnemy.value });
 }
 
 function removeAdvancedBuffChip(chip: AdvancedBuffChip) {

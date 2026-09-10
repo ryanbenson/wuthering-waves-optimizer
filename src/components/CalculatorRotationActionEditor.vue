@@ -27,6 +27,7 @@
     @remove-action="onRemove"
     @duplicate-action="onDuplicateAction"
     @toggle-manage-buffs="onToggleManageBuffs"
+    @toggle-manage-enemy="onToggleManageEnemy"
     @toggle-advanced-buff="onToggleAdvancedBuff"
     @drag-reorder-start="onDragReorderStart"
     @drag-reorder-end="onDragReorderEnd">
@@ -50,9 +51,24 @@
         @click.stop="showAdvancedBuffs = !showAdvancedBuffs">
         {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
       </button>
+      <span
+        v-if="enemyOverrideCount > 0"
+        class="badge badge-xs badge-warning"
+        :data-test-rotation-action-enemy-sync-status="action.id">
+        {{ enemyOverrideCount }} stack{{ enemyOverrideCount === 1 ? "" : "s" }} overridden
+      </span>
+      <button
+        v-if="!isLiveResultBarEnabled"
+        type="button"
+        class="btn btn-xs gap-1"
+        :data-test-rotation-action-configure-enemy="action.id"
+        @click.stop="showEnemySettings = !showEnemySettings">
+        <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png" class="size-3" alt="" />
+        {{ showEnemySettings ? "Hide" : "Configure" }} Enemy Settings
+      </button>
     </template>
-    <template v-if="definitions && showAdvancedBuffs" #extra-panel>
-      <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
+    <template v-if="definitions && (showAdvancedBuffs || showEnemySettings)" #extra-panel>
+      <div v-if="showAdvancedBuffs" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
         <div class="flex flex-wrap gap-2">
           <button
             v-if="previousAction"
@@ -95,6 +111,16 @@
           @reset-field="onResetAdvancedField"
           @bulk-apply="onBulkApply" />
       </div>
+      <div v-if="showEnemySettings" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
+        <RotationEnemyStacksPanel
+          :model-value="action.enemyStacksOverride ?? {}"
+          :current-enemy-config="currentEnemyConfig"
+          :range-actions="rangeActions"
+          :action-id="action.id"
+          @update:model-value="onEnemyStacksUpdate"
+          @reset-field="onResetEnemyStacksField"
+          @bulk-apply="onEnemyStacksBulkApply" />
+      </div>
     </template>
   </CalculatorRotationAction>
 </template>
@@ -104,6 +130,7 @@ import { computed, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
+import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import {
   buildAdvancedConfigSnapshot,
@@ -116,7 +143,14 @@ import {
   type RotationAdvancedConfig,
   type RotationBuffOverride,
 } from "../calculator/rotationAdvancedBuffs";
-import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+import {
+  applyEnemyStacksOverride,
+  removeEnemyStacksOverride,
+  countEnemyStacksOverrides,
+  type EnemyStackKey,
+  type EnemyStacksOverride,
+} from "../calculator/rotationEnemyStacksOverride";
+import { resolveTeamEnemyConfig, type CharacterCalculationContext } from "../calculator/buildCharacterContext";
 
 /** Rotation Flow (Labs) — a display-only chip for a currently-enabled
  * advancedConfig entry, resolved here (this wrapper owns advancedConfig) so
@@ -124,7 +158,11 @@ import type { CharacterCalculationContext } from "../calculator/buildCharacterCo
 type AdvancedBuffChip = { category: string; key: string; label: string };
 
 const props = defineProps<{
-  action: Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig };
+  action: Record<string, unknown> & {
+    id: string;
+    advancedConfig?: RotationAdvancedConfig;
+    enemyStacksOverride?: EnemyStacksOverride;
+  };
   character: string;
   /** Static game data for this character (attacks, resonance chain defs,
    * etc.) — passed straight through to CalculatorRotationAction. */
@@ -153,6 +191,7 @@ const emit = defineEmits<{
   "bulk-apply": [
     payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] },
   ];
+  "bulk-apply-enemy-stacks": [payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
 }>();
@@ -163,7 +202,11 @@ const isLiveResultBarEnabled = computed(
 );
 
 const showAdvancedBuffs = ref(false);
+const showEnemySettings = ref(false);
 const actionRef = ref<{ toggleEdit: () => void } | null>(null);
+
+const currentEnemyConfig = computed(() => resolveTeamEnemyConfig(props.characterBuildData));
+const enemyOverrideCount = computed(() => countEnemyStacksOverrides(props.action.enemyStacksOverride));
 
 // Forwarded to CalculatorRotation.vue's setActionRef/toggleEdit mechanism —
 // newly-added actions auto-open for editing, which relies on the ref exposing
@@ -285,6 +328,10 @@ function onToggleManageBuffs(payload: { open: boolean }) {
   showAdvancedBuffs.value = payload.open;
 }
 
+function onToggleManageEnemy(payload: { open: boolean }) {
+  showEnemySettings.value = payload.open;
+}
+
 function onDuplicateAction(payload: { id: string }) {
   emit("duplicate-action", payload);
 }
@@ -322,6 +369,20 @@ function onBulkApply(payload: {
   actionIds: string[];
 }) {
   emit("bulk-apply", payload);
+}
+
+function onEnemyStacksUpdate(patch: { key: EnemyStackKey; value: RotationBuffOverride }) {
+  const next = applyEnemyStacksOverride(props.action.enemyStacksOverride, patch.key, patch.value);
+  emit("action-update", { ...props.action, enemyStacksOverride: next });
+}
+
+function onResetEnemyStacksField(payload: { key: EnemyStackKey }) {
+  const next = removeEnemyStacksOverride(props.action.enemyStacksOverride, payload.key);
+  emit("action-update", { ...props.action, enemyStacksOverride: next });
+}
+
+function onEnemyStacksBulkApply(payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }) {
+  emit("bulk-apply-enemy-stacks", payload);
 }
 
 function copyPreviousSettings() {

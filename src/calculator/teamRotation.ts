@@ -1,6 +1,7 @@
 import { randomString } from "../utils/strings";
 import type { TeamEnemyConfig } from "./buildCharacterContext";
 import type { RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import type { EnemyStacksOverride } from "./rotationEnemyStacksOverride";
 import {
   calcCharacterRotationDamage,
   addDamageAggregation,
@@ -26,6 +27,7 @@ export interface TeamRotationAction {
   electroRageStacks?: number;
   isDisabled?: boolean;
   advancedConfig?: RotationAdvancedConfig;
+  enemyStacksOverride?: EnemyStacksOverride;
 }
 
 /**

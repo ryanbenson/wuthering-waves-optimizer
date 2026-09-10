@@ -49,6 +49,7 @@
         @remove-action="onRemove"
         @duplicate-action="onDuplicateAction"
         @toggle-manage-buffs="onToggleManageBuffs"
+        @toggle-manage-enemy="onToggleManageEnemy"
         @toggle-advanced-buff="onToggleAdvancedBuff"
         @drag-reorder-start="onDragReorderStart"
         @drag-reorder-end="onDragReorderEnd">
@@ -72,9 +73,24 @@
             @click.stop="showAdvancedBuffs = !showAdvancedBuffs">
             {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
           </button>
+          <span
+            v-if="enemyOverrideCount > 0"
+            class="badge badge-xs badge-warning"
+            :data-test-team-rotation-action-enemy-sync-status="action.id">
+            {{ enemyOverrideCount }} stack{{ enemyOverrideCount === 1 ? "" : "s" }} overridden
+          </span>
+          <button
+            v-if="!isLiveResultBarEnabled"
+            type="button"
+            class="btn btn-xs gap-1"
+            :data-test-team-rotation-action-configure-enemy="action.id"
+            @click.stop="showEnemySettings = !showEnemySettings">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png" class="size-3" alt="" />
+            {{ showEnemySettings ? "Hide" : "Configure" }} Enemy Settings
+          </button>
         </template>
-        <template v-if="team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
-          <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
+        <template v-if="team.characterIds[action.slot] && (showAdvancedBuffs || showEnemySettings)" #extra-panel>
+          <div v-if="showAdvancedBuffs" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
             <div class="flex flex-wrap gap-2">
               <button
                 v-if="previousAction"
@@ -117,6 +133,16 @@
               @reset-field="onResetAdvancedField"
               @bulk-apply="onBulkApply" />
           </div>
+          <div v-if="showEnemySettings" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
+            <RotationEnemyStacksPanel
+              :model-value="action.enemyStacksOverride ?? {}"
+              :current-enemy-config="currentEnemyConfig"
+              :range-actions="rangeActions"
+              :action-id="action.id"
+              @update:model-value="onEnemyStacksUpdate"
+              @reset-field="onResetEnemyStacksField"
+              @bulk-apply="onEnemyStacksBulkApply" />
+          </div>
         </template>
       </CalculatorRotationAction>
     </div>
@@ -128,6 +154,7 @@ import { computed, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
+import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { TeamRotationAction } from "../calculator/teamRotation";
@@ -141,7 +168,13 @@ import {
   type AdvancedConfigCategory,
   type RotationBuffOverride,
 } from "../calculator/rotationAdvancedBuffs";
-import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+import {
+  applyEnemyStacksOverride,
+  removeEnemyStacksOverride,
+  countEnemyStacksOverrides,
+  type EnemyStackKey,
+} from "../calculator/rotationEnemyStacksOverride";
+import { resolveTeamEnemyConfig, type CharacterCalculationContext, type TeamEnemyConfig } from "../calculator/buildCharacterContext";
 
 /** Rotation Flow (Labs) — mirrors CalculatorRotationActionEditor.vue's
  * identical type; kept separate since Team's advancedConfig plumbing is a
@@ -156,6 +189,9 @@ const props = defineProps<{
   mainEchoRankForSlot: Record<number, number | null>;
   definitionsForSlot?: Record<number, CharacterCalculationContext["definitions"] | null>;
   characterDataForSlot?: Record<number, Record<string, unknown>>;
+  /** The team's rotation-wide enemy config — used as the un-overridden
+   * display value for the per-action enemy-stacks panel. */
+  teamEnemyConfig: TeamEnemyConfig;
   previousAction?: (TeamRotationAction & Record<string, unknown>) | null;
   rangeActions?: DurationRangeAction[];
   canReorder?: boolean;
@@ -171,6 +207,7 @@ const emit = defineEmits<{
   remove: [id: string];
   duplicate: [id: string];
   "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
+  "bulk-apply-enemy-stacks": [payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
 }>();
@@ -181,6 +218,10 @@ const isLiveResultBarEnabled = computed(
 );
 
 const showAdvancedBuffs = ref(false);
+const showEnemySettings = ref(false);
+
+const currentEnemyConfig = computed(() => resolveTeamEnemyConfig(props.teamEnemyConfig));
+const enemyOverrideCount = computed(() => countEnemyStacksOverrides(props.action.enemyStacksOverride));
 
 const echoSetPassiveDefsForSlot = computed(() => {
   const defs = props.definitionsForSlot?.[props.action.slot];
@@ -283,6 +324,10 @@ function onToggleManageBuffs(payload: { open: boolean }) {
   showAdvancedBuffs.value = payload.open;
 }
 
+function onToggleManageEnemy(payload: { open: boolean }) {
+  showEnemySettings.value = payload.open;
+}
+
 function onDuplicateAction(payload: { id: string }) {
   emit("duplicate", payload.id);
 }
@@ -339,6 +384,20 @@ function onBulkApply(payload: {
   actionIds: string[];
 }) {
   emit("bulk-apply", payload);
+}
+
+function onEnemyStacksUpdate(patch: { key: EnemyStackKey; value: RotationBuffOverride }) {
+  const next = applyEnemyStacksOverride(props.action.enemyStacksOverride, patch.key, patch.value);
+  emit("update", { ...props.action, enemyStacksOverride: next });
+}
+
+function onResetEnemyStacksField(payload: { key: EnemyStackKey }) {
+  const next = removeEnemyStacksOverride(props.action.enemyStacksOverride, payload.key);
+  emit("update", { ...props.action, enemyStacksOverride: next });
+}
+
+function onEnemyStacksBulkApply(payload: { key: EnemyStackKey; override: AdvancedBuffOverride; actionIds: string[] }) {
+  emit("bulk-apply-enemy-stacks", payload);
 }
 
 function copyPreviousSettings() {
