@@ -126,27 +126,24 @@ describe("countEnemyStacksOverrides", () => {
       countEnemyStacksOverrides({
         strainStacks: { isEnabled: true, stacks: 1 },
         havocBaneStacks: { isEnabled: false, stacks: 1 },
-        spectroFrazzleStacks: { isEnabled: true, stacks: 2 },
       }),
-    ).toBe(2);
+    ).toBe(1);
+  });
+
+  it("ignores fields no longer exposed by the panel (e.g. spectroFrazzleStacks)", () => {
+    expect(
+      countEnemyStacksOverrides({
+        strainStacks: { isEnabled: true, stacks: 1 },
+        spectroFrazzleStacks: { isEnabled: true, stacks: 2 },
+      } as EnemyStacksOverride),
+    ).toBe(1);
   });
 });
 
 describe("ENEMY_STACK_FIELDS", () => {
-  it("covers exactly the 8 documented stack fields with sane caps", () => {
+  it("covers exactly the 2 documented stack fields with sane caps", () => {
     const keys = ENEMY_STACK_FIELDS.map((f) => f.key).sort();
-    expect(keys).toEqual(
-      [
-        "aeroErosionStacks",
-        "electroFlareStacks",
-        "electroRageStacks",
-        "fusionBurstStacks",
-        "glacioChafeStacks",
-        "havocBaneStacks",
-        "spectroFrazzleStacks",
-        "strainStacks",
-      ].sort(),
-    );
+    expect(keys).toEqual(["havocBaneStacks", "strainStacks"].sort());
     ENEMY_STACK_FIELDS.forEach((field) => expect(field.max).toBeGreaterThan(0));
   });
 });

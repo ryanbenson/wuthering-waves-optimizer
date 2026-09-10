@@ -26,19 +26,17 @@ export type EnemyStacksOverride = Partial<Record<EnemyStackKey, RotationBuffOver
 
 /**
  * Single source of truth for the per-action enemy-stacks panel's row order,
- * labels, and caps — kept in sync with the global enemy panels
- * (CalculatorEnemy.vue / CalculatorEnemyWorkspace.vue / TeamRotationEnemySettings.vue).
+ * labels, and caps. Deliberately a subset of `EnemyStackKey` — the per-action
+ * override panel (`RotationEnemyStacksPanel.vue`, used by both Character and
+ * Team Rotation action editors) only exposes Tune Strain and Havoc Bane;
+ * the other elemental-effect stacks are still configured on the global enemy
+ * panels (CalculatorEnemy.vue / CalculatorEnemyWorkspace.vue /
+ * TeamRotationEnemySettings.vue) but are not overridable per-action.
  * Min is always 0 for every field.
  */
 export const ENEMY_STACK_FIELDS: Array<{ key: EnemyStackKey; label: string; max: number }> = [
   { key: "strainStacks", label: "Tune Strain Stacks", max: 9 },
   { key: "havocBaneStacks", label: "Havoc Bane Stacks", max: 9 },
-  { key: "spectroFrazzleStacks", label: "Spectro Frazzle Stacks", max: 13 },
-  { key: "aeroErosionStacks", label: "Aero Erosion Stacks", max: 12 },
-  { key: "fusionBurstStacks", label: "Fusion Burst Stacks", max: 13 },
-  { key: "electroFlareStacks", label: "Electro Flare Stacks", max: 13 },
-  { key: "electroRageStacks", label: "Electro Rage Stacks", max: 13 },
-  { key: "glacioChafeStacks", label: "Glacio Chafe Stacks", max: 13 },
 ];
 
 const ENEMY_STACK_KEYS = ENEMY_STACK_FIELDS.map((field) => field.key);
