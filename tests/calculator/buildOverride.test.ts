@@ -56,6 +56,34 @@ describe("resolveCharactersForBuild", () => {
     const noBuilds = { Danjin: { weapon: "DanjinWeapon" } };
     expect(resolveCharactersForBuild(noBuilds, "Danjin", "any-id")).toBe(noBuilds);
   });
+
+  it("returns the characters map unchanged when buildId is the character's own active build, even if its stored builds[] entry is stale", () => {
+    // Regression for issue #534: a Team Rotation slot can be pinned to a
+    // build that also happens to be currently active (e.g. picked explicitly
+    // from the build picker rather than left on "Follow active build").
+    // `builds[]` is only refreshed on switch-away (see `equipBuild` in
+    // `stores/character.js`), so live edits made while it stays active
+    // (team buffs, weapon passives, etc.) must still be visible here.
+    const characters = {
+      Mornye: {
+        weapon: "LiveWeapon", // the true current state
+        teamBuffs: { selectedCharacter1: "Aemeath", selectedCharacter2: "Lynae", buffs: { PrismaticOverblast: { isEnabled: true } } },
+        activeBuildId: "build-active",
+        builds: [
+          // stale — doesn't reflect the live weapon/teamBuffs above, because
+          // equipBuild only refreshes this on switch-away, not on every edit
+          { id: "build-active", name: "Aemeath Team", weapon: "StaleWeapon", teamBuffs: { selectedCharacter1: "Aemeath", selectedCharacter2: "Lynae" } },
+          { id: "build-other", name: "Other", weapon: "OtherWeapon" },
+        ],
+      },
+    };
+
+    const result = resolveCharactersForBuild(characters, "Mornye", "build-active");
+
+    expect(result).toBe(characters);
+    expect(result.Mornye.weapon).toBe("LiveWeapon");
+    expect(result.Mornye.teamBuffs.buffs.PrismaticOverblast.isEnabled).toBe(true);
+  });
 });
 
 describe("resolveCharactersForBuildPreview", () => {

@@ -253,6 +253,46 @@ describe("calcCharacterRotationDamage buildId override (issue #278)", () => {
     );
   });
 
+  it("uses the character's live data, not a stale builds[] entry, when buildId equals the active build (issue #534)", async () => {
+    // A Team Rotation slot can be pinned to a build that also happens to be
+    // currently active (e.g. picked explicitly from the build picker rather
+    // than left on "Follow active build"). `builds[]` is only refreshed on
+    // switch-away (`equipBuild` in `stores/character.js`), so a buff toggled
+    // live while that build stays active must still apply here, not the
+    // stale unbuffed snapshot still sitting in `builds[]`.
+    const staleActiveBuild = { id: "stale-active-build", name: "Stale Active", buffs: {} };
+    const charactersWithStaleActiveEntry = {
+      Calcharo: {
+        buffs: { StatBonusATK1: { isEnabled: true } }, // live/current state
+        builds: [staleActiveBuild],
+        activeBuildId: "stale-active-build",
+      },
+    };
+
+    const pinnedToActiveResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      charactersWithStaleActiveEntry,
+      enemyConfig,
+      [],
+      "stale-active-build",
+    );
+    const liveResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      charactersWithStaleActiveEntry,
+      enemyConfig,
+      [],
+      null,
+    );
+
+    expect(pinnedToActiveResult.attacks[0].damage.totalDamage).toBeCloseTo(
+      liveResult.attacks[0].damage.totalDamage,
+    );
+  });
+
   it("composes with a per-action advancedConfig override on top of the targeted build's data", async () => {
     const overriddenAction: CharacterRotationAction = {
       ...action,
