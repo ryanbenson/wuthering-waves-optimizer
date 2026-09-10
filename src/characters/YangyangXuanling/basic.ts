@@ -17,7 +17,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     suggestedWeapons: [
       { key: "EmeraldSentence", label: "Alternate" },
       { key: "EverbrightPolestar", label: "Stat stick" },
-      { key: "Red Spring", label: "Stat stick" },
+      { key: "RedSpring", label: "Stat stick" },
       { key: "EmeraldOfGenesis", label: "Standard" },
       { key: "Lumingloss", label: "BP" },
       { key: "FablesofWisdom", label: "4*" }
