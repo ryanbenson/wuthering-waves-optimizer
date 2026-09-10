@@ -13,9 +13,9 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [
       { key: "RedSpring", label: "Alternate" },
-      { key: "EmeraldofGenesis", label: "Standard" },
+      { key: "EmeraldOfGenesis", label: "Standard" },
       { key: "FeatherEdge", label: "BP" },
-      { key: "CommandoofConviction", label: "4*" },
+      { key: "CommandOofConviction", label: "4*" },
     ],
   };
 }
