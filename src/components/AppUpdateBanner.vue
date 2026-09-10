@@ -327,7 +327,11 @@ let resizeObserver: ResizeObserver | null = null;
 onMounted(() => {
   if (bannerRef.value && typeof ResizeObserver !== "undefined") {
     resizeObserver = new ResizeObserver((entries) => {
-      const height = entries[0]?.contentRect.height ?? 0;
+      // getBoundingClientRect (border-box), not entries[0].contentRect
+      // (content-box only) - callers subtract this from a viewport budget
+      // to reserve the banner's actual on-screen footprint, padding and
+      // border included, or the reserved space undershoots by that amount.
+      const height = entries[0]?.target.getBoundingClientRect().height ?? 0;
       document.documentElement.style.setProperty("--announce-banner-h", `${height}px`);
     });
     resizeObserver.observe(bannerRef.value);
