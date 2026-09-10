@@ -46,6 +46,12 @@ onBeforeUnmount(() => {
 .contain {
   display: grid;
   grid-template-columns: 1fr;
+  // Grid's default align-content (normal) resolves to stretch, so with no
+  // grid-template-rows the banner row and the content row split any
+  // leftover space below .contain's fixed height between them - ballooning
+  // the banner (and the gap under short pages like /info) instead of
+  // leaving it as trailing whitespace. Pin rows to their natural size.
+  align-content: start;
 
   @media (max-width: 768px) {
     display: block;
