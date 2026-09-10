@@ -17,7 +17,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     suggestedWeapons: [
       { key: "StellarSymphony", label: "Alternate" },
       { key: "Variation", label: "Alternate" },
-      { key: "CalloftheAbyss", label: "Last resort" },
+      { key: "CallOfTheAbyss", label: "Last resort" },
     ],
   };
 }
