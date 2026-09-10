@@ -106,7 +106,9 @@ export interface CharacterRotationBaseContext {
  *
  * `buildId` (Team Rotations' per-slot build override, issue #278) swaps in
  * a specific saved build's data for `characterId` instead of its currently
- * active build, via `resolveCharactersForBuild` — the same
+ * active build, via `resolveCharactersForBuild` (which falls back to the
+ * character's live data, not a stale cached snapshot, if `buildId` turns out
+ * to just be the already-active build) — the same
  * synthetic-characters-map trick `applyAdvancedOverrides` already uses for
  * per-action buff overrides below, so both can compose (an override action
  * layers its `advancedConfig` on top of the *targeted build's* data, not the
