@@ -83,6 +83,15 @@
                 class="input input-bordered input-xs"
                 v-model="baseAttrValue"
                 :data-test-party-buff-input-base="uniqueKey" />
+              <button
+                v-if="realisticBaseAttrValue !== undefined"
+                type="button"
+                class="btn btn-xs btn-ghost ml-1"
+                @click.stop.prevent="setSuggestedBaseAttrValue"
+                :data-test-party-buff-input-base-suggested="uniqueKey"
+                :title="`Set a suggested/realistic ${displayModifierBasedOn} of ${realisticBaseAttrValue}`">
+                Suggested ({{ realisticBaseAttrValue }})
+              </button>
             </label>
           </div>
         </div>
@@ -119,6 +128,7 @@ const props = withDefaults(
     hasRefinements?: boolean;
     inputBase?: boolean;
     modifierBasedOn?: string | null;
+    realisticBaseAttrValue?: number;
     buffImageUrl?: string;
   }>(),
   {
@@ -276,6 +286,11 @@ function ensureMaxStacks() {
 function setMaxStacks() {
   stacks.value = getRealisticMaxStacks(props.maxStacks, props.realisticMaxStacks);
   updatedStats();
+}
+
+function setSuggestedBaseAttrValue() {
+  if (props.realisticBaseAttrValue === undefined) return;
+  baseAttrValue.value = props.realisticBaseAttrValue;
 }
 
 function toggleEnabled() {

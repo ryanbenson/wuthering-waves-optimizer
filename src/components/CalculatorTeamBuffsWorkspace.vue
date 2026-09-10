@@ -375,6 +375,7 @@ export interface PartyBuffDef {
   alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
+  realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
 }
 

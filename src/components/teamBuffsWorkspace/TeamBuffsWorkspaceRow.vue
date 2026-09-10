@@ -68,6 +68,15 @@
             :value="baseAttrValue"
             @input="emit('set-base-attr-value', ($event.target as HTMLInputElement).value)"
             :data-test-team-buffs-buff-input-base="def.key" />
+          <button
+            v-if="def.realisticBaseAttrValue !== undefined"
+            type="button"
+            class="btn btn-xs btn-ghost"
+            @click="emit('set-base-attr-value', String(def.realisticBaseAttrValue))"
+            :data-test-team-buffs-buff-input-base-suggested="def.key"
+            :title="`Set a suggested/realistic ${def.modifierBasedOn} of ${def.realisticBaseAttrValue}`">
+            Suggested ({{ def.realisticBaseAttrValue }})
+          </button>
         </template>
       </div>
     </div>

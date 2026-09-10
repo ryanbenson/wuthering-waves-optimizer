@@ -4,7 +4,7 @@ date: 2026-09-09
 tags: [calculator, characters, buffs]
 ---
 
-# 29. `realisticMaxStacks` is a manually-authored field, not a computed soft cap
+# 29. `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap
 
 ## Context
 
@@ -55,24 +55,44 @@ whoever adds/reviews the buff (see `docs/creating-new-character.md`) — it is
 deliberately **not** derived automatically. We are not pursuing automatic
 soft-cap derivation as part of this change.
 
+A second, narrower case came up during review: some team buffs (Shorekeeper's
+`SophisticatedStellarealmCritRate`/`ReleasedStellarealmCritDMG`, and 7 other
+`inputBase: true` buffs keyed on a teammate's own Energy Regen/CritRate) don't
+use stacks at all — the user manually types the relevant stat's value,
+because the app can't compute a teammate's own build from inside the
+optimized character's context. There's no `maxStacks` here to fall back to
+and no existing "Max" button, and "realistic" means something softer for
+these — "a typical value for that stat," not a verified rotation fact. We
+extended the same pattern with a sibling field, `realisticBaseAttrValue`,
+rather than overloading `realisticMaxStacks` for a different input shape.
+
 ## Consequences
 
 - Pros: Small, testable, reuses the exact pattern `getEffectiveMaxStacks`
   already established for resonance-chain-gated cap overrides. Zero
   behavior change for any buff that doesn't set it (`undefined` falls back
-  to the hard cap everywhere). No new architecture, no worker/optimizer
+  to the hard cap everywhere, or hides the "Suggested" button entirely for
+  `realisticBaseAttrValue`). No new architecture, no worker/optimizer
   changes.
 - Cons: Someone has to author and periodically re-verify a number per
   buff — the same maintenance cost `maxStacks` already carries. Buffs are
-  shipped with the field unset until verified numbers are added; this ADR
-  does not populate any values.
+  shipped with both fields unset until verified numbers are added; this ADR
+  does not populate any values (aside from the two Shorekeeper
+  `realisticBaseAttrValue: 250` entries used to validate the wiring).
+  `realisticBaseAttrValue` in particular is inherently softer/more opinion-based
+  than `realisticMaxStacks` (a teammate's real ER/CritRate varies by their own
+  build), so it should be read as "a reasonable assumption," not a verified
+  game fact.
 
 ## Guidance
 
 - **Do** set `realisticMaxStacks` only from a verified rotation/team
   scenario — treat it with the same rigor as `maxStacks` itself.
-- **Do** leave it unset when unsure; the UI silently falls back to the
-  existing hard-cap behavior.
+- **Do** set `realisticBaseAttrValue` only on buffs with `inputBase: true`;
+  it does nothing on stacking buffs (they use `realisticMaxStacks` instead).
+- **Do** leave either field unset when unsure; the UI silently falls back to
+  the existing hard-cap behavior for stacks, or simply omits the "Suggested"
+  button for `inputBase` fields.
 - **Don't** compute or guess a value from the buff's own `modifierValue`/
   `maxStacks` shape — there is no reliable in-isolation signal for it.
 

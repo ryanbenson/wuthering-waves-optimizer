@@ -30,6 +30,8 @@ Note that Vulnerability is usually a rare buff, and the wording is inconsistent 
 
 For that case, add an optional `realisticMaxStacks` alongside `maxStacks` set to a value you've actually verified against a real rotation (not a guess): it becomes the target for that buff's "Max" button everywhere in the app (self buffs, resonance chains, team buffs), while `maxStacks` still governs the slider's outer bound and the store data limit. Leave it unset unless you have a rotation-verified number — an unverified `realisticMaxStacks` is worse than no cap at all, since it looks authoritative to users. See ADR [0029](./adr/0029-buff-realistic-max-stacks.md) for why this is a manually-authored field rather than something the app computes automatically.
 
+`realisticMaxStacks` only does anything on buffs with `hasStacks: true`. For an `inputBase: true` team buff (a teammate's own Energy Regen/CritRate typed in manually — e.g. Shorekeeper's `SophisticatedStellarealmCritRate`), there's no stack count or hard cap to target instead, so use the sibling field `realisticBaseAttrValue` — it renders a "Suggested (N)" button next to that input. Treat it as a reasonable assumption rather than a verified fact (a teammate's real stat varies with their own build), and only set it on `inputBase` buffs.
+
 ### Base talent multiplier
 
 When you need to add a multiplier to the base talent value (e.g. Changli R5)

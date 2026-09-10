@@ -618,6 +618,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 250,
     },
     {
       key: "ReleasedStellarealmCritDMG",
@@ -637,6 +638,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 250,
     },
     {
       key: "OutroSkillBinaryButterfly",

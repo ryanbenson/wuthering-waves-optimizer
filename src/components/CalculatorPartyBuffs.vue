@@ -182,6 +182,7 @@
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
+            :realistic-base-attr-value="buff.realisticBaseAttrValue"
             @updated-party-buff="handleUpdatedPartyBuff1"
             :talent-data="talentData"
             class="character__buff character__buffs__one"></CalculatorPartyBuff>
@@ -223,6 +224,7 @@
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
+            :realistic-base-attr-value="buff.realisticBaseAttrValue"
             @updated-party-buff="handleUpdatedPartyBuff2"
             :talent-data="talentData"
             class="character__buff character__buffs__two"></CalculatorPartyBuff>
@@ -258,6 +260,7 @@
           :buff-image-url="echoBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
+          :realistic-base-attr-value="buff.realisticBaseAttrValue"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
@@ -292,6 +295,7 @@
           :buff-image-url="weaponBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
+          :realistic-base-attr-value="buff.realisticBaseAttrValue"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           :has-refinements="true"
@@ -360,6 +364,7 @@ type PartyBuffDef = {
   alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
+  realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
 };
 
