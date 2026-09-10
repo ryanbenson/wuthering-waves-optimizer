@@ -98,6 +98,19 @@ describe("WorkspaceResonanceChain", () => {
     expect(isNodeOn(container, 3)).toBe(false);
   });
 
+  it("Max All lands on a buff's realistic cap instead of its raw hard cap when one is configured (issue #514)", async () => {
+    const buffs = [
+      { key: "Node1", name: "Sequence Node 1: First", details: "d1", hasStacks: true, maxStacks: 150, realisticMaxStacks: 40 },
+    ];
+    const { characterStore, container } = renderChain(buffs);
+
+    await fireEvent.click(container.querySelector("[data-test-workspace-rc-max-all]")!);
+
+    const chains = characterStore.characters[CHARACTER].resonanceChains;
+    expect(chains.Node1.isEnabled).toBe(true);
+    expect(chains.Node1.stacks).toBe(40);
+  });
+
   it("never affects an alwaysEnabled buff at another level when disabling one buff", async () => {
     const buffs = [
       BUFFS[0],

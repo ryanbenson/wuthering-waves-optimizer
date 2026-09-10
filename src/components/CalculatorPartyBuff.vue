@@ -49,7 +49,12 @@
                 type="button"
                 class="btn btn-xs btn-ghost ml-1"
                 @click.stop.prevent="setMaxStacks"
-                :data-test-party-buff-stacks-max="uniqueKey">
+                :data-test-party-buff-stacks-max="uniqueKey"
+                :title="
+                  realisticMaxStacks !== undefined && realisticMaxStacks < maxStacks
+                    ? `Set to a realistically achievable ${realisticMaxStacks} stacks instead of the raw ${maxStacks} cap`
+                    : undefined
+                ">
                 Max
               </button>
             </label>
@@ -78,6 +83,15 @@
                 class="input input-bordered input-xs"
                 v-model="baseAttrValue"
                 :data-test-party-buff-input-base="uniqueKey" />
+              <button
+                v-if="realisticBaseAttrValue !== undefined"
+                type="button"
+                class="btn btn-xs btn-ghost ml-1"
+                @click.stop.prevent="setSuggestedBaseAttrValue"
+                :data-test-party-buff-input-base-suggested="uniqueKey"
+                :title="`Set a suggested/realistic ${displayModifierBasedOn} of ${realisticBaseAttrValue}`">
+                Suggested ({{ realisticBaseAttrValue }})
+              </button>
             </label>
           </div>
         </div>
@@ -94,6 +108,7 @@ import { useCharacterStore } from "../stores/character";
 import AppRichSelect from "./AppRichSelect.vue";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 import { resolveTeamBuffInstance, type PartyBuffModifier } from "../buffs/teamBuffs";
+import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
 export type { PartyBuffModifier };
 
@@ -107,11 +122,13 @@ const props = withDefaults(
     hasStacks?: boolean;
     minStacks?: number;
     maxStacks?: number;
+    realisticMaxStacks?: number;
     modifiers?: PartyBuffModifier[];
     talentData?: Record<string, string>;
     hasRefinements?: boolean;
     inputBase?: boolean;
     modifierBasedOn?: string | null;
+    realisticBaseAttrValue?: number;
     buffImageUrl?: string;
   }>(),
   {
@@ -267,8 +284,13 @@ function ensureMaxStacks() {
 }
 
 function setMaxStacks() {
-  stacks.value = props.maxStacks;
+  stacks.value = getRealisticMaxStacks(props.maxStacks, props.realisticMaxStacks);
   updatedStats();
+}
+
+function setSuggestedBaseAttrValue() {
+  if (props.realisticBaseAttrValue === undefined) return;
+  baseAttrValue.value = props.realisticBaseAttrValue;
 }
 
 function toggleEnabled() {

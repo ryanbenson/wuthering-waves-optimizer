@@ -57,6 +57,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, echoes, weapons, enemies |
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | team-rotations, components |
 | [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | calculator, components, echoes |
+| [0029](./0029-buff-realistic-max-stacks.md) | `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap | accepted | calculator, characters, buffs |
 
 ## When to write a new ADR
 

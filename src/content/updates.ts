@@ -12,6 +12,13 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-09",
+    dateLabel: "September 9, 2026",
+    items: [
+      "Adds recommended stacks/stats for team buffs based on a teammate's stats like Shorekeeper's Energy Regen, so you can quickly cap their buff with a press of a button.",
+    ],
+  },
+  {
     date: "2026-09-08",
     dateLabel: "September 8, 2026",
     items: [

@@ -35,6 +35,7 @@
         :has-stacks="Boolean(buff.hasStacks)"
         :min-stacks="Number(buff.minStacks) || 0"
         :max-stacks="Number(buff.maxStacks) || 0"
+        :realistic-max-stacks="buff.realisticMaxStacks"
         :modifiers="(buff.modifiers ?? []) as unknown[]"
         :buff-attack-target-selection="buff.buffAttackTargetSelection"
         @updated-character-buff="handleUpdatedCharacterBuff"
@@ -46,6 +47,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted } from "vue";
+import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../stores/character";
 import CalculatorResonanceChainsItem from "./CalculatorResonanceChainsItem.vue";
 
@@ -70,6 +72,7 @@ export type ResonanceChainBuffRow = {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   modifiers?: unknown[];
   buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
 };
@@ -123,7 +126,7 @@ async function maxAllResonanceChains() {
     };
 
     if (chain.hasStacks) {
-      update.stacks = Number(chain.maxStacks) || 0;
+      update.stacks = getRealisticMaxStacks(Number(chain.maxStacks) || 0, chain.realisticMaxStacks);
     }
 
     chainUpdates[chain.key] = update;

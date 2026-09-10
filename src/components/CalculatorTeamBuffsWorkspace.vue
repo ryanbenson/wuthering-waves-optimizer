@@ -360,6 +360,7 @@ import {
 } from "../buffs/teamBuffs";
 import { buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
 import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
+import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
 export interface PartyBuffDef {
   key: string;
@@ -370,9 +371,11 @@ export interface PartyBuffDef {
   modifiers: PartyBuffModifier[];
   minStacks: number;
   maxStacks: number;
+  realisticMaxStacks?: number;
   alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
+  realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
 }
 
@@ -494,7 +497,7 @@ function setStacks(def: PartyBuffDef, raw: string | number) {
 }
 
 function setMaxStacksFor(def: PartyBuffDef) {
-  setBuffField(def.key, "stacks", def.maxStacks);
+  setBuffField(def.key, "stacks", getRealisticMaxStacks(def.maxStacks, def.realisticMaxStacks));
 }
 
 function refinementFor(key: string): string {
