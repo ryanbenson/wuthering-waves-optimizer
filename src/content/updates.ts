@@ -15,6 +15,8 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-09-10",
     dateLabel: "September 10, 2026",
     items: [
+      "Adds banner opening public beta for new v3 UI with opt-in and opt-out of the UI, with deep dive What's New highlighting the major changes",
+      "v3 UI: Added recommended weapons for: Jingran, Qingxiao, Suisui, Hiyuki, YYX, Lucilla, Lucy, Rebecca, Denia (more to come)",
       "v3 UI: Improves echo impact calculations",
     ],
   },
