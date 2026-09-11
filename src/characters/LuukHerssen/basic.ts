@@ -15,6 +15,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "DaybreakersSpine",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "PulsationBracer", label: "Standard" },
+      { key: "BlazingJustice", label: "Alternate" },
+      { key: "MoongazersSigil", label: "Stat stick" },
+      { key: "AbyssSurges", label: "Standard" },
+      { key: "CelestialSpiral", label: "4*" },
+      { key: "AetherStrike", label: "BP" },
+    ],
   };
 }
