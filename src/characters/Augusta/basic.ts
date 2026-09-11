@@ -14,6 +14,14 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "ThunderflareDominion",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "VerdantSummit", label: "Alternate" },
+      { key: "AgesOfHarvest", label: "Alternate" },
+      { key: "RadianceCleaver", label: "Standard" },
+      { key: "Kumokiri", label: "Stat stick" },
+      { key: "AureateZenith", label: "BP" },
+      { key: "Autumntrace", label: "BP" },
+      { key: "WaningRedshift", label: "4*" },
+    ],
   };
 }
