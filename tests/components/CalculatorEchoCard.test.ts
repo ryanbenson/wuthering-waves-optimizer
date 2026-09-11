@@ -102,6 +102,26 @@ describe("CalculatorEchoCard rating badges", () => {
     const { getByText } = renderCard(baseProps({ echoSubStatsType5: "none" }));
     expect(getByText(/\*$/)).toBeTruthy();
   });
+
+  it("hides the grade+percent badge when hideRating is set, in the comfy layout", () => {
+    setActivePinia(createPinia());
+    const { queryByText } = renderCard(baseProps({ hideRating: true }));
+    expect(queryByText(/^[EDCBAS]+ \d+%\*?$/)).toBeNull();
+  });
+
+  it("hides the grade+percent badge when hideRating is set, in the compact layout", () => {
+    setActivePinia(createPinia());
+    const { queryByText } = renderCard(
+      baseProps({ hideRating: true, compact: true }),
+    );
+    expect(queryByText(/^[EDCBAS]+ \d+%\*?$/)).toBeNull();
+  });
+
+  it("still shows the CV badge when hideRating is set", () => {
+    setActivePinia(createPinia());
+    const { getByText } = renderCard(baseProps({ hideRating: true }));
+    expect(getByText(/^CV \d+(\.\d+)?%$/)).toBeTruthy();
+  });
 });
 
 function hasStatusBadge(container: HTMLElement) {
