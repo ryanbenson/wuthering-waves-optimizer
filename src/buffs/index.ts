@@ -2616,22 +2616,6 @@ The above effects end early when Hsin switches Resonance Mode.</div>`,
       maxStacks: 0,
       alwaysEnabled: false,
     },
-    {
-      key: `UnisonBoon`,
-      name: `Unison Boon`,
-      details: `<div>Each stack of Unison Boon increase the total DMG dealt by Resonators with the Unison Response ability in the team by 3%, stacking up to 2 times.</div>`,
-      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
-      hasStacks: true,
-      modifiers: [
-        {
-          modifier: "TotalDamage",
-          modifierValue: 0.03,
-        },
-      ],
-      minStacks: 0,
-      maxStacks: 2,
-      alwaysEnabled: false,
-    },
   ],
   Suoming: [
     {
@@ -2698,22 +2682,6 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
       ],
       minStacks: 0,
       maxStacks: 0,
-      alwaysEnabled: false,
-    },
-    {
-      key: `UnisonBoon`,
-      name: `Unison Boon`,
-      details: `<div>Each stack of Unison Boon increase the total DMG dealt by Resonators with the Unison Response ability in the team by 3%, stacking up to 2 times.</div>`,
-      icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXin/SP_IconXinY.webp`,
-      hasStacks: true,
-      modifiers: [
-        {
-          modifier: "TotalDamage",
-          modifierValue: 0.03,
-        },
-      ],
-      minStacks: 0,
-      maxStacks: 2,
       alwaysEnabled: false,
     },
     {
