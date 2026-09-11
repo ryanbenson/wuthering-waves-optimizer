@@ -17,6 +17,14 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "EverbrightPolestar",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "EmeraldOfGenesis", label: "Standard" },
+      { key: "RedSpring", label: "Alternate" },
+      { key: "EmeraldSentence", label: "Stat stick" },
+      { key: "BlazingBrilliance", label: "Stat stick" },
+      { key: "FeatherEdge", label: "BP" },
+      { key: "SomnoireAnchor", label: "Event" },
+      { key: "EndlessCollapse", label: "4*" },
+    ],
   };
 }

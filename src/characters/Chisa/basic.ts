@@ -15,6 +15,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "Kumokiri",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "WildfireMark", label: "Alternate" },
+      { key: "AgesOfHarvest", label: "Stat stick" },
+      { key: "VerdantSummit", label: "Stat stick" },
+      { key: "RadianceCleaver", label: "Standard" },
+      { key: "Autumntrace", label: "BP" },
+      { key: "MeditationsonMercy", label: "4*" },
+    ],
   };
 }
