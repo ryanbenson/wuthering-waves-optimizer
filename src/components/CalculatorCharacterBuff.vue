@@ -33,6 +33,18 @@
             <span class="ml-1 text-sm italic">
               (Max {{ effectiveBuffData.effectiveMaxStacks }})
             </span>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost ml-1"
+              @click.stop.prevent="setMaxStacks"
+              :data-test-character-buff-stacks-max="uniqueKey"
+              :title="
+                effectiveBuffData.effectiveRealisticMaxStacks < effectiveBuffData.effectiveMaxStacks
+                  ? `Set to a realistically achievable ${effectiveBuffData.effectiveRealisticMaxStacks} stacks instead of the raw ${effectiveBuffData.effectiveMaxStacks} cap`
+                  : undefined
+              ">
+              Max
+            </button>
           </label>
         </div>
       </div>
@@ -56,7 +68,7 @@
 import { computed, nextTick, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import { getEffectiveMaxStacks } from "../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../stores/character";
 
 interface StoreCharBuffEntry {
@@ -71,6 +83,7 @@ interface StoreCharacterSlice {
 
 interface EffectiveBuffData {
   effectiveMaxStacks: number;
+  effectiveRealisticMaxStacks: number;
   effectiveModifiers: unknown[];
   effectiveStacks: number;
 }
@@ -84,6 +97,7 @@ interface Props {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   modifiers?: unknown[];
   talentData?: Record<string, unknown>;
   energyRegen?: number;
@@ -168,6 +182,7 @@ const effectiveBuffData = computed((): EffectiveBuffData => {
 
   return {
     effectiveMaxStacks,
+    effectiveRealisticMaxStacks: getRealisticMaxStacks(effectiveMaxStacks, props.realisticMaxStacks),
     effectiveModifiers: [...props.modifiers],
     effectiveStacks,
   };
@@ -183,6 +198,10 @@ function ensureMaxStacks() {
   if (stacks.value > effectiveBuffData.value.effectiveMaxStacks) {
     stacks.value = effectiveBuffData.value.effectiveMaxStacks;
   }
+}
+
+function setMaxStacks() {
+  stacks.value = effectiveBuffData.value.effectiveRealisticMaxStacks;
 }
 
 function toggleEnabled() {

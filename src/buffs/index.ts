@@ -618,6 +618,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 250,
     },
     {
       key: "ReleasedStellarealmCritDMG",
@@ -637,6 +638,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 250,
     },
     {
       key: "OutroSkillBinaryButterfly",
@@ -810,6 +812,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Crit Rate",
+      realisticBaseAttrValue: 70,
     },
     {
       key: "OutroSkillApplausePlease!",
@@ -1433,6 +1436,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Crit Rate",
+      realisticBaseAttrValue: 65,
     },
     {
       key: "OutroSkillStrikeBeforeReady",
@@ -1696,6 +1700,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 260,
     },
     {
       key: "HighSyntonyField",
@@ -1748,6 +1753,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 260,
     },
   ],
   Aemeath: [
@@ -2405,6 +2411,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 260,
     },
     {
       name: `Outro Skill: Rippling Waters - 600 Floral Epistle`,
@@ -2426,6 +2433,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+      realisticBaseAttrValue: 260,
     },
     {
       name: `S2: Clouds Pour Like Molten Gold`,
@@ -3045,6 +3053,7 @@ CD: 20s`,
     alwaysEnabled: false,
     inputBase: true,
     modifierBasedOn: "Energy Regen",
+    realisticBaseAttrValue: 250,
   },
   {
     key: "FlashofElectricReflection",

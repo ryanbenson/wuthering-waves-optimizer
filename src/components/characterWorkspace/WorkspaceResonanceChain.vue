@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
+import { getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../../stores/character";
 
 interface AttackTargetOption {
@@ -123,6 +124,7 @@ interface ResonanceChainBuffRow {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   buffAttackTargetSelection?: AttackTargetSelection;
 }
 
@@ -212,24 +214,52 @@ function findGroupLevel(key: string): number | null {
   return groups.value.find((group) => group.buffs.some((b) => b.key === key))?.level ?? null;
 }
 
-// A buff's own toggle switch is the more obvious click target than the
-// small node icons above it, so it needs the same cascade setLevel already
-// gives the node track: turning one on enables every earlier sequence level
-// (setLevel(thisLevel), same as clicking this node), turning it off cascades
-// down to just before this level (setLevel(thisLevel - 1), same as clicking
-// the previous node) — otherwise the node track's "on" state (currentLevel,
-// which requires every group from 1 up to be enabled) never lights up from
-// a lone checkbox click, since it stops at the first unenabled group.
+// A buff's own toggle switch only ever affects other buffs when turning
+// one on: it cascades into *earlier* sequence levels (its own level
+// included) that are still fully untouched — mirroring what clicking the
+// node icon up to this level would do — but leaves alone any earlier level
+// the user has already set independently, and never reaches into later
+// levels at all. Disabling a buff never cascades anywhere; it only ever
+// changes the one buff clicked, regardless of siblings at its own level or
+// state at any other level. The node icon / Enable All / Max All /
+// Disable All remain the only actions that force multiple buffs at once
+// (via setLevel).
 function setEnabled(key: string, value: boolean) {
-  const level = findGroupLevel(key);
-  if (level === null) {
+  if (!value) {
     characterStore.setCharacterData(props.character, {
-      resonanceChains: { [key]: { isEnabled: value } },
+      resonanceChains: { [key]: { isEnabled: false } },
     });
     emit("updated-character-resonance-chains");
     return;
   }
-  setLevel(value ? level : level - 1);
+
+  const level = findGroupLevel(key);
+  if (level === null) {
+    characterStore.setCharacterData(props.character, {
+      resonanceChains: { [key]: { isEnabled: true } },
+    });
+    emit("updated-character-resonance-chains");
+    return;
+  }
+
+  const updates: Record<string, { isEnabled: boolean }> = {};
+  for (const group of groups.value) {
+    if (group.level > level) {
+      continue;
+    }
+    const wasPristine = group.buffs.every((b) => !isEnabled(b.key) && !b.alwaysEnabled);
+    if (wasPristine) {
+      for (const buff of group.buffs) {
+        updates[buff.key] = { isEnabled: true };
+      }
+    } else if (group.level === level) {
+      updates[key] = { isEnabled: true };
+    }
+    // An earlier level that's already independently set is left as-is.
+  }
+
+  characterStore.setCharacterData(props.character, { resonanceChains: updates });
+  emit("updated-character-resonance-chains");
 }
 
 function setStacks(key: string, rawValue: string, maxStacks?: number) {
@@ -293,7 +323,7 @@ function maxAll() {
   for (const buff of props.buffs) {
     const update: { isEnabled: boolean; stacks?: number } = { isEnabled: true };
     if (buff.hasStacks) {
-      update.stacks = Number(buff.maxStacks) || 0;
+      update.stacks = getRealisticMaxStacks(Number(buff.maxStacks) || 0, buff.realisticMaxStacks);
     }
     updates[buff.key] = update;
   }

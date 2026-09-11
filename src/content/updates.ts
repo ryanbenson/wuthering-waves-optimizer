@@ -12,6 +12,32 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-10",
+    dateLabel: "September 10, 2026",
+    items: [
+      "Adds banner opening public beta for new v3 UI with opt-in and opt-out of the UI, with deep dive What's New highlighting the major changes",
+      "Adds ability to configure enemy settings (tune strain and havoc bane stacks) on a per rotation-action basis in team rotations and character rotations",
+      "v3 UI: Added recommended weapons for: Jingran, Qingxiao, Suisui, Hiyuki, YYX, Lucilla, Lucy, Rebecca, Denia (more to come)",
+      "v3 UI: Improves echo impact calculations",
+    ],
+  },
+  {
+    date: "2026-09-09",
+    dateLabel: "September 9, 2026",
+    items: [
+      "Adds recommended stacks/stats for team buffs based on a teammate's stats like Shorekeeper's Energy Regen, so you can quickly cap their buff with a press of a button.",
+    ],
+  },
+  {
+    date: "2026-09-08",
+    dateLabel: "September 8, 2026",
+    items: [
+      "Adds ability to filter echoes by specific substats! So you can now find echoes that have Crit Rate, etc.",
+      "v3 UI: Redesigned the echo set and main echo UI",
+      "v3 UI: Updates how sequence toggles interact",
+    ],
+  },
+  {
     date: "2026-09-07",
     dateLabel: "September 7, 2026",
     items: [

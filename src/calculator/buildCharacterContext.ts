@@ -42,6 +42,26 @@ export interface TeamEnemyConfig {
   strainStacks?: number;
 }
 
+// Pulls every enemy-config field (including buff-stack counts like Tune Strain) off a
+// stored character record, so callers can't accidentally drop fields the way the echo/weapon
+// preview panels once did — silently zeroing modifiers like Tune Strain's Total DMG bonus.
+export function resolveTeamEnemyConfig(characterData: Record<string, any> | undefined): TeamEnemyConfig {
+  const data = characterData ?? {};
+  return {
+    enemyLevel: data.enemyLevel ?? 90,
+    enemyResist: data.enemyResist ?? 0.1,
+    enemyType: data.enemyType ?? "Calamity",
+    spectroFrazzleStacks: data.spectroFrazzleStacks ?? 0,
+    aeroErosionStacks: data.aeroErosionStacks ?? 0,
+    havocBaneStacks: data.havocBaneStacks ?? 0,
+    fusionBurstStacks: data.fusionBurstStacks ?? 0,
+    electroFlareStacks: data.electroFlareStacks ?? 0,
+    electroRageStacks: data.electroRageStacks ?? 0,
+    glacioChafeStacks: data.glacioChafeStacks ?? 0,
+    strainStacks: data.strainStacks ?? 0,
+  };
+}
+
 export interface CharacterCalculationContext {
   chosenChar: any;
   characterLevel: string | number;

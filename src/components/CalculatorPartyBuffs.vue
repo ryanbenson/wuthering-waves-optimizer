@@ -178,9 +178,11 @@
             :has-stacks="buff.hasStacks"
             :min-stacks="buff.minStacks"
             :max-stacks="buff.maxStacks"
+            :realistic-max-stacks="buff.realisticMaxStacks"
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
+            :realistic-base-attr-value="buff.realisticBaseAttrValue"
             @updated-party-buff="handleUpdatedPartyBuff1"
             :talent-data="talentData"
             class="character__buff character__buffs__one"></CalculatorPartyBuff>
@@ -218,9 +220,11 @@
             :has-stacks="buff.hasStacks"
             :min-stacks="buff.minStacks"
             :max-stacks="buff.maxStacks"
+            :realistic-max-stacks="buff.realisticMaxStacks"
             :modifiers="buff.modifiers"
             :input-base="buff.inputBase"
             :modifier-based-on="buff.modifierBasedOn"
+            :realistic-base-attr-value="buff.realisticBaseAttrValue"
             @updated-party-buff="handleUpdatedPartyBuff2"
             :talent-data="talentData"
             class="character__buff character__buffs__two"></CalculatorPartyBuff>
@@ -251,10 +255,12 @@
           :has-stacks="buff.hasStacks"
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
+          :realistic-max-stacks="buff.realisticMaxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="echoBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
+          :realistic-base-attr-value="buff.realisticBaseAttrValue"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
@@ -284,10 +290,12 @@
           :has-stacks="buff.hasStacks"
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
+          :realistic-max-stacks="buff.realisticMaxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="weaponBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
+          :realistic-base-attr-value="buff.realisticBaseAttrValue"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           :has-refinements="true"
@@ -352,9 +360,11 @@ type PartyBuffDef = {
   modifiers: PartyBuffModifier[];
   minStacks: number;
   maxStacks: number;
+  realisticMaxStacks?: number;
   alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
+  realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
 };
 

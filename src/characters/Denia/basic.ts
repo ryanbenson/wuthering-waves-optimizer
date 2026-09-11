@@ -17,6 +17,14 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "ForgedDwarfStar",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "LetheanElegy", label: "Alternate" },
+      { key: "LuminousHymn", label: "Stat stick" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "Augment", label: "BP" },
+      { key: "RadiantDawn", label: "BP" },
+      { key: "WaltzinMasquerade", label: "4*" },
+    ],
   };
 }

@@ -14,6 +14,10 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "FirstlightsHerald",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "StellarSymphony", label: "Alternate" },
+      { key: "Variation", label: "Alternate" },
+      { key: "CalloftheAbyss", label: "Last resort" },
+    ],
   };
 }

@@ -50,6 +50,15 @@
             empty-label="Show all"
             aria-label="Equipped filter"
             class="w-fit" />
+          <AppRichSelect
+            v-model:selected-values="substatFilter"
+            :options="substatFilterOptions"
+            multiple
+            searchable
+            allow-empty
+            empty-label="Substat"
+            aria-label="Substat filter"
+            class="w-fit min-w-[160px]" />
           <button
             type="button"
             class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
@@ -205,9 +214,11 @@ import {
   getEchoCritValue,
   getEchoRollValue,
   getEchoSetIconByType,
+  getEchoSubStatEntries,
   getReadableSubStatLabel,
   echoSetLabelMap,
   statsTable,
+  subStats,
 } from "../../echoes/stats";
 import { mainEchoesData } from "../../echoes/index";
 import { getEchoRatingGrade } from "../../echoes/rating";
@@ -216,6 +227,7 @@ import {
   type EchoImpactDelta,
   type EchoSwapCandidate,
 } from "../../echoes/echoImpact";
+import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import { useInventoryStore } from "../../stores/inventory";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
@@ -255,6 +267,7 @@ const echo = ref<string | null>(null);
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const favoriteFilter = ref(false);
+const substatFilter = ref<string[]>([]);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
@@ -289,6 +302,7 @@ const activeFilterCount = computed(() => {
   if (mainStatFilter.value) count += 1;
   if (equippedFilter.value) count += 1;
   if (favoriteFilter.value) count += 1;
+  if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
   if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
@@ -297,7 +311,7 @@ const activeFilterCount = computed(() => {
 
 watch(
   [mainStatFilter, echoSet, echo, favoriteFilter, equippedFilter, costFilter,
-   cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
+   substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
   },
@@ -332,6 +346,13 @@ const echoesFiltered = computed(() => {
   }
   if (favoriteFilter.value) {
     allEchoes = allEchoes.filter((item: any) => item.favorite);
+  }
+  if (substatFilter.value.length > 0) {
+    allEchoes = allEchoes.filter((item: any) =>
+      getEchoSubStatEntries(item).some(([type]) =>
+        substatFilter.value.includes(type),
+      ),
+    );
   }
 
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
@@ -399,14 +420,7 @@ const liveResultBarPreference = computed(() => {
   };
 });
 
-const enemyConfig = computed(() => {
-  const data = characters.value[props.character] ?? {};
-  return {
-    enemyLevel: data.enemyLevel ?? 90,
-    enemyResist: data.enemyResist ?? 0.1,
-    enemyType: data.enemyType ?? "Calamity",
-  };
-});
+const enemyConfig = computed(() => resolveTeamEnemyConfig(characters.value[props.character]));
 
 /**
  * Each candidate costs a full headless context rebuild (~1-6ms), so this is
@@ -539,6 +553,9 @@ const equippedFilterOptions = computed((): AppRichSelectOption[] => [
   { value: "self", label: `Hide equipped by ${props.character}` },
   { value: "any", label: "Hide equipped by anyone" },
 ]);
+const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
+  getReadableSubStatLabel(String(stat)),
+);
 
 function resetFilters() {
   echoSet.value = null;
@@ -547,6 +564,7 @@ function resetFilters() {
   mainStatFilter.value = null;
   equippedFilter.value = null;
   favoriteFilter.value = false;
+  substatFilter.value = [];
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;

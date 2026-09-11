@@ -41,7 +41,7 @@ const weaponInfo: WeaponInfo = {
     {
       key: "CallUponStarsAndGhostsNaturesOrderCritRate",
       hasStacks: false,
-      modifier: "CritRate",
+      modifier: "CritRate:Heavy",
       modifierByRefinement: {
         "1": 0.12,
         "2": 0.15,

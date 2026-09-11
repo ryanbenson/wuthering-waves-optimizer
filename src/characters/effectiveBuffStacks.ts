@@ -104,3 +104,22 @@ export function getEffectiveMaxStacks(
 
   return effectiveMaxStacks;
 }
+
+/**
+ * Some buffs have a hard cap (`maxStacks`) that is technically real but not
+ * realistically reachable in a normal rotation/team (see issue #514) — e.g. a
+ * buff whose in-game text caps it at 150 stacks that no feasible combo
+ * actually generates. `realisticMaxStacks` is an optional, hand-verified
+ * value authors can set per buff for that case; it must never exceed the
+ * hard cap it's describing, so it's clamped here rather than trusted as-is.
+ */
+export function getRealisticMaxStacks(
+  effectiveMaxStacks: number,
+  realisticMaxStacks: number | undefined,
+): number {
+  if (realisticMaxStacks === undefined) {
+    return effectiveMaxStacks;
+  }
+
+  return Math.min(realisticMaxStacks, effectiveMaxStacks);
+}

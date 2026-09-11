@@ -54,6 +54,7 @@
         :has-stacks="buff.hasStacks"
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
+        :realistic-max-stacks="buff.realisticMaxStacks"
         :modifiers="buff.modifiers"
         :energy-regen="energyRegen"
         :crit-rate="critRate"
@@ -85,6 +86,7 @@ interface CharacterBuffListItem {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   modifiers?: StatBonusModifier[];
 }
 

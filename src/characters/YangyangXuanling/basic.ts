@@ -4,7 +4,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     rarity: 5,
     weapon: "Swords",
     avatarUrl: "YangyangXuanling.png",
-    gender: "unknown",
+    gender: "female",
     element: "Havoc",
     image:
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_XuanLing_UI.webp",
@@ -14,6 +14,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "AzureOath",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "EmeraldSentence", label: "Alternate" },
+      { key: "EverbrightPolestar", label: "Stat stick" },
+      { key: "RedSpring", label: "Stat stick" },
+      { key: "EmeraldOfGenesis", label: "Standard" },
+      { key: "Lumingloss", label: "BP" },
+      { key: "FablesofWisdom", label: "4*" }
+    ],
   };
 }

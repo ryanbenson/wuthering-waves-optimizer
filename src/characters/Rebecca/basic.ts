@@ -15,6 +15,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "SkullThrasher",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "SpectrumBlaster", label: "Alternate" },
+      { key: "StaticMist", label: "Standard" },
+      { key: "PhasicHomogenizer", label: "Standard" },
+      { key: "TheLastDance", label: "Stat stick" },
+      { key: "SolarFlame", label: "BP" },
+      { key: "Pistols26", label: "4*" },
+    ],
   };
 }

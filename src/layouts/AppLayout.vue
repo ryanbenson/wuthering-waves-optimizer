@@ -2,7 +2,10 @@
   <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
   <ToastContainer />
   <ConfirmDialog />
-  <div class="contain h-[calc(100vh-80px)] mt-20">
+  <div
+    class="contain mt-20"
+    :style="{ height: 'calc(100vh - 80px - var(--announce-banner-h, 0px))' }">
+    <AppUpdateBanner />
     <div class="content">
       <RouterView />
     </div>
@@ -14,6 +17,7 @@ import { onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
 import ToastContainer from "../components/ToastContainer.vue";
 import ConfirmDialog from "../components/ConfirmDialog.vue";
+import AppUpdateBanner from "../components/AppUpdateBanner.vue";
 
 const route = useRoute();
 
@@ -42,6 +46,12 @@ onBeforeUnmount(() => {
 .contain {
   display: grid;
   grid-template-columns: 1fr;
+  // Grid's default align-content (normal) resolves to stretch, so with no
+  // grid-template-rows the banner row and the content row split any
+  // leftover space below .contain's fixed height between them - ballooning
+  // the banner (and the gap under short pages like /info) instead of
+  // leaving it as trailing whitespace. Pin rows to their natural size.
+  align-content: start;
 
   @media (max-width: 768px) {
     display: block;

@@ -35,6 +35,18 @@
         class="range range-xs range-primary flex-1"
         @input="ensureMaxStacks" />
       <span class="font-mono text-xs text-primary shrink-0">{{ stacks }} / {{ effectiveMaxStacks }}</span>
+      <button
+        type="button"
+        class="btn btn-xs btn-ghost"
+        @click="setMaxStacks"
+        :data-test-workspace-buff-stacks-max="uniqueKey"
+        :title="
+          effectiveRealisticMaxStacks < effectiveMaxStacks
+            ? `Set to a realistically achievable ${effectiveRealisticMaxStacks} stacks instead of the raw ${effectiveMaxStacks} cap`
+            : undefined
+        ">
+        Max
+      </button>
     </div>
   </article>
 </template>
@@ -43,7 +55,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
-import { getEffectiveMaxStacks } from "../../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import { useCharacterStore } from "../../stores/character";
 
 interface BuffModifier {
@@ -59,6 +71,7 @@ interface Props {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  realisticMaxStacks?: number;
   modifiers?: BuffModifier[];
 }
 
@@ -123,10 +136,18 @@ const effectiveMaxStacks = computed(() =>
   ),
 );
 
+const effectiveRealisticMaxStacks = computed(() =>
+  getRealisticMaxStacks(effectiveMaxStacks.value, props.realisticMaxStacks),
+);
+
 function ensureMaxStacks() {
   if (stacks.value > effectiveMaxStacks.value) {
     stacks.value = effectiveMaxStacks.value;
   }
+}
+
+function setMaxStacks() {
+  stacks.value = effectiveRealisticMaxStacks.value;
 }
 
 function toggleEnabled() {
