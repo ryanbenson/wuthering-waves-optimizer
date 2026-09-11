@@ -12,6 +12,15 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-11",
+    dateLabel: "September 11, 2026",
+    items: [
+      "Update suggested weapons for Sigrika, Luuk, Aemeath, Lynae, Chisa, Qiuyuan, Galbrena, Iuno, Augusta",
+      "Updates the What's New for v3 announcement to incldue the attack/stat/rotations panel",
+      "Updates Jingran substat priorities",
+    ],
+  },
+  {
     date: "2026-09-10",
     dateLabel: "September 10, 2026",
     items: [
