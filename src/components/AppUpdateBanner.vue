@@ -353,7 +353,7 @@ onBeforeUnmount(() => {
 .v3-feature-figure {
   display: flex;
   gap: 2px;
-  height: 20rem;
+  height: 25rem;
   overflow: hidden;
   background: oklch(var(--b3));
 }
