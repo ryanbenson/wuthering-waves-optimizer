@@ -14,6 +14,12 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "LuxUmbra",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "PhasicHomogenizer", label: "Standard" },
+      { key: "TheLastDance", label: "Stat stick" },
+      { key: "StaticMist", label: "Standard" },
+      { key: "SolarFlame", label: "BP" },
+      { key: "RelativisticJet", label: "4*" },
+    ],
   };
 }
