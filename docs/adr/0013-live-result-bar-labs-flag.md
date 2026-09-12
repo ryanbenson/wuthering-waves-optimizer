@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-25
 tags: [calculator, components, stores]
-superseded_by: [0019]
+superseded_by: [0018, 0019]
 ---
 
 # 13. Live Result Bar (Labs-flagged layout)
@@ -98,6 +98,8 @@ in `SettingsLabs.vue` had never had an entry registered; this is the first.
    `useTheme.ts` already uses) — not a second modal-vs-docked visual mode.
 
 4a. **Superseded 2026-09-01 (ADR [0019](0019-command-bar-merged-live-result-bar-and-identity.md)):** `CalculatorLiveResultBar.vue` itself — the component this ADR builds — no longer exists. It was absorbed into `CalculatorCommandBar.vue` along with `WorkspaceIdentityBar.vue`'s identity responsibilities. The target-resolution logic in decisions 1–3 (`src/calculator/liveResultBar.ts`, the `"Stat:key"`/`"Attack:group|key"`/`"Rotation:id"` vocabulary, the self-healing re-validation) is untouched by that merge and still describes current behavior.
+
+4b. **Superseded 2026-09-01 (ADR [0018](0018-live-result-panel-tabs-redesign.md), decision #4):** the detail panel's width is no longer a fixed `flex: 0 0 380px` — it's a user-selectable 3-step preset (compact/standard/wide → 380/420/480px), defaulting to 420px. The "real flex column, not a modal overlay" structure this decision describes is otherwise unchanged.
 
 5. **The legacy (flag-off) layout is untouched at the DOM level, not just
    visually similar.** `.calculations` stays a 2-column grid by default;

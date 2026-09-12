@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-02
 tags: [calculator, components, enemies]
+superseded_by: [0026]
 ---
 
 # 20. Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -124,7 +125,11 @@ made for this whole redesign wave.
   legacy spec's Carlotta/Phoebe fixtures to prove parity through the
   live-result detail panel instead of the flag-off `.results` pane
 - `src/components/CalculatorEnemy.vue`, `CalculatorEnemyBrowser.vue` (legacy
-  path and the browse modal, both unchanged/reused)
+  path and the browse modal, both unchanged/reused). **Superseded 2026-09-04
+  (ADR [0026](0026-chooser-modals-redesign.md)):** the browse modal gained a
+  v3 sibling, `WorkspaceEnemyBrowser.vue`, with inline resistance chips, a
+  type badge, and a direct row action — `CalculatorEnemyBrowser.vue` itself
+  stays as described here, just no longer the only option.
 - `src/components/CalculatorCustomBuffsWorkspace.vue`,
   `characterWorkspace/WorkspaceWeaponPanel.vue` — the visual/interaction
   vocabulary this aligns to
