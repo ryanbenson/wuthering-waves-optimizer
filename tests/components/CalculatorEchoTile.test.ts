@@ -81,3 +81,47 @@ describe("CalculatorEchoTile action buttons", () => {
     expect(inventoryStore.getEquippedEchoData(newEchoId)?.[CHARACTER]).toBe(0);
   });
 });
+
+describe("CalculatorEchoTile saved state", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("shows no saved indicator and a non-disabled Save button for an empty slot", () => {
+    const { container } = renderTile(0);
+    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).toBeNull();
+    const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
+    expect(saveBtn.disabled).toBe(false);
+  });
+
+  it("shows an active Save button and no saved indicator for inline (not-yet-saved) echo data", () => {
+    setInlineEcho(0); // no echoId — live character-inline data only
+    const { container } = renderTile(0);
+    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).toBeNull();
+    const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
+    expect(saveBtn.disabled).toBe(false);
+    expect(saveBtn.className).toContain("btn-primary");
+  });
+
+  it("shows the saved indicator and a disabled Save button once the echo is a real inventory record", () => {
+    const inventoryStore = useInventoryStore() as any;
+    const characterStore = useCharacterStore() as any;
+    inventoryStore.saveEcho({
+      echoId: "e1",
+      echo: "AeroDrake",
+      echoSet: "MoltenRift",
+      type: 1,
+      rank: 5,
+      stat: "CritRate",
+      echoSubStatsType1: "CritRate",
+      echoSubStatsValue1: 7.5,
+    });
+    characterStore.setCharacterData(CHARACTER, { echoes: { 0: { echoId: "e1" } } });
+
+    const { container } = renderTile(0);
+    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).not.toBeNull();
+    const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
+    expect(saveBtn.disabled).toBe(true);
+    expect(saveBtn.className).toContain("btn-ghost");
+  });
+});

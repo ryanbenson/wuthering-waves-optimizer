@@ -30,6 +30,21 @@
           <div class="flex items-center gap-0.5">
             <EchoFavoriteButton :echo-id="echoId || null" />
             <EchoStatusBadge :echo-id="echoId || null" />
+            <span
+              v-if="isEchoSaved"
+              class="text-success"
+              data-test-echo-item-saved-indicator
+              v-tooltip="'Saved to your inventory'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5" aria-hidden="true">
+                <path
+                  d="M5 13l4 4L19 7"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </span>
           </div>
         </div>
         <div class="flex-1 min-w-0">
@@ -82,12 +97,28 @@
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-ghost btn-square"
-            v-tooltip="'Save'"
-            aria-label="Save"
+            class="btn btn-sm btn-square"
+            :class="isEchoSaved ? 'btn-ghost opacity-50' : 'btn-primary'"
+            :disabled="isEchoSaved"
+            v-tooltip="isEchoSaved ? 'Already saved — further edits save automatically' : 'Save'"
+            :aria-label="isEchoSaved ? 'Saved' : 'Save'"
             :data-test-echo-item-save="index"
             @click="saveEchoItem">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
+            <svg
+              v-if="isEchoSaved"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-4"
+              aria-hidden="true">
+              <path
+                d="M5 13l4 4L19 7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
               <path
                 d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
                 fill="currentColor" />
@@ -211,7 +242,16 @@ const {
   echoImage,
   stats,
   isApplyingEchoLoadout,
+  currentEcho,
 } = useEchoEditFields(() => target.value);
+
+// "Saved" here means "promoted to a standalone inventory record" rather
+// than field-level dirty-tracking — see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #5. useEchoEditFields' field() factory writes every edit
+// straight through to inventoryStore.patchEcho() once an echoId exists, so
+// there's no staging buffer and no "unsaved changes" to detect for an
+// already-saved slot; clicking Save again would be a provable no-op.
+const isEchoSaved = computed(() => Boolean(echoId.value) && Boolean(currentEcho.value));
 
 // Getter passthrough onto the composable's own writable-computed refs, so
 // useEchoCardStats/useEchoRating's internal computed()s keep tracking live
