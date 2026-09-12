@@ -79,3 +79,21 @@ function textClass(slot: EchoCardSubstatSlot) {
   return getSubstatRollQualityClasses(slot.type, slot.value)?.text;
 }
 </script>
+
+<style scoped>
+/*
+ * Substat icons are dark-line glyphs (drawn for a dark background) — same
+ * light-mode inversion convention CalculatorEchoCard.vue's legacy table
+ * layout already uses (`.echo__item__sub-stats img { filter: contrast(0) }`).
+ * That rule can't reach in here, though: it's scoped to CalculatorEchoCard.vue
+ * and this component's own <img> isn't its single root element, so a
+ * parent's scoped CSS never applies to it — the same class of bug as
+ * docs/adr/0030-echoes-tab-v3-redesign.md's Consequences section already
+ * called out for a different property (scoped margin, not a filter). Since
+ * this component is the single shared row for Inventory, Echo Browser, and
+ * Optimizer Results, fixing it here covers all three at once.
+ */
+html[data-theme-style="light"] img {
+  filter: contrast(0);
+}
+</style>

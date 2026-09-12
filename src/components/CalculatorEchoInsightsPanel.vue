@@ -158,4 +158,11 @@ const substatScoreRollupAccent = computed(() =>
   letter-spacing: 0.03em;
   color: oklch(var(--er));
 }
+
+/* Priority/Other-rolled-substat row icons are dark-line glyphs drawn for a
+   dark background — same light-mode inversion convention as
+   EchoCardSubstatList.vue / CalculatorEchoTile.vue's substat icons. */
+html[data-theme-style="light"] img {
+  filter: contrast(0);
+}
 </style>

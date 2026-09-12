@@ -170,6 +170,20 @@
               {{ type ?? "—" }}
             </span>
           </div>
+          <!--
+            Favorite + lock/trash/temp/hidden together in one line under the
+            avatar — these were split across two spots before (favorite
+            here, the lock/trash/temp/hidden toggles up by the header), and
+            EchoStatusBadge duplicated whatever these toggles already show
+            via their own active state (locking an echo turned the lock
+            button active *and* popped a separate lock icon into view) —
+            direct feedback that this was redundant. The toggle buttons' own
+            active styling is the only status indicator needed now.
+          -->
+          <div class="flex items-center gap-1" @click.stop>
+            <EchoFavoriteButton :echo-id="echoId || null" />
+            <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
+          </div>
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
@@ -204,20 +218,6 @@
             </template>
           </div>
         </div>
-        <!--
-          Favorite + lock/trash/temp/hidden together in one line — these
-          were split across two spots before (favorite under the avatar,
-          the lock/trash/temp/hidden toggles here), and EchoStatusBadge
-          used to duplicate whatever these toggles already show via their
-          own active state (locking showed the lock button turn active
-          *and* a separate lock status icon appear) — direct feedback that
-          this was redundant. The toggle buttons' own active styling is
-          the only status indicator needed now.
-        -->
-        <div class="flex items-center gap-1 shrink-0" @click.stop>
-          <EchoFavoriteButton :echo-id="echoId || null" />
-          <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
-        </div>
       </div>
 
       <div v-if="mainStatValue" class="flex items-center gap-3 mt-2 text-xs flex-wrap">
@@ -243,7 +243,10 @@
           "
           :data-test-echo-item-substat="i">
           <span class="flex items-center gap-1.5 min-w-0">
-            <img v-if="slotIsFilled(slot)" :src="getSubStatIconByType(slot.type.value)" class="size-4 shrink-0" />
+            <img
+              v-if="slotIsFilled(slot)"
+              :src="getSubStatIconByType(slot.type.value)"
+              class="size-4 shrink-0 echo-tile__substat-icon" />
             <span class="truncate" :class="slotIsFilled(slot) ? qualityClasses(slot)?.text : 'opacity-40'">
               {{ slotIsFilled(slot) ? getReadableSubStatLabel(slot.type.value) : "Empty" }}
             </span>
@@ -623,5 +626,11 @@ defineExpose({ saveEchoItem });
   height: 1.75rem;
   background: rgba(0, 0, 0, 0.65);
   color: #facc15;
+}
+
+/* Same light-mode inversion convention as EchoCardSubstatList.vue — these
+   substat icons are dark-line glyphs drawn for a dark background. */
+html[data-theme-style="light"] .echo-tile__substat-icon {
+  filter: contrast(0);
 }
 </style>
