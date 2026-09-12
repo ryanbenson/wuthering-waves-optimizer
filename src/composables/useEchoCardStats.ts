@@ -111,22 +111,48 @@ export function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
 // `border-l-{color}` (not the plain `border-{color}`) so this only ever
 // sets the left edge's color — the plain form sets border-color on all
 // four sides, which bled into daisyUI's own zebra-table row separators.
+// `border` is toned down to /50 opacity and paired with `wash`, a subtle
+// left-to-right gradient fill — see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #2. A full-saturation solid border-l-4 read as an oversaturated
+// "blue line" once the strip's tiles had breathing room (decision #1); the
+// gradient wash keeps the roll-quality signal readable without dominating
+// the row the way a hard-edged line did.
 export function getSubstatRollQualityClasses(
   type: string | null | undefined,
   value: number | string | null | undefined,
-): { bg: string; text: string; border: string } | null {
+): { bg: string; text: string; border: string; wash: string } | null {
   if (!type || type === "none" || !value) return null;
   const score = getSubstatRollValue(type, String(Number(value)));
   if (score <= 40) {
-    return { bg: "bg-emerald-500/15", text: "text-emerald-600 dark:text-emerald-400", border: "border-l-emerald-500" };
+    return {
+      bg: "bg-emerald-500/15",
+      text: "text-emerald-600 dark:text-emerald-400",
+      border: "border-l-emerald-500/50",
+      wash: "bg-gradient-to-r from-emerald-500/10 to-transparent",
+    };
   }
   if (score <= 60) {
-    return { bg: "bg-blue-500/15", text: "text-blue-600 dark:text-blue-400", border: "border-l-blue-500" };
+    return {
+      bg: "bg-blue-500/15",
+      text: "text-blue-600 dark:text-blue-400",
+      border: "border-l-blue-500/50",
+      wash: "bg-gradient-to-r from-blue-500/10 to-transparent",
+    };
   }
   if (score <= 80) {
-    return { bg: "bg-purple-500/15", text: "text-purple-600 dark:text-purple-400", border: "border-l-purple-500" };
+    return {
+      bg: "bg-purple-500/15",
+      text: "text-purple-600 dark:text-purple-400",
+      border: "border-l-purple-500/50",
+      wash: "bg-gradient-to-r from-purple-500/10 to-transparent",
+    };
   }
-  return { bg: "bg-yellow-500/15", text: "text-yellow-600 dark:text-yellow-500", border: "border-l-yellow-500" };
+  return {
+    bg: "bg-yellow-500/15",
+    text: "text-yellow-600 dark:text-yellow-500",
+    border: "border-l-yellow-500/50",
+    wash: "bg-gradient-to-r from-yellow-500/10 to-transparent",
+  };
 }
 
 const echoElementsList = [

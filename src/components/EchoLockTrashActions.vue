@@ -1,14 +1,14 @@
 <template>
-  <div v-if="echoId" class="echo-lock-trash-actions flex flex-col items-center gap-1">
+  <div v-if="echoId" class="echo-lock-trash-actions" :class="wrapperClass">
     <div class="flex gap-1">
       <button
         type="button"
-        class="btn btn-sm btn-ghost btn-square"
-        :class="{ 'btn-active text-accent': locked }"
+        class="btn btn-ghost btn-square"
+        :class="[btnSizeClass, { 'btn-active text-accent': locked }]"
         v-tooltip="
           locked
-            ? 'Unlock this echo to allow deletion'
-            : 'Lock this echo to prevent accidental deletion'
+            ? 'Unlock this echo to allow deletion and stat edits'
+            : 'Lock this echo to prevent deletion and freeze its stats'
         "
         :aria-label="locked ? 'Unlock echo' : 'Lock echo'"
         :data-test-echo-lock="echoId"
@@ -16,7 +16,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 448 512"
-          class="size-4"
+          :class="iconSizeClass"
           aria-hidden="true">
           <path
             v-if="!locked"
@@ -30,8 +30,8 @@
       </button>
       <button
         type="button"
-        class="btn btn-sm btn-ghost btn-square"
-        :class="{ 'btn-active text-error': isTrash }"
+        class="btn btn-ghost btn-square"
+        :class="[btnSizeClass, { 'btn-active text-error': isTrash }]"
         v-tooltip="
           isTrash
             ? 'Remove from trash'
@@ -43,7 +43,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 448 512"
-          class="size-4"
+          :class="iconSizeClass"
           aria-hidden="true">
           <path
             d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
@@ -52,8 +52,8 @@
       </button>
       <button
         type="button"
-        class="btn btn-sm btn-ghost btn-square"
-        :class="{ 'btn-active text-info': temp }"
+        class="btn btn-ghost btn-square"
+        :class="[btnSizeClass, { 'btn-active text-info': temp }]"
         v-tooltip="
           temp
             ? 'Unmark as temporary'
@@ -65,7 +65,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
-          class="size-4"
+          :class="iconSizeClass"
           aria-hidden="true">
           <circle
             cx="10"
@@ -95,8 +95,8 @@
     </div>
     <button
       type="button"
-      class="btn btn-sm btn-ghost btn-square"
-      :class="{ 'btn-active text-warning': ignoreFromOptimizer }"
+      class="btn btn-ghost btn-square"
+      :class="[btnSizeClass, { 'btn-active text-warning': ignoreFromOptimizer }]"
       v-tooltip="
         ignoreFromOptimizer
           ? 'Include this echo in optimizer loadouts'
@@ -109,7 +109,7 @@
       "
       :data-test-echo-ignore-optimizer="echoId"
       @click="toggleEchoIgnoreFromOptimizer(echoId)">
-      <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizer" />
+      <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizer" :size="size" />
     </button>
   </div>
 </template>
@@ -121,9 +121,25 @@ import { useInventoryStore } from "../stores/inventory";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 
-const props = defineProps<{
-  echoId: string | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    echoId: string | null;
+    // "stacked" (default) keeps the original 3-icon-row + hidden-icon-row
+    // shape used by the legacy per-slot card (CalculatorEcho.vue) and
+    // InventoryEchoesBrowser.vue's status cluster — untouched for both.
+    // "row" lays out all four as one line, for CalculatorEchoTile.vue's
+    // combined favorite/status row.
+    layout?: "stacked" | "row";
+    size?: "sm" | "xs";
+  }>(),
+  { layout: "stacked", size: "sm" },
+);
+
+const wrapperClass = computed(() =>
+  props.layout === "row" ? "flex items-center gap-1" : "flex flex-col items-center gap-1",
+);
+const btnSizeClass = computed(() => (props.size === "xs" ? "btn-xs" : "btn-sm"));
+const iconSizeClass = computed(() => (props.size === "xs" ? "size-3.5" : "size-4"));
 
 const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
