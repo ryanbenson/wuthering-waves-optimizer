@@ -18,6 +18,8 @@ export const updateEntries: UpdateEntry[] = [
       "Update suggested weapons for Sigrika, Luuk, Aemeath, Lynae, Chisa, Qiuyuan, Galbrena, Iuno, Augusta",
       "Updates the What's New for v3 announcement to incldue the attack/stat/rotations panel",
       "Updates Jingran substat priorities",
+      "Adds indicator in optimizer loadout results to highlight any echoes already equipped",
+      "Removes the echo score from the Inventory page as it is less relevant there, and causing confusion. It's still present throughout the character pages where relevant."
     ],
   },
   {
