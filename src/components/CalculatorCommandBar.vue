@@ -85,11 +85,11 @@
             of CalculatorCharacterStance's full button-per-stance toggle
             (kept as-is for the legacy screen, which has the width for it). -->
             <AppRichSelect
+              class="w-fit command-bar__stance-select"
               :model-value="activeStance"
               :options="stanceOptions"
               variant="ghost"
               size="xs"
-              root-class="w-auto"
               aria-label="Choose mode"
               data-test-live-result-bar-stance-select
               @update:model-value="onStanceSelected" />
@@ -267,6 +267,7 @@ import {
   type LiveResultBarDamageType,
 } from "../calculator/liveResultBar";
 import { resolveActiveStance } from "../calculator/stances";
+import { getStanceIconConfig } from "../calculator/stanceIcons";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
 import { useCharacterStore } from "../stores/character";
 
@@ -314,7 +315,17 @@ const activeStance = computed(() =>
   ),
 );
 const stanceOptions = computed((): AppRichSelectOption[] =>
-  characterStances.value.map((stance) => ({ value: stance, label: stance })),
+  characterStances.value.map((stance) => {
+    const iconConfig = getStanceIconConfig(stance);
+    return {
+      value: stance,
+      label: stance,
+      image: iconConfig?.imageUrl,
+      // Some stances (Phoebe's Absolution/Confession) share the same base
+      // icon and rely entirely on this filter to read as distinct modes.
+      imageStyle: iconConfig?.cssFilter ? { filter: iconConfig.cssFilter } : undefined,
+    };
+  }),
 );
 
 async function onStanceSelected(value: AppRichSelectValue) {
@@ -487,5 +498,17 @@ function onDamageTypeUpdated(next: string) {
 .live-result-bar-delta-leave-to {
   opacity: 0;
   transform: translateY(-3px);
+}
+
+/* Stance icons without their own tint (e.g. Fusion Burst/Tune Rupture/Tune
+Strain — see stanceIcons.ts) are plain white glyphs, same as
+CalculatorCharacterStance.vue's own light-theme handling for them. An inline
+imageStyle filter (Phoebe's Absolution/Confession) always wins over this —
+inline style overrides an external rule on the same property outright — so
+this only ever affects the untinted ones. */
+html[data-theme-style="light"] .command-bar__stance-select {
+  :deep(.app-rich-select__thumb) {
+    filter: invert(1);
+  }
 }
 </style>

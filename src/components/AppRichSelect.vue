@@ -35,6 +35,7 @@
           <img
             v-if="selectedOption?.image"
             :src="selectedOption.image"
+            :style="selectedOption.imageStyle"
             alt=""
             class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
           <span
@@ -112,6 +113,7 @@
                   <img
                     v-if="option.image"
                     :src="option.image"
+                    :style="option.imageStyle"
                     alt=""
                     class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
                   <span class="truncate">{{ option.label }}</span>
@@ -142,6 +144,10 @@ export type AppRichSelectOption = {
   value: AppRichSelectValue;
   label: string;
   image?: string | null;
+  /** Applied to the `image` thumb directly — e.g. a CSS `filter` tinting a
+   * shared monochrome icon so options that reuse the same base image (like
+   * Phoebe's Absolution/Confession stances) still read as visually distinct. */
+  imageStyle?: Record<string, string> | string | null;
   group?: string;
   disabled?: boolean;
   [key: string]: unknown;
