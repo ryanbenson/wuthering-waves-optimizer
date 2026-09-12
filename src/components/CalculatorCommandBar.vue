@@ -80,12 +80,19 @@
           </button>
           <template v-if="characterStances.length > 1">
             <span class="opacity-40 font-sans">&middot;</span>
-            <div class="command-bar__mode">
-              <CalculatorCharacterStance
-                :character="character"
-                :stances="characterStances"
-                @updated-character-stance="emit('updated-character-stance', $event)" />
-            </div>
+            <!-- Just the active mode + a dropdown for the other one(s), same
+            "Default build ▾" pattern as CalculatorBuildSelect above, instead
+            of CalculatorCharacterStance's full button-per-stance toggle
+            (kept as-is for the legacy screen, which has the width for it). -->
+            <AppRichSelect
+              :model-value="activeStance"
+              :options="stanceOptions"
+              variant="ghost"
+              size="xs"
+              root-class="w-auto"
+              aria-label="Choose mode"
+              data-test-live-result-bar-stance-select
+              @update:model-value="onStanceSelected" />
           </template>
         </div>
       </div>
@@ -243,11 +250,15 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
+import { storeToRefs } from "pinia";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
-import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
 import WorkspaceLevelStepper from "./characterWorkspace/WorkspaceLevelStepper.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import {
@@ -255,6 +266,7 @@ import {
   resolveLiveResultBarTarget,
   type LiveResultBarDamageType,
 } from "../calculator/liveResultBar";
+import { resolveActiveStance } from "../calculator/stances";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
 import { useCharacterStore } from "../stores/character";
 
@@ -291,7 +303,27 @@ const emit = defineEmits<{
 const characterStances = computed(() => props.characterStances ?? []);
 
 const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
 const isFavorite = computed(() => characterStore.isFavoriteCharacter(props.character));
+
+const activeStance = computed(() =>
+  resolveActiveStance(
+    characterStances.value,
+    characters.value[props.character]?.activeStance,
+    characters.value[props.character]?.buffs,
+  ),
+);
+const stanceOptions = computed((): AppRichSelectOption[] =>
+  characterStances.value.map((stance) => ({ value: stance, label: stance })),
+);
+
+async function onStanceSelected(value: AppRichSelectValue) {
+  if (typeof value !== "string" || !value || value === activeStance.value) {
+    return;
+  }
+  await characterStore.setCharacterData(props.character, { activeStance: value });
+  emit("updated-character-stance", value);
+}
 
 const isMobileStatsExpanded = ref(false);
 
@@ -455,37 +487,5 @@ function onDamageTypeUpdated(next: string) {
 .live-result-bar-delta-leave-to {
   opacity: 0;
   transform: translateY(-3px);
-}
-
-/* CalculatorCharacterStance.vue is reused unmodified so the legacy
-screen's full-width toggle keeps its exact look elsewhere. Here it sits
-inline after a "·" separator, so its own "Mode" label and full-width
-sizing are overridden just for this instance — same pattern the deleted
-WorkspaceIdentityBar.vue used. */
-.command-bar__mode {
-  display: inline-flex;
-  :deep(.character__stance) {
-    margin: 0;
-  }
-  :deep(.mode__label) {
-    display: none;
-  }
-  :deep(.character__stance-toggle) {
-    width: auto;
-  }
-  :deep(.character__stance-btn) {
-    flex: none;
-    margin-right: 0.35rem;
-    padding: 0.2rem 0.55rem;
-    height: 1.6rem;
-    min-height: 1.6rem;
-  }
-  :deep(.character__stance-icon) {
-    width: 0.9rem;
-    height: 0.9rem;
-  }
-  :deep(.character__stance-label) {
-    font-size: 0.68rem;
-  }
 }
 </style>
