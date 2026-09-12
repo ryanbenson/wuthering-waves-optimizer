@@ -587,8 +587,16 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
   gap: 1.5rem;
 }
 
+/*
+ * Widened from 320px — the Priority/Other rolled substats lists now render
+ * side by side here (see CalculatorEchoInsightsPanel.vue) once there's a
+ * two-column-capable panel, which was the fix for that content pushing the
+ * panel's bottom past the fold at the narrower width. There's plenty of
+ * spare width in .calculations__screens for this (it's flex:1 with no
+ * explicit max-width), so no compensating shrink on .echoes-column.
+ */
 .echoes-sidebar {
-  flex: 0 0 320px;
+  flex: 0 0 480px;
   max-width: 100%;
   position: sticky;
   top: 0;
