@@ -6,9 +6,6 @@
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
-  <CalculatorEchoRatingGuide ref="echoRatingGuide"></CalculatorEchoRatingGuide>
-  <EchoRatingWeightsEditor
-    ref="echoRatingWeightsEditor"></EchoRatingWeightsEditor>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -23,17 +20,6 @@
         <AppOverflowMenu
           aria-label="More inventory actions"
           data-test="inventory-overflow-menu">
-          <li>
-            <button type="button" @click="handleOpenWeightsEditor">
-              Customize Rating Weights
-            </button>
-          </li>
-          <li>
-            <button type="button" @click="handleOpenRatingGuide">
-              <span class="text-primary">Rating Guide</span>
-            </button>
-          </li>
-          <li class="menu-title px-2 py-1"><hr class="border-base-300" /></li>
           <li>
             <button
               type="button"
@@ -248,16 +234,13 @@
         </div>
       </div>
 
-      <!-- Quality: CV / RV / Rating -->
+      <!-- Quality: CV / RV -->
       <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
         <EchoCvRvRangeFilters
           v-model:cv-min="cvMin"
           v-model:cv-max="cvMax"
           v-model:rv-min="rvMin"
           v-model:rv-max="rvMax" />
-        <EchoRatingRangeFilters
-          v-model:rating-min="ratingMin"
-          v-model:rating-max="ratingMax" />
       </div>
 
       <!-- Sets last -->
@@ -494,6 +477,7 @@
               class="echo__item"
               v-bind="echoCardBinder(echoRow)"
               :hide-inventory="true"
+              :hide-rating="true"
               :compact="isCompact">
               <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
                    optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
@@ -649,17 +633,13 @@ import {
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
-import { getEchoRatingGrade } from "../echoes/rating";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
-import EchoRatingRangeFilters from "./EchoRatingRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
-import CalculatorEchoRatingGuide from "./CalculatorEchoRatingGuide.vue";
-import EchoRatingWeightsEditor from "./EchoRatingWeightsEditor.vue";
 import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -706,8 +686,6 @@ const isLiveResultBarEnabled = computed(
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
 );
-const echoRatingGuide = ref<any>(null);
-const echoRatingWeightsEditor = ref<any>(null);
 
 const echoSet = ref<string | null>(null);
 const echo = ref<string | null>(null);
@@ -725,11 +703,6 @@ const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
 const rvMax = ref(ECHO_RV_MAX);
-// Matches the 0-100% shown on the Echo Rating badge itself.
-const RATING_PERCENT_MIN = 0;
-const RATING_PERCENT_MAX = 100;
-const ratingMin = ref(RATING_PERCENT_MIN);
-const ratingMax = ref(RATING_PERCENT_MAX);
 const selectedEchoIds = ref<string[]>([]);
 const hasSelection = computed(() => selectedEchoIds.value.length > 0);
 const activeFilterCount = computed(() => {
@@ -748,7 +721,6 @@ const activeFilterCount = computed(() => {
   if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
-  if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
   return count;
 });
 const page = ref(1);
@@ -894,9 +866,7 @@ const echoesList = computed(() => {
   }
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
   const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
-  const ratingFilterActive =
-    ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX;
-  if (cvFilterActive || rvFilterActive || ratingFilterActive) {
+  if (cvFilterActive || rvFilterActive) {
     allEchoes = allEchoes.filter((e) => {
       if (cvFilterActive) {
         const cv = getEchoCritValue(e);
@@ -905,10 +875,6 @@ const echoesList = computed(() => {
       if (rvFilterActive) {
         const rv = getEchoRollValue(e);
         if (rv < rvMin.value || rv > rvMax.value) return false;
-      }
-      if (ratingFilterActive) {
-        const { percent } = getEchoRatingGrade(e, settingsStore.echoRatingWeights);
-        if (percent < ratingMin.value || percent > ratingMax.value) return false;
       }
       return true;
     });
@@ -1038,8 +1004,6 @@ function resetFilters() {
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;
   rvMax.value = ECHO_RV_MAX;
-  ratingMin.value = RATING_PERCENT_MIN;
-  ratingMax.value = RATING_PERCENT_MAX;
 }
 
 function isSelected(echoId: string) {
@@ -1264,14 +1228,6 @@ async function createEcho() {
 
 function handleOpenEchoesImporter() {
   echoesImporter.value?.triggerOpenModal();
-}
-
-function handleOpenRatingGuide() {
-  echoRatingGuide.value?.triggerOpenModal?.();
-}
-
-function handleOpenWeightsEditor() {
-  echoRatingWeightsEditor.value?.triggerOpenModal?.({ mode: "global" });
 }
 </script>
 
