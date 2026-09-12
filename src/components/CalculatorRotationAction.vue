@@ -1043,6 +1043,7 @@ onMounted(() => {
 }
 .edit__basic-info {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin: 1rem 0;
 }

@@ -1,5 +1,21 @@
 <template>
   <div class="flex flex-col gap-3">
+    <!-- Shared by every Enemy Resistance slider below (list="…" just needs
+    a matching id in the DOM once — the native browser tick marks it draws
+    work the same for all of them). -->
+    <datalist id="enemy-resist-ticks">
+      <option value="0"></option>
+      <option value="10"></option>
+      <option value="20"></option>
+      <option value="30"></option>
+      <option value="40"></option>
+      <option value="50"></option>
+      <option value="60"></option>
+      <option value="70"></option>
+      <option value="80"></option>
+      <option value="90"></option>
+      <option value="100"></option>
+    </datalist>
     <div
       class="enemy__header flex flex-wrap items-center justify-between gap-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Enemy</h3>
@@ -103,13 +119,15 @@
             {{ el }}
             <template v-if="el === props.characterElement">
               <input
-                type="number"
+                type="range"
                 min="0"
                 max="100"
-                step="1"
-                class="input input-xs w-12 text-right font-mono"
+                step="10"
+                list="enemy-resist-ticks"
+                class="range range-xs w-24"
                 v-model.number="enemyResistPercent"
-                :data-test-enemy-workspace-resist-active-input="el" />%
+                :data-test-enemy-workspace-resist-active-input="el" />
+              <span class="font-mono">{{ enemyResistPercent }}%</span>
             </template>
             <span v-else class="font-mono" :data-test-enemy-workspace-resist-value="el">
               {{ selectedEnemyEntry.resist[el] ?? 0 }}%
@@ -118,16 +136,18 @@
         </div>
         <p v-if="!props.characterElement" class="text-xs opacity-60 mt-2" data-test-enemy-workspace-no-element>
           No character element set yet — Enemy Resistance defaults to 10% until one is known.
-          <span class="inline-flex items-center gap-1">
+          <span class="inline-flex items-center gap-2">
             <span class="text-[.65rem] uppercase tracking-wide font-bold">Enemy Resistance</span>
             <input
-              type="number"
+              type="range"
               min="0"
               max="100"
-              step="1"
-              class="input input-xs w-14 text-right font-mono"
+              step="10"
+              list="enemy-resist-ticks"
+              class="range range-xs w-32"
               v-model.number="enemyResistPercent"
-              data-test-enemy-workspace-resist-fallback-input />%
+              data-test-enemy-workspace-resist-fallback-input />
+            <span class="font-mono">{{ enemyResistPercent }}%</span>
           </span>
         </p>
       </div>
@@ -135,13 +155,15 @@
       <div v-else class="border-t border-base-300 pt-3 flex items-center gap-2" data-test-enemy-workspace-resist-manual>
         <span class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">Enemy Resistance</span>
         <input
-          type="number"
+          type="range"
           min="0"
           max="100"
-          step="1"
-          class="input input-xs w-14 text-right font-mono"
+          step="10"
+          list="enemy-resist-ticks"
+          class="range range-xs w-40"
           v-model.number="enemyResistPercent"
-          data-test-enemy-workspace-resist-fallback-input />%
+          data-test-enemy-workspace-resist-fallback-input />
+        <span class="font-mono">{{ enemyResistPercent }}%</span>
       </div>
     </div>
 

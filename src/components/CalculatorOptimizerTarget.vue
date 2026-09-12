@@ -16,6 +16,7 @@ import { getCharByName } from "../characters/characters.ts";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
+import { FALLBACK_ATTACK_GROUP_PRIORITY } from "../calculator/liveResultBar";
 
 defineOptions({ name: "CalculatorOptimizerTarget" });
 
@@ -136,6 +137,30 @@ const targetSelectOptions = computed((): AppRichSelectOption[] => {
   return options;
 });
 
+const attackListByGroup: Record<LiveResultBarAttackGroup, () => AttackEntry[]> = {
+  basicAttacks: () => basicAttacksList.value,
+  skillAttacks: () => skillAttacksList.value,
+  forteCircuitAttacks: () => forteCircuitAttacksList.value,
+  liberationAttacks: () => liberationAttacksList.value,
+  introAttacks: () => introAttacksList.value,
+  outroAttacks: () => outroAttacksList.value,
+  tuneBreakAttacks: () => tuneBreakAttacksList.value,
+};
+
+// Same cross-character fallback order as the Live Result Bar
+// (fallbackLiveResultBarTarget in liveResultBar.ts) — the first attack in
+// the highest-priority non-empty group. Duplicated here (rather than
+// reusing that function directly) because it expects allDamages' computed
+// `{ group: [...] }` shape, while this component only has the raw
+// character-data `{ group: { attacks: [...] } }` shape available.
+function fallbackAttackTarget(): string | null {
+  for (const group of FALLBACK_ATTACK_GROUP_PRIORITY) {
+    const list = attackListByGroup[group]();
+    if (list.length) return `Attack:${group}|${list[0].key}`;
+  }
+  return null;
+}
+
 function updatedTarget() {
   emit("optimizer:target-updated", optimizationTarget.value);
 }
@@ -158,9 +183,21 @@ watch(
 
 onMounted(async () => {
   const t = props.currentOptimizationTarget;
-  optimizationTarget.value = typeof t === "string" ? t : null;
+  if (typeof t === "string") {
+    optimizationTarget.value = t;
+  } else if (rotations.value.length) {
+    // No persisted target yet — prefer this character's first saved
+    // rotation over a single attack, same rule the Live Result Bar uses
+    // (defaultLiveResultBarTarget in liveResultBar.ts).
+    optimizationTarget.value = `Rotation:${rotations.value[0].id}`;
+  } else {
+    optimizationTarget.value = null;
+  }
   const data = await getCharByName(props.character);
   characterData.value = (data ?? {}) as Record<string, AttackBlock | undefined>;
+  if (optimizationTarget.value === null) {
+    optimizationTarget.value = fallbackAttackTarget();
+  }
 });
 
 onBeforeUnmount(() => {

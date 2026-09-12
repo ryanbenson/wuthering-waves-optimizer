@@ -572,8 +572,7 @@ import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBr
 import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import CalculatorLiveResultDetail from "./CalculatorLiveResultDetail.vue";
 import {
-  buildLiveResultBarTarget,
-  fallbackLiveResultBarTarget,
+  defaultLiveResultBarTarget,
   resolveLiveResultBarTarget,
   DEFAULT_LIVE_RESULT_BAR_STATS,
 } from "../calculator/liveResultBar";
@@ -1125,9 +1124,11 @@ export default defineComponent({
         }
         if (liveResultBarTarget.value === null) {
           const declared = chosenChar.value?.basic?.liveResultBarDefaultTarget;
-          liveResultBarTarget.value =
-            buildLiveResultBarTarget(declared, rotationsList.value) ??
-            fallbackLiveResultBarTarget(allDamages.value);
+          liveResultBarTarget.value = defaultLiveResultBarTarget(
+            declared,
+            rotationsList.value,
+            allDamages.value,
+          );
         }
       }
     };
