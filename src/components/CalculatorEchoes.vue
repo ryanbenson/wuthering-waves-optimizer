@@ -39,18 +39,24 @@
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </Toast>
     <!--
-      Pinned at the very top of the tab, above even the header row below —
-      "under the nav and character bar" in practice, since those are the
-      only things above .calculations__screens in normal flow (same
+      Mobile-only: pinned at the very top of the tab, above even the header
+      row below — "under the nav and character bar" in practice, since those
+      are the only things above .calculations__screens in normal flow (same
       top:0 sticky convention as decisions #1/#9 below). Collapsed to just
       the Build Score hero by default; click to expand the rest of Echo
-      Insights. See docs/adr/0030-echoes-tab-v3-redesign.md decision #… —
-      moved out of the old two-column row entirely, since that row no
-      longer exists once this became a sticky bar instead of a side panel.
+      Insights. Desktop/non-mobile keeps the original always-expanded sticky
+      sidebar instead (in .echoes-layout below) — per review feedback, the
+      pinned-top bar reads well as a mobile pattern but the side column was
+      already correct for wider viewports and shouldn't have been replaced
+      there. CSS toggles which of the two is visible at the same 768px
+      breakpoint used everywhere else in this redesign — see the
+      CalculatorSubNav/CalculatorMobileSubNav dual-render precedent in
+      Calculator.vue; this app has no JS breakpoint composable to use
+      instead. See docs/adr/0030-echoes-tab-v3-redesign.md.
     -->
     <CalculatorEchoInsightsPanel
       v-if="isLiveResultBarEnabled"
-      class="echoes-column echoes-column__sticky-score mb-4"
+      class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
       :character="character"></CalculatorEchoInsightsPanel>
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
@@ -103,33 +109,50 @@
       once the strip had its own bounded width, having these two sections
       snap back to full width right below it read as an inconsistent
       column. See docs/adr/0030-echoes-tab-v3-redesign.md.
+
+      Desktop/non-mobile also gets a second, always-expanded Echo Insights
+      instance here as a sticky sidebar — the original design, restored
+      after review feedback (the pinned/collapsible bar above is mobile-only
+      now). Two <CalculatorEchoInsightsPanel> instances render simultaneously
+      whenever the flag is on; CSS shows exactly one per viewport width.
+      useEchoInsights/useTeamSubstatScoreRollup are cheap computed()s over
+      shared Pinia state, so mounting the panel twice is safe (same pattern
+      already relied on elsewhere in this redesign, e.g. EchoEditFields.vue).
     -->
-    <div v-if="isLiveResultBarEnabled" class="echoes-column">
-      <div class="echo__list">
-        <CalculatorEchoTile
-          v-for="(_, index) in 5"
-          :key="character + '-' + index"
-          :ref="getEchoRefSetter(index)"
-          :index="index"
+    <div v-if="isLiveResultBarEnabled" class="echoes-layout">
+      <div class="echoes-column">
+        <div class="echo__list">
+          <CalculatorEchoTile
+            v-for="(_, index) in 5"
+            :key="character + '-' + index"
+            :ref="getEchoRefSetter(index)"
+            :index="index"
+            :character="character"
+            :is-expanded="expandedEchoIndex === index"
+            @updated-echo-cost="handleUpdatedEchoCost"
+            @update-stats="handleEchoStats"
+            @echo:set-chosen="handleEchoSetChosen"
+            @main-echo:updated="handleMainEchoUpdated"
+            @main-echo-rank:updated="handleMainEchoRankUpdated"
+            @open-echoes-browser="handleOpenEchoesBrowser"
+            @on-echo-removed="handleEchoRemoved"
+            @toggle-edit="handleToggleEdit"></CalculatorEchoTile>
+        </div>
+
+        <CalculatorEchoSetBonusPanel
           :character="character"
-          :is-expanded="expandedEchoIndex === index"
-          @updated-echo-cost="handleUpdatedEchoCost"
-          @update-stats="handleEchoStats"
-          @echo:set-chosen="handleEchoSetChosen"
-          @main-echo:updated="handleMainEchoUpdated"
-          @main-echo-rank:updated="handleMainEchoRankUpdated"
-          @open-echoes-browser="handleOpenEchoesBrowser"
-          @on-echo-removed="handleEchoRemoved"
-          @toggle-edit="handleToggleEdit"></CalculatorEchoTile>
+          @set-bonus-stats="handleSetBonusPanelStats"></CalculatorEchoSetBonusPanel>
+
+        <CalculatorMainEchoPanel
+          :character="character"
+          @updated-buff-stats="handleMainEchoBuffStats"></CalculatorMainEchoPanel>
       </div>
 
-      <CalculatorEchoSetBonusPanel
-        :character="character"
-        @set-bonus-stats="handleSetBonusPanelStats"></CalculatorEchoSetBonusPanel>
-
-      <CalculatorMainEchoPanel
-        :character="character"
-        @updated-buff-stats="handleMainEchoBuffStats"></CalculatorMainEchoPanel>
+      <div class="echoes-sidebar">
+        <CalculatorEchoInsightsPanel
+          :always-expanded="true"
+          :character="character"></CalculatorEchoInsightsPanel>
+      </div>
     </div>
 
     <template v-else>
@@ -555,6 +578,28 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 }
 
 /*
+ * Desktop/non-mobile row: tiles column + always-expanded Insights sidebar,
+ * side by side — the original design. .echoes-mobile-score (the pinned top
+ * bar) is hidden at this width; see the @media block below for the swap.
+ */
+.echoes-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.echoes-sidebar {
+  flex: 0 0 320px;
+  max-width: 100%;
+  position: sticky;
+  top: 0;
+}
+
+.echoes-mobile-score {
+  display: none;
+}
+
+/*
  * Tile spacing is a flex gap here, not each tile's own margin-bottom via
  * the shared .echo-selector class (as the legacy list below still uses) —
  * CalculatorEchoTile.vue is a multi-root ("fragment") component now that
@@ -599,6 +644,18 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 @media (max-width: 768px) {
   .echoes-column {
     width: 100%;
+  }
+
+  .echoes-layout {
+    flex-direction: column;
+  }
+
+  .echoes-sidebar {
+    display: none;
+  }
+
+  .echoes-mobile-score {
+    display: block;
   }
 }
 
