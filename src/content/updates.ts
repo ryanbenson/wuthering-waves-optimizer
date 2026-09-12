@@ -12,6 +12,15 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-12",
+    dateLabel: "September 12, 2026",
+    items: [
+      "Fixed small issue in importer where DEF% 11.8% was coming in as 11.9%",
+      "v3: Updated the layout and UX of the character echoes page, lots if improvements",
+      "v3: Updated and fixed a lot of small issues like overflow issues",
+    ],
+  },
+  {
     date: "2026-09-11",
     dateLabel: "September 11, 2026",
     items: [
