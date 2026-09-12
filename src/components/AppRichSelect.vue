@@ -37,7 +37,7 @@
             :src="selectedOption.image"
             :style="selectedOption.imageStyle"
             alt=""
-            class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
+            class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0" />
           <span
             class="whitespace-nowrap"
             :class="{ truncate: !isFitWidth }"
@@ -115,7 +115,7 @@
                     :src="option.image"
                     :style="option.imageStyle"
                     alt=""
-                    class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
+                    class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0" />
                   <span class="truncate">{{ option.label }}</span>
                 </slot>
               </button>
