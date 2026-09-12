@@ -536,6 +536,10 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
     flex-direction: column;
   }
 
+  .echoes-layout__strip {
+    width: 100%;
+  }
+
   .echoes-layout__insights {
     flex: none;
     width: 100%;
