@@ -142,16 +142,12 @@
 
       <div class="screen--echoes" v-show="curScreen === 'echoes'">
         <CalculatorEchoes
-          ref="echoesComponentRef"
           :key="characterBuildKey"
           :character="character"
           @update-stats="updateStatsEchoes"
           @updated-main-echo="handleUpdatedMainEcho"
           @updated-main-echo-rank="
             handleUpdatedMainEchoRank
-          "
-          @open-echo-edit-panel="
-            handleOpenEchoEditPanel
           "></CalculatorEchoes>
       </div>
 
@@ -340,15 +336,6 @@
           @selected-attack="handleSelectedAttack"></CalculatorDamages>
       </div>
     </div>
-    <CalculatorEchoEditPanel
-      v-if="isLiveResultBarEnabled"
-      context="build"
-      :echo-id="null"
-      :character="character"
-      :index="echoEditPanelIndex ?? 0"
-      :is-open="echoEditPanelIndex !== null"
-      @close="echoEditPanelIndex = null"
-      @open-echoes-browser="handleEchoEditPanelBrowse"></CalculatorEchoEditPanel>
     <CalculatorLiveResultDetail
       v-if="isLiveResultBarEnabled && isLiveResultDetailOpen"
       :character="character"
@@ -584,7 +571,6 @@ import CalculatorCommandBar from "./CalculatorCommandBar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import CalculatorLiveResultDetail from "./CalculatorLiveResultDetail.vue";
-import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
 import {
   buildLiveResultBarTarget,
   fallbackLiveResultBarTarget,
@@ -633,7 +619,6 @@ export default defineComponent({
     WorkspaceCharacterBrowser,
     CalculatorManageBuilds,
     CalculatorLiveResultDetail,
-    CalculatorEchoEditPanel,
   },
   emits: ["stat-selected", "attack-selected", "breakdown-closed"],
   setup(props, { emit }) {
@@ -749,22 +734,6 @@ export default defineComponent({
         if (value) isLiveResultDetailOpen.value = true;
       },
     });
-    // Hosted here (not inside CalculatorEchoes.vue) so it sits as a sibling
-    // of .calculations__screens, same as CalculatorLiveResultDetail above —
-    // mounting it inside one tab's own content nested it inside that tab's
-    // scrollable ancestor, producing two scrollbars fighting over the same
-    // edge of the screen. See docs/adr/0014.
-    const echoEditPanelIndex = ref(null);
-    const echoesComponentRef = ref(null);
-    function handleOpenEchoEditPanel(index) {
-      echoEditPanelIndex.value = index;
-    }
-    function handleEchoEditPanelBrowse() {
-      echoesComponentRef.value?.openEchoesBrowserForIndex?.(
-        echoEditPanelIndex.value,
-      );
-    }
-
     // Character-browser / build-manage modals — mounted here (not inside
     // CalculatorCharacterWorkspace.vue) because CalculatorCommandBar.vue now
     // triggers them from every tab, not just the Character tab, since it
@@ -1337,9 +1306,6 @@ export default defineComponent({
     };
 
     const changeScreen = (screen: string) => {
-      if (screen !== "echoes") {
-        echoEditPanelIndex.value = null;
-      }
       curScreen.value = screen;
       if (screen === "build-card") {
         hasVisitedBuildCard.value = true;
@@ -2411,10 +2377,6 @@ export default defineComponent({
       isLiveResultDetailPinned,
       liveResultBarStatKeys,
       liveResultBarStatValues,
-      echoEditPanelIndex,
-      echoesComponentRef,
-      handleOpenEchoEditPanel,
-      handleEchoEditPanelBrowse,
       characterBrowserRef,
       manageBuildsRef,
       openCharacterBrowser,

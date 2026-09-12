@@ -91,7 +91,7 @@
           :ref="getEchoRefSetter(index)"
           :index="index"
           :character="character"
-          class="echo-selector"
+          :is-expanded="expandedEchoIndex === index"
           @updated-echo-cost="handleUpdatedEchoCost"
           @update-stats="handleEchoStats"
           @echo:set-chosen="handleEchoSetChosen"
@@ -99,7 +99,7 @@
           @main-echo-rank:updated="handleMainEchoRankUpdated"
           @open-echoes-browser="handleOpenEchoesBrowser"
           @on-echo-removed="handleEchoRemoved"
-          @open-edit-panel="emit('open-echo-edit-panel', $event)"></CalculatorEchoTile>
+          @toggle-edit="handleToggleEdit"></CalculatorEchoTile>
       </div>
       <CalculatorEchoInsightsPanel
         class="echoes-layout__insights"
@@ -229,8 +229,19 @@ const emit = defineEmits<{
   "update-stats": [stats: Record<string, any>];
   "updated-main-echo": [echo: string | null];
   "updated-main-echo-rank": [rank: number | string];
-  "open-echo-edit-panel": [index: number];
 }>();
+
+// Which echo tile (if any) has its inline editor expanded — an accordion,
+// not independent per-tile state, so at most one tile is expanded at a
+// time. See docs/adr/0030-echoes-tab-v3-redesign.md decision #7: this
+// avoids all 5 tiles expanding simultaneously and blowing out the
+// fixed-width strip's height with no clear focus. Replaces the old
+// echoEditPanelIndex state that used to live in Calculator.vue for the
+// now-removed docked build-context edit panel.
+const expandedEchoIndex = ref<number | null>(null);
+function handleToggleEdit(index: number) {
+  expandedEchoIndex.value = expandedEchoIndex.value === index ? null : index;
+}
 
 const characterStore = useCharacterStore() as any;
 const inventoryStore = useInventoryStore() as any;
@@ -499,10 +510,10 @@ watch(setOverride, (newValue) => {
   }
 });
 
-// Calculator.vue hosts the shared echo edit panel itself now (as a sibling
-// of .calculations__screens, not nested inside this tab's own scrollable
-// content — see docs/adr/0014), so its "Browse" action needs a way back
-// into this component's own CalculatorEchoesBrowser instance.
+// Echo editing is inline-in-tile now (see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #3), but a tile's "Browse" action still needs a way to reach this
+// component's own CalculatorEchoesBrowser instance from outside — kept for
+// symmetry with how that instance is normally driven internally.
 defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
@@ -532,6 +543,20 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 .echoes-layout__strip {
   flex: 0 0 460px;
   min-width: 0;
+  /*
+   * Tile spacing is a flex gap here, not each tile's own margin-bottom via
+   * the shared .echo-selector class (as the legacy list below still uses) —
+   * CalculatorEchoTile.vue is a multi-root ("fragment") component now that
+   * it mounts EchoPickerDialog as a sibling, and Vue only forwards a
+   * parent's *scoped* CSS onto a child's scope via that child's single root
+   * element. A fragment has no single root to attach it to, so
+   * .echo-selector's scoped margin-bottom silently never reaches it
+   * regardless of the class name itself still being passed through. Gap on
+   * the container sidesteps the whole problem.
+   */
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .echoes-layout__insights {

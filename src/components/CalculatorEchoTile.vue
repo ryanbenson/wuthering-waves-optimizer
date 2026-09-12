@@ -1,10 +1,104 @@
 <template>
-  <button
-    type="button"
-    class="echo__tile card card-bordered card-compact bg-base-100 shadow w-full text-left"
+  <div
+    role="button"
+    tabindex="0"
+    class="echo__tile card card-bordered card-compact bg-base-100 shadow w-full text-left cursor-pointer"
+    :class="$attrs.class"
+    :aria-expanded="isExpanded"
     :data-test-echo-item="index"
-    @click="emit('open-edit-panel', index)">
+    @click="handleCardActivate"
+    @keydown="handleCardKeydown">
     <div class="card-body">
+      <template v-if="isExpanded">
+        <!--
+          Everything in the expanded state (header controls + EchoEditFields'
+          rank/main-stat/substat controls) stops click propagation here —
+          without it, clicks bubble to the root's own @click handler, and in
+          a real browser (not just a synthetic .click()) that produced an
+          actual bug: clicking the collapse button intermittently failed to
+          collapse. Don't rely on handleCardActivate's isExpanded guard alone
+          to make bubbled clicks safe; stop them at the source instead.
+        -->
+        <div class="flex items-start gap-3" @click.stop>
+          <div
+            class="echo__item__image rounded-full border border-solid neutral-content size-12 bg-cover shrink-0"
+            :class="[rankBorderClass, isEchoLocked ? 'opacity-60' : 'cursor-pointer']"
+            :style="{ backgroundImage: `url(${echoImage})` }"
+            @click="!isEchoLocked && pickerRef?.openPicker()"></div>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm truncate">{{ echoName ?? "No echo selected" }}</div>
+            <div v-if="hasSubStats" class="flex items-center gap-1.5 flex-wrap mt-0.5">
+              <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
+                CV {{ formattedCritValue }}%
+              </span>
+              <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
+                RV {{ echoRollValue }}%
+              </span>
+              <span
+                v-if="substatScore"
+                class="badge badge-xs text-nowrap"
+                :class="substatScoreBadgeClass"
+                v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+              </span>
+              <span
+                v-else
+                class="badge badge-xs text-nowrap"
+                :class="echoRatingBadgeClass"
+                v-tooltip="'Echo Rating — overall substat roll quality'">
+                {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5">
+              <button
+                type="button"
+                class="btn btn-xs"
+                :disabled="isEchoLocked"
+                data-test-echo-edit-find
+                @click="pickerRef?.openPicker()">
+                Find
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost"
+                data-test-echo-edit-browse
+                @click="openEchoBrowser">
+                Browse
+              </button>
+            </div>
+            <div v-if="echoSets.length" class="flex items-center gap-1.5 mt-1.5">
+              <button
+                v-for="s in echoSets"
+                :key="s"
+                type="button"
+                class="size-5 rounded-full shrink-0"
+                :class="{ 'ring-2 ring-primary': isSetSelected(s) }"
+                :disabled="isEchoLocked"
+                :aria-pressed="isSetSelected(s)"
+                :aria-label="s"
+                @click="handleChooseEchoSet(s)">
+                <img :src="getEchoSetIcon(s)" :class="s" />
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost"
+            aria-label="Collapse editor"
+            data-test-echo-item-collapse
+            @click="emit('toggle-edit', index)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-width="1.8" d="M5 5l14 14M19 5 5 19" />
+            </svg>
+          </button>
+        </div>
+
+        <div @click.stop>
+          <EchoEditFields :target="target" :scrollable="false" />
+        </div>
+      </template>
+
+      <template v-else>
       <div class="flex items-start gap-3">
         <div class="flex flex-col items-center gap-0.5 shrink-0">
           <div class="relative">
@@ -82,6 +176,19 @@
         </div>
         <div class="flex items-center gap-1 shrink-0" @click.stop>
           <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost btn-square"
+            v-tooltip="'Edit'"
+            aria-label="Edit"
+            :data-test-echo-item-edit="index"
+            @click="emit('toggle-edit', index)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
+              <path
+                d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
+                fill="currentColor" />
+            </svg>
+          </button>
           <button
             type="button"
             class="btn btn-sm btn-ghost btn-square"
@@ -175,8 +282,11 @@
           </span>
         </div>
       </div>
+      </template>
     </div>
-  </button>
+  </div>
+
+  <EchoPickerDialog ref="pickerRef" :target="target" />
 </template>
 
 <script setup lang="ts">
@@ -185,9 +295,10 @@
 // itself is untouched and still renders when the flag is off — this is a
 // separate component rather than a branch inside that file so the legacy
 // path carries zero risk from this change.
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useEchoInventory } from "../composables/useEchoInventory";
 import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats, getSubstatRollQualityClasses, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
@@ -197,12 +308,15 @@ import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import EchoStatusBadge from "./EchoStatusBadge.vue";
+import EchoEditFields from "./EchoEditFields.vue";
+import EchoPickerDialog from "./EchoPickerDialog.vue";
 
 defineOptions({ name: "CalculatorEchoTile" });
 
 const props = defineProps<{
   character: string;
   index: number;
+  isExpanded: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -213,7 +327,7 @@ const emit = defineEmits<{
   "main-echo:updated": [echoKey: string | null];
   "on-echo-removed": [];
   "open-echoes-browser": [index: number];
-  "open-edit-panel": [index: number];
+  "toggle-edit": [index: number];
 }>();
 
 const characterStore = useCharacterStore();
@@ -240,10 +354,51 @@ const {
   isEchoIncomplete,
   echoName,
   echoImage,
+  echoSets,
+  getEchoSetIcon,
+  handleChooseEchoSet: handleChooseEchoSetField,
+  isSetSelected,
   stats,
   isApplyingEchoLoadout,
   currentEcho,
 } = useEchoEditFields(() => target.value);
+
+// Inline expand-in-place editing (see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #3) reuses EchoEditFields/EchoPickerDialog from the docked panel
+// refactor — this component now needs its own copy of isEchoLocked for the
+// expanded header's own controls, same self-sourcing pattern those two
+// components use.
+const { getEchoFlags } = useEchoInventory();
+const isEchoLocked = computed(() => (echoId.value ? getEchoFlags(echoId.value).locked : false));
+
+function handleChooseEchoSet(set: string) {
+  if (isEchoLocked.value) return;
+  handleChooseEchoSetField(set);
+}
+
+const pickerRef = ref<InstanceType<typeof EchoPickerDialog> | null>(null);
+
+// Root is a div (not a button) because the expanded state embeds
+// AppRichSelect, whose own trigger is itself an interactive
+// role="button" element — nesting that inside a real <button> is a real
+// accessibility/interaction hazard (duplicate interactive semantics,
+// native Enter/Space handling on the outer button fighting the inner
+// trigger's own keydown handling), not just a style choice. Card-wide
+// click/keyboard activation only applies while collapsed — while
+// expanded, the only way to collapse is the explicit close button in the
+// expanded header, so clicks inside EchoEditFields never fight this
+// handler.
+function handleCardActivate() {
+  if (props.isExpanded) return;
+  emit("toggle-edit", props.index);
+}
+function handleCardKeydown(event: KeyboardEvent) {
+  if (props.isExpanded) return;
+  if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+    event.preventDefault();
+    emit("toggle-edit", props.index);
+  }
+}
 
 // "Saved" here means "promoted to a standalone inventory record" rather
 // than field-level dirty-tracking — see docs/adr/0030-echoes-tab-v3-redesign.md

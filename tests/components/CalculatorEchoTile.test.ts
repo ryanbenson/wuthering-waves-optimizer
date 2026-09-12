@@ -25,10 +25,13 @@ function setInlineEcho(index: number, overrides: Record<string, unknown> = {}) {
   });
 }
 
-function renderTile(index = 0) {
+function renderTile(index = 0, isExpanded = false) {
   return render(CalculatorEchoTile, {
-    props: { character: CHARACTER, index },
-    global: { directives: { tooltip: () => {} } },
+    props: { character: CHARACTER, index, isExpanded },
+    global: {
+      stubs: { AppRichSelect: true },
+      directives: { tooltip: () => {} },
+    },
   });
 }
 
@@ -123,5 +126,83 @@ describe("CalculatorEchoTile saved state", () => {
     const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
     expect(saveBtn.disabled).toBe(true);
     expect(saveBtn.className).toContain("btn-ghost");
+  });
+});
+
+describe("CalculatorEchoTile inline expand-in-place editing", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    // jsdom doesn't implement <dialog>.showModal()/.close() — EchoPickerDialog
+    // is always mounted as a sibling of the tile regardless of expanded state.
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute("open", "");
+    };
+    HTMLDialogElement.prototype.close = function () {
+      this.removeAttribute("open");
+    };
+  });
+
+  it("collapsed: shows the summary view, not the field editor", () => {
+    setInlineEcho(0);
+    const { container } = renderTile(0, false);
+    expect(container.querySelector('[data-test-echo-edit-rank="4"]')).toBeNull();
+    expect(container.querySelector('[data-test-echo-item-substat="0"]')).not.toBeNull();
+  });
+
+  it("expanded: shows the field editor (rank buttons, substat slots) instead of the summary view", () => {
+    setInlineEcho(0);
+    const { container } = renderTile(0, true);
+    expect(container.querySelector('[data-test-echo-edit-rank="4"]')).not.toBeNull();
+    expect(container.querySelector('[data-test-echo-item-substat="0"]')).toBeNull();
+  });
+
+  it("clicking Edit on a collapsed tile emits toggle-edit with this tile's index", async () => {
+    setInlineEcho(1);
+    const { container, emitted } = renderTile(1, false);
+    const editBtn = container.querySelector('[data-test-echo-item-edit="1"]') as HTMLElement;
+    await fireEvent.click(editBtn);
+    expect(emitted("toggle-edit")?.[0]).toEqual([1]);
+  });
+
+  it("clicking anywhere on a collapsed tile also emits toggle-edit (whole-card affordance)", async () => {
+    setInlineEcho(0);
+    const { container, emitted } = renderTile(0, false);
+    await fireEvent.click(container.querySelector(".echo__tile") as HTMLElement);
+    expect(emitted("toggle-edit")?.[0]).toEqual([0]);
+  });
+
+  it("pressing Enter on a collapsed tile emits toggle-edit (keyboard parity with the old button root)", async () => {
+    setInlineEcho(0);
+    const { container, emitted } = renderTile(0, false);
+    await fireEvent.keyDown(container.querySelector(".echo__tile") as HTMLElement, { key: "Enter" });
+    expect(emitted("toggle-edit")?.[0]).toEqual([0]);
+  });
+
+  it("clicking the collapse button on an expanded tile emits toggle-edit", async () => {
+    setInlineEcho(0);
+    const { container, emitted } = renderTile(0, true);
+    const collapseBtn = container.querySelector("[data-test-echo-item-collapse]") as HTMLElement;
+    await fireEvent.click(collapseBtn);
+    expect(emitted("toggle-edit")?.[0]).toEqual([0]);
+  });
+
+  it("clicking inside the expanded editor does not also emit toggle-edit (no accidental double-collapse)", async () => {
+    setInlineEcho(0);
+    const { container, emitted } = renderTile(0, true);
+    // Clicking the tile's own background while expanded must not toggle —
+    // only the explicit collapse button does.
+    await fireEvent.click(container.querySelector(".echo__tile") as HTMLElement);
+    expect(emitted("toggle-edit")).toBeUndefined();
+  });
+
+  it("editing inline still writes through to the character store, same as the old docked panel did", async () => {
+    setInlineEcho(0);
+    const characterStore = useCharacterStore() as any;
+    const { container } = renderTile(0, true);
+
+    const rank4Btn = container.querySelector('[data-test-echo-edit-rank="4"]') as HTMLElement;
+    await fireEvent.click(rank4Btn);
+
+    expect(String(characterStore.characters[CHARACTER].echoes[0].rank)).toBe("4");
   });
 });
