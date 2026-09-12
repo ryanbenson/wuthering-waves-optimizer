@@ -90,23 +90,25 @@ describe("CalculatorEchoTile saved state", () => {
     setActivePinia(createPinia());
   });
 
-  it("shows no saved indicator and a non-disabled Save button for an empty slot", () => {
+  it("labels the Save button 'Save' and leaves it enabled for an empty slot", () => {
     const { container } = renderTile(0);
-    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).toBeNull();
     const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
     expect(saveBtn.disabled).toBe(false);
+    expect(saveBtn.textContent).toContain("Save");
+    expect(saveBtn.textContent).not.toContain("Saved");
   });
 
-  it("shows an active Save button and no saved indicator for inline (not-yet-saved) echo data", () => {
+  it("labels the Save button 'Save' (active/primary) for inline (not-yet-saved) echo data", () => {
     setInlineEcho(0); // no echoId — live character-inline data only
     const { container } = renderTile(0);
-    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).toBeNull();
     const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
     expect(saveBtn.disabled).toBe(false);
     expect(saveBtn.className).toContain("btn-primary");
+    expect(saveBtn.textContent).toContain("Save");
+    expect(saveBtn.textContent).not.toContain("Saved");
   });
 
-  it("shows the saved indicator and a disabled Save button once the echo is a real inventory record", () => {
+  it("relabels the Save button 'Saved' and disables it once the echo is a real inventory record", () => {
     const inventoryStore = useInventoryStore() as any;
     const characterStore = useCharacterStore() as any;
     inventoryStore.saveEcho({
@@ -122,10 +124,46 @@ describe("CalculatorEchoTile saved state", () => {
     characterStore.setCharacterData(CHARACTER, { echoes: { 0: { echoId: "e1" } } });
 
     const { container } = renderTile(0);
-    expect(container.querySelector("[data-test-echo-item-saved-indicator]")).not.toBeNull();
     const saveBtn = container.querySelector('[data-test-echo-item-save="0"]') as HTMLButtonElement;
     expect(saveBtn.disabled).toBe(true);
     expect(saveBtn.className).toContain("btn-ghost");
+    expect(saveBtn.textContent).toContain("Saved");
+  });
+
+  it("shows the same Save button, in the same states, in the expanded (edit-mode) footer", () => {
+    const inventoryStore = useInventoryStore() as any;
+    const characterStore = useCharacterStore() as any;
+    inventoryStore.saveEcho({ echoId: "e1", echo: "AeroDrake", type: 1, rank: 5, stat: "CritRate" });
+    characterStore.setCharacterData(CHARACTER, { echoes: { 0: { echoId: "e1" } } });
+
+    const { container } = renderTile(0, true);
+    const saveBtn = container.querySelector('.btn[disabled]') as HTMLButtonElement;
+    expect(saveBtn).not.toBeNull();
+    expect(saveBtn.textContent).toContain("Saved");
+    expect(container.textContent).toContain("Changes save automatically");
+  });
+});
+
+describe("CalculatorEchoTile locked substats notice", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("shows a visible 'Substats locked' notice on a collapsed, locked tile", () => {
+    const inventoryStore = useInventoryStore() as any;
+    const characterStore = useCharacterStore() as any;
+    inventoryStore.saveEcho({ echoId: "e1", echo: "AeroDrake", type: 1, rank: 5, stat: "CritRate", locked: true });
+    characterStore.setCharacterData(CHARACTER, { echoes: { 0: { echoId: "e1" } } });
+
+    const { container, getByText } = renderTile(0, false);
+    expect(container.querySelector("[data-test-echo-item-locked-notice]")).not.toBeNull();
+    getByText("Substats locked — unlock to edit");
+  });
+
+  it("shows no locked notice on an unlocked tile", () => {
+    setInlineEcho(0);
+    const { container } = renderTile(0, false);
+    expect(container.querySelector("[data-test-echo-item-locked-notice]")).toBeNull();
   });
 });
 

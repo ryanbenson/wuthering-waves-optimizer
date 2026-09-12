@@ -96,6 +96,55 @@
         <div @click.stop>
           <EchoEditFields :target="target" :scrollable="false" />
         </div>
+
+        <!--
+          A clear, visible Save affordance while editing — edits to an
+          already-saved echo persist automatically (useEchoEditFields
+          writes straight through to inventoryStore.patchEcho on every
+          change), but that wasn't obvious from the collapsed view alone.
+          Reusing the exact same button here, in the same disabled/active
+          states, so "Saved" always means the same thing everywhere on
+          this tile.
+        -->
+        <div class="flex items-center gap-2 mt-2 pt-2 border-t border-base-300 px-4 pb-3" @click.stop>
+          <button type="button" class="btn btn-xs btn-ghost" @click="reset">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+              <path
+                d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+                fill="currentColor" />
+            </svg>
+            Reset
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs"
+            :class="isEchoSaved ? 'btn-ghost' : 'btn-primary'"
+            :disabled="isEchoSaved"
+            v-tooltip="isEchoSaved ? 'Saved — further edits to a saved echo save automatically' : 'Save this echo to your inventory'"
+            @click="saveEchoItem">
+            <svg
+              v-if="isEchoSaved"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-3.5"
+              aria-hidden="true">
+              <path
+                d="M5 13l4 4L19 7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5" aria-hidden="true">
+              <path
+                d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
+                fill="currentColor" />
+            </svg>
+            {{ isEchoSaved ? "Saved" : "Save" }}
+          </button>
+          <span v-if="isEchoSaved" class="text-xs opacity-60">Changes save automatically</span>
+        </div>
       </template>
 
       <template v-else>
@@ -124,21 +173,6 @@
           <div class="flex items-center gap-0.5">
             <EchoFavoriteButton :echo-id="echoId || null" />
             <EchoStatusBadge :echo-id="echoId || null" />
-            <span
-              v-if="isEchoSaved"
-              class="text-success"
-              data-test-echo-item-saved-indicator
-              v-tooltip="'Saved to your inventory'">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5" aria-hidden="true">
-                <path
-                  d="M5 13l4 4L19 7"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-            </span>
           </div>
         </div>
         <div class="flex-1 min-w-0">
@@ -176,74 +210,6 @@
         </div>
         <div class="flex items-center gap-1 shrink-0" @click.stop>
           <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
-          <button
-            type="button"
-            class="btn btn-sm btn-ghost btn-square"
-            v-tooltip="'Edit'"
-            aria-label="Edit"
-            :data-test-echo-item-edit="index"
-            @click="emit('toggle-edit', index)">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
-              <path
-                d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
-                fill="currentColor" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-ghost btn-square"
-            v-tooltip="'Reset'"
-            aria-label="Reset"
-            :data-test-echo-item-reset="index"
-            @click="reset">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
-              <path
-                d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
-                fill="currentColor" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-square"
-            :class="isEchoSaved ? 'btn-ghost opacity-50' : 'btn-primary'"
-            :disabled="isEchoSaved"
-            v-tooltip="isEchoSaved ? 'Already saved — further edits save automatically' : 'Save'"
-            :aria-label="isEchoSaved ? 'Saved' : 'Save'"
-            :data-test-echo-item-save="index"
-            @click="saveEchoItem">
-            <svg
-              v-if="isEchoSaved"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              class="size-4"
-              aria-hidden="true">
-              <path
-                d="M5 13l4 4L19 7"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
-              <path
-                d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
-                fill="currentColor" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-ghost btn-square"
-            v-tooltip="'Browse'"
-            aria-label="Browse"
-            :data-test-echo-item-browse="index"
-            @click="openEchoBrowser">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="size-4" aria-hidden="true">
-              <path
-                d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
-                fill="currentColor" />
-            </svg>
-          </button>
         </div>
       </div>
 
@@ -281,6 +247,83 @@
             {{ slotIsFilled(slot) ? slotValueDisplay(slot) : "—" }}
           </span>
         </div>
+      </div>
+
+      <div
+        v-if="isEchoLocked"
+        class="flex items-center gap-1.5 text-xs opacity-70 mt-2 pt-2 border-t border-base-300"
+        data-test-echo-item-locked-notice>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5 shrink-0" aria-hidden="true">
+          <path
+            d="M384 192c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0 0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0zM224 80c-35.3 0-64 28.7-64 64l0 48 128 0 0-48c0-35.3-28.7-64-64-64z"
+            fill="currentColor" />
+        </svg>
+        Substats locked — unlock to edit
+      </div>
+
+      <!--
+        Actions grouped separately from the lock/trash/temp/hidden status
+        cluster up in the header — piling both into one row at the top was
+        real feedback ("all of the actions are piled up at the top"). These
+        are deliberate, infrequent actions, so they sit in their own row at
+        the bottom instead, as labeled buttons rather than icon-only ones
+        (an icon-only disabled checkmark with no visible label read as
+        unclear on its own — direct feedback too).
+      -->
+      <div class="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-base-300" @click.stop>
+        <button type="button" class="btn btn-xs" :data-test-echo-item-edit="index" @click="emit('toggle-edit', index)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
+              fill="currentColor" />
+          </svg>
+          Edit
+        </button>
+        <button type="button" class="btn btn-xs btn-ghost" :data-test-echo-item-reset="index" @click="reset">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+              fill="currentColor" />
+          </svg>
+          Reset
+        </button>
+        <button
+          type="button"
+          class="btn btn-xs"
+          :class="isEchoSaved ? 'btn-ghost' : 'btn-primary'"
+          :disabled="isEchoSaved"
+          v-tooltip="isEchoSaved ? 'Saved — further edits to a saved echo save automatically' : 'Save this echo to your inventory'"
+          :data-test-echo-item-save="index"
+          @click="saveEchoItem">
+          <svg
+            v-if="isEchoSaved"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-3.5"
+            aria-hidden="true">
+            <path
+              d="M5 13l4 4L19 7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
+              fill="currentColor" />
+          </svg>
+          {{ isEchoSaved ? "Saved" : "Save" }}
+        </button>
+        <button type="button" class="btn btn-xs btn-ghost" :data-test-echo-item-browse="index" @click="openEchoBrowser">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
+              fill="currentColor" />
+          </svg>
+          Browse
+        </button>
       </div>
       </template>
     </div>
