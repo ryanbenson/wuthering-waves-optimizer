@@ -224,24 +224,41 @@
     </div>
 
     <!-- Run bar -->
-    <div
-      class="bg-base-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div class="flex flex-wrap gap-1.5">
-        <span class="badge">{{ setFilters.length }} echo set{{ setFilters.length === 1 ? "" : "s" }}</span>
-        <span class="badge">{{ mainEchoes.length }} main echo{{ mainEchoes.length === 1 ? "" : "es" }}</span>
-        <span v-if="minStats.length" class="badge">{{ minStats.length }} stat floor{{ minStats.length === 1 ? "" : "s" }}</span>
+    <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
+      <div
+        v-if="!isValid"
+        role="alert"
+        class="alert alert-warning py-2 text-sm"
+        data-test-optimizer-workspace-invalid-notice>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="size-4 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v3.75m0 3.75h.008M10.29 3.86l-8.18 14.16A1.5 1.5 0 0 0 3.5 20.25h17a1.5 1.5 0 0 0 1.39-2.23L13.71 3.86a1.5 1.5 0 0 0-2.42 0Z" />
+        </svg>
+        Choose at least one echo, echo set, and a valid target.
       </div>
-      <button
-        class="btn btn-primary"
-        @click="handleOptimizeClick"
-        :disabled="!isValid"
-        data-test-optimizer-workspace-optimize-btn>
-        Run Optimizer
-      </button>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex flex-wrap gap-1.5">
+          <span class="badge">{{ setFilters.length }} echo set{{ setFilters.length === 1 ? "" : "s" }}</span>
+          <span class="badge">{{ mainEchoes.length }} main echo{{ mainEchoes.length === 1 ? "" : "es" }}</span>
+          <span v-if="minStats.length" class="badge">{{ minStats.length }} stat floor{{ minStats.length === 1 ? "" : "s" }}</span>
+        </div>
+        <button
+          class="btn btn-primary"
+          @click="handleOptimizeClick"
+          :disabled="!isValid"
+          data-test-optimizer-workspace-optimize-btn>
+          Run Optimizer
+        </button>
+      </div>
     </div>
-    <p v-if="!isValid" class="text-warning text-sm -mt-2">
-      Choose at least one echo, echo set, and a valid target.
-    </p>
   </div>
 </template>
 

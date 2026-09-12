@@ -65,7 +65,7 @@ describe("Live Result Bar (Labs flag)", () => {
 
     // Target + damage type live behind the settings gear, not inline in
     // the bar — see the "cluttered" feedback that moved them there.
-    cy.get("[data-test-live-result-bar-settings] summary").click();
+    cy.get("[data-test-live-result-bar-settings-trigger]").click();
     // richSelect's click target keys off the option's value (the
     // "Attack:group|key" string), not its visible label — the label goes
     // to the search box via the `search` override instead.

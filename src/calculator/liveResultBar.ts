@@ -125,6 +125,28 @@ export function fallbackLiveResultBarTarget(
 }
 
 /**
+ * The Live Result Bar's actual default-target policy: prefer this
+ * character's declared default (`buildLiveResultBarTarget`); otherwise, if
+ * the character has *any* saved rotation, default to the first one — a
+ * rotation is a more meaningful headline number than a single attack, and
+ * most characters never declare `liveResultBarDefaultTarget` at all, so
+ * without this step almost every character with saved rotations would still
+ * fall straight through to the generic attack fallback below. Only once
+ * neither exists does this fall back to an attack.
+ */
+export function defaultLiveResultBarTarget(
+  declared: CharacterBasicInfo["liveResultBarDefaultTarget"] | undefined | null,
+  rotations: Array<{ id: string }> | undefined | null,
+  allDamages: Record<string, any> | null | undefined,
+): string | null {
+  return (
+    buildLiveResultBarTarget(declared, rotations) ??
+    (rotations?.length ? `Rotation:${rotations[0].id}` : null) ??
+    fallbackLiveResultBarTarget(allDamages)
+  );
+}
+
+/**
  * Resolves a target string against already-computed data. Returns `null`
  * when the target can't be resolved yet (e.g. stale target after a
  * character switch, or data still loading) — callers should treat that as

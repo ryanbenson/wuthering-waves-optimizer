@@ -91,13 +91,16 @@
       </div>
     </div>
 
-    <!-- Stats + damage monitor (outputs): the result of that configuration,
-    laid out in a single row on the right, bottom-aligned so stat values and
-    the damage monitor's value sit on the same line. -->
-    <div class="flex items-end gap-4 md:ml-auto">
+    <!-- Stats + damage monitor (outputs): the result of that configuration.
+    On mobile, expanded stats take their own full-width row above the second
+    row (settings/hero/toggle) — a shared row would otherwise squeeze the
+    chips down to almost nothing and force them into a single narrow,
+    left-aligned column instead of wrapping normally. At lg+ both rows
+    collapse back into the original single bottom-aligned row. -->
+    <div class="flex flex-col items-end gap-2 lg:flex-row lg:items-end lg:gap-4 md:ml-auto">
       <div
         v-if="statChips.length"
-        :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex items-end gap-4 flex-wrap']"
+        :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex w-full lg:w-auto items-end justify-center lg:justify-start gap-x-4 gap-y-2 flex-wrap']"
         data-test-live-result-bar-stats>
         <button
           v-for="chip in statChips"
@@ -111,35 +114,38 @@
         </button>
       </div>
 
-      <button
-        v-if="statChips.length"
-        type="button"
-        class="btn btn-xs btn-ghost gap-1 rounded-full lg:hidden self-center"
-        :aria-expanded="isMobileStatsExpanded"
-        aria-label="Show stat breakdown"
-        data-test-live-result-bar-mobile-stats-toggle
-        @click="isMobileStatsExpanded = !isMobileStatsExpanded">
-        <span class="text-[10px] uppercase tracking-wide opacity-70">Stats</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="size-3.5 transition-transform"
-          :class="{ 'rotate-180': isMobileStatsExpanded }"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+      <div class="flex items-end gap-4">
+        <button
+          v-if="statChips.length"
+          type="button"
+          class="btn btn-xs btn-ghost gap-1 rounded-full lg:hidden self-center"
+          :aria-expanded="isMobileStatsExpanded"
+          aria-label="Show stat breakdown"
+          data-test-live-result-bar-mobile-stats-toggle
+          @click="isMobileStatsExpanded = !isMobileStatsExpanded">
+          <span class="text-[10px] uppercase tracking-wide opacity-70">Stats</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-3.5 transition-transform"
+            :class="{ 'rotate-180': isMobileStatsExpanded }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-      <details
-        v-if="character"
-        ref="settingsDetailsEl"
-        class="dropdown dropdown-end self-center"
-        data-test-live-result-bar-settings>
-        <summary
-          class="btn btn-sm btn-circle btn-ghost list-none"
+        <button
+          v-if="character"
+          ref="settingsTriggerRef"
+          type="button"
+          class="btn btn-sm btn-circle btn-ghost self-center"
+          :class="{ 'btn-active': isSettingsOpen }"
           aria-label="Change target and damage type"
-          v-tooltip="'Target & damage type'">
+          :aria-expanded="isSettingsOpen"
+          v-tooltip="'Target & damage type'"
+          data-test-live-result-bar-settings-trigger
+          @click="toggleSettings">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-4"
@@ -148,80 +154,95 @@
             <path
               d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
           </svg>
-        </summary>
-        <div
-          class="dropdown-content menu z-30 mt-2 w-72 rounded-box bg-base-100 p-3 shadow-lg">
-          <label
-            class="mb-1 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
-            >Target</label
-          >
-          <CalculatorOptimizerTarget
-            :key="character"
-            class="w-full"
-            :character="character"
-            :current-optimization-target="target"
-            @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+        </button>
+        <!-- Teleported + fixed-positioned (computed from the trigger's own
+        bounding rect) instead of daisyUI's normal absolute dropdown-content:
+        with dropdown-end's right-edge-to-trigger anchoring, a 288px-wide
+        panel opening from a gear button that isn't near the bar's own right
+        edge (e.g. once the hero value + expand chevron sit further right,
+        after the mobile stats-row split above) can compute a left edge past
+        the left side of the viewport — i.e. it opens off-screen instead of
+        just being clipped. Same fix as AppOverflowMenu.vue, for the same
+        reason. -->
+        <Teleport to="body">
+          <div
+            v-if="isSettingsOpen"
+            ref="settingsMenuRef"
+            class="menu z-30 w-72 max-w-[calc(100vw-2rem)] rounded-box bg-base-100 p-3 shadow-lg fixed"
+            :style="settingsMenuStyle"
+            data-test-live-result-bar-settings>
+            <label
+              class="mb-1 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+              >Target</label
+            >
+            <CalculatorOptimizerTarget
+              :key="character"
+              class="w-full"
+              :character="character"
+              :current-optimization-target="target"
+              @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
 
-          <label
-            class="mb-1 mt-3 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
-            >Damage type</label
-          >
-          <CalculatorOptimizerDamageType
-            name="live-result-bar-damage-type"
-            :character="character"
-            :current-damage-type="damageType"
-            @optimizer:damage-type-updated="
-              onDamageTypeUpdated
-            "></CalculatorOptimizerDamageType>
-        </div>
-      </details>
+            <label
+              class="mb-1 mt-3 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+              >Damage type</label
+            >
+            <CalculatorOptimizerDamageType
+              name="live-result-bar-damage-type"
+              :character="character"
+              :current-damage-type="damageType"
+              @optimizer:damage-type-updated="
+                onDamageTypeUpdated
+              "></CalculatorOptimizerDamageType>
+          </div>
+        </Teleport>
 
-      <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
-        <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
-        <div class="flex items-center gap-2">
-          <Transition name="live-result-bar-delta">
-            <span
-              v-if="delta !== null && delta !== 0"
-              class="badge badge-sm font-mono tabular-nums"
-              :class="delta > 0 ? 'badge-success' : 'badge-error'"
-              data-test-live-result-bar-delta>
-              {{ deltaLabel }}
-            </span>
-          </Transition>
-          <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
-            heroDisplay
-          }}</span>
+        <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
+          <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+          <div class="flex items-center gap-2">
+            <Transition name="live-result-bar-delta">
+              <span
+                v-if="delta !== null && delta !== 0"
+                class="badge badge-sm font-mono tabular-nums"
+                :class="delta > 0 ? 'badge-success' : 'badge-error'"
+                data-test-live-result-bar-delta>
+                {{ deltaLabel }}
+              </span>
+            </Transition>
+            <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
+              heroDisplay
+            }}</span>
+          </div>
         </div>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-circle self-center"
+          :class="{ 'btn-primary': isDetailOpen }"
+          :aria-expanded="isDetailOpen"
+          aria-label="Show full stats and damage breakdown"
+          data-test-live-result-bar-toggle
+          @click="emit('toggle-detail')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4 transition-transform"
+            :class="{ 'rotate-180': isDetailOpen }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
-
-      <button
-        type="button"
-        class="btn btn-sm btn-circle self-center"
-        :class="{ 'btn-primary': isDetailOpen }"
-        :aria-expanded="isDetailOpen"
-        aria-label="Show full stats and damage breakdown"
-        data-test-live-result-bar-toggle
-        @click="emit('toggle-detail')">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="size-4 transition-transform"
-          :class="{ 'rotate-180': isDetailOpen }"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
@@ -332,23 +353,84 @@ const deltaLabel = computed(() => {
   return `${sign}${displayInt(Math.abs(delta.value))}`;
 });
 
-// Native <details>/<summary> has no built-in "close on outside click"
-// behavior (unlike AppRichSelect's own dropdown, which already does this
-// via the same pointerdown pattern below) — without this, closing the
+const settingsTriggerRef = ref<HTMLButtonElement | null>(null);
+const settingsMenuRef = ref<HTMLElement | null>(null);
+const isSettingsOpen = ref(false);
+const settingsMenuStyle = reactive({ top: "0px", left: "0px" });
+
+const SETTINGS_MENU_GAP_PX = 4;
+const SETTINGS_MENU_WIDTH_FALLBACK_PX = 288; // w-72, before the menu itself has been measured
+
+function updateSettingsMenuPosition() {
+  const trigger = settingsTriggerRef.value;
+  if (!trigger) return;
+  const triggerRect = trigger.getBoundingClientRect();
+  const menu = settingsMenuRef.value;
+  const menuHeight = menu?.offsetHeight ?? 0;
+  const menuWidth = menu?.offsetWidth || SETTINGS_MENU_WIDTH_FALLBACK_PX;
+
+  const spaceBelow = window.innerHeight - triggerRect.bottom - SETTINGS_MENU_GAP_PX;
+  const spaceAbove = triggerRect.top - SETTINGS_MENU_GAP_PX;
+  const opensUpward = menuHeight > 0 && spaceBelow < menuHeight && spaceAbove > spaceBelow;
+  const top = opensUpward
+    ? triggerRect.top - menuHeight - SETTINGS_MENU_GAP_PX
+    : triggerRect.bottom + SETTINGS_MENU_GAP_PX;
+
+  // Anchored like dropdown-end (right edge lines up with the trigger's),
+  // then clamped back onto the viewport — the gear isn't always near the
+  // bar's own right edge, so a naive right-anchor can compute a left edge
+  // past the left side of the screen entirely.
+  const preferredLeft = triggerRect.right - menuWidth;
+  const left = Math.min(
+    Math.max(SETTINGS_MENU_GAP_PX, preferredLeft),
+    window.innerWidth - menuWidth - SETTINGS_MENU_GAP_PX,
+  );
+
+  settingsMenuStyle.top = `${Math.max(SETTINGS_MENU_GAP_PX, top)}px`;
+  settingsMenuStyle.left = `${left}px`;
+}
+
+async function toggleSettings() {
+  if (isSettingsOpen.value) {
+    isSettingsOpen.value = false;
+    return;
+  }
+  isSettingsOpen.value = true;
+  await nextTick();
+  updateSettingsMenuPosition();
+}
+
+function onSettingsViewportChange() {
+  if (!isSettingsOpen.value) return;
+  updateSettingsMenuPosition();
+}
+
+// No built-in "close on outside click" behavior once this is a plain
+// teleported div (unlike AppRichSelect's own dropdown, which already does
+// this via the same pointerdown pattern below) — without this, closing the
 // target/damage-type popover requires clicking the gear again instead of
 // just clicking away.
-const settingsDetailsEl = ref<HTMLDetailsElement | null>(null);
 function onDocumentPointerDown(event: PointerEvent) {
-  const el = settingsDetailsEl.value;
-  if (!el || !el.open) return;
-  if (event.target instanceof Node && el.contains(event.target)) return;
-  el.open = false;
+  if (!isSettingsOpen.value) return;
+  const target = event.target as Node | null;
+  if (
+    target &&
+    (settingsTriggerRef.value?.contains(target) ||
+      settingsMenuRef.value?.contains(target))
+  ) {
+    return;
+  }
+  isSettingsOpen.value = false;
 }
 onMounted(() => {
   document.addEventListener("pointerdown", onDocumentPointerDown, true);
+  window.addEventListener("resize", onSettingsViewportChange);
+  window.addEventListener("scroll", onSettingsViewportChange, true);
 });
 onBeforeUnmount(() => {
   document.removeEventListener("pointerdown", onDocumentPointerDown, true);
+  window.removeEventListener("resize", onSettingsViewportChange);
+  window.removeEventListener("scroll", onSettingsViewportChange, true);
 });
 
 function onTargetUpdated(next: string | null) {
