@@ -224,7 +224,13 @@
                   …
                 </span>
               </div>
+              <span
+                v-if="entry.key === weapon"
+                class="badge badge-primary badge-sm shrink-0">
+                Equipped
+              </span>
               <button
+                v-else
                 type="button"
                 class="btn btn-primary btn-xs shrink-0"
                 :data-test-workspace-weapon-recommended-equip="entry.key"
@@ -678,7 +684,7 @@ const recommendedEntries = computed(() => {
     return 5;
   };
 
-  if (props.signatureWeapon && props.signatureWeapon !== weapon.value) {
+  if (props.signatureWeapon) {
     entries.push({
       key: props.signatureWeapon,
       label: "Signature",
@@ -688,12 +694,7 @@ const recommendedEntries = computed(() => {
     seen.add(props.signatureWeapon);
   }
   for (const suggestion of props.suggestedWeapons ?? []) {
-    if (
-      !suggestion?.key ||
-      seen.has(suggestion.key) ||
-      suggestion.key === weapon.value
-    )
-      continue;
+    if (!suggestion?.key || seen.has(suggestion.key)) continue;
     entries.push({
       key: suggestion.key,
       label: suggestion.label || "Recommended",
