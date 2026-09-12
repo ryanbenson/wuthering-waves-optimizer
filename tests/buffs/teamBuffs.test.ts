@@ -284,8 +284,8 @@ describe("getModifierLabel", () => {
 
   it("labels elemental and attack-type DMG keys", () => {
     expect(getModifierLabel("Fusion")).toBe("Fusion DMG Bonus");
-    expect(getModifierLabel("DMGDeepen:Heavy")).toBe("Heavy Attack DMG Deepen");
-    expect(getModifierLabel("DMGDeepen:SpectroFrazzle")).toBe("Spectro DMG Deepen");
+    expect(getModifierLabel("DMGDeepen:Heavy")).toBe("Heavy Attack DMG Amplify");
+    expect(getModifierLabel("DMGDeepen:SpectroFrazzle")).toBe("Spectro DMG Amplify");
     expect(getModifierLabel("EchoDMGBonus")).toBe("Echo Skill DMG Bonus");
   });
 
