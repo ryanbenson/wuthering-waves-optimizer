@@ -271,6 +271,9 @@ function ensureValidSubStatValue(mainStat: string, value: string) {
   if (mainStat === "Crit. Rate" && value === "1.5%") {
     return "7.5%";
   }
+  if ((mainStat === "DEF" || mainStat === "DEF Y") && value === "11.9%") {
+    return "11.8%";
+  }
   return value;
 }
 
