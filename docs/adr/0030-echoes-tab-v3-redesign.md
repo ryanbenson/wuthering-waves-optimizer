@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-12
 tags: [calculator, components, composables, echoes]
+supersedes: [0014]
 ---
 
 # 30. Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag)

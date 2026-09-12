@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-07
 tags: [calculator, components, echoes]
+supersedes: [0014]
 ---
 
 # 28. Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag)

@@ -54,7 +54,7 @@ npm run cli -- backfill icons        # or: backfill icons --character <Key> for 
 - **Workers** for anything that can freeze the UI (optimizer batches, OCR).
 - **No unreleased content in production.** Prep from leaks offline is fine; it must not be reachable in the shipped app. Do not link or cite third-party datamine sites (e.g. encore.moe) in user-facing UI/copy.
 - **PRs:** small, focused, tests green. Prefer several small PRs over one large one. See [docs/conventions.md](docs/conventions.md) for branch/commit naming.
-- **Docs:** if behavior or architecture changes, update the matching file under `docs/` (and an ADR if it is a lasting decision).
+- **Docs:** if behavior or architecture changes, update the matching file under `docs/` (and an ADR if it is a lasting decision). For **current** behavior, read the area doc (`docs/src-*.md`), not the ADR history — ADRs capture *why*, and a later ADR routinely revises part of an earlier one without saying so unless it's been annotated. If your change makes part of an older ADR stale, annotate it in the same PR — see [docs/adr/README.md](docs/adr/README.md).
 
 ## Calculation pipeline (mental model)
 

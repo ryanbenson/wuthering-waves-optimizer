@@ -76,7 +76,7 @@ When goals conflict, resolve in this order:
 2. For math: add/adjust Vitest coverage under `tests/calculator/`; run both relevant unit paths.
 3. For persistence shape: add a migration in `src/migrations/versions/` and bump `CURRENT_DATA_VERSION` — see [src-migrations.md](./src-migrations.md).
 4. For new characters/weapons: prefer the CLI generators (`make generate-character`, etc.), then finish modifiers/presets by hand.
-5. Keep PRs small; update `docs/` when behavior or conventions change; add an ADR when the *decision* is lasting. See [conventions.md](./conventions.md) for branch/commit/PR naming.
+5. Keep PRs small; update `docs/` when behavior or conventions change; add an ADR when the *decision* is lasting. If it replaces part of an earlier ADR's decision, annotate that ADR in the same PR rather than leaving it silently stale — see [adr/README.md](./adr/README.md). See [conventions.md](./conventions.md) for branch/commit/PR naming.
 
 ## Glossary (short)
 
