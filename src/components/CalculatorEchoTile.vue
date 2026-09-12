@@ -170,20 +170,6 @@
               {{ type ?? "—" }}
             </span>
           </div>
-          <!--
-            Favorite + lock/trash/temp/hidden together in one line under the
-            avatar — these were split across two spots before (favorite
-            here, the lock/trash/temp/hidden toggles up by the header), and
-            EchoStatusBadge duplicated whatever these toggles already show
-            via their own active state (locking an echo turned the lock
-            button active *and* popped a separate lock icon into view) —
-            direct feedback that this was redundant. The toggle buttons' own
-            active styling is the only status indicator needed now.
-          -->
-          <div class="flex items-center gap-1" @click.stop>
-            <EchoFavoriteButton :echo-id="echoId || null" />
-            <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
-          </div>
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
@@ -216,6 +202,21 @@
                 {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
               </span>
             </template>
+          </div>
+          <!--
+            Favorite + lock/trash/temp/hidden as a third line, under
+            name / set+CV+score — moved here (from under the avatar, before
+            that from a separate header cluster) per review feedback.
+            EchoLockTrashActions' layout="row" flattens its own 3-icon-row +
+            hidden-icon-row shape into one line for this context only; the
+            legacy per-slot card and InventoryEchoesBrowser's status cluster
+            keep the default "stacked" shape, unaffected. EchoStatusBadge
+            still isn't used here — these toggle buttons' own active styling
+            is the only status indicator needed.
+          -->
+          <div class="flex items-center gap-1 mt-0.5" @click.stop>
+            <EchoFavoriteButton :echo-id="echoId || null" />
+            <EchoLockTrashActions v-if="echoId" :echo-id="echoId" layout="row" size="xs" />
           </div>
         </div>
       </div>
