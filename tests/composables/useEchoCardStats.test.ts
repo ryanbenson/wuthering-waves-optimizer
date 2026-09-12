@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { useEchoCardStats } from "../../src/composables/useEchoCardStats";
+import { useEchoCardStats, getSubstatRollQualityClasses } from "../../src/composables/useEchoCardStats";
 
 function makeProps(overrides: Partial<Parameters<typeof useEchoCardStats>[0]> = {}) {
   return {
@@ -66,5 +66,37 @@ describe("useEchoCardStats isEchoIncomplete", () => {
       makeProps({ echoSubStatsType5: "none" }),
     );
     expect(isEchoIncomplete.value).toBe(true);
+  });
+});
+
+describe("getSubstatRollQualityClasses", () => {
+  it("returns null for an empty/unfilled slot", () => {
+    expect(getSubstatRollQualityClasses("none", 6.3)).toBeNull();
+    expect(getSubstatRollQualityClasses(null, 6.3)).toBeNull();
+    expect(getSubstatRollQualityClasses("CritRate", 0)).toBeNull();
+  });
+
+  it("buckets a low roll (score 40) as emerald, with a toned-down border and a gradient wash", () => {
+    const classes = getSubstatRollQualityClasses("CritRate", "6.9");
+    expect(classes?.border).toBe("border-l-emerald-500/50");
+    expect(classes?.wash).toBe("bg-gradient-to-r from-emerald-500/10 to-transparent");
+  });
+
+  it("buckets a mid-low roll (score 50) as blue", () => {
+    const classes = getSubstatRollQualityClasses("CritRate", "7.5");
+    expect(classes?.border).toBe("border-l-blue-500/50");
+    expect(classes?.wash).toBe("bg-gradient-to-r from-blue-500/10 to-transparent");
+  });
+
+  it("buckets a mid-high roll (score 80) as purple", () => {
+    const classes = getSubstatRollQualityClasses("CritRate", "9.3");
+    expect(classes?.border).toBe("border-l-purple-500/50");
+    expect(classes?.wash).toBe("bg-gradient-to-r from-purple-500/10 to-transparent");
+  });
+
+  it("buckets a high roll (score 90) as yellow", () => {
+    const classes = getSubstatRollQualityClasses("CritRate", "9.9");
+    expect(classes?.border).toBe("border-l-yellow-500/50");
+    expect(classes?.wash).toBe("bg-gradient-to-r from-yellow-500/10 to-transparent");
   });
 });

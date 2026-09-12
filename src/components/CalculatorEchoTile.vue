@@ -92,6 +92,7 @@
               ? [
                   isPrioritySubstat(props.character, slot.type.value) ? 'bg-primary/15' : 'bg-base-200/60',
                   qualityClasses(slot)?.border,
+                  qualityClasses(slot)?.wash,
                 ]
               : 'border-l-base-300'
           "

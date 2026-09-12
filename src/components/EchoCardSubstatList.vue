@@ -70,6 +70,7 @@ function rowClass(slot: EchoCardSubstatSlot) {
   return [
     isPrioritySubstat(props.characterId, slot.type) ? "bg-primary/15" : "bg-base-200/60",
     getSubstatRollQualityClasses(slot.type, slot.value)?.border,
+    getSubstatRollQualityClasses(slot.type, slot.value)?.wash,
   ];
 }
 function textClass(slot: EchoCardSubstatSlot) {
