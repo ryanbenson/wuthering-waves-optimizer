@@ -560,20 +560,23 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 
 <style scoped>
 /*
- * Fixed-width single column for the Labs-flagged layout — see
+ * Bounded-width column for the Labs-flagged layout — see
  * docs/adr/0014-echo-editor-redesign.md decision #10 and
- * docs/adr/0030-echoes-tab-v3-redesign.md. A fixed width rather than
+ * docs/adr/0030-echoes-tab-v3-redesign.md. Bounded rather than a plain
  * flex:1 — letting the strip stretch unconstrained was the root cause of
  * a UX complaint (huge gaps between each substat's label and value on
- * wide screens). Echo Set Bonuses and Main Echo Buff live in this same
- * column now too (they used to span the full tab width below it, which
- * read as inconsistent once the strip itself had a bounded width) — the
- * class is reused as-is for both the sticky score bar above and the
+ * wide screens). Half the row (flex-basis 50%) up to 600px, whichever is
+ * smaller — no flex-grow, so it never eats the space .echoes-sidebar wants
+ * below. Echo Set Bonuses and Main Echo Buff live in this same column now
+ * too (they used to span the full tab width below it, which read as
+ * inconsistent once the strip itself had a bounded width) — the class is
+ * reused as-is for both the sticky score bar above and the
  * tiles/set-bonuses/main-echo block below, so they align.
  */
 .echoes-column {
-  width: 460px;
-  max-width: 100%;
+  flex: 0 1 50%;
+  max-width: 600px;
+  min-width: 0;
 }
 
 /*
@@ -588,16 +591,20 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 }
 
 /*
- * Widened from 320px — the Priority/Other rolled substats lists now render
- * side by side here (see CalculatorEchoInsightsPanel.vue) once there's a
- * two-column-capable panel, which was the fix for that content pushing the
- * panel's bottom past the fold at the narrower width. There's plenty of
- * spare width in .calculations__screens for this (it's flex:1 with no
- * explicit max-width), so no compensating shrink on .echoes-column.
+ * Fills whatever room .echoes-column's cap leaves in the row (flex-grow:1,
+ * no fixed basis) rather than a fixed width — the Priority/Other rolled
+ * substats lists render side by side here at wide-enough viewports (see
+ * CalculatorEchoInsightsPanel.vue's --split modifier), which was the fix
+ * for that content pushing the panel's bottom past the fold at a narrower
+ * width. Capped at 900px — beyond that the row just leaves empty space on
+ * the right (align-items/justify-content default to flex-start, and
+ * .echoes-column doesn't grow to fill it either) rather than stretching the
+ * panel indefinitely on very wide screens.
  */
 .echoes-sidebar {
-  flex: 0 0 480px;
-  max-width: 100%;
+  flex: 1 1 auto;
+  max-width: 900px;
+  min-width: 0;
   position: sticky;
   top: 0;
 }
@@ -650,6 +657,14 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 
 @media (max-width: 768px) {
   .echoes-column {
+    /*
+     * Resets the desktop flex-basis:50%/max-width:600px pair — .echoes-layout
+     * switches to flex-direction:column below, at which point flex-basis
+     * controls the (vertical) main axis instead of the horizontal one, so
+     * a bare width override alone isn't enough to get full-width stacking.
+     */
+    flex: 1 1 auto;
+    max-width: 100%;
     width: 100%;
   }
 

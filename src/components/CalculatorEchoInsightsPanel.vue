@@ -80,18 +80,22 @@
         </div>
 
         <!--
-          Side by side once this is the desktop (always-expanded) instance —
-          the wider sidebar it lives in (see CalculatorEchoes.vue's
-          .echoes-sidebar) has the room, and stacking both lists vertically
-          here was pushing the panel's bottom past the fold. alwaysExpanded
-          doubles as "this is the desktop instance" (the mobile pinned bar
-          never passes it — see the prop comment below), so it's a safe
-          proxy for width here without a container query.
+          Side by side once this is the desktop (always-expanded) instance
+          AND the viewport is wide enough — the wider sidebar it lives in
+          (see CalculatorEchoes.vue's .echoes-sidebar) has the room at that
+          point, and stacking both lists vertically here was pushing the
+          panel's bottom past the fold. alwaysExpanded doubles as "this is
+          the desktop instance" (the mobile pinned bar never passes it — see
+          the prop comment below); the 1025px floor on top of that handles
+          the narrower end of the desktop instance's own range (it's still
+          visible down to 769px, where two columns don't fit) — see the
+          --split modifier below.
         -->
         <template v-if="insights.isCurated">
           <div
             v-if="insights.priorityRows.length || insights.otherRows.length"
-            :class="alwaysExpanded ? 'grid grid-cols-2 gap-4' : 'flex flex-col'">
+            class="echo-insights__substat-groups"
+            :class="{ 'echo-insights__substat-groups--split': alwaysExpanded }">
             <div v-if="insights.priorityRows.length" class="mb-4">
               <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1.5">
                 Priority substats
@@ -104,7 +108,7 @@
                   :class="{ 'echo-insights__row--missing': row.missing }"
                   :data-test-echo-insights-row="row.type">
                   <img :src="row.icon" class="size-4 shrink-0" />
-                  <span class="flex-1 min-w-0 truncate">{{ row.label }}</span>
+                  <span class="flex-1 min-w-0">{{ row.label }}</span>
                   <template v-if="row.missing">
                     <span class="echo-insights__missing-tag">0 rolls</span>
                   </template>
@@ -127,7 +131,7 @@
                   class="echo-insights__row flex items-center gap-2 text-xs"
                   :data-test-echo-insights-row="row.type">
                   <img :src="row.icon" class="size-4 shrink-0" />
-                  <span class="flex-1 min-w-0 truncate">{{ row.label }}</span>
+                  <span class="flex-1 min-w-0">{{ row.label }}</span>
                   <span class="badge badge-xs badge-ghost font-mono">×{{ row.count }}</span>
                   <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
                 </div>
@@ -147,7 +151,7 @@
               class="echo-insights__row flex items-center gap-2 text-xs"
               :data-test-echo-insights-row="row.type">
               <img :src="row.icon" class="size-4 shrink-0" />
-              <span class="flex-1 min-w-0 truncate">{{ row.label }}</span>
+              <span class="flex-1 min-w-0">{{ row.label }}</span>
               <span class="badge badge-xs badge-ghost font-mono">×{{ row.count }}</span>
               <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
             </div>
@@ -224,6 +228,28 @@ const showDetails = computed(() => props.alwaysExpanded || isExpanded.value);
   text-transform: uppercase;
   letter-spacing: 0.03em;
   color: oklch(var(--er));
+}
+
+/*
+ * Stacked by default (mobile-bar instance, and the desktop instance at
+ * narrower widths); --split only ever goes side by side above 1025px, even
+ * though the modifier class itself is present down to 769px (the desktop
+ * instance's whole visible range — see CalculatorEchoes.vue's
+ * .echoes-layout, hidden below 768px). A real viewport breakpoint, not just
+ * the alwaysExpanded prop, since the desktop sidebar doesn't have room for
+ * two columns for its own narrower stretch (769-1024px).
+ */
+.echo-insights__substat-groups {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1025px) {
+  .echo-insights__substat-groups--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
 }
 
 /* Priority/Other-rolled-substat row icons are dark-line glyphs drawn for a
