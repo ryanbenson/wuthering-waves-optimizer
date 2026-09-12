@@ -2,6 +2,8 @@
 
 This folder contains references for developers and coding agents. Start with **context** (priorities and mental model), then **architecture** (conventions), then area docs. Lasting “why” decisions live in **ADRs**.
 
+**For current behavior, read the area doc, not the ADR chain.** Area docs (`src-*.md`) describe what's true today and link the ADR(s) for rationale. ADRs — especially the UI redesign chapters under `adr/` — record *why* a decision was made at a point in time; a later chapter routinely revises part of an earlier one. Read an ADR itself when you need that rationale, are touching the surface it covers, or are about to reverse it — see [adr/README.md](./adr/README.md) for how the chapters relate.
+
 Root agent briefing: [CLAUDE.md](../CLAUDE.md).
 
 ## Quick links

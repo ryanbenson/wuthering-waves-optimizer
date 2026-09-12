@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-01
 tags: [calculator, components]
+supersedes: [0013]
 ---
 
 # 19. Command Bar (merged live result bar + character identity)

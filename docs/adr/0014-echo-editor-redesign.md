@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-26
 tags: [calculator, components, composables, inventory]
+superseded_by: [0028, 0030]
 ---
 
 # 14. Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -83,6 +84,8 @@ ADR is for building that, not the proposal itself.
    right-docked on desktop and the same bottom sheet on mobile. The scrim
    element is always in the DOM but only visible under the mobile breakpoint
    in both contexts, matching ADR 13's pattern exactly.
+4a. **Superseded 2026-09-12 (ADR [0030](0030-echoes-tab-v3-redesign.md), decision #3):** the docked-panel/bottom-sheet shell described here is gone for the **build context** (`Calculator.vue`/`CalculatorEchoes.vue`) — editing is now inline-in-place on `CalculatorEchoTile.vue`. This decision still fully describes the **Inventory context** (`InventoryEchoEditPanel.vue`), which 0030 explicitly left as a docked panel.
+
 5. **Editing an equipped echo drives the real Live Result Bar number
    directly — this needed no new plumbing.** `CalculatorEcho.vue`'s
    `updateTotalStats()` → `emit('update-stats')` chain, driven by watchers
@@ -350,7 +353,8 @@ ADR is for building that, not the proposal itself.
   the same choice.
 - **Set Bonuses and Main Echo Buff** (`CalculatorEchoesSetBonusOnePiece`/
   `One`/`Two`, `CalculatorMainEchoBuff`) — unchanged, out of scope for a
-  display/edit redesign.
+  display/edit redesign. **Superseded 2026-09-07:** built in ADR
+  [0028](0028-echo-set-bonus-v3-redesign.md).
 - **Merging the `mainEcho` character field with `echoes[0]`.** They're kept
   in sync today (`CalculatorEchoTile.vue` still emits `main-echo:updated`/
   `main-echo-rank:updated` only for index 0, exactly as `CalculatorEcho.vue`
