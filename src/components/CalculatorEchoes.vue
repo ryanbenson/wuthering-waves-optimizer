@@ -38,26 +38,6 @@
       @dismiss="dismissCostOverCapToast">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </Toast>
-    <!--
-      Mobile-only: pinned at the very top of the tab, above even the header
-      row below — "under the nav and character bar" in practice, since those
-      are the only things above .calculations__screens in normal flow (same
-      top:0 sticky convention as decisions #1/#9 below). Collapsed to just
-      the Build Score hero by default; click to expand the rest of Echo
-      Insights. Desktop/non-mobile keeps the original always-expanded sticky
-      sidebar instead (in .echoes-layout below) — per review feedback, the
-      pinned-top bar reads well as a mobile pattern but the side column was
-      already correct for wider viewports and shouldn't have been replaced
-      there. CSS toggles which of the two is visible at the same 768px
-      breakpoint used everywhere else in this redesign — see the
-      CalculatorSubNav/CalculatorMobileSubNav dual-render precedent in
-      Calculator.vue; this app has no JS breakpoint composable to use
-      instead. See docs/adr/0030-echoes-tab-v3-redesign.md.
-    -->
-    <CalculatorEchoInsightsPanel
-      v-if="isLiveResultBarEnabled"
-      class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
-      :character="character"></CalculatorEchoInsightsPanel>
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
       <div class="flex flex-wrap items-center gap-2">
@@ -91,6 +71,25 @@
         </AppOverflowMenu>
       </div>
     </div>
+    <!--
+      Mobile-only: pinned just below the title/action bar above — "under the
+      nav and character bar" in practice once the header row is accounted
+      for too (same top:0 sticky convention as decisions #1/#9 below).
+      Collapsed to just the Build Score hero by default; click to expand the
+      rest of Echo Insights. Desktop/non-mobile keeps the original
+      always-expanded sticky sidebar instead (in .echoes-layout below) — per
+      review feedback, the pinned-top bar reads well as a mobile pattern but
+      the side column was already correct for wider viewports and shouldn't
+      have been replaced there. CSS toggles which of the two is visible at
+      the same 768px breakpoint used everywhere else in this redesign — see
+      the CalculatorSubNav/CalculatorMobileSubNav dual-render precedent in
+      Calculator.vue; this app has no JS breakpoint composable to use
+      instead. See docs/adr/0030-echoes-tab-v3-redesign.md.
+    -->
+    <CalculatorEchoInsightsPanel
+      v-if="isLiveResultBarEnabled"
+      class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
+      :character="character"></CalculatorEchoInsightsPanel>
     <div class="flex flex-wrap items-center gap-2 mb-4">
       <div v-if="echoPresetName" class="badge badge-primary badge-outline">
         Preset: {{ echoPresetName }}
