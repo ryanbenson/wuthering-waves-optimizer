@@ -38,6 +38,20 @@
       @dismiss="dismissCostOverCapToast">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </Toast>
+    <!--
+      Pinned at the very top of the tab, above even the header row below —
+      "under the nav and character bar" in practice, since those are the
+      only things above .calculations__screens in normal flow (same
+      top:0 sticky convention as decisions #1/#9 below). Collapsed to just
+      the Build Score hero by default; click to expand the rest of Echo
+      Insights. See docs/adr/0030-echoes-tab-v3-redesign.md decision #… —
+      moved out of the old two-column row entirely, since that row no
+      longer exists once this became a sticky bar instead of a side panel.
+    -->
+    <CalculatorEchoInsightsPanel
+      v-if="isLiveResultBarEnabled"
+      class="echoes-column echoes-column__sticky-score mb-4"
+      :character="character"></CalculatorEchoInsightsPanel>
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
       <div class="flex flex-wrap items-center gap-2">
@@ -83,8 +97,15 @@
         Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
-    <div v-if="isLiveResultBarEnabled" class="echoes-layout">
-      <div class="echoes-layout__strip echo__list">
+    <!--
+      Set Bonuses and Main Echo Buff moved into the same fixed-width column
+      as the echo tiles (was full tab width before) — per review feedback,
+      once the strip had its own bounded width, having these two sections
+      snap back to full width right below it read as an inconsistent
+      column. See docs/adr/0030-echoes-tab-v3-redesign.md.
+    -->
+    <div v-if="isLiveResultBarEnabled" class="echoes-column">
+      <div class="echo__list">
         <CalculatorEchoTile
           v-for="(_, index) in 5"
           :key="character + '-' + index"
@@ -101,66 +122,64 @@
           @on-echo-removed="handleEchoRemoved"
           @toggle-edit="handleToggleEdit"></CalculatorEchoTile>
       </div>
-      <CalculatorEchoInsightsPanel
-        class="echoes-layout__insights"
-        :character="character"></CalculatorEchoInsightsPanel>
-    </div>
-    <div v-else class="echo__list">
-      <CalculatorEcho
-        v-for="(_, index) in 5"
-        :key="character + '-' + index"
-        :ref="getEchoRefSetter(index)"
-        :index="index"
+
+      <CalculatorEchoSetBonusPanel
         :character="character"
-        class="echo-selector"
-        @updated-echo-cost="handleUpdatedEchoCost"
-        @update-stats="handleEchoStats"
-        @echo:set-chosen="handleEchoSetChosen"
-        @main-echo:updated="handleMainEchoUpdated"
-        @main-echo-rank:updated="handleMainEchoRankUpdated"
-        @open-echoes-browser="handleOpenEchoesBrowser"
-        @on-echo-removed="handleEchoRemoved"></CalculatorEcho>
+        @set-bonus-stats="handleSetBonusPanelStats"></CalculatorEchoSetBonusPanel>
+
+      <CalculatorMainEchoPanel
+        :character="character"
+        @updated-buff-stats="handleMainEchoBuffStats"></CalculatorMainEchoPanel>
     </div>
-    <CalculatorEchoSetBonusPanel
-      v-if="isLiveResultBarEnabled"
-      :character="character"
-      @set-bonus-stats="handleSetBonusPanelStats"></CalculatorEchoSetBonusPanel>
-    <div v-else class="set-bonus-selector mt-6 mb-2">
-      <div class="set-bonus-selector__header flex justify-between items-center">
-        <h2 class="text-lg font-bold">Set Bonuses</h2>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <input
-              type="checkbox"
-              v-model="setOverride"
-              class="toggle toggle-primary" />
-            <span class="label-text p-0 m-0 ml-2">Enable set override</span>
-          </label>
+
+    <template v-else>
+      <div class="echo__list">
+        <CalculatorEcho
+          v-for="(_, index) in 5"
+          :key="character + '-' + index"
+          :ref="getEchoRefSetter(index)"
+          :index="index"
+          :character="character"
+          class="echo-selector"
+          @updated-echo-cost="handleUpdatedEchoCost"
+          @update-stats="handleEchoStats"
+          @echo:set-chosen="handleEchoSetChosen"
+          @main-echo:updated="handleMainEchoUpdated"
+          @main-echo-rank:updated="handleMainEchoRankUpdated"
+          @open-echoes-browser="handleOpenEchoesBrowser"
+          @on-echo-removed="handleEchoRemoved"></CalculatorEcho>
+      </div>
+      <div class="set-bonus-selector mt-6 mb-2">
+        <div class="set-bonus-selector__header flex justify-between items-center">
+          <h2 class="text-lg font-bold">Set Bonuses</h2>
+          <div class="form-control">
+            <label class="label cursor-pointer">
+              <input
+                type="checkbox"
+                v-model="setOverride"
+                class="toggle toggle-primary" />
+              <span class="label-text p-0 m-0 ml-2">Enable set override</span>
+            </label>
+          </div>
         </div>
+
+        <CalculatorEchoesSetBonusOnePiece
+          :character="character"
+          :is-override-enabled="setOverride"
+          @update-stats="handleSetBonusOnePieceData"
+          data-test-echoes-set-one-piece></CalculatorEchoesSetBonusOnePiece>
+        <CalculatorEchoesSetBonusOne
+          :character="character"
+          :is-override-enabled="setOverride"
+          @update-stats="handleSetBonusOneData"
+          data-test-echoes-set-one></CalculatorEchoesSetBonusOne>
+        <CalculatorEchoesSetBonusTwo
+          :character="character"
+          :is-override-enabled="setOverride"
+          @update-stats="handleSetBonusTwoData"
+          data-test-echoes-set-two></CalculatorEchoesSetBonusTwo>
       </div>
 
-      <CalculatorEchoesSetBonusOnePiece
-        :character="character"
-        :is-override-enabled="setOverride"
-        @update-stats="handleSetBonusOnePieceData"
-        data-test-echoes-set-one-piece></CalculatorEchoesSetBonusOnePiece>
-      <CalculatorEchoesSetBonusOne
-        :character="character"
-        :is-override-enabled="setOverride"
-        @update-stats="handleSetBonusOneData"
-        data-test-echoes-set-one></CalculatorEchoesSetBonusOne>
-      <CalculatorEchoesSetBonusTwo
-        :character="character"
-        :is-override-enabled="setOverride"
-        @update-stats="handleSetBonusTwoData"
-        data-test-echoes-set-two></CalculatorEchoesSetBonusTwo>
-    </div>
-
-    <CalculatorMainEchoPanel
-      v-if="isLiveResultBarEnabled"
-      :character="character"
-      @updated-buff-stats="handleMainEchoBuffStats"></CalculatorMainEchoPanel>
-    <template v-else>
       <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
       <div class="main__echo relative mt-12">
         <h3
@@ -519,67 +538,67 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 
 <style scoped>
 /*
- * Two-column split for the Labs-flagged layout — see
+ * Fixed-width single column for the Labs-flagged layout — see
  * docs/adr/0014-echo-editor-redesign.md decision #10 and
- * docs/adr/0030-echoes-tab-v3-redesign.md decisions #1/#9. The strip is a
- * fixed width rather than flex:1 — letting it stretch unconstrained next to
- * the insights column was the root cause of a UX complaint (huge gaps
- * between each substat's label and value on wide screens). The insights
- * column is sticky so Build Score stays visible while the strip scrolls;
- * top:0 (not an 80px nav-offset) because this lives inside
- * .calculations__screens, already below the nav in normal flow — same
- * convention as the existing sticky blocks in SettingsImport.vue /
- * SettingsLab.vue / SettingsExport.vue / SettingsDelete.vue. This is inline
- * content within the tab (not a third overlay dock like the edit panel /
- * Full Breakdown at the Calculator.vue level), so it scrolls together with
- * .calculations__screens instead of needing its own scroll region.
+ * docs/adr/0030-echoes-tab-v3-redesign.md. A fixed width rather than
+ * flex:1 — letting the strip stretch unconstrained was the root cause of
+ * a UX complaint (huge gaps between each substat's label and value on
+ * wide screens). Echo Set Bonuses and Main Echo Buff live in this same
+ * column now too (they used to span the full tab width below it, which
+ * read as inconsistent once the strip itself had a bounded width) — the
+ * class is reused as-is for both the sticky score bar above and the
+ * tiles/set-bonuses/main-echo block below, so they align.
  */
-.echoes-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+.echoes-column {
+  width: 460px;
+  max-width: 100%;
 }
 
-.echoes-layout__strip {
-  flex: 0 0 460px;
-  min-width: 0;
-  /*
-   * Tile spacing is a flex gap here, not each tile's own margin-bottom via
-   * the shared .echo-selector class (as the legacy list below still uses) —
-   * CalculatorEchoTile.vue is a multi-root ("fragment") component now that
-   * it mounts EchoPickerDialog as a sibling, and Vue only forwards a
-   * parent's *scoped* CSS onto a child's scope via that child's single root
-   * element. A fragment has no single root to attach it to, so
-   * .echo-selector's scoped margin-bottom silently never reaches it
-   * regardless of the class name itself still being passed through. Gap on
-   * the container sidesteps the whole problem.
-   */
+/*
+ * Tile spacing is a flex gap here, not each tile's own margin-bottom via
+ * the shared .echo-selector class (as the legacy list below still uses) —
+ * CalculatorEchoTile.vue is a multi-root ("fragment") component now that
+ * it mounts EchoPickerDialog as a sibling, and Vue only forwards a
+ * parent's *scoped* CSS onto a child's scope via that child's single root
+ * element. A fragment has no single root to attach it to, so
+ * .echo-selector's scoped margin-bottom silently never reaches it
+ * regardless of the class name itself still being passed through. Gap on
+ * the container sidesteps the whole problem. Scoped to ".echoes-column
+ * .echo__list" (not a bare ".echo__list" rule) so the legacy list below —
+ * a sibling, not nested in .echoes-column, and built from single-root
+ * CalculatorEcho.vue instances that don't have this problem — keeps using
+ * its own margin-bottom spacing unchanged, instead of getting both.
+ */
+.echoes-column .echo__list {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.echoes-layout__insights {
-  flex: 0 0 320px;
-  min-width: 0;
+/*
+ * Pinned at the top of the tab's own scroll region — top:0 (not an 80px
+ * nav-offset) because this lives inside .calculations__screens, already
+ * below the nav in normal flow — same convention as the existing sticky
+ * blocks in SettingsImport.vue / SettingsLab.vue / SettingsExport.vue /
+ * SettingsDelete.vue. This is inline content within the tab (not a third
+ * overlay dock like the edit panel / Full Breakdown at the Calculator.vue
+ * level), so it scrolls together with .calculations__screens instead of
+ * needing its own scroll region. z-index 20, not 10 — a scrolled-under
+ * tile's own absolutely-positioned "incomplete echo" badge (Tailwind
+ * `z-10`) sits at 10 too, and painted through this bar at equal z-index
+ * since it comes later in DOM order (a real, visible bug caught by
+ * scrolling this in a real browser, not just eyeballing the unscrolled
+ * state).
+ */
+.echoes-column__sticky-score {
   position: sticky;
   top: 0;
+  z-index: 20;
 }
 
 @media (max-width: 768px) {
-  .echoes-layout {
-    flex-direction: column;
-  }
-
-  .echoes-layout__strip {
-    flex: none;
+  .echoes-column {
     width: 100%;
-  }
-
-  .echoes-layout__insights {
-    flex: none;
-    width: 100%;
-    position: static;
   }
 }
 

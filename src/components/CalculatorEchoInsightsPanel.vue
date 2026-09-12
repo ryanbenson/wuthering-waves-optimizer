@@ -3,36 +3,58 @@
     class="echo-insights card card-bordered card-compact bg-base-100 shadow"
     data-test-echo-insights-panel>
     <div class="card-body">
+      <button
+        v-if="insights.equippedCount > 0"
+        type="button"
+        class="echo-insights__build-score rounded-lg bg-base-200 border-l-4 px-4 py-3 flex items-center justify-between gap-3 w-full text-left"
+        :class="[substatScoreRollupAccent?.border, { 'mb-4': isExpanded }]"
+        :aria-expanded="isExpanded"
+        data-test-echo-insights-build-score
+        data-test-echo-insights-toggle
+        @click="isExpanded = !isExpanded">
+        <span class="text-sm font-semibold uppercase tracking-widest opacity-60">
+          Build Score
+        </span>
+        <div class="flex items-center gap-2">
+          <div v-if="substatScoreRollup" class="flex items-baseline gap-2">
+            <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+              {{ substatScoreRollup.grade }}
+            </span>
+            <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+              {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+            </span>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-4 shrink-0 opacity-60 transition-transform"
+            :class="{ 'rotate-180': isExpanded }"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      </button>
+
       <div
-        v-if="substatScoreRollup"
-        class="echo-insights__build-score rounded-lg bg-base-200 border-l-4 px-4 py-3 flex items-center justify-between gap-3 mb-4"
-        :class="substatScoreRollupAccent?.border"
+        v-else
+        class="echo-insights__build-score rounded-lg bg-base-200 border-l-4 border-l-base-300 px-4 py-3 flex items-center justify-between gap-3"
         data-test-echo-insights-build-score>
         <span class="text-sm font-semibold uppercase tracking-widest opacity-60">
           Build Score
         </span>
-        <div class="flex items-baseline gap-2">
-          <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
-            {{ substatScoreRollup.grade }}
-          </span>
-          <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
-            {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+        <span class="text-xs opacity-60">Equip an echo to see build insights here</span>
+      </div>
+
+      <template v-if="isExpanded && insights.equippedCount > 0">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <h3 class="text-sm font-semibold">Echo Insights</h3>
+          <span class="text-xs opacity-60" data-test-echo-insights-equipped-count>
+            {{ insights.equippedCount }}/5 echoes equipped
           </span>
         </div>
-      </div>
 
-      <div class="flex items-center justify-between gap-2 mb-3">
-        <h3 class="text-sm font-semibold">Echo Insights</h3>
-        <span class="text-xs opacity-60" data-test-echo-insights-equipped-count>
-          {{ insights.equippedCount }}/5 echoes equipped
-        </span>
-      </div>
-
-      <template v-if="insights.equippedCount === 0">
-        <p class="text-xs opacity-60">Equip an echo to see build insights here.</p>
-      </template>
-
-      <template v-else>
         <div class="echo-insights__stat flex items-center justify-between mb-3">
           <span class="text-xs opacity-60">Total Crit Value</span>
           <span class="font-mono font-bold" data-test-echo-insights-total-cv>
@@ -118,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useEchoInsights } from "../composables/useEchoInsights";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { getRatingAccentClasses } from "../composables/useEchoRating";
@@ -136,6 +158,15 @@ const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(() => props.cha
 const substatScoreRollupAccent = computed(() =>
   substatScoreRollup.value ? getRatingAccentClasses(substatScoreRollup.value.color) : null,
 );
+
+// This panel is now the sticky bar pinned at the top of the Echoes tab (see
+// docs/adr/0030-echoes-tab-v3-redesign.md) — collapsed to just the Build
+// Score hero by default so it stays compact while pinned, expandable on
+// click to reveal the rest. Collapses back whenever the character changes
+// (a fresh :key remounts this component per CalculatorEchoes.vue's
+// :key="characterBuildKey" on its own ancestor, so a plain ref default is
+// enough — no watcher needed).
+const isExpanded = ref(false);
 </script>
 
 <style scoped>
