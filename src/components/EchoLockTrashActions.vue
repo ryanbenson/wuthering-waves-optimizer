@@ -7,8 +7,8 @@
         :class="{ 'btn-active text-accent': locked }"
         v-tooltip="
           locked
-            ? 'Unlock this echo to allow deletion'
-            : 'Lock this echo to prevent accidental deletion'
+            ? 'Unlock this echo to allow deletion and stat edits'
+            : 'Lock this echo to prevent deletion and freeze its stats'
         "
         :aria-label="locked ? 'Unlock echo' : 'Lock echo'"
         :data-test-echo-lock="echoId"
