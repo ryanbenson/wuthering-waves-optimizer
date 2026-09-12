@@ -170,10 +170,6 @@
               {{ type ?? "—" }}
             </span>
           </div>
-          <div class="flex items-center gap-0.5">
-            <EchoFavoriteButton :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
-          </div>
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
@@ -208,7 +204,18 @@
             </template>
           </div>
         </div>
+        <!--
+          Favorite + lock/trash/temp/hidden together in one line — these
+          were split across two spots before (favorite under the avatar,
+          the lock/trash/temp/hidden toggles here), and EchoStatusBadge
+          used to duplicate whatever these toggles already show via their
+          own active state (locking showed the lock button turn active
+          *and* a separate lock status icon appear) — direct feedback that
+          this was redundant. The toggle buttons' own active styling is
+          the only status indicator needed now.
+        -->
         <div class="flex items-center gap-1 shrink-0" @click.stop>
+          <EchoFavoriteButton :echo-id="echoId || null" />
           <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
         </div>
       </div>
@@ -350,7 +357,6 @@ import { usePrioritySubstats } from "../composables/usePrioritySubstats";
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
-import EchoStatusBadge from "./EchoStatusBadge.vue";
 import EchoEditFields from "./EchoEditFields.vue";
 import EchoPickerDialog from "./EchoPickerDialog.vue";
 
