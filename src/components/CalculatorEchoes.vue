@@ -508,9 +508,17 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 
 <style scoped>
 /*
- * Two-column split for the Labs-flagged layout: the build strip keeps its
- * existing width, the new insights panel docks beside it — see
- * docs/adr/0014-echo-editor-redesign.md decision #10. This is inline
+ * Two-column split for the Labs-flagged layout — see
+ * docs/adr/0014-echo-editor-redesign.md decision #10 and
+ * docs/adr/0030-echoes-tab-v3-redesign.md decisions #1/#9. The strip is a
+ * fixed width rather than flex:1 — letting it stretch unconstrained next to
+ * the insights column was the root cause of a UX complaint (huge gaps
+ * between each substat's label and value on wide screens). The insights
+ * column is sticky so Build Score stays visible while the strip scrolls;
+ * top:0 (not an 80px nav-offset) because this lives inside
+ * .calculations__screens, already below the nav in normal flow — same
+ * convention as the existing sticky blocks in SettingsImport.vue /
+ * SettingsLab.vue / SettingsExport.vue / SettingsDelete.vue. This is inline
  * content within the tab (not a third overlay dock like the edit panel /
  * Full Breakdown at the Calculator.vue level), so it scrolls together with
  * .calculations__screens instead of needing its own scroll region.
@@ -522,13 +530,15 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 }
 
 .echoes-layout__strip {
-  flex: 1;
+  flex: 0 0 460px;
   min-width: 0;
 }
 
 .echoes-layout__insights {
   flex: 0 0 320px;
   min-width: 0;
+  position: sticky;
+  top: 0;
 }
 
 @media (max-width: 768px) {
@@ -536,9 +546,15 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
     flex-direction: column;
   }
 
+  .echoes-layout__strip {
+    flex: none;
+    width: 100%;
+  }
+
   .echoes-layout__insights {
     flex: none;
     width: 100%;
+    position: static;
   }
 }
 
