@@ -1387,17 +1387,17 @@ export const calculateAttackDamage = (
       ] ??
       0;
     // Sequence Node 1 upgrades the Heart of Thunder procs' kit multipliers
-    // (200%->260%, 40%->52% per stack consumed) once unlocked.
+    // (175%->210%, 40%->42% per stack consumed) once unlocked.
     const sequenceNode1Enabled =
       context.global.characters?.[context.character.characterKey]
         ?.resonanceChains?.SequenceNode1ABoatToCrossTheRisingTide?.isEnabled ??
       false;
     let kitMultiplier: number;
     if (attack.key === "HeartOfThunderInstantDMG") {
-      kitMultiplier = sequenceNode1Enabled ? 2.6 : 2.0;
+      kitMultiplier = sequenceNode1Enabled ? 2.1 : 1.75;
     } else if (attack.key === "HeartOfThunderDelayedDMG") {
       kitMultiplier =
-        (sequenceNode1Enabled ? 0.52 : 0.4) * heartOfThunderStacksConsumed;
+        (sequenceNode1Enabled ? 0.42 : 0.4) * heartOfThunderStacksConsumed;
     } else {
       // SequenceNode3PillarsAcrossHeavenElectroFlareDMG: fixed 1500%.
       kitMultiplier = 15.0;
