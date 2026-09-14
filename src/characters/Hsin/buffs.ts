@@ -3,12 +3,12 @@ export const buffs = [
     key: `InherentSkillTidesOfSuccessionUnison`,
     name: `Inherent Skill: Tides of Succession`,
     stance: "Unison",
-    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>, when Hsin casts <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> or <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span>, She gains 40% Electro DMG Bonus for 8s. Switching to another Resonator ends this effect.</div>`,
+    details: `<div>While in <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Unison</span>, when Hsin casts <span style="color:#ffd12f;" class="font-bold">Intro Skill - Answering Form: Manifold Unison</span> or <span style="color:#ffd12f;" class="font-bold">Intro Skill - Illumining Form: Manifold Unison</span>, She gains 50% ATK for 8s. Switching to another Resonator ends this effect.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Electro",
-        modifierValue: 0.4,
+        modifier: "ATK",
+        modifierValue: 0.5,
       }
     ],
     minStacks: 0,
