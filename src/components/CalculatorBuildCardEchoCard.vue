@@ -65,7 +65,8 @@
       data-test-build-card-echo-substats>
       <div
         v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
-        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded border-l-4 bg-base-200/70 px-1.5 py-1 min-w-0"
+        :class="[qualityClasses(echoSubStatsType1, echoSubStatsValue1)?.border, qualityClasses(echoSubStatsType1, echoSubStatsValue1)?.wash]">
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat1Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType1) }}</span>
@@ -74,7 +75,8 @@
       </div>
       <div
         v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
-        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded border-l-4 bg-base-200/70 px-1.5 py-1 min-w-0"
+        :class="[qualityClasses(echoSubStatsType2, echoSubStatsValue2)?.border, qualityClasses(echoSubStatsType2, echoSubStatsValue2)?.wash]">
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat2Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType2) }}</span>
@@ -83,7 +85,8 @@
       </div>
       <div
         v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
-        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded border-l-4 bg-base-200/70 px-1.5 py-1 min-w-0"
+        :class="[qualityClasses(echoSubStatsType3, echoSubStatsValue3)?.border, qualityClasses(echoSubStatsType3, echoSubStatsValue3)?.wash]">
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat3Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType3) }}</span>
@@ -92,7 +95,8 @@
       </div>
       <div
         v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
-        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded border-l-4 bg-base-200/70 px-1.5 py-1 min-w-0"
+        :class="[qualityClasses(echoSubStatsType4, echoSubStatsValue4)?.border, qualityClasses(echoSubStatsType4, echoSubStatsValue4)?.wash]">
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat4Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType4) }}</span>
@@ -101,7 +105,8 @@
       </div>
       <div
         v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
-        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded border-l-4 bg-base-200/70 px-1.5 py-1 min-w-0"
+        :class="[qualityClasses(echoSubStatsType5, echoSubStatsValue5)?.border, qualityClasses(echoSubStatsType5, echoSubStatsValue5)?.wash]">
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat5Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType5) }}</span>
@@ -114,7 +119,7 @@
 
 <script setup lang="ts">
 import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
-import { useEchoCardStats } from "../composables/useEchoCardStats";
+import { useEchoCardStats, getSubstatRollQualityClasses } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";
 
 const props = withDefaults(
@@ -175,6 +180,15 @@ const {
 
 const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
   useEchoRating(props);
+
+// Same toned-down border + gradient wash as CalculatorEchoTile.vue and
+// EchoCardSubstatList.vue — see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #2. This card has its own bespoke row markup (not
+// EchoCardSubstatList) rather than the shared component, so it needs the
+// same treatment applied directly here.
+function qualityClasses(type: string, value: number | string) {
+  return getSubstatRollQualityClasses(type, value);
+}
 
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);

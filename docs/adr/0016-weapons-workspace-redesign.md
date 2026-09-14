@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-30
 tags: [calculator, components, weapons, characters]
+superseded_by: [0026]
 ---
 
 # 16. Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -85,6 +86,8 @@ made for this whole redesign wave.
    this weapon" action. `WorkspaceWeaponBrowser.vue` adds search + sort-by-
    impact on top of the existing rarity filter; impact is computed once per
    modal-open via the batch function, not reactively per keystroke.
+
+5a. **Superseded 2026-09-04 (ADR [0026](0026-chooser-modals-redesign.md)):** `WorkspaceWeaponBrowser.vue`'s own hand-rolled dialog/backdrop/header/close chrome was replaced by the shared `AppChooserModal.vue` shell that ADR 0026 introduced for all five choosers. The search/sort-by-impact behavior this decision describes is unchanged; only the surrounding modal chrome moved to the shared component.
 
 ## Consequences
 

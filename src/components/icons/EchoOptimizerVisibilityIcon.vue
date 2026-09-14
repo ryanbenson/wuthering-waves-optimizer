@@ -7,7 +7,7 @@
     stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
-    class="size-4"
+    :class="size === 'xs' ? 'size-3.5' : 'size-4'"
     aria-hidden="true">
     <path
       d="M2 12C2 12 5 5 12 5C19 5 22 12 22 12C22 12 19 19 12 19C5 19 2 12 2 12Z" />
@@ -17,7 +17,11 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  hidden?: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    hidden?: boolean;
+    size?: "sm" | "xs";
+  }>(),
+  { size: "sm" },
+);
 </script>

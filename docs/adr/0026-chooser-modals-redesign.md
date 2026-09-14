@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-04
 tags: [calculator, components, echoes, weapons, enemies]
+supersedes: [0016, 0017, 0020]
 ---
 
 # 26. Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag)

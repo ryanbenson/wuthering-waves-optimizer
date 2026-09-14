@@ -5,25 +5,28 @@
 // left untouched and covered separately.
 import { configOptimizer, optimizerResults } from "../data/Augusta/data";
 
-function visitWithFlagEnabled() {
-  cy.visit("/", {
-    onBeforeLoad(win) {
-      win.localStorage.setItem(
-        "settings",
-        JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
-      );
-    },
-  });
-}
-
 describe("Optimizer Workspace (liveResultBar flag): Augusta golden path", () => {
   it("runs to completion, shows a leaderboard + spotlight, and equips a loadout", () => {
-    visitWithFlagEnabled();
+    // Import with the labs flag off — with it on, Settings renders the
+    // "UI Overhaul 3.0" SettingsWorkspace sidebar shell instead of the
+    // legacy tab strip cy.importCharacterData drives (see
+    // liveResultDetailTabs.cy.ts) — then enable the flag afterward via the
+    // real Labs toggle UI (a raw localStorage write + reload races the
+    // app's own persistedstate autosave and doesn't reliably stick).
+    cy.visit("/");
     cy.importCharacterData(configOptimizer);
+    cy.get("[data-test-nav-calculator]").click();
+    cy.get(".character__selection.Augusta").should("be.visible");
+
+    cy.get("[data-test-options-menu]").click();
+    cy.get("[data-test-options-settings]").click();
+    cy.get("[data-test-settings-labs]").click();
+    cy.get('input[type="checkbox"]').first().check();
+
     cy.get("[data-test-nav-calculator]").click();
     // With the flag on, character selection renders via the Command Bar
     // (CalculatorCommandBar.vue), not the legacy .character__selection
-    // grid the flag-off spec asserts on.
+    // grid asserted on above.
     cy.get('[data-test-workspace-avatar="Augusta"]').should("exist");
     cy.get('[data-test-calculator-nav="optimizer"]').click();
     cy.get(".screen--optimizer").should("be.visible");

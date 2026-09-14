@@ -12,6 +12,33 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-13",
+    dateLabel: "September 13, 2026",
+    items: [
+      "v3: Adds suggested weapons for: Phrolova, Lupa, Cartethyia, Ciaccona, Zani, Cantarella, Brant, Phoebe",
+    ],
+  },
+  {
+    date: "2026-09-12",
+    dateLabel: "September 12, 2026",
+    items: [
+      "Fixed small issue in importer where DEF% 11.8% was coming in as 11.9%",
+      "v3: Updated the layout and UX of the character echoes page, lots if improvements",
+      "v3: Updated and fixed a lot of small issues like overflow issues",
+    ],
+  },
+  {
+    date: "2026-09-11",
+    dateLabel: "September 11, 2026",
+    items: [
+      "Update suggested weapons for Sigrika, Luuk, Aemeath, Lynae, Chisa, Qiuyuan, Galbrena, Iuno, Augusta",
+      "Updates the What's New for v3 announcement to incldue the attack/stat/rotations panel",
+      "Updates Jingran substat priorities",
+      "Adds indicator in optimizer loadout results to highlight any echoes already equipped",
+      "Removes the echo score from the Inventory page as it is less relevant there, and causing confusion. It's still present throughout the character pages where relevant."
+    ],
+  },
+  {
     date: "2026-09-10",
     dateLabel: "September 10, 2026",
     items: [

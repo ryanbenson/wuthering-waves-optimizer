@@ -15,6 +15,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "WhispersofSirens",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "RimeDrapedSprouts", label: "Alternate" },
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "LetheanElegy", label: "Alternate" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "RadiantDawn", label: "BP" },
+      { key: "JizhouKeeper", label: "4*" },
+    ],
   };
 }

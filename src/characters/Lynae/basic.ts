@@ -16,6 +16,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "SpectrumBlaster",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "StaticMist", label: "Standard" },
+      { key: "PhasicHomogenizer", label: "Standard" },
+      { key: "TheLastDance", label: "Stat stick" },
+      { key: "LuxUmbra", label: "Stat stick" },
+      { key: "SolarFlame", label: "BP" },
+      { key: "RelativisticJet", label: "4*" },
+    ],
   };
 }

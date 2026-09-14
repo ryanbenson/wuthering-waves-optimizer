@@ -14,6 +14,14 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "LetheanElegy",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "WhispersofSirens", label: "Alternate" },
+      { key: "RimeDrapedSprouts", label: "Stat stick" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "RadiantDawn", label: "BP" },
+      { key: "Augment", label: "BP" },
+      { key: "FusionAccretion", label: "4*" },
+    ],
   };
 }

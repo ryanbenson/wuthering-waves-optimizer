@@ -32,6 +32,7 @@
             <div class="flex items-center gap-0.5">
               <EchoFavoriteButton :echo-id="echoId || null" />
               <EchoStatusBadge :echo-id="echoId || null" />
+              <EchoEquippedIndicator :echo-id="echoId || null" />
             </div>
           </div>
           <div class="flex-1 min-w-0">
@@ -106,6 +107,7 @@
         <div class="flex items-center justify-center gap-0.5">
           <EchoFavoriteButton :echo-id="echoId || null" />
           <EchoStatusBadge :echo-id="echoId || null" />
+          <EchoEquippedIndicator :echo-id="echoId || null" />
         </div>
         <span
           class="echo__item__cost badge badge-primary text-nowrap absolute right-0 top-0">
@@ -188,6 +190,7 @@ import { computed } from "vue";
 import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import EchoStatusBadge from "./EchoStatusBadge.vue";
+import EchoEquippedIndicator from "./EchoEquippedIndicator.vue";
 import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";

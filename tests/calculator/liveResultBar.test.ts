@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   buildLiveResultBarTarget,
   fallbackLiveResultBarTarget,
+  defaultLiveResultBarTarget,
   resolveLiveResultBarTarget,
   attackGroupForTarget,
 } from "../../src/calculator/liveResultBar";
@@ -61,6 +62,51 @@ describe("fallbackLiveResultBarTarget", () => {
   it("returns null when nothing has been computed yet", () => {
     expect(fallbackLiveResultBarTarget(undefined)).toBeNull();
     expect(fallbackLiveResultBarTarget({})).toBeNull();
+  });
+});
+
+describe("defaultLiveResultBarTarget", () => {
+  it("uses the character's declared default when it resolves", () => {
+    expect(
+      defaultLiveResultBarTarget(
+        { type: "rotation" },
+        [{ id: "rot-1" }],
+        {},
+      ),
+    ).toBe("Rotation:rot-1");
+    expect(
+      defaultLiveResultBarTarget(
+        { type: "action", group: "liberationAttacks", key: "toTheHorizon" },
+        [{ id: "rot-1" }],
+        {},
+      ),
+    ).toBe("Attack:liberationAttacks|toTheHorizon");
+  });
+
+  it("defaults to the character's first saved rotation when nothing is declared", () => {
+    expect(
+      defaultLiveResultBarTarget(undefined, [{ id: "rot-1" }, { id: "rot-2" }], {}),
+    ).toBe("Rotation:rot-1");
+    expect(defaultLiveResultBarTarget(null, [{ id: "rot-1" }], {})).toBe(
+      "Rotation:rot-1",
+    );
+  });
+
+  it("falls back to the highest-priority attack when there's no declared default and no saved rotation", () => {
+    const allDamages = {
+      basicAttacks: [{ key: "stage1" }],
+      liberationAttacks: [{ key: "toTheHorizon" }],
+    };
+    expect(defaultLiveResultBarTarget(undefined, [], allDamages)).toBe(
+      "Attack:liberationAttacks|toTheHorizon",
+    );
+    expect(defaultLiveResultBarTarget(undefined, undefined, allDamages)).toBe(
+      "Attack:liberationAttacks|toTheHorizon",
+    );
+  });
+
+  it("returns null when nothing is declared, saved, or computed yet", () => {
+    expect(defaultLiveResultBarTarget(undefined, [], {})).toBeNull();
   });
 });
 

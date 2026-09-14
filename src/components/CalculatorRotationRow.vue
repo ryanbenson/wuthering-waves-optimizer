@@ -17,8 +17,20 @@
           <span>{{ actionsCount }} action{{ actionsCount === 1 ? "" : "s" }}</span>
           <span v-if="duration">{{ duration }}s rotation</span>
         </div>
+        <!-- <768px: sits under the actions/duration line above, in the same
+        column, instead of competing with the name for width on the row's
+        one line — the md:block twin below takes over at 768px+. -->
+        <div
+          v-if="statValue !== null && statValue > 0"
+          class="text-sm md:hidden"
+          data-test-rotations-row-stat-mobile>
+          <span class="font-bold">{{ statLabel }} DMG:</span> {{ Math.round(statValue).toLocaleString() }}
+        </div>
       </div>
-      <div v-if="statValue !== null && statValue > 0" class="text-sm shrink-0" data-test-rotations-row-stat>
+      <div
+        v-if="statValue !== null && statValue > 0"
+        class="text-sm shrink-0 hidden md:block"
+        data-test-rotations-row-stat>
         <span class="font-bold">{{ statLabel }} DMG:</span> {{ Math.round(statValue).toLocaleString() }}
       </div>
       <div class="flex items-center gap-1 shrink-0" @click.stop>

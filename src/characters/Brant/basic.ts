@@ -18,6 +18,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     // falls back to the generic cross-character default until one exists.
     liveResultBarDefaultTarget: { type: "rotation" },
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "LaserShearer", label: "Standard" },
+      { key: "BloodpactsPledge", label: "Alternate" },
+      { key: "RedSpring", label: "Alternate" },
+      { key: "EmeraldOfGenesis", label: "Stanrdard" },
+    ],
   };
 }

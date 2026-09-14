@@ -78,20 +78,22 @@
                 <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
-                <span
-                  v-if="substatScore"
-                  class="badge badge-xs text-nowrap"
-                  :class="substatScoreBadgeClass"
-                  v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
-                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
-                </span>
-                <span
-                  v-else
-                  class="badge badge-xs text-nowrap"
-                  :class="echoRatingBadgeClass"
-                  v-tooltip="'Echo Rating — overall substat roll quality'">
-                  {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
-                </span>
+                <template v-if="!hideRating">
+                  <span
+                    v-if="substatScore"
+                    class="badge badge-xs text-nowrap"
+                    :class="substatScoreBadgeClass"
+                    v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                    {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                  </span>
+                  <span
+                    v-else
+                    class="badge badge-xs text-nowrap"
+                    :class="echoRatingBadgeClass"
+                    v-tooltip="'Echo Rating — overall substat roll quality'">
+                    {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+                  </span>
+                </template>
               </template>
             </div>
           </div>
@@ -168,20 +170,22 @@
             :class="rollValueBadgeClass">
             RV {{ echoRollValue }}%
           </span>
-          <span
-            v-if="substatScore"
-            class="echo__item__cost badge text-nowrap text-sm"
-            :class="substatScoreBadgeClass"
-            v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
-            {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
-          </span>
-          <span
-            v-else
-            class="echo__item__cost badge text-nowrap text-sm"
-            :class="echoRatingBadgeClass"
-            v-tooltip="'Echo Rating — overall substat roll quality'">
-            {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
-          </span>
+          <template v-if="!hideRating">
+            <span
+              v-if="substatScore"
+              class="echo__item__cost badge text-nowrap text-sm"
+              :class="substatScoreBadgeClass"
+              v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+              {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+            </span>
+            <span
+              v-else
+              class="echo__item__cost badge text-nowrap text-sm"
+              :class="echoRatingBadgeClass"
+              v-tooltip="'Echo Rating — overall substat roll quality'">
+              {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+            </span>
+          </template>
         </template>
         <div class="echo__item__stats mb-2 relative mt-2">
           <div class="echo__item__sub-stats flex flex-col gap-2 items-center">
@@ -316,20 +320,22 @@
                 <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
-                <span
-                  v-if="substatScore"
-                  class="badge badge-xs text-nowrap"
-                  :class="substatScoreBadgeClass"
-                  v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
-                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
-                </span>
-                <span
-                  v-else
-                  class="badge badge-xs text-nowrap"
-                  :class="echoRatingBadgeClass"
-                  v-tooltip="'Echo Rating — overall substat roll quality'">
-                  {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
-                </span>
+                <template v-if="!hideRating">
+                  <span
+                    v-if="substatScore"
+                    class="badge badge-xs text-nowrap"
+                    :class="substatScoreBadgeClass"
+                    v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                    {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                  </span>
+                  <span
+                    v-else
+                    class="badge badge-xs text-nowrap"
+                    :class="echoRatingBadgeClass"
+                    v-tooltip="'Echo Rating — overall substat roll quality'">
+                    {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+                  </span>
+                </template>
               </template>
             </div>
           </div>
@@ -405,18 +411,20 @@
                   :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
-                <span
-                  v-if="substatScore"
-                  class="echo__item__cost badge text-nowrap"
-                  :class="substatScoreBadgeClass">
-                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
-                </span>
-                <span
-                  v-else
-                  class="echo__item__cost badge text-nowrap"
-                  :class="echoRatingBadgeClass">
-                  {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
-                </span>
+                <template v-if="!hideRating">
+                  <span
+                    v-if="substatScore"
+                    class="echo__item__cost badge text-nowrap"
+                    :class="substatScoreBadgeClass">
+                    {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                  </span>
+                  <span
+                    v-else
+                    class="echo__item__cost badge text-nowrap"
+                    :class="echoRatingBadgeClass">
+                    {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+                  </span>
+                </template>
                 <span
                   class="echo__item__explain-rv-cv"
                   v-tooltip="{
@@ -550,11 +558,15 @@ const props = withDefaults(
     compact?: boolean;
     // When set, also shows the per-character weighted Substat Score badge.
     characterId?: string | null;
+    // Hides the Echo Rating / Substat Score badge (e.g. on the Inventory
+    // page, where a score isn't tied to a specific character).
+    hideRating?: boolean;
   }>(),
   {
     hideInventory: false,
     compact: false,
     characterId: null,
+    hideRating: false,
   },
 );
 

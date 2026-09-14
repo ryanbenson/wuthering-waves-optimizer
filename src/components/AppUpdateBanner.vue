@@ -205,6 +205,17 @@ const v3Features = [
     ],
   },
   {
+    title: "Collapsible detail panel",
+    description:
+      "Show or hide the full breakdown of stats, attacks, and rotations in one organized panel - and pin it open if you want it to stay put.",
+    images: [
+      {
+        src: `${ASSET_BASE}/v3-whats-new-detail-panel.gif`,
+        alt: "Collapsible detail panel being shown, hidden, and pinned open",
+      },
+    ],
+  },
+  {
     title: "Damage monitor",
     description:
       "See how an attack or rotation's damage changes live as you tweak your build, with a +/- delta callout and a running view of your key stats.",
@@ -252,12 +263,6 @@ const v3Features = [
       { src: `${ASSET_BASE}/v3-whats-new-custom-buffs.png`, alt: "Custom buffs" },
       { src: `${ASSET_BASE}/v3-whats-new-team-buffs.png`, alt: "Team buffs" },
     ],
-  },
-  {
-    title: "Pin or hide for detail",
-    description:
-      "Pin or hide the deep-dive views for stats, actions, and rotations - keep just the detail you want on screen.",
-    images: [{ src: `${ASSET_BASE}/v3-whats-new-pinnable-stats.png`, alt: "Pinnable stats" }],
   },
   {
     title: "Inventory",
@@ -348,7 +353,7 @@ onBeforeUnmount(() => {
 .v3-feature-figure {
   display: flex;
   gap: 2px;
-  height: 20rem;
+  height: 25rem;
   overflow: hidden;
   background: oklch(var(--b3));
 }

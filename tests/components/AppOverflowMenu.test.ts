@@ -18,12 +18,17 @@ describe("AppOverflowMenu", () => {
   });
 
   it("renders slotted menu items and fires their click handlers", async () => {
-    const { getByText } = render(AppOverflowMenu, {
+    // The menu is teleported to <body> and only rendered while open (see
+    // AppOverflowMenu.vue) — it needs to escape overflow-clipped ancestors
+    // like CalculatorRotations.vue's scroll pane, so slotted items don't
+    // exist in the DOM at all until the trigger is opened.
+    const { getByRole, getByText } = render(AppOverflowMenu, {
       slots: {
         default:
           '<li><button type="button" data-test-menu-item>Rating Guide</button></li>',
       },
     });
+    await fireEvent.click(getByRole("button", { name: "More actions" }));
     const item = getByText("Rating Guide");
     expect(item).toBeTruthy();
     await fireEvent.click(item);

@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-01
 tags: [calculator, components, stores]
+supersedes: [0013]
 ---
 
 # 18. Full breakdown panel — Overview/Attacks/Rotations redesign

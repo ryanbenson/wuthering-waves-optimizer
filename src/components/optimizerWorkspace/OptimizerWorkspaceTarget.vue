@@ -135,6 +135,7 @@ import { useCharacterStore } from "../../stores/character";
 import { getCharByName } from "../../characters/characters.ts";
 import { mainEchoesData } from "../../echoes/index";
 import { mainEchoBuffOverrideDiffersFromCharacter } from "../../calculator/rotationAdvancedBuffs";
+import { FALLBACK_ATTACK_GROUP_PRIORITY } from "../../calculator/liveResultBar";
 import CalculatorOptimizerDamageType from "../CalculatorOptimizerDamageType.vue";
 
 defineOptions({ name: "OptimizerWorkspaceTarget" });
@@ -223,6 +224,17 @@ const rotations = computed(
   () => (currentCharacter.value.rotations ?? []) as RotationEntry[],
 );
 
+// Same cross-character fallback order as the Live Result Bar
+// (fallbackLiveResultBarTarget in liveResultBar.ts) — the first attack in
+// the highest-priority non-empty group.
+function fallbackAttackTarget(): string | null {
+  for (const group of FALLBACK_ATTACK_GROUP_PRIORITY) {
+    const list = characterData.value[group]?.attacks ?? [];
+    if (list.length) return `Attack:${group}|${list[0].key}`;
+  }
+  return null;
+}
+
 function isSelected(value: string) {
   return optimizationTarget.value === value;
 }
@@ -274,11 +286,24 @@ const mainEchoBuffOverrideActionCount = computed((): number => {
 
 onMounted(async () => {
   const t = props.currentOptimizationTarget;
-  optimizationTarget.value = typeof t === "string" ? t : null;
+  if (typeof t === "string") {
+    optimizationTarget.value = t;
+  } else if (rotations.value.length) {
+    // No persisted target yet — prefer this character's first saved
+    // rotation over a single attack, same rule the Live Result Bar uses
+    // (defaultLiveResultBarTarget in liveResultBar.ts).
+    optimizationTarget.value = `Rotation:${rotations.value[0].id}`;
+  } else {
+    optimizationTarget.value = null;
+  }
   if (optimizationTarget.value?.startsWith("Attack:")) activeTab.value = "Attack";
   else if (optimizationTarget.value?.startsWith("Rotation:")) activeTab.value = "Rotation";
   const data = await getCharByName(props.character);
   characterData.value = (data ?? {}) as Record<string, AttackBlock | undefined>;
+  if (optimizationTarget.value === null) {
+    optimizationTarget.value = fallbackAttackTarget();
+    if (optimizationTarget.value?.startsWith("Attack:")) activeTab.value = "Attack";
+  }
 });
 
 onBeforeUnmount(() => {

@@ -23,7 +23,7 @@
         <div
           v-for="group in statBonusGroups"
           :key="group.type"
-          class="flex items-center gap-1 bg-base-100 border border-base-300 rounded-lg px-1.5 py-1">
+          class="flex flex-wrap items-center gap-1 bg-base-100 border border-base-300 rounded-lg px-1.5 py-1">
           <button
             v-for="chip in group.chips"
             :key="chip.key"

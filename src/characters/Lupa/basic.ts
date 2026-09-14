@@ -15,6 +15,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "WildfireMark",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "AgesOfHarvest", label: "Stat stick" },
+      { key: "Kumokiri", label: "Stat stick" },
+      { key: "VerdantSummit", label: "Stat sick" },
+      { key: "RadiantCleaver", label: "Standard" },
+      { key: "WaningRedshift", label: "4*" },
+      { key: "AureateZenith", label: "BP" },
+    ],
   };
 }

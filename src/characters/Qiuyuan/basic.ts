@@ -14,6 +14,12 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "EmeraldSentence",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "RedSpring", label: "Stat stick" },
+      { key: "BlazingBrilliance", label: "Stat stick" },
+      { key: "EmeraldOfGenesis", label: "Standard" },
+      { key: "FeatherEdge", label: "BP" },
+      { key: "CommandoOfConviction", label: "4*" },
+    ],
   };
 }

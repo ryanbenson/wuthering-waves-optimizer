@@ -25,7 +25,16 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-3" :class="show1pcSlot ? 'md:grid-cols-3' : 'md:grid-cols-2'">
+    <!--
+      Always a single column now — this panel used to span the full tab
+      width (its md:grid-cols-2/3 assumed that), but it moved into the
+      same fixed-width column as the echo tiles (see
+      docs/adr/0030-echoes-tab-v3-redesign.md); md:* is a viewport-width
+      breakpoint, not a container query, so it would otherwise still try
+      to lay out 2-3 columns into a ~460px column on any desktop-width
+      screen regardless of how narrow this column actually is.
+    -->
+    <div class="grid grid-cols-1 gap-3">
       <CalculatorEchoSetBonusSlot
         v-if="show1pcSlot"
         :character="character"

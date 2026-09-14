@@ -5,7 +5,7 @@
       class="echo-status-icon text-accent"
       :data-test-echo-status-badge="echoId"
       data-test-echo-status="locked"
-      v-tooltip="'Locked — protected from deletion'">
+      v-tooltip="'Locked — stats frozen, protected from deletion'">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 448 512"

@@ -16,6 +16,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "WoodlandAria",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "PhasicHomogenizer", label: "Standard" },
+      { key: "LuxUmbra", label: "Alternate" },
+      { key: "StaticMist", label: "Standard" },
+      { key: "RomanceinFarewell", label: "4*" },
+    ],
   };
 }

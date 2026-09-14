@@ -14,6 +14,12 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "MoongazersSigil",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "VeritysHandle", label: "Alternate" },
+      { key: "BlazingJustice", label: "Alternate" },
+      { key: "AetherStrike", label: "BP" },
+      { key: "Stonard", label: "BP" },
+      { key: "CelestialSpiral", label: "4*" },
+    ],
   };
 }

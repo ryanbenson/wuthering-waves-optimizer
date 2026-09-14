@@ -18,7 +18,7 @@
           class="echo-edit-panel__avatar rounded-full border border-solid neutral-content size-12 bg-cover shrink-0"
           :class="[rankBorderClass, isEchoLocked ? 'opacity-60' : 'cursor-pointer']"
           :style="{ backgroundImage: `url(${echoImage})` }"
-          @click="!isEchoLocked && openEchoPicker()"></div>
+          @click="!isEchoLocked && pickerRef?.openPicker()"></div>
         <div class="flex-1 min-w-0">
           <div class="font-bold text-sm truncate">{{ echoName ?? "No echo selected" }}</div>
           <div v-if="hasSubStats" class="flex items-center gap-1.5 flex-wrap mt-0.5">
@@ -49,7 +49,7 @@
               class="btn btn-xs"
               :disabled="isEchoLocked"
               data-test-echo-edit-find
-              @click="openEchoPicker">
+              @click="pickerRef?.openPicker()">
               Find
             </button>
             <button
@@ -88,223 +88,22 @@
         </button>
       </div>
 
-      <div class="px-4 pt-3 shrink-0">
-        <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">Rank</div>
-        <div class="flex gap-1">
-          <button
-            v-for="r in [2, 3, 4, 5]"
-            :key="r"
-            type="button"
-            class="btn btn-xs"
-            :class="String(rank) === String(r) ? 'btn-primary' : 'btn-ghost'"
-            :disabled="isEchoLocked"
-            :aria-pressed="String(rank) === String(r)"
-            :data-test-echo-edit-rank="r"
-            @click="setRank(r)">
-            {{ r }}★
-          </button>
-        </div>
-      </div>
-
-      <div
-        v-if="isEchoLocked"
-        class="mx-4 mt-3 alert alert-warning p-2 text-xs"
-        data-test-echo-edit-locked-notice>
-        This echo is locked — unlock it to change its stats.
-      </div>
-
-      <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-        <div class="echo-edit-panel__locked-row flex items-center gap-2" data-test-echo-edit-cost-row>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-3.5 shrink-0 opacity-60"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            v-tooltip="'Set by which echo you picked'">
-            <rect x="5" y="11" width="14" height="9" rx="2" stroke-width="1.8" />
-            <path d="M8 11V8a4 4 0 018 0v3" stroke-width="1.8" />
-          </svg>
-          <span class="badge badge-sm font-mono">Cost {{ type ?? "—" }}</span>
-          <span v-if="freeStatType" class="badge badge-sm badge-ghost font-mono">
-            {{ freeStatLabel }} +{{ freeStatValue }}
-          </span>
-        </div>
-
-        <div>
-          <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">Main stat</div>
-          <AppRichSelect
-            v-model="stat"
-            :options="mainStatOptions"
-            :disabled="!type || isEchoLocked"
-            placeholder="Select stat"
-            aria-label="Main stat"
-            data-test="echo-edit-main-stat" />
-        </div>
-
-        <div>
-          <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">Substats</div>
-          <div class="flex flex-col gap-2">
-            <div
-              v-for="(slot, i) in slots"
-              :key="i"
-              class="echo-edit-panel__slot"
-              :class="{ 'echo-edit-panel__slot--empty': !isSlotFilled(i) }"
-              :data-test-echo-edit-slot="i">
-              <div class="flex items-center gap-2">
-                <span class="echo-edit-panel__slot-index">{{ i + 1 }}</span>
-                <AppRichSelect
-                  class="flex-1 min-w-0"
-                  :model-value="slot.type.value === 'none' ? null : slot.type.value"
-                  :options="getSubstatOptions(i)"
-                  allow-empty
-                  :disabled="isEchoLocked"
-                  empty-label="Choose substat"
-                  placeholder="Choose substat"
-                  :aria-label="`Substat ${i + 1} type`"
-                  :data-test="`echo-edit-slot-type-${i}`"
-                  @update:model-value="(v) => assignSlotIfUnlocked(i, v as string | null)" />
-              </div>
-              <div v-if="isSlotFilled(i)" class="mt-2">
-                <EchoSubstatSlider
-                  :id="`echo-substat-${i}`"
-                  :values="getSubStatRange(slot.type.value)"
-                  :model-value="slot.value.value"
-                  :unit="slot.type.value.includes('FLAT') ? '' : '%'"
-                  :disabled="isEchoLocked"
-                  :aria-label="`Substat ${i + 1} value`"
-                  :data-test-echo-edit-slot-value="i"
-                  @update:model-value="(v) => setSlotValueIfUnlocked(i, v)" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EchoEditFields :target="target" />
     </div>
   </template>
 
-  <dialog :id="pickerModalId" class="modal" @close="isPickerOpen = false">
-    <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
-      <button>close</button>
-    </form>
-    <div v-if="isPickerOpen" class="modal-box max-w-5xl">
-      <form method="dialog" @click="closeEchoChooser">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-      </form>
-      <div class="py-4">
-        <AppFilterPanel
-          panel-key="echo-edit-picker"
-          class="mb-4"
-          :active-count="pickerActiveFilterCount"
-          :clear-disabled="!pickerActiveFilterCount"
-          @clear="resetFilters">
-          <template #bar>
-            <input
-              v-model="echoSearch"
-              type="search"
-              placeholder="Search echoes…"
-              class="input input-bordered input-sm flex-1 min-w-40"
-              aria-label="Search echoes"
-              data-test-echo-picker-search />
-          </template>
-
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-medium opacity-60">Cost</span>
-            <div class="join">
-              <button
-                v-for="cost in ECHO_COST_TIERS"
-                :key="cost"
-                type="button"
-                class="btn btn-sm join-item"
-                :class="{ 'btn-active': echoCostFilter === cost }"
-                :data-test-echo-picker-cost="cost"
-                @click="echoCostFilter = echoCostFilter === cost ? null : cost">
-                {{ cost }}
-              </button>
-            </div>
-          </div>
-
-          <div
-            class="echoes__filters echo-filters__sets flex align-center gap-1 items-center flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-            <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-            <button
-              v-for="echoSetKey in echoSetsList"
-              :key="echoSetKey"
-              type="button"
-              @click="toggleEchoSetFilter(echoSetKey)"
-              class="rounded p-[.3rem]"
-              :class="{ 'btn-active': isEchoSetFilterActive(echoSetKey) }">
-              <img
-                :src="getEchoSetIcon(echoSetKey)"
-                class="size-7 m-width-7"
-                :class="echoSetKey" />
-            </button>
-          </div>
-        </AppFilterPanel>
-        <div class="text-xs opacity-60 mb-2" data-test-echo-picker-count>
-          {{ allEchoesListFiltered.length }}
-          {{ allEchoesListFiltered.length === 1 ? "echo" : "echoes" }}
-        </div>
-      </div>
-      <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
-        <template v-if="!allEchoesListFiltered.length">
-          <div class="echoes__list--empty py-12 text-center w-full col-span-2">No echoes found</div>
-        </template>
-        <template v-else>
-          <div
-            v-for="echoesToChoose in allEchoesListFiltered"
-            :key="echoesToChoose.key"
-            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-            :data-test-echo-picker-option="echoesToChoose.key"
-            @click="chooseMainEcho(echoesToChoose.key)">
-            <div class="card-body items-center">
-              <div
-                class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-                :style="{ backgroundImage: `url(${echoesToChoose.image})` }"></div>
-              <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
-              <h3 class="flex items-center gap-1.5">
-                <span class="badge badge-sm badge-ghost">{{ echoesToChoose.class }}</span>
-                <span class="badge badge-sm font-mono">
-                  Cost {{ getCostByClass(echoesToChoose.class) }}
-                </span>
-              </h3>
-              <div class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
-                <div
-                  v-for="echoSetItem in echoesToChoose.sets"
-                  :key="echoSetItem"
-                  class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
-                  <img :src="getEchoSetIcon(echoSetItem)" :class="echoSetItem" />
-                </div>
-              </div>
-              <button type="button" class="btn btn-sm btn-primary" @click="chooseMainEcho(echoesToChoose.key)">
-                Use echo
-              </button>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
-  </dialog>
+  <EchoPickerDialog ref="pickerRef" :target="target" />
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { useEchoInventory } from "../composables/useEchoInventory";
-import { getSubstatFamily } from "../echoes/substatFamilies";
-import {
-  subStats,
-  getReadableSubStatLabel,
-  SHOW_ROLL_VALUE_BADGE,
-  echoSetLabelMap,
-} from "../echoes/stats";
+import { SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
-import { mainEchoesData, getCostByClass } from "../echoes/index.ts";
-import AppRichSelect from "./AppRichSelect.vue";
-import AppFilterPanel from "./AppFilterPanel.vue";
-import EchoSubstatSlider from "./EchoSubstatSlider.vue";
+import EchoEditFields from "./EchoEditFields.vue";
+import EchoPickerDialog from "./EchoPickerDialog.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
 
@@ -364,23 +163,22 @@ onUnmounted(() => {
   }
 });
 
+// Header chrome (this file) stays separate from the field-editing body
+// (EchoEditFields.vue) and the echo/set picker (EchoPickerDialog.vue) — see
+// docs/adr/0030-echoes-tab-v3-redesign.md decision #6. All three
+// self-source via useEchoEditFields(target) rather than prop-drilling a
+// dozen refs between them.
 const {
   echo,
   echoId,
-  echoSet,
   rank,
   stat,
   type,
   slots,
-  freeStatType,
-  freeStatValue,
-  freeStatLabel,
-  mainStatOptions,
   echoName,
   echoImage,
   echoSets,
   getEchoSetIcon,
-  getSubStatRange,
   handleChooseEchoSet: handleChooseEchoSetField,
   isSetSelected,
 } = useEchoEditFields(() => target.value);
@@ -393,21 +191,6 @@ const isEchoLocked = computed(() =>
 function handleChooseEchoSet(set: string) {
   if (isEchoLocked.value) return;
   handleChooseEchoSetField(set);
-}
-
-function setRank(r: number) {
-  if (isEchoLocked.value) return;
-  rank.value = r;
-}
-
-function assignSlotIfUnlocked(i: number, statKey: string | null) {
-  if (isEchoLocked.value) return;
-  assignSlot(i, statKey);
-}
-
-function setSlotValueIfUnlocked(i: number, value: number) {
-  if (isEchoLocked.value) return;
-  slots[i].value.value = value;
 }
 
 // Same getter-passthrough approach as CalculatorEchoTile.vue — reuses the
@@ -438,53 +221,6 @@ const { hasSubStats, formattedCritValue, critValueBadgeClass, echoRollValue, rol
 const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
   useEchoRating(cardStatsSource);
 
-const FAMILY_LABELS: Record<string, string> = {
-  crit: "Crit",
-  dmg: "DMG Bonus",
-  util: "Utility",
-  flat: "Flat / %",
-};
-
-const substatOptions = subStats.map((key) => ({
-  value: key,
-  label: getReadableSubStatLabel(key),
-  group: FAMILY_LABELS[getSubstatFamily(key)],
-}));
-
-// Each substat can only appear in one slot on a given echo — disable an
-// option in slot `i`'s list once it's already chosen in a different slot,
-// so picking a duplicate isn't possible from the dropdown.
-function getSubstatOptions(i: number) {
-  const usedElsewhere = new Set(
-    slots
-      .filter((_, j) => j !== i)
-      .map((s) => s.type.value)
-      .filter((t) => t && t !== "none"),
-  );
-  if (!usedElsewhere.size) return substatOptions;
-  return substatOptions.map((option) =>
-    usedElsewhere.has(option.value as string)
-      ? { ...option, disabled: true }
-      : option,
-  );
-}
-
-function isSlotFilled(i: number) {
-  const t = slots[i].type.value;
-  return Boolean(t) && t !== "none";
-}
-
-function assignSlot(i: number, statKey: string | null) {
-  if (!statKey) {
-    slots[i].type.value = "none";
-    slots[i].value.value = 0;
-    return;
-  }
-  const range = getSubStatRange(statKey);
-  slots[i].type.value = statKey;
-  slots[i].value.value = range[Math.floor(range.length / 2)];
-}
-
 const rankBorderClass = computed(() => ({
   "border-amber-300": String(rank.value) === "5",
   "border-violet-600": String(rank.value) === "4",
@@ -492,93 +228,7 @@ const rankBorderClass = computed(() => ({
   "border-green-500": String(rank.value) === "2",
 }));
 
-// -- echo/set picker dialog: unchanged flow, just relocated here so it's
-// reachable from the shared panel instead of the old per-slot modal.
-const pickerModalId = computed(
-  () => `echoEditPickerModal-${props.context}-${props.character ?? ""}-${props.index ?? props.echoId ?? ""}`,
-);
-const isPickerOpen = ref(false);
-const echoSetFilter = ref<string | null>(null);
-const echoSearch = ref("");
-const echoCostFilter = ref<number | null>(null);
-
-async function openEchoPicker() {
-  isPickerOpen.value = true;
-  await nextTick();
-  const modalEl = document.getElementById(pickerModalId.value);
-  (modalEl as HTMLDialogElement | null)?.showModal();
-}
-
-function closeEchoChooser() {
-  resetFilters();
-  const modalEl = document.getElementById(pickerModalId.value);
-  (modalEl as HTMLDialogElement | null)?.close();
-  isPickerOpen.value = false;
-}
-
-function chooseMainEcho(echoKey: string) {
-  if (isEchoLocked.value) return;
-  echo.value = echoKey;
-  if (props.context === "inventory") {
-    if (!echoSet.value) echoSet.value = echoSetFilter.value;
-  } else if (echoSetFilter.value) {
-    echoSet.value = echoSetFilter.value;
-  }
-  closeEchoChooser();
-}
-
-const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
-
-function toggleEchoSetFilter(echoSetKey: string) {
-  echoSetFilter.value = echoSetFilter.value === echoSetKey ? null : echoSetKey;
-}
-
-function isEchoSetFilterActive(echoSetKey: string) {
-  return echoSetFilter.value === echoSetKey;
-}
-
-function resetFilters() {
-  echoSetFilter.value = null;
-  echoSearch.value = "";
-  echoCostFilter.value = null;
-}
-
-const pickerActiveFilterCount = computed(() => {
-  let count = 0;
-  if (echoSetFilter.value) count += 1;
-  if (echoSearch.value.trim()) count += 1;
-  if (echoCostFilter.value != null) count += 1;
-  return count;
-});
-
-/**
- * Cost tiers offered by the filter. Every slot can hold any cost — the only
- * constraint the app enforces is the 12-point total across all 5 slots — so
- * this deliberately lists all three rather than narrowing by slot position.
- */
-const ECHO_COST_TIERS = [4, 3, 1];
-
-type EchoListEntry = { key: string; name: string; class: string; sets: string[]; image?: string };
-const classOrder: Record<string, number> = { Calamity: 0, Overlord: 1, Elite: 2, Common: 3 };
-const allEchoesListFiltered = computed((): EchoListEntry[] => {
-  let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
-  if (echoSetFilter.value) {
-    allEchoes = allEchoes.filter((e) => e.sets.includes(echoSetFilter.value!));
-  }
-  if (echoCostFilter.value != null) {
-    allEchoes = allEchoes.filter(
-      (e) => getCostByClass(e.class) === echoCostFilter.value,
-    );
-  }
-  const needle = echoSearch.value.trim().toLowerCase();
-  if (needle) {
-    allEchoes = allEchoes.filter((e) => e.name.toLowerCase().includes(needle));
-  }
-  return [...allEchoes].sort((a, b) => {
-    const cmp = classOrder[a.class] - classOrder[b.class];
-    return cmp === 0 ? a.name.localeCompare(b.name) : cmp;
-  });
-});
+const pickerRef = ref<InstanceType<typeof EchoPickerDialog> | null>(null);
 </script>
 
 <style scoped>
@@ -593,13 +243,6 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
   min-width: 0;
   border-left: 1px solid oklch(var(--b3));
   background: oklch(var(--b1));
-}
-
-.echo-filters__sets--active button {
-  opacity: 0.6;
-}
-.echo-filters__sets--active button.btn-active {
-  opacity: 1;
 }
 
 .echo-edit-panel--inventory {
@@ -622,39 +265,6 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
 
 .echo-edit-panel__handle {
   display: none;
-}
-
-.echo-edit-panel__locked-row {
-  background: oklch(var(--b2));
-  border: 1px dashed oklch(var(--b3));
-  border-radius: 0.6rem;
-  padding: 0.5rem 0.65rem;
-}
-
-.echo-edit-panel__slot {
-  border: 1px solid oklch(var(--b3));
-  border-radius: 0.6rem;
-  padding: 0.5rem 0.6rem;
-  background: oklch(var(--b2));
-}
-
-.echo-edit-panel__slot--empty {
-  border-style: dashed;
-  background: transparent;
-}
-
-.echo-edit-panel__slot-index {
-  width: 1.15rem;
-  height: 1.15rem;
-  border-radius: 999px;
-  background: oklch(var(--b3));
-  font-family: ui-monospace, "SFMono-Regular", monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {

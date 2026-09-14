@@ -15,6 +15,12 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "BlazingJustice",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "Tragicomedy", label: "Alterante" },
+      { key: "VeritysHandle", label: "Stat stick" },
+      { key: "PulsationBracer", label: "Standard" },
+      { key: "AetherStrike", label: "BP" },
+      { key: "CelestialSpiral", label: "4*" },
+    ],
   };
 }

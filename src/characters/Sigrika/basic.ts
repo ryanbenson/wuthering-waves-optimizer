@@ -14,6 +14,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "SolswornCiphers",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "BlazingJustice", label: "Alternate" },
+      { key: "PulsationBracer", label: "Standard" },
+      { key: "VeritysHandle", label: "Stat stick" },
+      { key: "AbyssSurges", label: "Standard" },
+      { key: "AetherStrike", label: "BP" },
+      { key: "LegendofDrunkenHero", label: "4*" },
+    ],
   };
 }

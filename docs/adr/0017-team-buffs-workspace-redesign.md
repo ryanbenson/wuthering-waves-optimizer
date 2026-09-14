@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-31
 tags: [calculator, components, buffs, characters]
+superseded_by: [0026]
 ---
 
 # 17. Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -78,6 +79,13 @@ made for this whole redesign wave.
    ~45 characters" concern to align to, so this is the one part of the
    screen that keeps its existing, already-proven interaction rather than
    adopting Custom Buffs' vocabulary.
+
+   **Superseded 2026-09-04 (ADR [0026](0026-chooser-modals-redesign.md)):**
+   `CalculatorTeamBuffsWorkspace.vue` now uses `WorkspaceCharacterBrowser.vue`
+   (0026's v3 character chooser), not `CalculatorCharacterBrowser.vue` —
+   verified directly in `src/components/CalculatorTeamBuffsWorkspace.vue`.
+   0026's own text doesn't call this call site out by name, but the code
+   confirms it was repointed along with the other v3 surfaces.
 
 7. **Reset all maps to `clearAllTeamBuffs`** (clears both teammate slots and
    every buff, matching the legacy "Clear all" button's actual behavior) —

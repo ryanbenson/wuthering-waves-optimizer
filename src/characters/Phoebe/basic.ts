@@ -16,6 +16,13 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "LuminousHymn",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "LetheanElegy", label: "Alternate" },
+      { key: "Stringmaster", label: "Alternate" },
+      { key: "WhispersofSirens", label: "Alternate" },
+      { key: "Augment", label: "BP" },
+      { key: "CosmicRipples", label: "Standard" },
+      { key: "OceansGift", label: "Event" },
+    ],
   };
 }

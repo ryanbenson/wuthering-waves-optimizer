@@ -15,6 +15,12 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     signatureWeapon: "DefiersThorn",
     liveResultBarStats: ["totalHp", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      { key: "RedSpring", label: "Alternate" },
+      { key: "FeatherEdge", label: "BP" },
+      { key: "BlazingBrilliance", label: "Stat stick" },
+      { key: "EmeraldOfGenesis", label: "Standard" },
+      { key: "GuardianSword", label: "3*" },
+    ],
   };
 }

@@ -1,10 +1,174 @@
 <template>
-  <button
-    type="button"
-    class="echo__tile card card-bordered card-compact bg-base-100 shadow w-full text-left"
+  <div
+    role="button"
+    tabindex="0"
+    class="echo__tile card card-bordered card-compact bg-base-100 shadow w-full text-left cursor-pointer"
+    :class="$attrs.class"
+    :aria-expanded="isExpanded"
     :data-test-echo-item="index"
-    @click="emit('open-edit-panel', index)">
+    @click="handleCardActivate"
+    @keydown="handleCardKeydown">
     <div class="card-body">
+      <template v-if="isExpanded">
+        <!--
+          Everything in the expanded state (header controls + EchoEditFields'
+          rank/main-stat/substat controls) stops click propagation here —
+          without it, clicks bubble to the root's own @click handler, and in
+          a real browser (not just a synthetic .click()) that produced an
+          actual bug: clicking the collapse button intermittently failed to
+          collapse. Don't rely on handleCardActivate's isExpanded guard alone
+          to make bubbled clicks safe; stop them at the source instead.
+        -->
+        <div class="flex items-start gap-3" @click.stop>
+          <div
+            class="echo__item__image group relative rounded-full border border-solid neutral-content size-12 bg-cover shrink-0 overflow-hidden"
+            :class="[rankBorderClass, isEchoLocked ? 'opacity-60' : 'cursor-pointer']"
+            :style="{ backgroundImage: `url(${echoImage})` }"
+            :aria-label="isEchoLocked ? undefined : 'Choose a different echo'"
+            @click="!isEchoLocked && pickerRef?.openPicker()">
+            <!--
+              Hover-only affordance so it's clear the avatar itself opens the
+              echo finder (EchoPickerDialog, via pickerRef — the same target
+              as the "Find" button below), not the inventory Browse dialog.
+              Locked echoes get no overlay at all — nothing to click there.
+            -->
+            <div
+              v-if="!isEchoLocked"
+              class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/50 transition-colors"
+              aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="size-4 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <path
+                  d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
+                  fill="currentColor" />
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-sm truncate">{{ echoName ?? "No echo selected" }}</div>
+            <div v-if="hasSubStats" class="flex items-center gap-1.5 flex-wrap mt-0.5">
+              <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
+                CV {{ formattedCritValue }}%
+              </span>
+              <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
+                RV {{ echoRollValue }}%
+              </span>
+              <span
+                v-if="substatScore"
+                class="badge badge-xs text-nowrap"
+                :class="substatScoreBadgeClass"
+                v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+              </span>
+              <span
+                v-else
+                class="badge badge-xs text-nowrap"
+                :class="echoRatingBadgeClass"
+                v-tooltip="'Echo Rating — overall substat roll quality'">
+                {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 mt-1.5">
+              <button
+                type="button"
+                class="btn btn-xs"
+                :disabled="isEchoLocked"
+                data-test-echo-edit-find
+                @click="pickerRef?.openPicker()">
+                Find
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost"
+                data-test-echo-edit-browse
+                @click="openEchoBrowser">
+                Browse
+              </button>
+            </div>
+            <div v-if="echoSets.length" class="flex items-center gap-1.5 mt-1.5">
+              <button
+                v-for="s in echoSets"
+                :key="s"
+                type="button"
+                class="size-5 rounded-full shrink-0"
+                :class="{ 'ring-2 ring-primary': isSetSelected(s) }"
+                :disabled="isEchoLocked"
+                :aria-pressed="isSetSelected(s)"
+                :aria-label="s"
+                @click="handleChooseEchoSet(s)">
+                <img :src="getEchoSetIcon(s)" :class="s" />
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost"
+            aria-label="Collapse editor"
+            data-test-echo-item-collapse
+            @click="emit('toggle-edit', index)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-width="1.8" d="M5 5l14 14M19 5 5 19" />
+            </svg>
+          </button>
+        </div>
+
+        <div @click.stop>
+          <EchoEditFields :target="target" :scrollable="false" />
+        </div>
+
+        <!--
+          A clear, visible Save affordance while editing — edits to an
+          already-saved echo persist automatically (useEchoEditFields
+          writes straight through to inventoryStore.patchEcho on every
+          change), but that wasn't obvious from the collapsed view alone.
+          Reusing the exact same button here, in the same disabled/active
+          states, so "Saved" always means the same thing everywhere on
+          this tile.
+        -->
+        <div class="flex items-center gap-2 mt-2 pt-2 border-t border-base-300 px-4 pb-3" @click.stop>
+          <button type="button" class="btn btn-xs btn-ghost" @click="reset">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+              <path
+                d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+                fill="currentColor" />
+            </svg>
+            Reset
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs"
+            :class="isEchoSaved ? 'btn-ghost' : 'btn-primary'"
+            :disabled="isEchoSaved"
+            v-tooltip="isEchoSaved ? 'Saved — further edits to a saved echo save automatically' : 'Save this echo to your inventory'"
+            @click="saveEchoItem">
+            <svg
+              v-if="isEchoSaved"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-3.5"
+              aria-hidden="true">
+              <path
+                d="M5 13l4 4L19 7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5" aria-hidden="true">
+              <path
+                d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
+                fill="currentColor" />
+            </svg>
+            {{ isEchoSaved ? "Saved" : "Save" }}
+          </button>
+          <span v-if="isEchoSaved" class="text-xs opacity-60">Changes save automatically</span>
+        </div>
+      </template>
+
+      <template v-else>
       <div class="flex items-start gap-3">
         <div class="flex flex-col items-center gap-0.5 shrink-0">
           <div class="relative">
@@ -26,10 +190,6 @@
             <span class="badge badge-sm badge-primary absolute -bottom-1 -right-1 font-mono px-1.5">
               {{ type ?? "—" }}
             </span>
-          </div>
-          <div class="flex items-center gap-0.5">
-            <EchoFavoriteButton :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
           </div>
         </div>
         <div class="flex-1 min-w-0">
@@ -64,14 +224,21 @@
               </span>
             </template>
           </div>
-        </div>
-        <div class="flex items-center gap-1 shrink-0" @click.stop>
-          <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
-          <AppOverflowMenu aria-label="More echo actions" :data-test-echo-item-menu="index">
-            <li><button type="button" @click="reset">Reset</button></li>
-            <li><button type="button" @click="saveEchoItem">Save</button></li>
-            <li><button type="button" @click="openEchoBrowser">Browse</button></li>
-          </AppOverflowMenu>
+          <!--
+            Favorite + lock/trash/temp/hidden as a third line, under
+            name / set+CV+score — moved here (from under the avatar, before
+            that from a separate header cluster) per review feedback.
+            EchoLockTrashActions' layout="row" flattens its own 3-icon-row +
+            hidden-icon-row shape into one line for this context only; the
+            legacy per-slot card and InventoryEchoesBrowser's status cluster
+            keep the default "stacked" shape, unaffected. EchoStatusBadge
+            still isn't used here — these toggle buttons' own active styling
+            is the only status indicator needed.
+          -->
+          <div class="flex items-center gap-1 mt-0.5" @click.stop>
+            <EchoFavoriteButton :echo-id="echoId || null" />
+            <EchoLockTrashActions v-if="echoId" :echo-id="echoId" layout="row" size="xs" />
+          </div>
         </div>
       </div>
 
@@ -92,12 +259,16 @@
               ? [
                   isPrioritySubstat(props.character, slot.type.value) ? 'bg-primary/15' : 'bg-base-200/60',
                   qualityClasses(slot)?.border,
+                  qualityClasses(slot)?.wash,
                 ]
               : 'border-l-base-300'
           "
           :data-test-echo-item-substat="i">
           <span class="flex items-center gap-1.5 min-w-0">
-            <img v-if="slotIsFilled(slot)" :src="getSubStatIconByType(slot.type.value)" class="size-4 shrink-0" />
+            <img
+              v-if="slotIsFilled(slot)"
+              :src="getSubStatIconByType(slot.type.value)"
+              class="size-4 shrink-0 echo-tile__substat-icon" />
             <span class="truncate" :class="slotIsFilled(slot) ? qualityClasses(slot)?.text : 'opacity-40'">
               {{ slotIsFilled(slot) ? getReadableSubStatLabel(slot.type.value) : "Empty" }}
             </span>
@@ -109,8 +280,88 @@
           </span>
         </div>
       </div>
+
+      <div
+        v-if="isEchoLocked"
+        class="flex items-center gap-1.5 text-xs opacity-70 mt-2 pt-2 border-t border-base-300"
+        data-test-echo-item-locked-notice>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5 shrink-0" aria-hidden="true">
+          <path
+            d="M384 192c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0 0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0zM224 80c-35.3 0-64 28.7-64 64l0 48 128 0 0-48c0-35.3-28.7-64-64-64z"
+            fill="currentColor" />
+        </svg>
+        Substats locked — unlock to edit
+      </div>
+
+      <!--
+        Actions grouped separately from the lock/trash/temp/hidden status
+        cluster up in the header — piling both into one row at the top was
+        real feedback ("all of the actions are piled up at the top"). These
+        are deliberate, infrequent actions, so they sit in their own row at
+        the bottom instead, as labeled buttons rather than icon-only ones
+        (an icon-only disabled checkmark with no visible label read as
+        unclear on its own — direct feedback too).
+      -->
+      <div class="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-base-300" @click.stop>
+        <button type="button" class="btn btn-xs" :data-test-echo-item-edit="index" @click="emit('toggle-edit', index)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
+              fill="currentColor" />
+          </svg>
+          Edit
+        </button>
+        <button type="button" class="btn btn-xs btn-ghost" :data-test-echo-item-reset="index" @click="reset">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+              fill="currentColor" />
+          </svg>
+          Reset
+        </button>
+        <button
+          type="button"
+          class="btn btn-xs"
+          :class="isEchoSaved ? 'btn-ghost' : 'btn-primary'"
+          :disabled="isEchoSaved"
+          v-tooltip="isEchoSaved ? 'Saved — further edits to a saved echo save automatically' : 'Save this echo to your inventory'"
+          :data-test-echo-item-save="index"
+          @click="saveEchoItem">
+          <svg
+            v-if="isEchoSaved"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-3.5"
+            aria-hidden="true">
+            <path
+              d="M5 13l4 4L19 7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
+              fill="currentColor" />
+          </svg>
+          {{ isEchoSaved ? "Saved" : "Save" }}
+        </button>
+        <button type="button" class="btn btn-xs btn-ghost" :data-test-echo-item-browse="index" @click="openEchoBrowser">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="size-3.5" aria-hidden="true">
+            <path
+              d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
+              fill="currentColor" />
+          </svg>
+          Browse
+        </button>
+      </div>
+      </template>
     </div>
-  </button>
+  </div>
+
+  <EchoPickerDialog ref="pickerRef" :target="target" />
 </template>
 
 <script setup lang="ts">
@@ -119,9 +370,10 @@
 // itself is untouched and still renders when the flag is off — this is a
 // separate component rather than a branch inside that file so the legacy
 // path carries zero risk from this change.
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useEchoInventory } from "../composables/useEchoInventory";
 import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats, getSubstatRollQualityClasses, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
@@ -130,14 +382,15 @@ import { usePrioritySubstats } from "../composables/usePrioritySubstats";
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
-import EchoStatusBadge from "./EchoStatusBadge.vue";
-import AppOverflowMenu from "./AppOverflowMenu.vue";
+import EchoEditFields from "./EchoEditFields.vue";
+import EchoPickerDialog from "./EchoPickerDialog.vue";
 
 defineOptions({ name: "CalculatorEchoTile" });
 
 const props = defineProps<{
   character: string;
   index: number;
+  isExpanded: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -148,7 +401,7 @@ const emit = defineEmits<{
   "main-echo:updated": [echoKey: string | null];
   "on-echo-removed": [];
   "open-echoes-browser": [index: number];
-  "open-edit-panel": [index: number];
+  "toggle-edit": [index: number];
 }>();
 
 const characterStore = useCharacterStore();
@@ -175,9 +428,59 @@ const {
   isEchoIncomplete,
   echoName,
   echoImage,
+  echoSets,
+  getEchoSetIcon,
+  handleChooseEchoSet: handleChooseEchoSetField,
+  isSetSelected,
   stats,
   isApplyingEchoLoadout,
+  currentEcho,
 } = useEchoEditFields(() => target.value);
+
+// Inline expand-in-place editing (see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #3) reuses EchoEditFields/EchoPickerDialog from the docked panel
+// refactor — this component now needs its own copy of isEchoLocked for the
+// expanded header's own controls, same self-sourcing pattern those two
+// components use.
+const { getEchoFlags } = useEchoInventory();
+const isEchoLocked = computed(() => (echoId.value ? getEchoFlags(echoId.value).locked : false));
+
+function handleChooseEchoSet(set: string) {
+  if (isEchoLocked.value) return;
+  handleChooseEchoSetField(set);
+}
+
+const pickerRef = ref<InstanceType<typeof EchoPickerDialog> | null>(null);
+
+// Root is a div (not a button) because the expanded state embeds
+// AppRichSelect, whose own trigger is itself an interactive
+// role="button" element — nesting that inside a real <button> is a real
+// accessibility/interaction hazard (duplicate interactive semantics,
+// native Enter/Space handling on the outer button fighting the inner
+// trigger's own keydown handling), not just a style choice. Card-wide
+// click/keyboard activation only applies while collapsed — while
+// expanded, the only way to collapse is the explicit close button in the
+// expanded header, so clicks inside EchoEditFields never fight this
+// handler.
+function handleCardActivate() {
+  if (props.isExpanded) return;
+  emit("toggle-edit", props.index);
+}
+function handleCardKeydown(event: KeyboardEvent) {
+  if (props.isExpanded) return;
+  if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+    event.preventDefault();
+    emit("toggle-edit", props.index);
+  }
+}
+
+// "Saved" here means "promoted to a standalone inventory record" rather
+// than field-level dirty-tracking — see docs/adr/0030-echoes-tab-v3-redesign.md
+// decision #5. useEchoEditFields' field() factory writes every edit
+// straight through to inventoryStore.patchEcho() once an echoId exists, so
+// there's no staging buffer and no "unsaved changes" to detect for an
+// already-saved slot; clicking Save again would be a provable no-op.
+const isEchoSaved = computed(() => Boolean(echoId.value) && Boolean(currentEcho.value));
 
 // Getter passthrough onto the composable's own writable-computed refs, so
 // useEchoCardStats/useEchoRating's internal computed()s keep tracking live
@@ -345,5 +648,11 @@ defineExpose({ saveEchoItem });
   height: 1.75rem;
   background: rgba(0, 0, 0, 0.65);
   color: #facc15;
+}
+
+/* Same light-mode inversion convention as EchoCardSubstatList.vue — these
+   substat icons are dark-line glyphs drawn for a dark background. */
+html[data-theme-style="light"] .echo-tile__substat-icon {
+  filter: contrast(0);
 }
 </style>
