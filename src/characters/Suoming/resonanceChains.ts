@@ -89,23 +89,8 @@ export const resonanceChains = [
   {
     key: `SequenceNode6NineShadowsAtHerSide`,
     name: `Sequence Node 6: Nine Shadows at Her Side`,
-    details: `<div>The effect of each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> is increased by 50%, up to 4 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span>.<br>The DMG Multiplier of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Umbral Canopy: Engraved Heart</span> is increased by 50%.<br>When Suoming has <span style="color:#ffd12f;" class="font-bold">Seal Master</span>, her Crit. DMG is further increased by 80%.</div>`,
+    details: `<div>The effect of each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> is increased by 50%, up to 4 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span>.<br>The DMG Multiplier of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Umbral Canopy: Engraved Heart</span> is increased by 50%.<br>When Suoming has <span style="color:#ffd12f;" class="font-bold">Seal Master</span>, her Crit. DMG is further increased by 200%.</div>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_SuomingM6_UI.webp`,
     hasStacks: false,
-    // The Unison Boon max-stacks increase (2 -> 4) and per-stack value
-    // increase (+50%), and the conditional +80% Crit. DMG while Seal Master
-    // is active, are stack/state-dependent and are handled in
-    // effectiveBuffStacks.ts and stats.ts (computeSelfBuffs), mirroring
-    // Hsin's SequenceNode6TheMoonOwesItsLightToTheLiving UnisonBoon handling.
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["BasicAttackUmbralCanopyEngravedHeartDMG"],
-        modifierValue: 0.5,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
   }
 ];

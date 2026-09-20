@@ -212,6 +212,7 @@ async function enableAllCharacterBuffs() {
 async function maxAllCharacterBuffs() {
   const resonanceChains =
     characters.value[props.character]?.resonanceChains ?? {};
+  const selfBuffs = characters.value[props.character]?.buffs;
 
   const updates = buildBulkEnableUpdate("buffs", props.buffs, isEnabledElsewhere, (key) => {
     const buff = props.buffs.find((b) => b.key === key);
@@ -219,7 +220,7 @@ async function maxAllCharacterBuffs() {
       return {};
     }
     return {
-      stacks: getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains),
+      stacks: getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains, selfBuffs),
     };
   });
 

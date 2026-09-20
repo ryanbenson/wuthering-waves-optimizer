@@ -139,6 +139,7 @@ const effectiveMaxStacks = computed(() =>
     props.uniqueKey,
     props.maxStacks,
     currentCharacter.value.resonanceChains,
+    currentCharacter.value.buffs,
   ),
 );
 

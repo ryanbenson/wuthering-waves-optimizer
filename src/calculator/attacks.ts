@@ -1339,7 +1339,6 @@ export const calculateAttackDamage = (
   // ElementalEffect + ElectroFlare dispatch below (it would otherwise
   // handle these attacks with no kit multiplier applied).
   if (
-    attack.key === "HeartOfThunderInstantDMG" ||
     attack.key === "HeartOfThunderDelayedDMG" ||
     attack.key === "SequenceNode3PillarsAcrossHeavenElectroFlareDMG"
   ) {
@@ -1403,11 +1402,9 @@ export const calculateAttackDamage = (
         ?.resonanceChains?.SequenceNode1ABoatToCrossTheRisingTide?.isEnabled ??
       false;
     let kitMultiplier: number;
-    if (attack.key === "HeartOfThunderInstantDMG") {
-      kitMultiplier = sequenceNode1Enabled ? 2.1 : 1.75;
-    } else if (attack.key === "HeartOfThunderDelayedDMG") {
+    if (attack.key === "HeartOfThunderDelayedDMG") {
       kitMultiplier =
-        (sequenceNode1Enabled ? 0.42 : 0.4) * heartOfThunderStacksConsumed;
+        (sequenceNode1Enabled ? 0.42 : 0.35) * heartOfThunderStacksConsumed;
     } else {
       // SequenceNode3PillarsAcrossHeavenElectroFlareDMG: fixed 1500%.
       kitMultiplier = 15.0;
