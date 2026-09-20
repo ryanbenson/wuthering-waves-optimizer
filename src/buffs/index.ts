@@ -2684,7 +2684,7 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
       details: `<div>When Suoming has Unison and is switched out, she gains the Aligned Seals effect for 30s.
 While this effect is active, Suoming's Outro Skill grants the incoming Resonator an additional 20% for each stack of Unison Boon they have, up to 40%. This effect lasts for 8s or until the Resonator is switched out.</div>`,
       icon: `https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp`,
-      hasStacks: false,
+      hasStacks: true,
       modifiers: [
         {
           modifier: "Electro",
