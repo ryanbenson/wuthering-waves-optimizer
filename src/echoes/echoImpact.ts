@@ -8,9 +8,11 @@ import {
   type ComparisonTargetOptions,
 } from "../calculator/rotationComparison";
 import {
+  buildCharacterCalculationContext,
   resolveCharacterEchoes,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
+import type { BuildPreviewStats } from "../calculator/buildPreview";
 import { ROTATION_DAMAGE_FIELD, type LiveResultBarDamageType } from "../calculator/liveResultBar";
 import {
   getSetBonusEffects,
@@ -96,6 +98,8 @@ export interface EchoImpactDelta {
 }
 
 export interface EchoImpactOptions extends ComparisonTargetOptions {
+  /** `estimateEchoPresetPreview` only: skip the damage comparison and return stats alone. */
+  skipImpact?: boolean;
   /**
    * Which damage-aggregation field to compare (Normal/Average/Crit) — should
    * match whatever the caller currently has the Live Result Bar showing for
@@ -199,11 +203,35 @@ function resolveCandidateEchoConfig(
   inventoryEchoes: any[],
 ): { syntheticCharacters: Record<string, any> } {
   const characterData = characters?.[characterId] ?? {};
+  return resolveCandidateEchoPointersConfig(
+    characterId,
+    characters,
+    {
+      ...(characterData.echoes ?? {}),
+      [candidate.slotIndex]: { echoId: candidate.echoId },
+    },
+    candidate.slotIndex === 0,
+    inventoryEchoes,
+  );
+}
+
+/**
+ * Shared body of `resolveCandidateEchoConfig` — takes the full, already
+ * swapped 5-slot pointer map (a slot is `{ echoId }` or inline echo data,
+ * exactly what `resolveCharacterEchoes` accepts) so a whole preset can be
+ * previewed with the same set-bonus / passive / main-echo recompute a
+ * single-slot swap gets. `touchesMainSlot` gates the slot-0 main-echo logic
+ * the same way the old `slotIndex === 0` check did.
+ */
+function resolveCandidateEchoPointersConfig(
+  characterId: string,
+  characters: Record<string, any>,
+  nextEchoPointers: Record<string | number, any>,
+  touchesMainSlot: boolean,
+  inventoryEchoes: any[],
+): { syntheticCharacters: Record<string, any> } {
+  const characterData = characters?.[characterId] ?? {};
   const previousEchoSetBonus: EchoSetBonusSelection = characterData.echoSetBonus ?? {};
-  const nextEchoPointers = {
-    ...(characterData.echoes ?? {}),
-    [candidate.slotIndex]: { echoId: candidate.echoId },
-  };
   const echoSetBonus: EchoSetBonusSelection = characterData.setOverride
     ? previousEchoSetBonus
     : getSetBonusEffects(
@@ -218,8 +246,8 @@ function resolveCandidateEchoConfig(
       );
 
   let mainEcho = characterData.mainEcho;
-  if (candidate.slotIndex === 0) {
-    const candidateEchoType = inventoryEchoes.find((e) => e?.echoId === candidate.echoId)?.echo ?? null;
+  if (touchesMainSlot) {
+    const candidateEchoType = resolveCharacterEchoes(nextEchoPointers, inventoryEchoes)[0]?.echo ?? null;
     const previousEchoType = characterData.mainEcho?.echo ?? null;
     if (candidateEchoType !== previousEchoType) {
       // A genuinely different boss, not just a different roll of the same
@@ -445,4 +473,76 @@ export async function estimateEchoSwapImpactBatch(
     }),
   );
   return results;
+}
+
+export interface EchoPresetPreview {
+  /** Damage change vs. the character's current build; null when there is no rotation/attack to compare. */
+  impact: EchoImpactDelta | null;
+  /** Headline stats with the preset's echoes equipped (all enabled buffs, like the build preview). */
+  stats: BuildPreviewStats | null;
+}
+
+/**
+ * Previews swapping a character's entire echo loadout for a preset — the
+ * whole-loadout sibling of `estimateEchoSwapImpact`. `slots` is the preset's
+ * 5-slot pointer map: saved presets pass `{ [i]: { echoId } }` (resolved
+ * against `inventoryEchoes`), prebuilt presets pass their inline echo data.
+ * Slots the preset leaves empty are cleared, matching what applying it does.
+ * Reuses `resolveCandidateEchoPointersConfig`, so set bonuses, newly
+ * unlocked set passives and the main-echo buff are recomputed exactly as for
+ * a single swap. Stats use the same fixed enemy as the Manage Builds preview.
+ */
+export async function estimateEchoPresetPreview(
+  characterId: string,
+  characters: Record<string, any>,
+  slots: Record<number, any>,
+  enemyConfig: TeamEnemyConfig,
+  inventoryEchoes: any[] = [],
+  options: EchoImpactOptions = {},
+): Promise<EchoPresetPreview> {
+  const damageType = options.damageType ?? "Average";
+  const { syntheticCharacters } = resolveCandidateEchoPointersConfig(
+    characterId,
+    characters,
+    { ...slots },
+    true,
+    inventoryEchoes,
+  );
+
+  let stats: BuildPreviewStats | null = null;
+  try {
+    const built = await buildCharacterCalculationContext(
+      characterId,
+      syntheticCharacters,
+      enemyConfig,
+      inventoryEchoes,
+    );
+    stats = {
+      totalHp: built.finalStats.totalHp,
+      totalDef: built.finalStats.totalDef,
+      totalAtk: built.finalStats.totalAtk,
+      critRate: built.finalStats.critRate,
+      critDMG: built.finalStats.critDMG,
+      energyRegen: built.finalStats.energyRegen * 100,
+    };
+  } catch {
+    stats = null;
+  }
+
+  let impact: EchoImpactDelta | null = null;
+  try {
+    const rotation = options.skipImpact
+      ? null
+      : await resolveEchoComparisonRotation(characterId, characters, options);
+    if (rotation) {
+      const [baseline, candidate] = await Promise.all([
+        calcCharacterRotationDamage(rotation, null, characterId, characters, enemyConfig, inventoryEchoes),
+        calcCharacterRotationDamage(rotation, null, characterId, syntheticCharacters, enemyConfig, inventoryEchoes),
+      ]);
+      impact = toImpactDelta(readDamage(baseline, damageType), readDamage(candidate, damageType));
+    }
+  } catch {
+    impact = null;
+  }
+  return { impact, stats };
 }

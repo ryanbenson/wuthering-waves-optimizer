@@ -63,7 +63,10 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replaces: "InherentSkillApplauseofVictory",
+    mutuallyExclusiveWith: [
+      { key: "InherentSkillApplauseofVictory", category: "buffs" },
+      { key: "InherentSkillApplauseofVictoryFullFusionTeam", category: "buffs" },
+    ],
   },
   {
     key: "SequenceNode4HighandAflameIsHerBanner",

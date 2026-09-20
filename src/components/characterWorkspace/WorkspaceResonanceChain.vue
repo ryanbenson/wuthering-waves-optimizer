@@ -103,6 +103,11 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import {
+  buildBuffToggleUpdate,
+  type CategoryToggleUpdates,
+  type MutuallyExclusiveRef,
+} from "../../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../../stores/character";
 
 interface AttackTargetOption {
@@ -126,6 +131,7 @@ interface ResonanceChainBuffRow {
   maxStacks?: number;
   realisticMaxStacks?: number;
   buffAttackTargetSelection?: AttackTargetSelection;
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
 }
 
 interface Props {
@@ -214,6 +220,39 @@ function findGroupLevel(key: string): number | null {
   return groups.value.find((group) => group.buffs.some((b) => b.key === key))?.level ?? null;
 }
 
+function findBuff(key: string): ResonanceChainBuffRow | undefined {
+  return props.buffs.find((b) => b.key === key);
+}
+
+// A resonance chain node can declare itself mutually exclusive with a key in
+// another category (e.g. Lupa's Sequence 3 node superseding her own inherent
+// skill self buffs) — merges those disables in alongside a batch of
+// `resonanceChains` updates so both land in one `setCharacterData` call. The
+// caller's own resonanceChains entries (which may carry `stacks`) are kept
+// as-is; only additional disable entries get merged in.
+function withMutualExclusionDisables(
+  resonanceChainUpdates: Record<string, { isEnabled: boolean; stacks?: number }>,
+): CategoryToggleUpdates {
+  const merged: CategoryToggleUpdates = { resonanceChains: { ...resonanceChainUpdates } };
+
+  for (const [key, update] of Object.entries(resonanceChainUpdates)) {
+    if (!update.isEnabled) {
+      continue;
+    }
+    const toggle = buildBuffToggleUpdate("resonanceChains", key, true, findBuff(key)?.mutuallyExclusiveWith);
+    for (const category of Object.keys(toggle) as (keyof CategoryToggleUpdates)[]) {
+      for (const [disabledKey, disabledUpdate] of Object.entries(toggle[category] ?? {})) {
+        if (category === "resonanceChains" && disabledKey === key) {
+          continue; // keep the caller's own (possibly stack-bearing) entry
+        }
+        merged[category] = { ...(merged[category] ?? {}), [disabledKey]: disabledUpdate };
+      }
+    }
+  }
+
+  return merged;
+}
+
 // A buff's own toggle switch only ever affects other buffs when turning
 // one on: it cascades into *earlier* sequence levels (its own level
 // included) that are still fully untouched — mirroring what clicking the
@@ -235,9 +274,7 @@ function setEnabled(key: string, value: boolean) {
 
   const level = findGroupLevel(key);
   if (level === null) {
-    characterStore.setCharacterData(props.character, {
-      resonanceChains: { [key]: { isEnabled: true } },
-    });
+    characterStore.setCharacterData(props.character, withMutualExclusionDisables({ [key]: { isEnabled: true } }));
     emit("updated-character-resonance-chains");
     return;
   }
@@ -258,7 +295,7 @@ function setEnabled(key: string, value: boolean) {
     // An earlier level that's already independently set is left as-is.
   }
 
-  characterStore.setCharacterData(props.character, { resonanceChains: updates });
+  characterStore.setCharacterData(props.character, withMutualExclusionDisables(updates));
   emit("updated-character-resonance-chains");
 }
 
@@ -305,7 +342,7 @@ function setLevel(level: number) {
       updates[buff.key] = { isEnabled: shouldEnable };
     }
   }
-  characterStore.setCharacterData(props.character, { resonanceChains: updates });
+  characterStore.setCharacterData(props.character, withMutualExclusionDisables(updates));
   emit("updated-character-resonance-chains");
 }
 
@@ -327,7 +364,7 @@ function maxAll() {
     }
     updates[buff.key] = update;
   }
-  characterStore.setCharacterData(props.character, { resonanceChains: updates });
+  characterStore.setCharacterData(props.character, withMutualExclusionDisables(updates));
   emit("updated-character-resonance-chains");
 }
 </script>

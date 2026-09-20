@@ -1,6 +1,7 @@
 <template>
   <div
-    class="weapon-passive-item card card-bordered card-compact bg-base-100 shadow mb-2"
+    class="weapon-passive-item card card-bordered card-compact bg-base-100 shadow mb-2 transition-opacity"
+    :class="{ 'opacity-50': !isEnabled }"
     :data-test-weapon-passive="passiveKey">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
@@ -44,6 +45,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { buildBuffToggleUpdate, type MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../stores/character";
 import { resolveWeaponPassiveInstance } from "../weapons/weaponPassives";
 
@@ -59,6 +61,7 @@ const props = withDefaults(
     alwaysEnabled?: boolean;
     refinement?: string;
     passiveKey?: string;
+    mutuallyExclusiveWith?: MutuallyExclusiveRef[];
   }>(),
   {
     hasStacks: false,
@@ -103,11 +106,10 @@ const isEnabled = computed({
     return passiveEntry.value?.isEnabled ?? false;
   },
   set(value: boolean) {
-    void setCharacterData(props.character, {
-      weaponPassives: {
-        [props.passiveKey ?? ""]: { isEnabled: value },
-      },
-    });
+    void setCharacterData(
+      props.character,
+      buildBuffToggleUpdate("weaponPassives", props.passiveKey ?? "", value, props.mutuallyExclusiveWith),
+    );
   },
 });
 

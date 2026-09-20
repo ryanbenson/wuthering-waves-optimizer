@@ -56,6 +56,12 @@ made for this whole redesign wave.
    now; the same gap exists on Settings/Updates/Privacy/Legal but wasn't
    in scope for this pass.
 
+   **Superseded 2026-09-14:** `InfoView.vue` itself now also calls
+   `useDocumentTitle` unconditionally (not just its flag-on children), so
+   `/info` gets its own title/description even with the `liveResultBar`
+   flag off — closing that specific gap for `/info` while it remains open
+   for Settings/Updates/Privacy/Legal. See `docs/src-components.md`.
+
 3. **Flag-off renders the complete legacy article on every `/info/*` path —
    no redirect, no guard.** Since legacy `InfoView.vue` already contains
    every section in one place, `v-else` on `isLiveResultBarEnabled` just

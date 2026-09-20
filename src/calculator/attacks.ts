@@ -1077,6 +1077,15 @@ export const calculateAttackDamage = (
     teamBuffsTotalDamage +
     selfBuffTotalDamage +
     resonanceChainTotalDamage;
+    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
+  // Endgame Total DMG is its own multiplicative factor on top of Total DMG:
+  // (1 + totalDamageMultiplier) * (1 + totalDamageEndgame)
+  const customBuffTotalDamageEndgame = n(
+    context.buffs.customBuffs?.TotalDamageEndgame,
+  );
+  const actionBuffTotalDamageEndgame = n(attack?.buffs?.TotalDamageEndgame);
+  const totalDamageEndgame =
+    customBuffTotalDamageEndgame + actionBuffTotalDamageEndgame;
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +
@@ -1198,6 +1207,7 @@ export const calculateAttackDamage = (
       totalDamageMultiplier,
       count,
       talent,
+      totalDamageEndgame,
     );
   }
 
@@ -1779,6 +1789,7 @@ export const calculateAttackDamage = (
     totalDefReduction,
     totalResistIgnore,
     totalDamageMultiplier,
+    totalDamageEndgame,
   );
 };
 

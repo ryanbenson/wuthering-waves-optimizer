@@ -1,5 +1,6 @@
 <template>
   <div class="team-buffs-workspace">
+    <WorkspaceSplitLayout label="Team Contribution & Active Buffs" :count="activeTrayEntries.length">
     <div
       class="team-buffs-workspace__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Team Buffs</h3>
@@ -36,48 +37,6 @@
         </label>
       </div>
 
-      <div class="border-t border-base-300 pt-2">
-        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">Team Contribution</div>
-        <div class="flex flex-wrap gap-5">
-          <div v-for="tile in contributionTiles" :key="tile.label" class="flex flex-col gap-0.5">
-            <span class="text-lg font-bold font-mono leading-none" data-test-team-buffs-contribution-value>{{
-              tile.value
-            }}</span>
-            <span class="text-[.66rem] opacity-50">{{ tile.label }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="border-t border-base-300 pt-2">
-        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
-          Active buffs
-          <span class="font-mono normal-case tracking-normal opacity-70">({{ activeTrayEntries.length }})</span>
-        </div>
-        <p v-if="!activeTrayEntries.length" class="text-xs opacity-50">
-          Nothing enabled yet — buffs you turn on below show up here.
-        </p>
-        <div v-else class="flex flex-wrap gap-1.5" data-test-team-buffs-active-tray>
-          <div
-            v-for="entry in activeTrayEntries"
-            :key="entry.key"
-            class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1 !pr-1">
-            <button type="button" class="flex flex-wrap items-center gap-1.5 min-w-0" @click="jumpTo(entry.key)">
-              {{ entry.label }}
-              <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
-                >+{{ formatPct(c.value) }} {{ c.label }}</span
-              >
-            </button>
-            <button
-              type="button"
-              class="opacity-70 hover:opacity-100 shrink-0 px-1"
-              :aria-label="`Remove ${entry.label}`"
-              :data-test-team-buffs-tray-remove="entry.key"
-              @click="disableBuff(entry.key)">
-              ✕
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <p v-if="query && !anySearchMatch" class="text-sm opacity-50 text-center py-8">No buffs match "{{ query }}".</p>
@@ -339,12 +298,70 @@
         </div>
       </div>
     </div>
+    <template #summary>
+      <div class="bg-base-200 rounded-xl p-3 flex flex-col gap-3" data-test-team-buffs-summary>
+        <div
+          v-if="!activeTrayEntries.length"
+          class="flex flex-col items-center gap-1.5 text-center py-8 px-4"
+          data-test-team-buffs-empty>
+          <span class="text-sm font-semibold">No team buffs active</span>
+          <p class="text-xs opacity-60 max-w-xs">
+            Turn on buffs from your teammates, echoes, or weapons and this panel will show what they add to
+            ATK, DMG Bonus and Crit DMG, plus a quick list of everything that's enabled.
+          </p>
+        </div>
+        <template v-else>
+      <div>
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">Team Contribution</div>
+        <div class="flex flex-wrap gap-5">
+          <div v-for="tile in contributionTiles" :key="tile.label" class="flex flex-col gap-0.5">
+            <span class="text-lg font-bold font-mono leading-none" data-test-team-buffs-contribution-value>{{
+              tile.value
+            }}</span>
+            <span class="text-[.66rem] opacity-50">{{ tile.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-base-300 pt-2">
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
+          Active buffs
+          <span class="font-mono normal-case tracking-normal opacity-70">({{ activeTrayEntries.length }})</span>
+        </div>
+
+        <div class="flex flex-wrap gap-1.5" data-test-team-buffs-active-tray>
+          <div
+            v-for="entry in activeTrayEntries"
+            :key="entry.key"
+            class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1 !pr-1">
+            <button type="button" class="flex flex-wrap items-center gap-1.5 min-w-0" @click="jumpTo(entry.key)">
+              {{ entry.label }}
+              <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
+                >+{{ formatPct(c.value) }} {{ c.label }}</span
+              >
+            </button>
+            <button
+              type="button"
+              class="opacity-70 hover:opacity-100 shrink-0 px-1"
+              :aria-label="`Remove ${entry.label}`"
+              :data-test-team-buffs-tray-remove="entry.key"
+              @click="disableBuff(entry.key)">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+        </template>
+      </div>
+    </template>
+    </WorkspaceSplitLayout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
+import WorkspaceSplitLayout from "./characterWorkspace/WorkspaceSplitLayout.vue";
 import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index.ts";
 import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters.ts";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";

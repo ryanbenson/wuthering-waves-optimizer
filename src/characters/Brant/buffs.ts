@@ -19,7 +19,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replacesBuff: "TheatricalMoment",
+    mutuallyExclusiveWith: ["TheatricalMoment"],
   },
   {
     key: `TheatricalMoment`,
@@ -42,7 +42,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replacedBy: "MyMoment",
+    mutuallyExclusiveWith: ["MyMoment"],
   },
   {
     key: "InherentSkillVoyagersBlaze",

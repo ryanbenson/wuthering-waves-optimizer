@@ -38,6 +38,7 @@ const weaponInfo: WeaponInfo = {
       maxStacks: 3,
       details: `While the wielder is on the field, using Resonance Skill grants <span class="param">12%/15%/18%/21%/24%</span> Basic Attack DMG Bonus, stacking up to <span class="param">3</span> times for <span class="param">6</span>s.`,
       alwaysEnabled: false,
+      mutuallyExclusiveWith: ["RimeDrapedSproutsBasicAtkBonus2"],
     },
     {
       key: "RimeDrapedSproutsBasicAtkBonus2",
@@ -54,6 +55,7 @@ const weaponInfo: WeaponInfo = {
       maxStacks: 0,
       details: `At <span class="param">3</span> stacks or above, casting Outro Skill consumes all stacks of this effect and grants the wielder <span class="param">52%/65%/78%/91%/104%</span> Basic Attack DMG Bonus for <span class="param">27</span>s, effective when the wielder is off the field.`,
       alwaysEnabled: false,
+      mutuallyExclusiveWith: ["RimeDrapedSproutsBasicAtkBonus1"],
     },
   ],
 };

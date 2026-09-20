@@ -1,6 +1,7 @@
 <template>
   <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer transition-opacity"
+    :class="{ 'opacity-50': !isEnabled }"
     @click="toggleEnabled">
     <div class="card-body">
       <h2 class="card-title">{{ displayBuffName }}</h2>
@@ -69,6 +70,7 @@ import { computed, nextTick, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import { buildBuffToggleUpdate, type MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../stores/character";
 
 interface StoreCharBuffEntry {
@@ -102,6 +104,7 @@ interface Props {
   talentData?: Record<string, unknown>;
   energyRegen?: number;
   critRate?: number;
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -138,11 +141,10 @@ const isEnabled = computed({
     );
   },
   async set(value: boolean) {
-    await characterStore.setCharacterData(props.character, {
-      buffs: {
-        [props.uniqueKey]: { isEnabled: value },
-      },
-    });
+    await characterStore.setCharacterData(
+      props.character,
+      buildBuffToggleUpdate("buffs", props.uniqueKey, value, props.mutuallyExclusiveWith),
+    );
   },
 });
 

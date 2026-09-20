@@ -12,6 +12,29 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-19",
+    dateLabel: "September 19, 2026",
+    items: [
+      "v3: Echo cards, presets and the import modal reworked; presets now show stats, build score and damage impact, and support descriptions",
+      "v3: Team Buffs and Custom Buffs now show a sticky summary panel beside the controls",
+      "Adds Total DMG (Endgame buff) as a custom and rotation action level buff; it multiplies against Total DMG and is shown in the damage breakdown",
+    ],
+  },
+  {
+    date: "2026-09-16",
+    dateLabel: "September 16, 2026",
+    items: [
+      "Fixes Mornye's S6, moves it from Vulnerability to DMG Bonus",
+    ],
+  },
+  {
+    date: "2026-09-14",
+    dateLabel: "September 14, 2026",
+    items: [
+      "Updates info page with updated features, and expands on formulas",
+    ],
+  },
+  {
     date: "2026-09-13",
     dateLabel: "September 13, 2026",
     items: [

@@ -33,7 +33,8 @@ export type CustomBuffKey =
   | "CoordinatedDMGBonus"
   | "TuneBreakDMGBonus"
   | "SpecialMultiplier"
-  | "TotalDamage";
+  | "TotalDamage"
+  | "TotalDamageEndgame";
 
 /** Keys stored as flat additive values, not whole-number percentages. */
 const FLAT_CUSTOM_BUFF_KEYS: ReadonlySet<CustomBuffKey> = new Set(["ATK_FLAT", "HP_FLAT", "DEF_FLAT"]);

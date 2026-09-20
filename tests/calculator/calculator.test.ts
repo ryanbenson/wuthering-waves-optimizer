@@ -80,6 +80,17 @@ describe("#getBaseDamage", () => {
     // 1000 * 1 * 1 * (1 + 0.2) * (1 + 0.1) * 1 * 1
     expect(result).toEqual(1320);
   });
+  it("multiplies Total DMG by the Endgame Total DMG factor", () => {
+    const result = getBaseDamage(1, 1000, 1, 1, 1, 0, 0.1, 0.1);
+    // 1000 * (1 + 0.1) * (1 + 0.1) = 1210 (not additive: 1200)
+    expect(result).toBeCloseTo(1210, 6);
+  });
+  it("Endgame Total DMG of 0 leaves damage unchanged", () => {
+    expect(getBaseDamage(1, 1000, 1, 1, 1, 0.2, 0.1, 0)).toBeCloseTo(1320, 6);
+  });
+  it("Endgame Total DMG applies with no base Total DMG", () => {
+    expect(getBaseDamage(1, 1000, 1, 1, 1, 0, 0, 0.1)).toBeCloseTo(1100, 6);
+  });
 });
 
 describe("#getTalentValue", () => {

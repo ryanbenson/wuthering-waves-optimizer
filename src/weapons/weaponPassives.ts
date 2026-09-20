@@ -1,3 +1,5 @@
+import type { MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
+
 export interface WeaponPassiveDef {
   key: string;
   hasStacks?: boolean;
@@ -7,6 +9,7 @@ export interface WeaponPassiveDef {
   maxStacks?: number;
   alwaysEnabled?: boolean;
   details?: string;
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
   [k: string]: unknown;
 }
 

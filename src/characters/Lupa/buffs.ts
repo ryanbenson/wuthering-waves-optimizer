@@ -223,7 +223,9 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 3,
     alwaysEnabled: false,
-    replacedBy: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion",
+    mutuallyExclusiveWith: [
+      { key: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion", category: "resonanceChains" },
+    ],
   },
   {
     key: `InherentSkillApplauseofVictoryFullFusionTeam`,
@@ -263,7 +265,9 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replacedBy: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion",
+    mutuallyExclusiveWith: [
+      { key: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion", category: "resonanceChains" },
+    ],
   },
   {
     key: "StatBonusCritRate1",

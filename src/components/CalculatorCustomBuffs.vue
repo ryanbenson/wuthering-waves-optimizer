@@ -543,6 +543,20 @@
           class="input input-md input-bordered"
           data-test-custom-buff-total-damage />
       </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Total DMG (Endgame buff)
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="TotalDamageEndgame"
+          name="TotalDamageEndgame"
+          id="TotalDamageEndgame"
+          class="input input-md input-bordered"
+          data-test-custom-buff-total-damage-endgame />
+      </label>
     </div>
   </div>
 </template>
@@ -593,6 +607,7 @@ interface ProcessedCustomBuffs {
   TuneBreakDMGBonus: number;
   SpecialMultiplier: number;
   TotalDamage: number;
+  TotalDamageEndgame: number;
 }
 
 interface Props {
@@ -679,6 +694,7 @@ const CoordinatedDMGBonus = makeCustomBuffField("CoordinatedDMGBonus");
 const TuneBreakDMGBonus = makeCustomBuffField("TuneBreakDMGBonus");
 const SpecialMultiplier = makeCustomBuffField("SpecialMultiplier");
 const TotalDamage = makeCustomBuffField("TotalDamage");
+const TotalDamageEndgame = makeCustomBuffField("TotalDamageEndgame");
 
 const customBuffFieldRefs: WritableComputedRef<number>[] = [
   ATK,
@@ -716,6 +732,7 @@ const customBuffFieldRefs: WritableComputedRef<number>[] = [
   TuneBreakDMGBonus,
   SpecialMultiplier,
   TotalDamage,
+  TotalDamageEndgame,
 ];
 
 const buffsData = computed((): ProcessedCustomBuffs => {
@@ -778,6 +795,9 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     ? SpecialMultiplier.value / 100
     : 0;
   const TotalDamage_ = TotalDamage.value ? TotalDamage.value / 100 : 0;
+  const TotalDamageEndgame_ = TotalDamageEndgame.value
+    ? TotalDamageEndgame.value / 100
+    : 0;
   return {
     ATK: ATK_,
     ATK_FLAT: ATK_FLAT_,
@@ -814,6 +834,7 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     TuneBreakDMGBonus: TuneBreakDMGBonus_,
     SpecialMultiplier: SpecialMultiplier_,
     TotalDamage: TotalDamage_,
+    TotalDamageEndgame: TotalDamageEndgame_,
   };
 });
 

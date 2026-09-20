@@ -45,4 +45,24 @@ describe("WorkspaceBuffCard", () => {
 
     expect(characterStore.characters[CHARACTER].buffs.HardCapOnlyBuff.stacks).toBe(2);
   });
+
+  it("enabling a buff disables its declared mutually exclusive partner (e.g. Brant's My/Theatrical Moment)", async () => {
+    const characterStore = useCharacterStore();
+    characterStore.characters = {
+      [CHARACTER]: { buffs: { TheatricalMoment: { isEnabled: true } } },
+    };
+    const { container } = render(WorkspaceBuffCard, {
+      props: {
+        character: CHARACTER,
+        uniqueKey: "MyMoment",
+        mutuallyExclusiveWith: ["TheatricalMoment"],
+      },
+    });
+
+    await fireEvent.click(container.querySelector('[data-test-workspace-buff-card="MyMoment"]')!);
+
+    const buffs = characterStore.characters[CHARACTER].buffs;
+    expect(buffs.MyMoment.isEnabled).toBe(true);
+    expect(buffs.TheatricalMoment.isEnabled).toBe(false);
+  });
 });

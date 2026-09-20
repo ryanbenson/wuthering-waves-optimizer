@@ -76,6 +76,7 @@ const EXTRA_MODIFIERS: [string, string][] = [
   ["talentModifierAdd", "DMG Multiplier Additive"],
   ["SpecialMultiplier", "Special Multiplier (Vulnerability)"],
   ["TotalDamage", "Total Damage"],
+  ["TotalDamageEndgame", "Total DMG (Endgame buff)"],
 ];
 
 const BASE_STAT_KEYS = new Set([
@@ -123,6 +124,7 @@ const MULTIPLIER_KEYS = new Set([
   "talentModifierAdd",
   "SpecialMultiplier",
   "TotalDamage",
+  "TotalDamageEndgame",
 ]);
 
 const allModifierEntries = computed((): [string, string][] => {

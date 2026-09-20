@@ -38,6 +38,17 @@
             type="text"
             v-model.trim="echoPresetName"
             class="input input-bordered w-full" />
+          <div v-if="isV3" class="label mt-2">
+            <span class="label-text">Description (optional)</span>
+          </div>
+          <textarea
+            v-if="isV3"
+            v-model.trim="echoPresetDescription"
+            rows="3"
+            maxlength="500"
+            placeholder="What is this build for?"
+            data-test-echo-preset-description
+            class="textarea textarea-bordered w-full"></textarea>
           <div class="label">
             <span class="label-text-alt"
               >Any unsaved echoes will be saved to your inventory.</span
@@ -56,16 +67,21 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
 
 defineOptions({ name: "CalculatorSaveEchoesPreset" });
 
 const emit = defineEmits<{
-  "on-save-echo-preset": [payload: { name: string | null }];
+  "on-save-echo-preset": [payload: { name: string | null; description: string }];
 }>();
 
 const inventoryStore = useInventoryStore();
 
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+
 const echoPresetName = ref<string | null>(null);
+const echoPresetDescription = ref("");
 const existingPreset = ref<string | null>(null);
 
 const existingEchoPresetName = computed(() => {
@@ -84,6 +100,7 @@ function triggerOpenModal() {
 
 function reset() {
   echoPresetName.value = null;
+  echoPresetDescription.value = "";
   existingPreset.value = null;
 }
 
@@ -103,6 +120,7 @@ function handleClose() {
 function handleSavePreset() {
   emit("on-save-echo-preset", {
     name: echoPresetName.value,
+    description: isV3.value ? echoPresetDescription.value : "",
   });
   triggerCloseModal();
 }

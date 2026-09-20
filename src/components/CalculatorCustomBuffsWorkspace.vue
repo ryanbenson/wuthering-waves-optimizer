@@ -1,5 +1,6 @@
 <template>
   <div class="custom-buffs-workspace">
+    <WorkspaceSplitLayout label="Active Overrides" :count="activeFields.length">
     <div
       class="custom-buffs-workspace__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Custom Buffs</h3>
@@ -30,34 +31,6 @@
         </label>
       </div>
 
-      <div class="border-t border-base-300 pt-2">
-        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
-          Active overrides
-          <span class="font-mono normal-case tracking-normal opacity-70">({{ activeFields.length }})</span>
-        </div>
-        <p v-if="!activeFields.length" class="text-xs opacity-50">
-          Nothing set yet — values you enter below show up here.
-        </p>
-        <div v-else class="flex flex-wrap gap-1.5">
-          <div
-            v-for="f in activeFields"
-            :key="f.key"
-            class="btn btn-xs btn-primary gap-1.5 !pr-1">
-            <button type="button" class="flex items-center gap-1.5" @click="jumpTo(f)">
-              {{ f.trayLabel }}
-              <span class="font-mono">{{ formatValue(f) }}</span>
-            </button>
-            <button
-              type="button"
-              class="opacity-70 hover:opacity-100 shrink-0 px-1"
-              :aria-label="`Clear ${f.trayLabel}`"
-              :data-test-custom-buffs-tray-clear="f.key"
-              @click="setValue(f.key, 0)">
-              ✕
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <p v-if="query && !visibleSections.length" class="text-sm opacity-50 text-center py-8">
@@ -147,12 +120,56 @@
         </div>
       </div>
     </div>
+    <template #summary>
+      <div class="bg-base-200 rounded-xl p-3" data-test-custom-buffs-summary>
+        <div
+          v-if="!activeFields.length"
+          class="flex flex-col items-center gap-1.5 text-center py-8 px-4"
+          data-test-custom-buffs-empty>
+          <span class="text-sm font-semibold">No overrides active</span>
+          <p class="text-xs opacity-60 max-w-xs">
+            Custom buffs let you add your own stat bonuses on top of the calculated build — for example extra ATK%
+            or Crit Rate from something the app doesn't model. Enter a value in any field and it will be listed
+            here so you can see and clear it at a glance.
+          </p>
+        </div>
+        <template v-else>
+      <div>
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
+          Active overrides
+          <span class="font-mono normal-case tracking-normal opacity-70">({{ activeFields.length }})</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <div
+            v-for="f in activeFields"
+            :key="f.key"
+            class="btn btn-xs btn-primary gap-1.5 !pr-1">
+            <button type="button" class="flex items-center gap-1.5" @click="jumpTo(f)">
+              {{ f.trayLabel }}
+              <span class="font-mono">{{ formatValue(f) }}</span>
+            </button>
+            <button
+              type="button"
+              class="opacity-70 hover:opacity-100 shrink-0 px-1"
+              :aria-label="`Clear ${f.trayLabel}`"
+              :data-test-custom-buffs-tray-clear="f.key"
+              @click="setValue(f.key, 0)">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+        </template>
+      </div>
+    </template>
+    </WorkspaceSplitLayout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
+import WorkspaceSplitLayout from "./characterWorkspace/WorkspaceSplitLayout.vue";
 import {
   normalizeCustomBuffs,
   type CustomBuffKey,
@@ -312,6 +329,11 @@ const SECTIONS: SectionDef[] = [
     fields: [
       { key: "SpecialMultiplier", label: "Vulnerability", unit: "%" },
       { key: "TotalDamage", label: "Total DMG", unit: "%" },
+      {
+        key: "TotalDamageEndgame",
+        label: "Total DMG (Endgame buff)",
+        unit: "%",
+      },
     ],
   },
 ];

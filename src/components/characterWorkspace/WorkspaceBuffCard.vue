@@ -56,6 +56,10 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import {
+  buildBuffToggleUpdate,
+  type MutuallyExclusiveRef,
+} from "../../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../../stores/character";
 
 interface BuffModifier {
@@ -73,6 +77,7 @@ interface Props {
   maxStacks?: number;
   realisticMaxStacks?: number;
   modifiers?: BuffModifier[];
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -112,9 +117,10 @@ const currentCharacter = computed(
 const isEnabled = computed({
   get: (): boolean => currentCharacter.value.buffs?.[props.uniqueKey]?.isEnabled ?? false,
   set: (value: boolean) => {
-    characterStore.setCharacterData(props.character, {
-      buffs: { [props.uniqueKey]: { isEnabled: value } },
-    });
+    characterStore.setCharacterData(
+      props.character,
+      buildBuffToggleUpdate("buffs", props.uniqueKey, value, props.mutuallyExclusiveWith),
+    );
   },
 });
 

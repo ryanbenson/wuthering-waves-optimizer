@@ -25,6 +25,9 @@
           v-if="block.expr"
           class="bg-base-100 rounded-lg p-3 font-mono text-sm overflow-x-auto"
           v-html="styleFormula(block.expr)"></div>
+        <div v-if="block.example" class="text-xs opacity-60 mt-1 font-mono overflow-x-auto">
+          e.g. {{ block.example }}
+        </div>
       </div>
 
       <div>
@@ -46,7 +49,7 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 
 useDocumentTitle(
   "Formulas — Wuthering Waves Calculator & Optimizer",
-  "The damage, defense, resistance, and healing formulas used by the Wuthering Waves Calculator & Optimizer.",
+  "The damage, defense, resistance, healing, and negative status (DoT) formulas used by the Wuthering Waves Calculator & Optimizer.",
 );
 
 const formulaBlocks = [
@@ -79,6 +82,13 @@ const formulaBlocks = [
   {
     label: "Shields & Healing",
     expr: "(MV% * finalAtkDefHpVal + flatBase) * (1 + totalHealBonus)",
+  },
+  {
+    label: "Negative Status DMG (Fusion, Frazzle, Erosion, Chafe, Flare)",
+    note: "Damage-over-time effects from stacking a status - Fusion Burst, Spectro Frazzle, Aero Erosion, Glacio Chafe, Electro Flare - use a level-based constant instead of ATK. DEF Ignore and Resist Ignore don't apply to this damage type.",
+    expr: "levelConstant * (MV / 10000) * (1 + talentMultiplier) * defenseMultiplier * resistMultiplier * (1 + totalAmplify)",
+    example:
+      "285560 = 3674 × (1 + 850.00%) × (139726 ÷ 10000) × 61.9619097312% × 90.0% × (1 + 5.0%)",
   },
 ];
 

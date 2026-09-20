@@ -34,6 +34,7 @@ import WorkspaceBuildMeta from "./WorkspaceBuildMeta.vue";
 import WorkspaceForteRail from "./WorkspaceForteRail.vue";
 import WorkspaceBuffs from "./WorkspaceBuffs.vue";
 import WorkspaceResonanceChain from "./WorkspaceResonanceChain.vue";
+import type { MutuallyExclusiveRef } from "../../characters/mutuallyExclusiveBuffs";
 
 interface CharacterBuffListItem {
   key: string;
@@ -44,6 +45,7 @@ interface CharacterBuffListItem {
   minStacks?: number;
   maxStacks?: number;
   modifiers?: { modifier?: string; modifierValue?: number; modifierValueTalentRef?: string }[];
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
 }
 
 interface ResonanceChainBuffRow {
@@ -55,6 +57,7 @@ interface ResonanceChainBuffRow {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
   buffAttackTargetSelection?: {
     configKey: string;
     defaultValue?: string;

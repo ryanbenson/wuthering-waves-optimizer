@@ -5,7 +5,7 @@ All weapons are defined here, grouped by weapon type. Each weapon has static dat
 ## Layout
 
 - **`weapons.ts`** (root): Aggregates lists by type and rarity (e.g. **`swordsList`**, **`broadbladesList`**, **`rectifiersList`**, **`pistolsList`**, **`gauntletsList`**). Each list is an object with keys like `five`, `four`, `three`, `two`, `one` (rarity), and values are arrays of `{ key, name }`. Also exports or references the full weapon data so the app can resolve a weapon by `key`.
-- **Per-type folders** (e.g. **`Swords/`**, **`Broadblades/`**, **`Rectifiers/`**, **`Pistols/`**, **`Gauntlets/`**): One file per weapon, e.g. **`UnflickeringValor.ts`**, **`TrainingSword.ts`**. Each file exports that weapon’s data: name, rarity, base attack (often by level), and passive effects (stats or modifiers). The exact shape is consistent within the codebase so the calculator can read `attack`, `modifier`, `modifierValue`, and any `weaponPassiveStats`-style fields.
+- **Per-type folders** (e.g. **`Swords/`**, **`Broadblades/`**, **`Rectifiers/`**, **`Pistols/`**, **`Gauntlets/`**): One file per weapon, e.g. **`UnflickeringValor.ts`**, **`TrainingSword.ts`**. Each file exports that weapon’s data: name, rarity, base attack (often by level), and passive effects (stats or modifiers). The exact shape is consistent within the codebase so the calculator can read `attack`, `modifier`, `modifierValue`, and any `weaponPassiveStats`-style fields. If two of a weapon's passives can never both be active in-game (e.g. one consumes/replaces the other), give each a `mutuallyExclusiveWith: ["OtherPassiveKey"]` entry so the UI enforces it — see `src/characters/mutuallyExclusiveBuffs.ts` and ADR [0031](./adr/0031-mutually-exclusive-buffs.md).
 
 ## How it’s used
 

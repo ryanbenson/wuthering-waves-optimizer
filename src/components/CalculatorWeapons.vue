@@ -135,6 +135,7 @@
           :max-stacks="weaponPassive.maxStacks"
           :always-enabled="weaponPassive.alwaysEnabled"
           :details="weaponPassive.details"
+          :mutually-exclusive-with="weaponPassive.mutuallyExclusiveWith"
           :refinement="refinement"
           @updated-weapon-stats="
             handleUpdatedWeaponStats
@@ -155,6 +156,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
+import type { MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
 import AppRichSelect, {
@@ -377,6 +379,7 @@ const weaponPassives = computed(() => {
     maxStacks?: number;
     alwaysEnabled?: boolean;
     details?: string;
+    mutuallyExclusiveWith?: MutuallyExclusiveRef[];
     [k: string]: unknown;
   }>;
 });

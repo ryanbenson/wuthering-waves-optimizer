@@ -17,6 +17,16 @@
             <span class="label-text">Update your preset name</span>
           </div>
           <input type="text" v-model.trim="echoPresetName" class="input input-bordered w-full" />
+          <template v-if="isV3">
+            <div class="label mt-2">
+              <span class="label-text">Description (optional)</span>
+            </div>
+            <textarea
+              v-model.trim="echoPresetDescription"
+              rows="3"
+              maxlength="500"
+              class="textarea textarea-bordered w-full"></textarea>
+          </template>
         </label>
         <button class="btn btn-primary btn-sm mt-4" @click="handleSavePreset">Update</button>
       </div>
@@ -155,7 +165,41 @@
         <div
           class="presets__list__items grid gap-4"
           :class="viewMode === 'tile' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'">
+          <template v-if="isV3">
+            <EchoPresetV3Card
+              v-for="echoPreset in paginatedPresetsList"
+              :key="echoPreset.presetId"
+              :character="getCharsEquipped(echoPreset.presetId)[0] ?? null"
+              :name="echoPreset.name"
+              :description="echoPreset.description"
+              :slots="presetSlots(echoPreset)"
+              :show-impact="false"
+              hide-actions>
+              <button
+                @click="editEchoPresetName(echoPreset.presetId, echoPreset.name)"
+                class="btn btn-sm btn-primary">
+                Edit
+              </button>
+              <button
+                @click="handleDeleteEchoPreset(echoPreset.presetId)"
+                class="btn btn-sm btn-error">
+                Delete
+              </button>
+              <template #aside>
+                <div v-if="getCharsEquipped(echoPreset.presetId).length" class="presets__item__foot__equipped">
+                  <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                    <div class="avatar" v-for="char in getCharsEquipped(echoPreset.presetId)" :key="char">
+                      <div class="w-8 bg-accent-content">
+                        <img :src="getCharImg(char)" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </EchoPresetV3Card>
+          </template>
           <EchoCustomPreset
+            v-else
             v-for="echoPreset in paginatedPresetsList"
             :key="echoPreset.presetId"
             :layout="viewMode"
@@ -209,6 +253,8 @@ import { useCharacterStore } from "../stores/character";
 import { characterPickerRoster } from "../characters/characters.ts";
 import { ECHO_CV_MAX, getEchoCritValue } from "../echoes/stats";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
+import EchoPresetV3Card from "./EchoPresetV3Card.vue";
+import { useSettingsStore } from "../stores/settings";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import RangeMinMax from "./input/RangeMinMax.vue";
@@ -225,6 +271,7 @@ type EchoPresetRow = {
   echo3Id?: string;
   echo4Id?: string;
   echo5Id?: string;
+  description?: string;
 };
 
 type SortField = "created" | "name";
@@ -245,6 +292,26 @@ const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const sortField = ref<SortField>("created");
 const sortDir = ref<SortDir>("asc");
+
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+const echoPresetDescription = ref("");
+
+// Stable slot maps per preset so each card's preview watcher doesn't re-run
+// on every parent render.
+const slotsCache = new Map<string, { key: string; slots: Record<number, any> }>();
+function presetSlots(preset: EchoPresetRow): Record<number, any> {
+  const ids = [preset.echo1Id, preset.echo2Id, preset.echo3Id, preset.echo4Id, preset.echo5Id];
+  const key = ids.join("|");
+  const cached = slotsCache.get(preset.presetId);
+  if (cached?.key === key) return cached.slots;
+  const slots: Record<number, any> = {};
+  ids.forEach((echoId, i) => {
+    if (echoId) slots[i] = { echoId };
+  });
+  slotsCache.set(preset.presetId, { key, slots });
+  return slots;
+}
 
 const inventoryStore = useInventoryStore();
 const characterStore = useCharacterStore();
@@ -364,6 +431,8 @@ const echoPresetData = computed(() =>
 function editEchoPresetName(presetId: string, presetName: string) {
   echoPresetId.value = presetId;
   echoPresetName.value = presetName;
+  echoPresetDescription.value =
+    (getEchoPresetData(presetId) as { description?: string } | undefined)?.description ?? "";
   handleOpenModal();
 }
 
@@ -380,6 +449,7 @@ function handleCloseModal() {
 async function handleSavePreset() {
   const presetData = JSON.parse(JSON.stringify(echoPresetData.value));
   const data = Object.assign({}, presetData, { name: echoPresetName.value });
+  if (isV3.value) data.description = echoPresetDescription.value;
   await patchEchoPreset(presetData.presetId, data);
   resetForm();
   handleCloseModal();
@@ -388,6 +458,7 @@ async function handleSavePreset() {
 function resetForm() {
   echoPresetId.value = null;
   echoPresetName.value = null;
+  echoPresetDescription.value = "";
 }
 
 function getCharsEquipped(presetId: string) {

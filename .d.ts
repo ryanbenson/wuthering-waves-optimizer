@@ -77,6 +77,7 @@ interface WeaponPassiveData {
   maxStacks?: number;
   details?: string;
   alwaysEnabled?: boolean;
+  mutuallyExclusiveWith?: import("./src/characters/mutuallyExclusiveBuffs").MutuallyExclusiveRef[];
 }
 
 interface WeaponPassiveModifierByRefinement {

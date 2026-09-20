@@ -42,7 +42,7 @@
                 {{ type }}
               </span>
             </div>
-            <div class="flex items-center gap-0.5">
+            <div v-if="!$slots.status" class="flex items-center gap-0.5">
               <EchoFavoriteButton :echo-id="echoId || null" />
               <EchoStatusBadge :echo-id="echoId || null" />
             </div>
@@ -95,6 +95,13 @@
                   </span>
                 </template>
               </template>
+            </div>
+            <!-- Optional status slot (Inventory): heart + status icons in one
+                 row under the badges, matching the comfy tile. Without it the
+                 heart/status badge stay under the avatar as before. -->
+            <div v-if="$slots.status" class="flex items-center gap-1 mt-0.5">
+              <EchoFavoriteButton :echo-id="echoId || null" />
+              <slot name="status"></slot>
             </div>
           </div>
         </div>

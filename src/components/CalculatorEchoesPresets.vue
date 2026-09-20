@@ -1,5 +1,5 @@
 <template>
-  <dialog id="modal-echoes-presets" class="modal">
+  <dialog id="modal-echoes-presets" class="modal" @close="isOpen = false">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -9,7 +9,16 @@
           ✕
         </button>
       </form>
-      <div class="py-4">
+      <!--
+        Cards only mount while the dialog is open. This component itself is
+        mounted for the whole time the Echoes tab is, and each v3 card runs
+        real damage/stat calculations against the character's *current*
+        build — computed once at mount they went stale (or ran before data
+        was ready) and showed the wrong diff. Mounting on open recomputes
+        against the live build every time, same approach as
+        CalculatorManageBuilds.vue.
+      -->
+      <div v-if="isOpen" class="py-4">
         <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
         <div role="tablist" class="tabs tabs-bordered">
           <input
@@ -22,7 +31,21 @@
           <div role="tabpanel" class="tab-content mt-6">
             <p v-if="!hasEchoPresets">No echo presets available</p>
             <div v-else class="echoes-presets-list">
+              <template v-if="isV3">
+                <EchoPresetV3Card
+                  v-for="echoPreset in echoPresets"
+                  :key="echoPreset.presetId"
+                  :character="character"
+                  :name="echoPreset.name"
+                  :description="echoPreset.description"
+                  :slots="presetSlots(echoPreset)"
+                  :is-applying="applyingPresetId === echoPreset.presetId"
+                  deletable
+                  @apply="applyCustomPreset(echoPreset)"
+                  @delete="deleteCustomPreset(echoPreset.presetId)" />
+              </template>
               <EchoCustomPreset
+                v-else
                 v-for="echoPreset in echoPresets"
                 :key="echoPreset.name"
                 :preset-id="echoPreset.presetId"
@@ -48,7 +71,19 @@
               No default echo presets available
             </p>
             <div v-else class="echoes-presets-list">
+              <template v-if="isV3">
+                <EchoPresetV3Card
+                  v-for="defaultEchoPreset in defaultEchoPresets"
+                  :key="defaultEchoPreset.name"
+                  :character="character"
+                  :name="defaultEchoPreset.name"
+                  :description="defaultEchoPreset.description"
+                  :author="defaultEchoPreset.author"
+                  :slots="defaultEchoPreset.data?.echoes ?? {}"
+                  @apply="applyPreset(defaultEchoPreset)" />
+              </template>
               <div
+                v-else
                 v-for="defaultEchoPreset in defaultEchoPresets"
                 :key="defaultEchoPreset.name"
                 class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
@@ -78,11 +113,41 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
+import EchoPresetV3Card from "./EchoPresetV3Card.vue";
+import { useSettingsStore } from "../stores/settings";
 const props = defineProps<{ character: string }>();
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
 const { echoPresets } = storeToRefs(inventoryStore);
+
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+
+// Stable per-preset slot maps (keyed by presetId) so the card's preview
+// watcher doesn't re-run on every parent render.
+const slotsCache = new Map<string, { key: string; slots: Record<number, any> }>();
+function presetSlots(preset: any): Record<number, any> {
+  const ids = [preset.echo1Id, preset.echo2Id, preset.echo3Id, preset.echo4Id, preset.echo5Id];
+  const key = ids.join("|");
+  const cached = slotsCache.get(preset.presetId);
+  if (cached?.key === key) return cached.slots;
+  const slots: Record<number, any> = {};
+  ids.forEach((echoId, i) => {
+    if (echoId) slots[i] = { echoId };
+  });
+  slotsCache.set(preset.presetId, { key, slots });
+  return slots;
+}
+
+// Mirrors EchoCustomPreset's delete: unequip from any character using it first.
+async function deleteCustomPreset(presetId: string) {
+  for (const char of inventoryStore.getEchoPresetCharacters(presetId)) {
+    await inventoryStore.deleteEquippedPreset(char);
+    await characterStore.setCharacterData(char, { echoPresetId: null });
+  }
+  await inventoryStore.deleteEchoPreset(presetId);
+}
 
 const defaultEchoPresets = ref<any[]>([]);
 const applyingPresetId = ref<string | null>(null);
@@ -96,11 +161,15 @@ function waitForUiPaint() {
   });
 }
 
+const isOpen = ref(false);
+
 function triggerOpenModal() {
+  isOpen.value = true;
   const modalEl = document.getElementById("modal-echoes-presets");
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 function triggerCloseModal() {
+  isOpen.value = false;
   const modalEl = document.getElementById("modal-echoes-presets");
   (modalEl as HTMLDialogElement | null)?.close();
 }

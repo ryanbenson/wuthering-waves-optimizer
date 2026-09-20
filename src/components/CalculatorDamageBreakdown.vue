@@ -488,7 +488,36 @@
       <div class="total-dmg-bonus">
         <div class="font-bold mt-2 text-lg text-primary">Total Damage Multiplier</div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
-          <div class="font-bold text-secondary">
+          <template
+            v-if="(damage.totalDamageContext.totalDamageEndgame ?? 0) !== 0">
+            <span
+              class="text-secondary font-bold"
+              data-test-breakdown-total-dmg-multiplier>
+              {{
+                displayPercentage(
+                  (damage.totalDamageContext.totalDamageMultiplier ?? 1) * 100,
+                )
+              }}
+            </span>
+            = (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  (damage.totalDamageContext.totalDamage ?? 0) * 100,
+                )
+              }}
+            </span>
+            ) x (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalDamageEndgame * 100,
+                )
+              }}
+            </span>
+            )
+          </template>
+          <div v-else class="font-bold text-secondary">
             {{
               displayPercentage(
                 (damage.totalDamageContext.totalDamage ?? 0) * 100,
@@ -1083,12 +1112,42 @@
       </template>
       <template
         v-if="
-          damage.totalDamageContext.totalDamage != null &&
-          damage.totalDamageContext.totalDamage !== 0
+          (damage.totalDamageContext.totalDamage != null &&
+            damage.totalDamageContext.totalDamage !== 0) ||
+          (damage.totalDamageContext.totalDamageEndgame ?? 0) !== 0
         ">
         <div class="font-bold mt-2 text-lg text-primary">Total Damage Multiplier</div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
-          <span class="text-secondary font-bold">
+          <template
+            v-if="(damage.totalDamageContext.totalDamageEndgame ?? 0) !== 0">
+            <span
+              class="text-secondary font-bold"
+              data-test-breakdown-total-dmg-multiplier>
+              {{
+                displayPercentage(
+                  (damage.totalDamageContext.totalDamageMultiplier ?? 1) * 100,
+                )
+              }}
+            </span>
+            = (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  (damage.totalDamageContext.totalDamage ?? 0) * 100,
+                )
+              }}
+            </span>
+            ) x (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalDamageEndgame * 100,
+                )
+              }}
+            </span>
+            )
+          </template>
+          <span v-else class="text-secondary font-bold">
             {{
               displayPercentage(damage.totalDamageContext.totalDamage * 100)
             }}

@@ -325,4 +325,28 @@ describe("WorkspaceResonanceChain", () => {
       expect(chains.Node3.isEnabled).toBe(true);
     });
   });
+
+  it("enabling a node disables a mutually exclusive character self buff in another category (e.g. Lupa's Sequence 3 node vs. her inherent skill buffs)", async () => {
+    const characterStore = useCharacterStore();
+    characterStore.characters = {
+      [CHARACTER]: { buffs: { InherentSkillApplauseofVictory: { isEnabled: true } } },
+    };
+    const buffs = [
+      {
+        key: "Node1",
+        name: "Sequence Node 1: First",
+        details: "d1",
+        mutuallyExclusiveWith: [{ key: "InherentSkillApplauseofVictory", category: "buffs" as const }],
+      },
+    ];
+    const { container } = render(WorkspaceResonanceChain, {
+      props: { character: CHARACTER, buffs },
+    });
+
+    await fireEvent.click(container.querySelector('[data-test-workspace-rc-toggle="Node1"]')!);
+
+    const character = characterStore.characters[CHARACTER];
+    expect(character.resonanceChains.Node1.isEnabled).toBe(true);
+    expect(character.buffs.InherentSkillApplauseofVictory.isEnabled).toBe(false);
+  });
 });

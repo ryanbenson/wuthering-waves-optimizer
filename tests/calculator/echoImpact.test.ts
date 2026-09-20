@@ -57,7 +57,7 @@ vi.mock("../../src/echoes/index", async (importOriginal) => {
   };
 });
 
-const { estimateEchoSwapImpact, estimateEchoSwapImpactBatch, resolveNewlyActiveSetPassivesOverride } =
+const { estimateEchoSwapImpact, estimateEchoSwapImpactBatch, estimateEchoPresetPreview, resolveNewlyActiveSetPassivesOverride } =
   await import("../../src/echoes/echoImpact");
 
 const enemyConfig: TeamEnemyConfig = {
@@ -738,5 +738,45 @@ describe("estimateEchoSwapImpact — main echo (slot 0) staleness", () => {
     );
     expect(result).not.toBeNull();
     expect(result!.delta).toBeCloseTo(0);
+  });
+});
+
+describe("estimateEchoPresetPreview", () => {
+  it("reports a positive delta and higher ATK for a stronger whole-loadout preset", async () => {
+    const preview = await estimateEchoPresetPreview(
+      "Iuno",
+      charactersWearingWeakMain(),
+      {
+        0: { echoId: "strong4" },
+        1: { echoId: "t3a" },
+        2: { echoId: "t3b" },
+        3: { echoId: "o1a" },
+        4: { echoId: "o1b" },
+      },
+      enemyConfig,
+      INVENTORY,
+    );
+    const baseline = await estimateEchoPresetPreview(
+      "Iuno",
+      charactersWearingWeakMain(),
+      charactersWearingWeakMain().Iuno.echoes,
+      enemyConfig,
+      INVENTORY,
+    );
+    expect(preview.impact).not.toBeNull();
+    expect(preview.impact!.delta).toBeGreaterThan(0);
+    expect(preview.stats!.totalAtk).toBeGreaterThan(baseline.stats!.totalAtk);
+    expect(baseline.impact!.delta).toBe(0);
+  });
+
+  it("supports inline echo data (prebuilt presets) and skipImpact", async () => {
+    const inline = { echo: "Main4", type: 4, echoSet: "TestSet", rank: 5, stat: "ATK", echoSubStatsType1: "ATK", echoSubStatsValue1: 100 };
+    const withImpact = await estimateEchoPresetPreview("Iuno", charactersWearingWeakMain(), { 0: inline }, enemyConfig, INVENTORY);
+    expect(withImpact.impact).not.toBeNull();
+    const statsOnly = await estimateEchoPresetPreview(
+      "Iuno", charactersWearingWeakMain(), { 0: inline }, enemyConfig, INVENTORY, { skipImpact: true },
+    );
+    expect(statsOnly.impact).toBeNull();
+    expect(statsOnly.stats).not.toBeNull();
   });
 });

@@ -14,7 +14,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replacesBuff: "ForteCircuitQingloongatWar2",
+    mutuallyExclusiveWith: ["ForteCircuitQingloongatWar2"],
   },
   {
     key: "ForteCircuitQingloongatWar2",
@@ -30,7 +30,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    replacedBy: "ForteCircuitQingloongatWar1",
+    mutuallyExclusiveWith: ["ForteCircuitQingloongatWar1"],
   },
   {
     key: "InherentSkillHeavenlyBalance",

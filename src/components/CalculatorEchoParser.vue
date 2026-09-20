@@ -12,7 +12,7 @@
       :key="i"
       :style="getFixedBoxStyle(box)"></div>
   </div>
-  <div class="echo-parser">
+  <div v-if="!isV3" class="echo-parser">
     <h2 class="text-xl font-bold">
       Upload, or paste your image from the wuwa discord bot
     </h2>
@@ -90,6 +90,68 @@
       </div>
     </template>
   </div>
+  <div v-else class="echo-parser flex flex-col gap-4">
+    <div>
+      <h2 class="text-xl font-bold">Import echoes from a screenshot</h2>
+      <p class="text-sm opacity-70">
+        Upload or paste a 1920×1080 image from the WuWa Discord bot.
+      </p>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center gap-2 p-8 border-2 border-primary/60 border-dashed rounded-lg transition-colors"
+      :class="isDragging ? 'bg-primary/10' : 'bg-base-200/40'"
+      data-test-echo-import-dropzone
+      @dragover.prevent="onDragOver"
+      @dragenter.prevent="onDragEnter"
+      @dragleave.prevent="onDragLeave"
+      @drop.prevent="onDrop">
+      <input
+        type="file"
+        @change="onFileChange"
+        ref="fileUpload"
+        accept="image/*"
+        class="hidden" />
+      <span v-if="isLoading" class="loading loading-spinner loading-md"></span>
+      <span class="font-semibold">Drop an image here, or paste it</span>
+      <button type="button" class="btn btn-sm btn-primary" @click="triggerFileSelect">
+        Choose image
+      </button>
+    </div>
+    <label
+      v-if="!inventoryOnly"
+      class="flex items-center justify-between gap-4 rounded-lg border border-base-300 px-4 py-3 cursor-pointer"
+      @click.stop>
+      <span class="flex flex-col">
+        <span class="font-semibold text-sm">Save to inventory</span>
+        <span class="text-xs opacity-70">
+          Keep these echoes in your inventory so you can reuse them on other characters.
+        </span>
+      </span>
+      <input
+        type="checkbox"
+        class="toggle toggle-primary"
+        data-test-echo-import-save-toggle
+        v-model="isSavingToInventory" />
+    </label>
+    <div class="collapse collapse-arrow bg-base-200/60 rounded-lg">
+      <input type="checkbox" aria-label="Show import tips" />
+      <div class="collapse-title text-sm font-semibold">Tips &amp; how to get the image</div>
+      <div class="collapse-content text-sm">
+        <ul class="list-disc list-inside space-y-1">
+          <li>In the WuWa Discord (or ours), run <code>/bind</code> once, then <code>/create</code> to generate the image. The bot is made by Kuro, so your account is safe.</li>
+          <li>Use the bot's original image. Re-uploads through Discord, Reddit, etc. lower quality and hurt parsing.</li>
+          <li>Parsing takes a moment and isn't perfect — check the results afterwards.</li>
+          <li>English only for now.</li>
+        </ul>
+      </div>
+    </div>
+    <template v-if="debug">
+      <div v-if="echoes.length">
+        <h3>Parsed Echoes:</h3>
+        <pre>{{ JSON.stringify(echoes, null, 2) }}</pre>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -99,6 +161,7 @@ import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
 import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 import { useToast } from "../composables/useToast";
+import { useSettingsStore } from "../stores/settings";
 
 const { showToast } = useToast();
 
@@ -146,7 +209,11 @@ type TessWorker = Awaited<ReturnType<typeof createWorker>>;
 const worker = ref<TessWorker | null>(null);
 const echoParserWorker = ref<Worker | null>(null);
 const imageBitmap = ref<ImageBitmap | null>(null);
-const isSavingToInventory = ref(false);
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+// v3 saves to inventory by default; the legacy checkbox stays opt-in.
+const defaultSaveToInventory = () => isV3.value;
+const isSavingToInventory = ref(defaultSaveToInventory());
 
 const fileUpload = ref<HTMLInputElement | null>(null);
 const imageRef = ref<HTMLImageElement | null>(null);
@@ -230,7 +297,7 @@ function reset() {
   if (fileUpload.value) {
     fileUpload.value.value = "";
   }
-  isSavingToInventory.value = false;
+  isSavingToInventory.value = defaultSaveToInventory();
 }
 
 function sendToParent() {

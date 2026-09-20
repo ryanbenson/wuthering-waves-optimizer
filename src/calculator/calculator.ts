@@ -46,6 +46,7 @@ export function calcHitDamage(
   defReduction: number = 0,
   resistanceIgnore: number = 0,
   totalDamage: number = 0,
+  totalDamageEndgame: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -63,6 +64,7 @@ export function calcHitDamage(
   defReduction = toNum(defReduction);
   resistanceIgnore = toNum(resistanceIgnore);
   totalDamage = toNum(totalDamage);
+  totalDamageEndgame = toNum(totalDamageEndgame);
   const baseDamageValue = getBonusDamageValue(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
@@ -88,6 +90,7 @@ export function calcHitDamage(
     resistValue,
     specialMultiplier,
     totalDamage,
+    totalDamageEndgame,
   );
   return baseDamage;
 }
@@ -100,6 +103,7 @@ export function getBaseDamage(
   resistValue: number,
   specialMultiplier: number = 0,
   totalDamage: number = 0,
+  totalDamageEndgame: number = 0,
 ): number {
   talent = toNum(talent);
   attack = toNum(attack);
@@ -108,12 +112,14 @@ export function getBaseDamage(
   resistValue = toNum(resistValue);
   specialMultiplier = toNum(specialMultiplier);
   totalDamage = toNum(totalDamage);
+  totalDamageEndgame = toNum(totalDamageEndgame);
   return (
     attack *
     talent *
     baseDamageValue *
     (1 + specialMultiplier) *
     (1 + totalDamage) *
+    (1 + totalDamageEndgame) *
     defModifier *
     resistValue
   );
@@ -242,6 +248,7 @@ export function calcDamage(
   defReduction: number = 0,
   resistanceIgnore: number = 0,
   totalDamage: number = 0,
+  totalDamageEndgame: number = 0,
 ) {
   enemyLevel = toNum(enemyLevel);
   enemyResist = toNum(enemyResist);
@@ -264,6 +271,7 @@ export function calcDamage(
   defReduction = toNum(defReduction);
   resistanceIgnore = toNum(resistanceIgnore);
   totalDamage = toNum(totalDamage);
+  totalDamageEndgame = toNum(totalDamageEndgame);
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
 
@@ -447,6 +455,7 @@ export function calcDamage(
       defReduction,
       resistanceIgnore,
       totalDamage,
+      totalDamageEndgame,
     );
 
     // Store the original percentage for grouping
@@ -483,6 +492,7 @@ export function calcDamage(
     defReduction,
     resistanceIgnore,
     totalDamage,
+    totalDamageEndgame,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations
@@ -529,6 +539,9 @@ export function calcDamage(
     ),
     specialMultiplier: specialMultiplier,
     totalDamage,
+    totalDamageEndgame,
+    // combined Total DMG factor: (1 + totalDamage) * (1 + totalDamageEndgame)
+    totalDamageMultiplier: (1 + totalDamage) * (1 + totalDamageEndgame),
     totalDeepenEffect,
     resistanceReduction,
     resistanceIgnore,
@@ -1553,6 +1566,7 @@ export function getGlacioBiteForteDamage(
   totalDamage: number = 0,
   count: number = 1,
   forteTalentString: string,
+  totalDamageEndgame: number = 0,
 ): any {
   enemyLevel = toNum(enemyLevel);
   enemyResist = toNum(enemyResist);
@@ -1562,6 +1576,7 @@ export function getGlacioBiteForteDamage(
   totalDeepenEffect = toNum(totalDeepenEffect);
   specialMultiplier = toNum(specialMultiplier);
   totalDamage = toNum(totalDamage);
+  totalDamageEndgame = toNum(totalDamageEndgame);
   count = toNum(count, 1);
   const characterLevel = parseInt(charLevel.replace("+", ""), 10);
   const defenseModifier = getDefenseModifier(
@@ -1583,7 +1598,8 @@ export function getGlacioBiteForteDamage(
     resistModifier *
     (1 + totalDeepenEffect) *
     (1 + specialMultiplier) *
-    (1 + totalDamage);
+    (1 + totalDamage) *
+    (1 + totalDamageEndgame);
   const finalDamage = baseDamage * count;
   const critRate = 0;
   const critDamage = 1;

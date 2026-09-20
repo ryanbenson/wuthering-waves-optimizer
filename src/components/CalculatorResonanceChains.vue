@@ -38,6 +38,7 @@
         :realistic-max-stacks="buff.realisticMaxStacks"
         :modifiers="(buff.modifiers ?? []) as unknown[]"
         :buff-attack-target-selection="buff.buffAttackTargetSelection"
+        :mutually-exclusive-with="buff.mutuallyExclusiveWith"
         @updated-character-buff="handleUpdatedCharacterBuff"
         class="character__buff character__resonance-chain"
         :data-test-resonance-chain="buff.key"></CalculatorResonanceChainsItem>
@@ -47,7 +48,13 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted } from "vue";
+import { storeToRefs } from "pinia";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import {
+  buildBulkEnableUpdate,
+  type BuffCategory,
+  type MutuallyExclusiveRef,
+} from "../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../stores/character";
 import CalculatorResonanceChainsItem from "./CalculatorResonanceChainsItem.vue";
 
@@ -75,6 +82,7 @@ export type ResonanceChainBuffRow = {
   realisticMaxStacks?: number;
   modifiers?: unknown[];
   buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
+  mutuallyExclusiveWith?: MutuallyExclusiveRef[];
 };
 
 const props = withDefaults(
@@ -88,6 +96,7 @@ const props = withDefaults(
 const buffsList = computed(() => (props.buffs ?? []) as ResonanceChainBuffRow[]);
 
 const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
 
 const emit = defineEmits<{
   "updated-character-resonance-chains": [];
@@ -101,40 +110,31 @@ function handleUpdatedCharacterBuff() {
   updatedStats();
 }
 
+function isEnabledElsewhere(category: BuffCategory, key: string): boolean {
+  const store = characters.value[props.character] as
+    | Record<string, Record<string, { isEnabled?: boolean }> | undefined>
+    | undefined;
+  return store?.[category]?.[key]?.isEnabled ?? false;
+}
+
 async function enableAllResonanceChains() {
-  const chainUpdates: Record<string, { isEnabled: boolean }> = {};
-
-  for (const chain of buffsList.value) {
-    chainUpdates[chain.key] = { isEnabled: true };
-  }
-
-  await characterStore.setCharacterData(props.character, {
-    resonanceChains: chainUpdates,
-  });
+  const updates = buildBulkEnableUpdate("resonanceChains", buffsList.value, isEnabledElsewhere);
+  await characterStore.setCharacterData(props.character, updates);
   handleUpdatedCharacterBuff();
 }
 
 async function maxAllResonanceChains() {
-  const chainUpdates: Record<
-    string,
-    { isEnabled: boolean; stacks?: number }
-  > = {};
-
-  for (const chain of buffsList.value) {
-    const update: { isEnabled: boolean; stacks?: number } = {
-      isEnabled: true,
-    };
-
-    if (chain.hasStacks) {
-      update.stacks = getRealisticMaxStacks(Number(chain.maxStacks) || 0, chain.realisticMaxStacks);
+  const updates = buildBulkEnableUpdate("resonanceChains", buffsList.value, isEnabledElsewhere, (key) => {
+    const chain = buffsList.value.find((c) => c.key === key);
+    if (!chain?.hasStacks) {
+      return {};
     }
-
-    chainUpdates[chain.key] = update;
-  }
-
-  await characterStore.setCharacterData(props.character, {
-    resonanceChains: chainUpdates,
+    return {
+      stacks: getRealisticMaxStacks(Number(chain.maxStacks) || 0, chain.realisticMaxStacks),
+    };
   });
+
+  await characterStore.setCharacterData(props.character, updates);
   handleUpdatedCharacterBuff();
 }
 

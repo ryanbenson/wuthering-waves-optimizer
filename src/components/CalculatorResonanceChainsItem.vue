@@ -1,6 +1,7 @@
 <template>
   <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer transition-opacity"
+    :class="{ 'opacity-50': !isEnabled }"
     @click="toggleEnabled">
     <div class="card-body">
       <h2 class="card-title flex items-center gap-2">
@@ -75,6 +76,7 @@
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import { buildBuffToggleUpdate, type MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../stores/character";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -106,6 +108,7 @@ const props = withDefaults(
     realisticMaxStacks?: number;
     modifiers?: unknown[];
     buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
+    mutuallyExclusiveWith?: MutuallyExclusiveRef[];
   }>(),
   {
     alwaysEnabled: false,
@@ -137,11 +140,10 @@ const isEnabled = computed({
     return chains?.[props.uniqueKey]?.isEnabled ?? false;
   },
   async set(value: boolean) {
-    await characterStore.setCharacterData(props.character, {
-      resonanceChains: {
-        [props.uniqueKey]: { isEnabled: value },
-      },
-    });
+    await characterStore.setCharacterData(
+      props.character,
+      buildBuffToggleUpdate("resonanceChains", props.uniqueKey, value, props.mutuallyExclusiveWith),
+    );
   },
 });
 
