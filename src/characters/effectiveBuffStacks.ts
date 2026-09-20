@@ -23,12 +23,23 @@ interface ResonanceChains {
   SequenceNode6NineShadowsAtHerSide?: ResonanceChainEntry;
 }
 
+/**
+ * Team buffs (from a teammate's kit) that each raise the max stacks of the
+ * receiving Resonator's Unison Boon by 1. Applies to every character that has
+ * a `UnisonBoon` buff (Hsin, Suoming, future Unison Resonators).
+ */
+const UNISON_BOON_TEAM_MAX_STACK_BUFFS = [
+  "InherentSkillGleaningSimpleJoysUnison",
+  "SequenceNode6TheMoonOwesItsLightToTheLiving",
+] as const;
+
 export function getEffectiveMaxStacks(
   character: string,
   uniqueKey: string,
   maxStacks: number | undefined,
   resonanceChains: ResonanceChains | undefined,
   selfBuffs: SelfBuffs | undefined = undefined,
+  teamBuffs: Record<string, SelfBuffEntry | undefined> | undefined = undefined,
 ): number {
   let effectiveMaxStacks = maxStacks || 1;
 
@@ -99,6 +110,19 @@ export function getEffectiveMaxStacks(
     // stats.ts's computeSelfBuffs).
     if (resonanceChains?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
       effectiveMaxStacks = 4;
+    }
+  }
+
+  if (uniqueKey === "UnisonBoon") {
+    // Teammate-granted +1 max stacks. Hsin's own copies of these effects are
+    // handled through selfBuffs/resonanceChains above, so she is excluded to
+    // avoid counting the same effect twice.
+    if (character !== "Hsin") {
+      for (const teamKey of UNISON_BOON_TEAM_MAX_STACK_BUFFS) {
+        if (teamBuffs?.[teamKey]?.isEnabled) {
+          effectiveMaxStacks += 1;
+        }
+      }
     }
   }
 

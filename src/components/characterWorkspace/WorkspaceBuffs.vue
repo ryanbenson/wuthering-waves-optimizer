@@ -186,13 +186,16 @@ function maxAll() {
   const selfBuffs = (characters.value[props.character] as {
     buffs?: Record<string, { isEnabled?: boolean }>;
   })?.buffs;
+  const teamBuffs = (characters.value[props.character] as {
+    teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
+  })?.teamBuffs?.buffs;
 
   const updates = buildBulkEnableUpdate("buffs", props.buffs, isEnabledElsewhere, (key) => {
     const buff = props.buffs.find((b) => b.key === key);
     if (!buff?.hasStacks) {
       return {};
     }
-    const effectiveMaxStacks = getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains, selfBuffs);
+    const effectiveMaxStacks = getEffectiveMaxStacks(props.character, key, buff.maxStacks, resonanceChains, selfBuffs, teamBuffs);
     return { stacks: getRealisticMaxStacks(effectiveMaxStacks, buff.realisticMaxStacks) };
   });
 

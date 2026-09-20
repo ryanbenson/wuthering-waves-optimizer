@@ -39,3 +39,44 @@ describe("getEffectiveMaxStacks", () => {
     ).toBe(4);
   });
 });
+
+describe("getEffectiveMaxStacks — Unison Boon team buffs", () => {
+  it("adds +1 per enabled teammate buff for any Unison Boon character", () => {
+    const team = {
+      InherentSkillGleaningSimpleJoysUnison: { isEnabled: true },
+      SequenceNode6TheMoonOwesItsLightToTheLiving: { isEnabled: true },
+    };
+    expect(getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {}, undefined, team)).toBe(4);
+    expect(
+      getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {}, undefined, {
+        InherentSkillGleaningSimpleJoysUnison: { isEnabled: true },
+      }),
+    ).toBe(3);
+  });
+
+  it("stacks with Suoming S6", () => {
+    expect(
+      getEffectiveMaxStacks(
+        "Suoming",
+        "UnisonBoon",
+        2,
+        { SequenceNode6NineShadowsAtHerSide: { isEnabled: true } },
+        undefined,
+        { InherentSkillGleaningSimpleJoysUnison: { isEnabled: true } },
+      ),
+    ).toBe(5);
+  });
+
+  it("ignores disabled team buffs and other buff keys", () => {
+    expect(
+      getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {}, undefined, {
+        InherentSkillGleaningSimpleJoysUnison: { isEnabled: false },
+      }),
+    ).toBe(2);
+    expect(
+      getEffectiveMaxStacks("Sanhua", "Silversnow", 2, {}, undefined, {
+        InherentSkillGleaningSimpleJoysUnison: { isEnabled: true },
+      }),
+    ).toBe(2);
+  });
+});

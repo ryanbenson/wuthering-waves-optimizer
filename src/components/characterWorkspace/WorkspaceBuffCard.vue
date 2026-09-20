@@ -111,6 +111,7 @@ const currentCharacter = computed(
     (characters.value[props.character] ?? {}) as {
       buffs?: Record<string, { isEnabled?: boolean; stacks?: number }>;
       resonanceChains?: Record<string, { isEnabled?: boolean }>;
+      teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
     },
 );
 
@@ -140,6 +141,7 @@ const effectiveMaxStacks = computed(() =>
     props.maxStacks,
     currentCharacter.value.resonanceChains,
     currentCharacter.value.buffs,
+    currentCharacter.value.teamBuffs?.buffs,
   ),
 );
 

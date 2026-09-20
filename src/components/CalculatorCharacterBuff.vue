@@ -81,6 +81,7 @@ interface StoreCharBuffEntry {
 interface StoreCharacterSlice {
   buffs?: Record<string, StoreCharBuffEntry>;
   resonanceChains?: Record<string, { isEnabled?: boolean }>;
+  teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
 }
 
 interface EffectiveBuffData {
@@ -168,6 +169,7 @@ const effectiveBuffData = computed((): EffectiveBuffData => {
     props.maxStacks,
     currentCharacter.value?.resonanceChains,
     currentCharacter.value?.buffs,
+    currentCharacter.value?.teamBuffs?.buffs,
   );
   let effectiveStacks = stacks.value || 0;
 
