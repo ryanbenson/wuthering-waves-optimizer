@@ -32,15 +32,6 @@ describe("Suoming Sequence Node 6: Nine Shadows at Her Side", () => {
     expect(withS6.TotalDamage).toBeCloseTo(0.03 * stacks * 1.5);
   });
 
-  it("raises Unison Boon's max stacks from 2 to 4 when S6 is enabled", () => {
-    expect(getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {})).toBe(2);
-    expect(
-      getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {
-        SequenceNode6NineShadowsAtHerSide: { isEnabled: true },
-      }),
-    ).toBe(4);
-  });
-
   it("adds an additional 80% Crit. DMG while Seal Master is active and S6 is enabled", () => {
     const withoutS6 = computeSelfBuffs(
       { InherentSkillSunkenSealForgedLock: { isEnabled: true } },

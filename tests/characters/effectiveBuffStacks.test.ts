@@ -54,16 +54,14 @@ describe("getEffectiveMaxStacks — Unison Boon team buffs", () => {
     ).toBe(3);
   });
 
-  it("stacks with Suoming S6", () => {
+  it("adds +2 from Suoming's team S6, including for Hsin", () => {
+    const team = { SequenceNode6NineShadowsAtHerSide: { isEnabled: true } };
+    expect(getEffectiveMaxStacks("Hsin", "UnisonBoon", 2, {}, undefined, team)).toBe(4);
     expect(
-      getEffectiveMaxStacks(
-        "Suoming",
-        "UnisonBoon",
-        2,
-        { SequenceNode6NineShadowsAtHerSide: { isEnabled: true } },
-        undefined,
-        { InherentSkillGleaningSimpleJoysUnison: { isEnabled: true } },
-      ),
+      getEffectiveMaxStacks("Suoming", "UnisonBoon", 2, {}, undefined, {
+        ...team,
+        InherentSkillGleaningSimpleJoysUnison: { isEnabled: true },
+      }),
     ).toBe(5);
   });
 

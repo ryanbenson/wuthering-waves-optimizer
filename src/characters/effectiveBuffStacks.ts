@@ -104,15 +104,6 @@ export function getEffectiveMaxStacks(
     }
   }
 
-  if (character === "Suoming" && uniqueKey === "UnisonBoon") {
-    // Sequence Node 6: Nine Shadows at Her Side raises the max stacks of
-    // Unison Boon from 2 to 4 (the per-stack value increase is handled in
-    // stats.ts's computeSelfBuffs).
-    if (resonanceChains?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
-      effectiveMaxStacks = 4;
-    }
-  }
-
   if (uniqueKey === "UnisonBoon") {
     // Teammate-granted +1 max stacks. Hsin's own copies of these effects are
     // handled through selfBuffs/resonanceChains above, so she is excluded to
@@ -123,6 +114,14 @@ export function getEffectiveMaxStacks(
           effectiveMaxStacks += 1;
         }
       }
+    }
+  }
+
+  if (uniqueKey === "UnisonBoon") {
+    // Suoming's S6 raises the receiver's Unison Boon cap from 2 to 4 (+2).
+    // Unlike the +1 buffs above this applies to Hsin too.
+    if (teamBuffs?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
+      effectiveMaxStacks += 2;
     }
   }
 

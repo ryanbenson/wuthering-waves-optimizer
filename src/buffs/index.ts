@@ -2743,6 +2743,26 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
       maxStacks: 4,
       alwaysEnabled: false,
     },
+    {
+      key: `SequenceNode6NineShadowsAtHerSide`,
+      name: `Sequence Node 6: Nine Shadows at Her Side`,
+      details: `<div>The effect of each stack of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span> is increased by 50%, up to 4 stacks of <span style="color:#ffd12f;" class="font-bold">Unison Boon</span>.</div>`,
+      icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_SuomingM6_UI.webp`,
+      hasStacks: true,
+      // +50% to each Unison Boon stack's 3% Total DMG = 1.5% per stack. Like
+      // S2BreakingThunderSlayingEvil above, `stacks` is the receiver's Unison
+      // Boon stack count. The max-stacks increase (2 -> 4) is handled in
+      // effectiveBuffStacks.ts.
+      modifiers: [
+        {
+          modifier: "TotalDamage",
+          modifierValue: 0.015,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 4,
+      alwaysEnabled: false,
+    },
   ],
 };
 
