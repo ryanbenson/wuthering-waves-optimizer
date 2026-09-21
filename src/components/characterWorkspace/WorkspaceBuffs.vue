@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getSelectedTeammateBuffs, getRealisticMaxStacks } from "../../characters/effectiveBuffStacks";
 import {
   buildBulkEnableUpdate,
   type BuffCategory,
@@ -186,9 +186,10 @@ function maxAll() {
   const selfBuffs = (characters.value[props.character] as {
     buffs?: Record<string, { isEnabled?: boolean }>;
   })?.buffs;
-  const teamBuffs = (characters.value[props.character] as {
-    teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
-  })?.teamBuffs?.buffs;
+  const teamBuffs = getSelectedTeammateBuffs(
+    (characters.value[props.character] as { teamBuffs?: Parameters<typeof getSelectedTeammateBuffs>[0] })
+      ?.teamBuffs,
+  );
 
   const updates = buildBulkEnableUpdate("buffs", props.buffs, isEnabledElsewhere, (key) => {
     const buff = props.buffs.find((b) => b.key === key);

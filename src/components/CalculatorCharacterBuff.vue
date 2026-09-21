@@ -69,7 +69,7 @@
 import { computed, nextTick, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import { getEffectiveMaxStacks, getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import { getEffectiveMaxStacks, getSelectedTeammateBuffs, getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 import { buildBuffToggleUpdate, type MutuallyExclusiveRef } from "../characters/mutuallyExclusiveBuffs";
 import { useCharacterStore } from "../stores/character";
 
@@ -169,7 +169,7 @@ const effectiveBuffData = computed((): EffectiveBuffData => {
     props.maxStacks,
     currentCharacter.value?.resonanceChains,
     currentCharacter.value?.buffs,
-    currentCharacter.value?.teamBuffs?.buffs,
+    getSelectedTeammateBuffs(currentCharacter.value?.teamBuffs),
   );
   let effectiveStacks = stacks.value || 0;
 

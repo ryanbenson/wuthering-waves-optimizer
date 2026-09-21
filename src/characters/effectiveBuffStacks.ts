@@ -1,3 +1,5 @@
+import { buffsByCharacter } from "../buffs/index";
+
 interface ResonanceChainEntry {
   isEnabled?: boolean;
 }
@@ -32,6 +34,40 @@ const UNISON_BOON_TEAM_MAX_STACK_BUFFS = [
   "InherentSkillGleaningSimpleJoysUnison",
   "SequenceNode6TheMoonOwesItsLightToTheLiving",
 ] as const;
+
+interface TeamBuffsConfig {
+  buffs?: Record<string, SelfBuffEntry | undefined>;
+  selectedCharacter1?: string | null;
+  selectedCharacter2?: string | null;
+}
+
+/**
+ * Persisted `teamBuffs.buffs` keeps entries for teammates that were selected
+ * earlier, so stale `isEnabled: true` flags survive after the teammate is
+ * removed. Only entries defined by the currently selected teammates are live
+ * (mirrors buildCharacterContext.ts), so filter before reading them.
+ */
+export function getSelectedTeammateBuffs(
+  teamBuffsConfig: TeamBuffsConfig | undefined,
+): Record<string, SelfBuffEntry | undefined> | undefined {
+  const buffs = teamBuffsConfig?.buffs;
+  if (!buffs) {
+    return undefined;
+  }
+  const byCharacter = buffsByCharacter as Record<string, { key: string }[]>;
+  const active: Record<string, SelfBuffEntry | undefined> = {};
+  for (const name of [
+    teamBuffsConfig.selectedCharacter1,
+    teamBuffsConfig.selectedCharacter2,
+  ]) {
+    for (const def of name ? (byCharacter[name] ?? []) : []) {
+      if (def.key in buffs) {
+        active[def.key] = buffs[def.key];
+      }
+    }
+  }
+  return active;
+}
 
 export function getEffectiveMaxStacks(
   character: string,
