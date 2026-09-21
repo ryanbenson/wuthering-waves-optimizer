@@ -2753,8 +2753,7 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
       hasStacks: true,
       // +50% to each Unison Boon stack's 3% Total DMG = 1.5% per stack. Like
       // S2BreakingThunderSlayingEvil above, `stacks` is the receiver's Unison
-      // Boon stack count. The max-stacks increase (2 -> 4) is handled in
-      // effectiveBuffStacks.ts.
+      // Boon stack count.
       modifiers: [
         {
           modifier: "TotalDamage",

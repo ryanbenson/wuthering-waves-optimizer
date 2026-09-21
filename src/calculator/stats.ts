@@ -1098,8 +1098,7 @@ export const computeSelfBuffs = (
       }
     }
     // Suoming Sequence Node 6: Nine Shadows at Her Side increases the effect
-    // of each Unison Boon stack by 50% (3% -> 4.5% Total DMG per stack); the
-    // max stacks increase (2 -> 4) is handled in effectiveBuffStacks.ts.
+    // of each Unison Boon stack by 50% (3% -> 4.5% Total DMG per stack).
     if (character === "Suoming" && key === "UnisonBoon") {
       const unisonBoonStacks = buffData?.stacks ?? 0;
       if (

@@ -22,7 +22,6 @@ interface ResonanceChains {
   SequenceNode3DreamsFadeSwordAbides?: ResonanceChainEntry;
   SequenceNode2LikePetalsThatFallWithoutASound?: ResonanceChainEntry;
   SequenceNode6TheMoonOwesItsLightToTheLiving?: ResonanceChainEntry;
-  SequenceNode6NineShadowsAtHerSide?: ResonanceChainEntry;
 }
 
 /**
@@ -150,14 +149,6 @@ export function getEffectiveMaxStacks(
           effectiveMaxStacks += 1;
         }
       }
-    }
-  }
-
-  if (uniqueKey === "UnisonBoon") {
-    // Suoming's S6 raises the receiver's Unison Boon cap from 2 to 4 (+2).
-    // Unlike the +1 buffs above this applies to Hsin too.
-    if (teamBuffs?.SequenceNode6NineShadowsAtHerSide?.isEnabled) {
-      effectiveMaxStacks += 2;
     }
   }
 
