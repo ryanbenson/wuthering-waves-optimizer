@@ -107,7 +107,11 @@ import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
 import AppRichSelect from "./AppRichSelect.vue";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
-import { resolveTeamBuffInstance, type PartyBuffModifier } from "../buffs/teamBuffs";
+import {
+  resolveTeamBuffInstance,
+  getExclusiveTeamBuffKeys,
+  type PartyBuffModifier,
+} from "../buffs/teamBuffs";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
 export type { PartyBuffModifier };
@@ -184,13 +188,15 @@ const isEnabled = computed({
     return (buffEntry.value?.isEnabled as boolean | undefined) ?? false;
   },
   set(value: boolean) {
-    void setCharacterData(props.character, {
-      teamBuffs: {
-        buffs: {
-          [props.uniqueKey]: { isEnabled: value },
-        },
-      },
-    });
+    const buffs: Record<string, { isEnabled: boolean }> = {
+      [props.uniqueKey]: { isEnabled: value },
+    };
+    if (value) {
+      for (const key of getExclusiveTeamBuffKeys(props.uniqueKey)) {
+        buffs[key] = { isEnabled: false };
+      }
+    }
+    void setCharacterData(props.character, { teamBuffs: { buffs } });
   },
 });
 

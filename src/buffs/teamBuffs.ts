@@ -37,6 +37,23 @@ export interface TeamBuffInstanceResult {
   data: Record<string, unknown>;
 }
 
+/**
+ * Team buffs that cannot be active together (e.g. one per Resonance Mode).
+ * Enabling one in the UI disables its partners; the first key in a group
+ * wins in `resolveTeamBuffInstance` if legacy data has both enabled.
+ */
+export const TEAM_BUFF_EXCLUSIVE_GROUPS: readonly (readonly string[])[] = [
+  [
+    "OutroSkillHerselfaThousandLanterns",
+    "OutroSkillHerselfaThousandLanternsElectroFlare",
+  ],
+];
+
+export function getExclusiveTeamBuffKeys(key: string): string[] {
+  const group = TEAM_BUFF_EXCLUSIVE_GROUPS.find((g) => g.includes(key));
+  return group ? group.filter((k) => k !== key) : [];
+}
+
 export const ELEMENT_NAMES = ["Glacio", "Fusion", "Electro", "Aero", "Spectro", "Havoc"] as const;
 export type ElementName = (typeof ELEMENT_NAMES)[number];
 
@@ -210,6 +227,12 @@ export function resolveTeamBuffInstance(
   }
   if (uniqueKey === "OutroSkillUnfinishedLiesTuneStrain") {
     if (buffsMap?.OutroSkillUnfinishedLiesTuneStrain2?.isEnabled) {
+      return { key: def.key, data };
+    }
+  }
+  for (const group of TEAM_BUFF_EXCLUSIVE_GROUPS) {
+    const idx = group.indexOf(uniqueKey);
+    if (idx > 0 && group.slice(0, idx).some((k) => buffsMap?.[k]?.isEnabled)) {
       return { key: def.key, data };
     }
   }

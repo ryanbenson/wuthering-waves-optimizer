@@ -370,6 +370,7 @@ import BuffRow from "./teamBuffsWorkspace/TeamBuffsWorkspaceRow.vue";
 import { useCharacterStore } from "../stores/character";
 import {
   resolveTeamBuffInstance,
+  getExclusiveTeamBuffKeys,
   aggregateTeamBuffStats,
   categorizeBuffModifier,
   getModifierLabel,
@@ -497,7 +498,16 @@ function setBuffField(key: string, field: keyof StoredBuffEntry, value: unknown)
 // in-game); the Max button is the explicit shortcut for that.
 function toggleBuff(def: PartyBuffDef) {
   if (def.alwaysEnabled) return;
-  setBuffField(def.key, "isEnabled", !isBuffEnabled(def));
+  const enabling = !isBuffEnabled(def);
+  const buffs: Record<string, { isEnabled: boolean }> = {
+    [def.key]: { isEnabled: enabling },
+  };
+  if (enabling) {
+    for (const key of getExclusiveTeamBuffKeys(def.key)) {
+      buffs[key] = { isEnabled: false };
+    }
+  }
+  void setCharacterData(props.character, { teamBuffs: { buffs } });
 }
 
 function disableBuff(key: string) {
