@@ -8,6 +8,7 @@
  * logic lives in src/scanner/*, which stays pure and unit-testable.
  */
 import { onBeforeUnmount, ref, computed } from "vue";
+import { trackEvent } from "../utils/analytics";
 import {
   createScreenShareSource,
   createVideoFileSource,
@@ -147,6 +148,44 @@ export function useEchoScanner() {
   let setWorkerReady: Promise<void> | null = null;
   const stability = createStableFrameDetector();
   const dedupe = createDedupeSet();
+
+  // Usage analytics (Umami, see utils/analytics.ts) — one "scanner-started"
+  // and at most one "scanner-finished" per scan session. Counts only, never
+  // echo contents or frames.
+  let trackedMode: "live" | "video" | null = null;
+  let trackedStartedAt = 0;
+  let trackedAspect = false;
+
+  function trackSessionStart(mode: "live" | "video", data: Record<string, unknown> = {}) {
+    trackedMode = mode;
+    trackedStartedAt = Date.now();
+    trackedAspect = false;
+    trackEvent("scanner-started", { mode, ...data });
+  }
+
+  /** No-op unless a session is being tracked, so stop()-then-loop-exit (video) only reports once. */
+  function trackSessionEnd(outcome: "completed" | "stopped") {
+    if (!trackedMode) return;
+    trackEvent("scanner-finished", {
+      mode: trackedMode,
+      outcome,
+      echoesFound: candidates.value.length,
+      duplicates: duplicateCount.value,
+      skipped: skippedCount.value,
+      reviewNeeded: reviewNeededCount.value,
+      durationSeconds: Math.round((Date.now() - trackedStartedAt) / 1000),
+    });
+    trackedMode = null;
+  }
+
+  function trackError(mode: "live" | "video", stage: "start" | "open" | "scan", err: unknown) {
+    trackEvent("scanner-error", {
+      mode,
+      stage,
+      error: err instanceof Error ? err.name : "unknown",
+    });
+    trackedMode = null;
+  }
 
   function resetState() {
     candidates.value = [];
@@ -405,6 +444,13 @@ export function useEchoScanner() {
 
     if (!isSupportedAspect(frame)) {
       unsupportedAspect.value = true;
+      if (trackedMode && !trackedAspect) {
+        trackedAspect = true;
+        trackEvent("scanner-unsupported-aspect", {
+          mode: trackedMode,
+          aspect: (frame.width / frame.height).toFixed(2),
+        });
+      }
       return;
     }
 
@@ -532,6 +578,7 @@ export function useEchoScanner() {
   }
 
   function stop() {
+    trackSessionEnd("stopped");
     status.value = "stopping";
     releaseResources();
     status.value = "stopped";
@@ -545,11 +592,13 @@ export function useEchoScanner() {
       frameSource = await createScreenShareSource();
       previewVideoEl.value = frameSource.videoEl;
       status.value = "running";
+      trackSessionStart("live");
       frameSource.start((tick) => {
         progress.value = { current: tick.frameIndex, total: null };
         return handleTick();
       });
     } catch (err) {
+      trackError("live", "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
       status.value = "error";
     }
@@ -566,6 +615,7 @@ export function useEchoScanner() {
       videoDuration.value = handle.duration;
       status.value = "trimming";
     } catch (err) {
+      trackError("video", "open", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
       status.value = "error";
     }
@@ -598,13 +648,21 @@ export function useEchoScanner() {
       frameSource = createVideoFileSource(handle, options);
       openVideoHandle = null; // ownership moves to frameSource — its own stop() closes the handle
       status.value = "running";
+      const start = options.startSeconds ?? 0;
+      const end = options.endSeconds ?? handle.duration;
+      trackSessionStart("video", {
+        fps: options.fps ?? null,
+        scanSeconds: Math.round(Math.max(0, end - start)),
+      });
       await frameSource.start(async (tick) => {
         progress.value = { current: tick.frameIndex, total: tick.totalFrames };
         await handleTick();
       });
+      trackSessionEnd("completed");
       releaseResources();
       status.value = "stopped";
     } catch (err) {
+      trackError("video", trackedMode ? "scan" : "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
       status.value = "error";
     }
