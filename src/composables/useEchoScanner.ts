@@ -150,8 +150,8 @@ export function useEchoScanner() {
   const dedupe = createDedupeSet();
 
   // Usage analytics (Umami, see utils/analytics.ts) — one "scanner-started"
-  // and at most one "scanner-finished" per scan session. Counts only, never
-  // echo contents or frames.
+  // and at most one "scanner-finished" per scan session. Mode/outcome/timing
+  // only — no echo counts, contents, or frames.
   let trackedMode: "live" | "video" | null = null;
   let trackedStartedAt = 0;
   let trackedAspect = false;
@@ -169,10 +169,6 @@ export function useEchoScanner() {
     trackEvent("scanner-finished", {
       mode: trackedMode,
       outcome,
-      echoesFound: candidates.value.length,
-      duplicates: duplicateCount.value,
-      skipped: skippedCount.value,
-      reviewNeeded: reviewNeededCount.value,
       durationSeconds: Math.round((Date.now() - trackedStartedAt) / 1000),
     });
     trackedMode = null;

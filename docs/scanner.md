@@ -669,16 +669,16 @@ free), so it's opt-in and off by default — leave it off for normal scanning.
 
 Scanner usage is reported to Umami via `trackEvent` (`src/utils/analytics.ts`;
 a no-op when `VITE_UMAMI_WEBSITE_ID` is unset or under Cypress). Only
-counts/modes are sent — never echo contents, OCR text, or frames.
+modes, outcomes, and timings are sent — no echo counts, echo contents, OCR
+text, or frames.
 
 | Event | Where | Data |
 |-------|-------|------|
 | `scanner-opened` | `EchoScannerModal.vue` | — |
 | `scanner-started` | `useEchoScanner` | `mode` (`live`/`video`); video adds `fps`, `scanSeconds` |
-| `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `echoesFound`, `duplicates`, `skipped`, `reviewNeeded`, `durationSeconds` |
+| `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `durationSeconds` |
 | `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share) |
 | `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp) — once per session |
-| `scanner-continued` | `EchoScannerCapture.vue` | `count` of candidates passed on to duplicate review |
 
 `scanner-finished` fires at most once per session: for video, `stop()`
 reports `stopped` and clears the session, so the scan loop's own exit

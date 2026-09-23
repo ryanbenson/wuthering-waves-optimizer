@@ -369,7 +369,6 @@ import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { echoSetImageMap } from "../echoes/stats";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
-import { trackEvent } from "../utils/analytics";
 import type { ScanCandidate, RegionFrac } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
@@ -532,7 +531,6 @@ function handleRetry() {
 
 function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);
-  trackEvent("scanner-continued", { count: slots.length });
   emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value);
 }
 </script>
