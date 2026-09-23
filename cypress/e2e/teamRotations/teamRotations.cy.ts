@@ -200,6 +200,85 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotations-item]").should("not.exist");
   });
 
+  it("applies per-attribute enemy resistance to each teammate by their own attribute (#530)", () => {
+    // Carlotta is Glacio, Chixia is Fusion
+    configureCharacterWithWeapon("Carlotta");
+    configureCharacterWithWeapon("Chixia");
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
+    cy.selectTeamRotationSlotCharacter(1, "Chixia");
+
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]')
+      .first()
+      .closest("[data-test-team-rotation-action]")
+      .find('[data-test-team-rotation-action-slot-choice="1"]')
+      .click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "PowPowStage1DMG");
+    cy.get("[data-test-team-rotation-duration]").clear().type("10");
+
+    // Reads an action's Normal damage from the damages drawer, then closes it
+    const readNormalDamage = (label: string) => {
+      cy.get("[data-test-team-rotation-summary-view-damages]").click();
+      cy.wait(350);
+      return cy
+        .get(`[data-test-team-rotation-action-damage="${label}"]`)
+        .find("td")
+        .eq(1)
+        .invoke("text")
+        .then((text) => {
+          cy.get(".drawer-overlay").click();
+          cy.wait(350);
+          return cy.wrap(Number(text.trim()));
+        });
+    };
+
+    readNormalDamage("Basic Attack Stage 1 DMG").then((carlottaBaseline) => {
+      readNormalDamage("Stage 1 DMG").then((chixiaBaseline) => {
+        expect(carlottaBaseline).to.be.greaterThan(0);
+        expect(chixiaBaseline).to.be.greaterThan(0);
+
+        // Turning per-attribute mode on shows one slider per team attribute,
+        // seeded from the shared value, so damage doesn't change yet
+        cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
+        cy.get("[data-test-team-rotation-enemy-per-attribute-toggle]").click();
+        cy.get("[data-test-team-rotation-enemy-resist]").should("not.exist");
+        cy.get('[data-test-team-rotation-enemy-element-resist="Glacio"]').should("contain.text", "10%");
+        cy.get('[data-test-team-rotation-enemy-element-resist="Fusion"]').should("contain.text", "10%");
+        cy.get('[data-test-team-rotation-enemy-element-resist="Havoc"]').should("not.exist");
+
+        // Raising only Fusion resistance lowers only Chixia's damage
+        cy.get('[data-test-team-rotation-enemy-element-resist-input="Fusion"]')
+          .invoke("val", 0.5)
+          .trigger("input");
+        cy.get('[data-test-team-rotation-enemy-element-resist="Fusion"]').should("contain.text", "50%");
+        cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
+        cy.get("[data-test-team-rotation-enemy-summary]").should("contain.text", "Glacio 10% / Fusion 50%");
+
+        readNormalDamage("Basic Attack Stage 1 DMG").should("eq", carlottaBaseline);
+        readNormalDamage("Stage 1 DMG").should("be.lessThan", chixiaBaseline);
+      });
+    });
+
+    // Picking an enemy preset fills in its real per-attribute resistances
+    cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
+    cy.get("[data-test-team-rotation-enemy-browse-open]").click();
+    cy.get('[data-test-enemy-browser-choose="scarAberrantNightmare"]').click({ force: true });
+    cy.get('[data-test-team-rotation-enemy-element-resist="Glacio"]').should("contain.text", "10%");
+    cy.get('[data-test-team-rotation-enemy-element-resist="Fusion"]').should("contain.text", "40%");
+
+    // Turning it off goes back to the single shared slider
+    cy.get("[data-test-team-rotation-enemy-per-attribute-toggle]").click();
+    cy.get("[data-test-team-rotation-enemy-resist]").should("be.visible");
+    cy.get("[data-test-team-rotation-enemy-element-resist]").should("not.exist");
+  });
+
   it("supports per-action buffs, copying settings, and the damage breakdown drawer", () => {
     configureCharacterWithWeapon("Carlotta");
 
