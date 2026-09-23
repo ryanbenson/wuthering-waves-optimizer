@@ -36,6 +36,7 @@ export const liberationAttacks = {
         "10": "11.37%",
       },
       type: "Liberation",
+      subType: "Coordinated",
     }
   ],
 };
