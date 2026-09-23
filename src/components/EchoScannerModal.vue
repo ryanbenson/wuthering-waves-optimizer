@@ -47,6 +47,7 @@ import { nextTick, ref } from "vue";
 import EchoScannerCapture from "./EchoScannerCapture.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
+import { trackEvent } from "../utils/analytics";
 
 const emit = defineEmits<{
   /** Pass-through from EchoScannerCapture.vue — see its own doc comment on the same event. */
@@ -58,6 +59,7 @@ const modalId = "modal-echo-scanner-inventory";
 const isOpen = ref(false);
 
 async function triggerOpenModal() {
+  trackEvent("scanner-opened");
   isOpen.value = true;
   await nextTick();
   const modalEl = document.getElementById(modalId);
