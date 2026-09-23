@@ -247,6 +247,7 @@
                 @duplicate="handleActionDuplicate"
                 @bulk-apply="handleBulkApplyBuff"
                 @bulk-apply-enemy-stacks="handleBulkApplyEnemyStacks"
+                @bulk-apply-action-buff="handleBulkApplyActionBuff"
                 @drag-reorder-start="onActionDragStart(Number(index))"
                 @drag-reorder-end="onActionDragEnd" />
             </div>
@@ -408,6 +409,7 @@ import {
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
 import { applyBulkEnemyStacksOverride, type EnemyStackKey } from "../calculator/rotationEnemyStacksOverride";
+import { applyBulkActionBuff } from "../calculator/rotationActionBuffs";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
@@ -1072,6 +1074,16 @@ function handleBulkApplyEnemyStacks(payload: {
 }) {
   if (!team.value) return;
   const updatedActions = applyBulkEnemyStacksOverride(team.value.actions, payload.actionIds, payload.key, payload.override);
+  teamRotationsStore.setTeamActions(props.teamId, updatedActions);
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
+
+function handleBulkApplyActionBuff(payload: { modifier: string; modifierValue: unknown; actionIds: string[] }) {
+  if (!team.value) return;
+  const updatedActions = applyBulkActionBuff(team.value.actions, payload.actionIds, payload);
   teamRotationsStore.setTeamActions(props.teamId, updatedActions);
   showToast(
     `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,

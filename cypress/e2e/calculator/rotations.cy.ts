@@ -89,6 +89,44 @@ describe("Calculator Rotations", () => {
     testAttacks(carlottaRotationTest001Damages, cy);
   });
 
+  it("should bulk-apply a custom action buff to later actions via its Duration control (#564)", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+
+    cy.get(`[data-test-rotations-action="create"]`).click();
+    cy.get(`[data-test-rotation-item-by-name="Untitled Rotation"]`).click();
+    cy.get(`[data-test-rotation-name-input="Untitled Rotation"]`)
+      .clear()
+      .type("CustomBuffDuration");
+
+    for (const attackKey of ["BasicAttackStage1DMG", "ArtofViolenceDMG", "FatalFinaleDMG"]) {
+      cy.get(`[data-test-rotation-action-add="CustomBuffDuration"]`).click();
+      cy.richSelect(`[data-test-rotation-action-skill-input="none"]`, attackKey);
+    }
+
+    const actionFor = (attackKey: string) =>
+      cy.get(`[data-test-rotation-action-by-attack-key="${attackKey}"]`).first().closest(".rotation__action");
+
+    // Crit Rate on the first action, carried forward for 2 actions: the
+    // second action picks it up, the third doesn't.
+    actionFor("BasicAttackStage1DMG").find("[data-test-rotation-action-configure-stats]").click();
+    actionFor("BasicAttackStage1DMG").find("[data-test-action-add-buff]").click();
+    cy.richSelect(`[data-test-action-buff-input="none"]`, "CritRate");
+    cy.get(`[data-test-action-buff-value-input="CritRate"]`).clear().type("25");
+    cy.get(`[data-test-action-buff-duration-open="CritRate"]`).click();
+    cy.get(`[data-test-action-buff-duration-count="CritRate"]`).clear().type("2");
+    cy.get(`[data-test-action-buff-duration-apply="CritRate"]`).click();
+
+    actionFor("ArtofViolenceDMG").find("[data-test-rotation-action-configure-stats]").click();
+    actionFor("ArtofViolenceDMG")
+      .find(`[data-test-action-buff-value-input="CritRate"]`)
+      .should("have.value", "25");
+
+    actionFor("FatalFinaleDMG").find("[data-test-rotation-action-configure-stats]").click();
+    actionFor("FatalFinaleDMG").find("[data-test-action-buff-value-input]").should("not.exist");
+  });
+
   it("should let an action's buffs be configured independently via the advanced buff panel", () => {
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible");

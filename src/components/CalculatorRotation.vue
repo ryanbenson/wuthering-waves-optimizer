@@ -453,6 +453,7 @@
                 @duplicate-action="handleDuplicateAction"
                 @bulk-apply="handleBulkApplyBuff"
                 @bulk-apply-enemy-stacks="handleBulkApplyEnemyStacks"
+                @bulk-apply-action-buff="handleBulkApplyActionBuff"
                 @drag-reorder-start="onActionDragStart(index)"
                 @drag-reorder-end="onActionDragEnd"
                 :data-test-rotation-action-by-parent-name="nameValue"
@@ -526,6 +527,7 @@ import {
   type EnemyStackKey,
   type EnemyStacksOverride,
 } from "../calculator/rotationEnemyStacksOverride";
+import { applyBulkActionBuff } from "../calculator/rotationActionBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
@@ -838,6 +840,15 @@ function handleBulkApplyEnemyStacks(payload: {
   actionIds: string[];
 }) {
   actionsList.value = applyBulkEnemyStacksOverride(actionsList.value, payload.actionIds, payload.key, payload.override);
+  emitRotation();
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
+
+function handleBulkApplyActionBuff(payload: { modifier: string; modifierValue: unknown; actionIds: string[] }) {
+  actionsList.value = applyBulkActionBuff(actionsList.value, payload.actionIds, payload);
   emitRotation();
   showToast(
     `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
