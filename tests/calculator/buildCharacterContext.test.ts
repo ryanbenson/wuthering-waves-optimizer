@@ -489,3 +489,36 @@ describe("resolveTeamEnemyConfig", () => {
     });
   });
 });
+
+describe("resolveEnemyResistForElement", () => {
+  it("uses the per-attribute resistance for the given element when present", async () => {
+    const { resolveEnemyResistForElement } = await import("../../src/calculator/buildCharacterContext");
+    expect(
+      resolveEnemyResistForElement({ enemyResist: 0.1, enemyResistByElement: { Fusion: 0.4, Spectro: 0.2 } }, "Fusion"),
+    ).toBe(0.4);
+  });
+
+  it("falls back to the shared resistance when there is no map, no entry, or no element", async () => {
+    const { resolveEnemyResistForElement } = await import("../../src/calculator/buildCharacterContext");
+    expect(resolveEnemyResistForElement({ enemyResist: 0.1 }, "Fusion")).toBe(0.1);
+    expect(resolveEnemyResistForElement({ enemyResist: 0.1, enemyResistByElement: null }, "Fusion")).toBe(0.1);
+    expect(resolveEnemyResistForElement({ enemyResist: 0.1, enemyResistByElement: { Havoc: 0.4 } }, "Fusion")).toBe(0.1);
+    expect(resolveEnemyResistForElement({ enemyResist: 0.1, enemyResistByElement: { Fusion: 0.4 } }, "")).toBe(0.1);
+  });
+
+  it("keeps a per-attribute resistance of 0 rather than falling back", async () => {
+    const { resolveEnemyResistForElement } = await import("../../src/calculator/buildCharacterContext");
+    expect(resolveEnemyResistForElement({ enemyResist: 0.1, enemyResistByElement: { Fusion: 0 } }, "Fusion")).toBe(0);
+  });
+});
+
+describe("buildCharacterCalculationContext per-attribute resistance", () => {
+  it("resolves enemyResist from the character's own element", async () => {
+    // Calcharo is Electro.
+    const result = await buildCharacterCalculationContext("Calcharo", { Calcharo: {} }, {
+      ...enemyConfig,
+      enemyResistByElement: { Electro: 0.4, Fusion: 0.2 },
+    });
+    expect(result.context.enemy.enemyResist).toBeCloseTo(0.4);
+  });
+});

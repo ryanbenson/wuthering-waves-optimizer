@@ -32,6 +32,12 @@ export interface TeamEnemyConfig {
   enemyLevel: number;
   enemyResist: number;
   enemyType: string;
+  // Optional per-attribute resistance (fractions, keyed by element name, e.g.
+  // `{ Fusion: 0.4, Spectro: 0.1 }`) for teams whose members don't share one
+  // element (issue #530). When a character's element has an entry here, it
+  // replaces `enemyResist` for that character; absent/null keeps the single
+  // shared `enemyResist`, so the single-character Calculator is unaffected.
+  enemyResistByElement?: Record<string, number> | null;
   spectroFrazzleStacks?: number;
   aeroErosionStacks?: number;
   havocBaneStacks?: number;
@@ -59,7 +65,24 @@ export function resolveTeamEnemyConfig(characterData: Record<string, any> | unde
     electroRageStacks: data.electroRageStacks ?? 0,
     glacioChafeStacks: data.glacioChafeStacks ?? 0,
     strainStacks: data.strainStacks ?? 0,
+    enemyResistByElement: data.enemyResistByElement ?? undefined,
   };
+}
+
+/**
+ * The enemy resistance that applies to a character of `element`: the
+ * per-attribute entry from `enemyResistByElement` when one exists, otherwise
+ * the shared `enemyResist`.
+ */
+export function resolveEnemyResistForElement(
+  enemyConfig: Pick<TeamEnemyConfig, "enemyResist" | "enemyResistByElement">,
+  element: string | null | undefined,
+): number {
+  const perElement = element ? enemyConfig.enemyResistByElement?.[element] : undefined;
+  if (typeof perElement === "number" && Number.isFinite(perElement)) {
+    return perElement;
+  }
+  return enemyConfig.enemyResist;
 }
 
 export interface CharacterCalculationContext {
@@ -461,7 +484,7 @@ export async function buildCharacterCalculationContext(
     finalStats.resistReduction,
     finalStats.totalDeepenEffect,
     enemyConfig.enemyLevel,
-    enemyConfig.enemyResist,
+    resolveEnemyResistForElement(enemyConfig, chosenChar?.basic?.element),
     characters,
     characterId,
     enemyConfig.enemyType,
