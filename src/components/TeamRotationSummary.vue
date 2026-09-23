@@ -159,7 +159,15 @@
         <div class="text-sm">
           <div v-if="selectedEnemyEntry" class="font-semibold">{{ selectedEnemyEntry.name }}</div>
           <div>Lv {{ team.enemyConfig?.enemyLevel ?? 90 }}</div>
-          <div>{{ Math.round((team.enemyConfig?.enemyResist ?? 0.1) * 100) }}% Resist</div>
+          <template v-if="team.enemyConfig?.enemyResistByElement && teamElements.length">
+            <div
+              v-for="element in teamElements"
+              :key="element"
+              :data-test-team-rotation-summary-element-resist="element">
+              {{ element }} {{ Math.round(resolveEnemyResistForElement(team.enemyConfig, element) * 100) }}% Resist
+            </div>
+          </template>
+          <div v-else>{{ Math.round((team.enemyConfig?.enemyResist ?? 0.1) * 100) }}% Resist</div>
           <div>{{ team.enemyConfig?.enemyType ?? "Calamity" }}</div>
           <div v-if="team.enemyConfig?.havocBaneStacks">
             Havoc Bane Stacks: {{ team.enemyConfig.havocBaneStacks }}
@@ -188,6 +196,7 @@ import {
 } from "../utils/chartPreferences";
 import {
   buildCharacterCalculationContext,
+  resolveEnemyResistForElement,
   type CharacterCalculationContext,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
@@ -231,6 +240,13 @@ function characterImage(characterId: string) {
 }
 
 const slotContexts = ref<Record<number, CharacterCalculationContext | null>>({});
+
+const teamElements = computed(() => {
+  const elements = [0, 1, 2]
+    .map((slot) => (slotContexts.value[slot]?.chosenChar as { basic?: { element?: string } } | undefined)?.basic?.element)
+    .filter((element): element is string => !!element);
+  return [...new Set(elements)];
+});
 const result = ref<{
   perCharacter: Record<string, TeamRotationCharacterResult>;
   actionResults: TeamRotationActionResult[];

@@ -210,6 +210,33 @@ describe("computeTeamImportBase", () => {
 describe("calcTeamRotationDamage", () => {
   const characters = { Calcharo: {} };
 
+  it("applies per-attribute resistance to each slot by that character's own element (#530)", async () => {
+    const mixedCharacters = { Calcharo: {}, Changli: {} };
+    const actions: TeamRotationAction[] = [
+      { id: "a-calcharo", slot: 0, order: 0, type: "basic", key: "Part1Damage", count: 1 },
+      { id: "a-changli", slot: 1, order: 1, type: "basic", key: "BasicAttack1DMG", count: 1 },
+    ];
+    const team = { characterIds: ["Calcharo", "Changli", null], actions, duration: 10 };
+
+    const perAttribute = await calcTeamRotationDamage(team, mixedCharacters, {
+      ...enemyConfig,
+      enemyResistByElement: { Electro: 0.1, Fusion: 0.4 },
+    });
+    const allTen = await calcTeamRotationDamage(team, mixedCharacters, { ...enemyConfig, enemyResist: 0.1 });
+    const allForty = await calcTeamRotationDamage(team, mixedCharacters, { ...enemyConfig, enemyResist: 0.4 });
+
+    // Calcharo (Electro) sees 10%, Changli (Fusion) sees 40%.
+    expect(perAttribute.perCharacter.Calcharo.damageAggregation.avgDamage).toEqual(
+      allTen.perCharacter.Calcharo.damageAggregation.avgDamage,
+    );
+    expect(perAttribute.perCharacter.Changli.damageAggregation.avgDamage).toEqual(
+      allForty.perCharacter.Changli.damageAggregation.avgDamage,
+    );
+    expect(perAttribute.perCharacter.Changli.damageAggregation.avgDamage).toBeLessThan(
+      allTen.perCharacter.Changli.damageAggregation.avgDamage ?? 0,
+    );
+  });
+
   it("matches a direct single-character calcDamages call for one action in one slot", async () => {
     const action: TeamRotationAction = {
       id: "action-1",
