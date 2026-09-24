@@ -424,6 +424,34 @@ debug view's per-candidate label (`identity.debugLabel` in
 `useEchoScanner.ts`) now says which of the paths above actually ran and
 what it found, specifically so that's checkable from real usage.
 
+### Name OCR: next options if misses return
+
+The trailing-junk tolerance above fixed the inconsistent short-name
+matches seen on real footage (e.g. Dreamless). If more testing turns up
+name misses, these were identified but held back until needed, in order:
+
+1. **OCR tuning for the name crop only** (`echoScanner.worker.ts`):
+   - Drop low-confidence words. Tesseract reports a confidence per word,
+     and junk read from background art usually scores low.
+   - Read the name as a single line (`PSM 7`) instead of a block (`PSM 6`).
+   - Use a letters-only whitelist for the name: letters, space, `: - '`
+     and accents, with no digits, `%` or `+`.
+2. **Preprocessing for the name crop:**
+   - Binarize instead of the current grayscale + 1.5× contrast stretch.
+     Names are near-white, so keep bright, low-saturation pixels as text,
+     make everything else background, then invert to dark text on white.
+   - Trim the crop at the first wide empty column gap after the text, so
+     the background art never reaches OCR.
+3. **Other:**
+   - Vote on the name across the frames `stability.ts` already groups for
+     one echo, so a single bad frame can't decide it.
+   - Require a margin between the best and runner-up match before trusting
+     it, so a wrong echo can't win by a hair.
+
+Known limit of the current matcher: very short names (Jué, 3 chars) still
+tolerate only about 2 junk chars. Options 1 and 2 address that by
+reducing junk at the source, rather than by loosening the matcher.
+
 ## Set icon matching: shape-mask the background, not just crop tighter
 
 `SET_ICON_BOX`'s geometry alone (see "ROI layout" above) wasn't the whole
