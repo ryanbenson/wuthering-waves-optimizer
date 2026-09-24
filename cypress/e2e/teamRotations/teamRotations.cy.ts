@@ -519,6 +519,50 @@ describe("Team Rotations", () => {
     cy.get("[data-test-advanced-buff-toggle]").first().should("not.be.checked");
   });
 
+  it("bulk-applies a custom action buff across a range of actions via its Duration control (#564)", () => {
+    configureCharacterWithWeapon("Carlotta");
+    configureCharacterWithWeapon("Chixia");
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
+    cy.selectTeamRotationSlotCharacter(1, "Chixia");
+
+    const addActionForSlot = (slot: number, attackKey: string) => {
+      cy.get("[data-test-team-rotation-add-action]").click();
+      cy.get('[data-test-rotation-action-by-attack-key="none"]')
+        .first()
+        .closest("[data-test-team-rotation-action]")
+        .find(`[data-test-team-rotation-action-slot-choice="${slot}"]`)
+        .click();
+      cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+      cy.richSelect('[data-test-rotation-action-skill-input="none"]', attackKey);
+    };
+    addActionForSlot(0, "BasicAttackStage1DMG");
+    addActionForSlot(1, "PowPowStage1DMG");
+    addActionForSlot(0, "ArtofViolenceDMG");
+
+    // Add a custom Crit Rate buff to action 1, then carry it forward for 2
+    // actions — into Chixia's action, but not Carlotta's later action 3.
+    cy.get("[data-test-team-rotation-action]").eq(0).find("[data-test-rotation-action-configure-stats]").click();
+    cy.get("[data-test-team-rotation-action]").eq(0).find("[data-test-action-add-buff]").click();
+    cy.richSelect('[data-test-action-buff-input="none"]', "CritRate");
+    cy.get('[data-test-action-buff-value-input="CritRate"]').clear().type("25");
+    cy.get('[data-test-action-buff-duration-open="CritRate"]').click();
+    cy.get('[data-test-action-buff-duration-count="CritRate"]').clear().type("2");
+    cy.get('[data-test-action-buff-duration-apply="CritRate"]').click();
+    cy.get("[data-test-team-rotation-action]").eq(0).find("[data-test-rotation-action-configure-stats]").click();
+
+    cy.get("[data-test-team-rotation-action]").eq(1).find("[data-test-rotation-action-configure-stats]").click();
+    cy.get("[data-test-team-rotation-action]")
+      .eq(1)
+      .find('[data-test-action-buff-value-input="CritRate"]')
+      .should("have.value", "25");
+    cy.get("[data-test-team-rotation-action]").eq(1).find("[data-test-rotation-action-configure-stats]").click();
+
+    cy.get("[data-test-team-rotation-action]").eq(2).find("[data-test-rotation-action-configure-stats]").click();
+    cy.get("[data-test-team-rotation-action]").eq(2).find("[data-test-action-buff-value-input]").should("not.exist");
+  });
+
   it("sticks the summary header below the nav (in a simplified form) once scrolled past it", () => {
     configureCharacterWithWeapon("Carlotta");
     cy.get("[data-test-nav-team-rotations]").click();

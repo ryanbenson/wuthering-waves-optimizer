@@ -8,6 +8,7 @@ Shared utilities used across the app. No business logic (no character/echo/weapo
 |------|--------|
 | **`numbers.ts`** | Number formatting and rounding. **`displayPercentage(number, decimalPlaces?)`**: format as a percentage string (e.g. for stats UI). **`displayInt(number)`**: integer formatting for display. **`displayDamage(number)`**: `Math.ceil` for damage values. Uses `Intl.NumberFormat` with project conventions (e.g. floor rounding for integers). |
 | **`strings.ts`** | String helpers (e.g. **`randomString()`** used for generating unique ids for rotations, actions, etc.). Other generic string helpers can live here. |
+| **`rotationDurationRange.ts`** | Pure range logic behind every rotation "Duration" control (`RotationDurationPanel.vue`): **`getDurationPool(rangeActions, actionId)`** (this action plus every later one, with "This action"/"+N" labels) and **`resolveDurationTargetIds(pool, mode, count, untilActionId)`** ("# actions" clamps to the pool; "until action" is inclusive). Also owns the `DurationRangeAction` type. |
 
 ## Conventions
 

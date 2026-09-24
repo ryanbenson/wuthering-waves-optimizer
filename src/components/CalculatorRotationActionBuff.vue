@@ -1,37 +1,58 @@
 <template>
-  <div class="action__buff pb-4">
-    <AppRichSelect
-      v-model="modifierType"
-      class="action__buff-select"
-      size="xs"
-      searchable
-      search-placeholder="Search buffs…"
-      placeholder="Select buff…"
-      :options="buffSelectOptions"
-      :data-test-action-buff-input="modifierType ?? 'none'"
-      aria-label="Select action buff"
-      @update:model-value="onBuffSelected" />
-    <input
-      v-model="modifierValueInput"
-      type="number"
-      name="modifierValueInput"
-      id="modifierValueInput"
-      class="input input-xs input-bordered w-24"
-      @input="onModifierValueUpdate"
-      :data-test-action-buff-value-input="modifierType ?? 'none'" />
-    <div class="delete" @click="removeBuff">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <path
-          d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-          fill="#FFFFFF" />
-      </svg>
+  <div class="pb-4">
+    <div class="action__buff">
+      <AppRichSelect
+        v-model="modifierType"
+        class="action__buff-select"
+        size="xs"
+        searchable
+        search-placeholder="Search buffs…"
+        placeholder="Select buff…"
+        :options="buffSelectOptions"
+        :data-test-action-buff-input="modifierType ?? 'none'"
+        aria-label="Select action buff"
+        @update:model-value="onBuffSelected" />
+      <input
+        v-model="modifierValueInput"
+        type="number"
+        name="modifierValueInput"
+        id="modifierValueInput"
+        class="input input-xs input-bordered w-24"
+        @input="onModifierValueUpdate"
+        :data-test-action-buff-value-input="modifierType ?? 'none'" />
+      <button
+        v-if="canBulkApply"
+        type="button"
+        class="btn btn-xs shrink-0"
+        title="Apply this buff across a range of actions"
+        :data-test-action-buff-duration-open="modifierType ?? 'none'"
+        @click.stop.prevent="showDurationPanel = !showDurationPanel">
+        Duration
+      </button>
+      <div class="delete" @click="removeBuff">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path
+            d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+            fill="#FFFFFF" />
+        </svg>
+      </div>
     </div>
+    <RotationDurationPanel
+      v-if="showDurationPanel && canBulkApply"
+      class="mt-1"
+      :range-actions="rangeActions"
+      :action-id="actionId"
+      :data-test-key="modifierType ?? 'none'"
+      data-test-prefix="action-buff"
+      @apply="applyDuration" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { subStatLabelMap } from "../echoes/stats";
+import RotationDurationPanel from "./RotationDurationPanel.vue";
+import { getDurationPool, type DurationRangeAction } from "../utils/rotationDurationRange";
 import AppRichSelect, {
   type AppRichSelectOption,
   type AppRichSelectValue,
@@ -45,9 +66,17 @@ const props = withDefaults(
     modifier?: string | null;
     modifierValue?: number | string | null | unknown;
     allBuffs?: BuffRow[];
+    /** The rotation's actions in sequence (the whole team's, for Team
+     * Rotations) — the pool for the "Duration" control. Omitted (or a
+     * single-action list) hides it. */
+    rangeActions?: DurationRangeAction[];
+    /** The action this buff row belongs to — where the Duration range starts. */
+    actionId?: string;
   }>(),
   {
     allBuffs: () => [],
+    rangeActions: () => [],
+    actionId: undefined,
   },
 );
 
@@ -56,6 +85,7 @@ const emit = defineEmits<{
   "updated-buff": [
     payload: { id: string; modifier: string | null; modifierValue: unknown },
   ];
+  "bulk-apply": [payload: { modifier: string; modifierValue: unknown; actionIds: string[] }];
 }>();
 
 const modifierType = ref<string | null>(null);
@@ -192,7 +222,29 @@ function onModifierValueUpdate(e: Event) {
   });
 }
 
-onMounted(() => {
+// Only offered once the row is fully filled in — copying a buff with no
+// modifier or no value forward would just stamp blank rows everywhere.
+const canBulkApply = computed(
+  () =>
+    Boolean(modifierType.value) &&
+    modifierValueInput.value !== null &&
+    modifierValueInput.value !== "" &&
+    getDurationPool(props.rangeActions, props.actionId).length > 1,
+);
+
+const showDurationPanel = ref(false);
+
+function applyDuration(actionIds: string[]) {
+  if (!modifierType.value) return;
+  emit("bulk-apply", {
+    modifier: modifierType.value,
+    modifierValue: modifierValueInput.value,
+    actionIds,
+  });
+  showDurationPanel.value = false;
+}
+
+function syncFromProps() {
   modifierType.value = props.modifier ?? null;
   const mv = props.modifierValue;
   if (mv === null || mv === undefined) {
@@ -202,7 +254,14 @@ onMounted(() => {
   } else {
     modifierValueInput.value = null;
   }
-});
+}
+
+onMounted(syncFromProps);
+
+// A Duration apply started from a *different* action can rewrite this row's
+// value in place (same id), so the local inputs must follow the prop rather
+// than only reading it once on mount.
+watch(() => [props.modifier, props.modifierValue], syncFromProps);
 </script>
 
 <style scoped lang="scss">
