@@ -12,6 +12,15 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-24",
+    dateLabel: "September 24, 2026",
+    items: [
+      "Added a new toggle on team buffs (classic and v3 UI) to hide impossible buffs. it mostly applies to Weapons right now, so it hides weapons that your teammates cannot use",
+      "On v3 UI, on team buffs, i removed the top level stat aggregations since there are a lot of buffs don't line up really well with that, so it added more confusion than value. i did update the list of active buffs so that they're categorized by \"where they came from\"",
+      "Update to the Labs feature: Echo Scanner - Released two improvements on how it processes and matches echoes and substats. Made a good improvement. The video reference I linked above has processed with 100% accuracy (36 echoes)",
+    ],
+  },
+  {
     date: "2026-09-23",
     dateLabel: "September 23, 2026",
     items: [
