@@ -49,12 +49,20 @@
 import { mainEchoesData, getEchoData, getCostByClass, type Echo } from "../echoes/index";
 import { statsTable, subStatsTable, verboseStatLabelMap, flatBonusesByRankByType } from "../echoes/stats";
 import { getSubstatType, getSubstatValue } from "../echoes/parsedEchoMapping";
-import { levenshteinSimilarity } from "./levenshtein";
+import { levenshteinSimilarity, prefixTolerantSimilarity } from "./levenshtein";
 import type { FieldConfidence, OcrLine, ParsedEchoSlot, ParsedSubstat, SubstatSource } from "./types";
 
 export const NAME_MATCH_THRESHOLD = 0.68;
 /** Loose sanity floor for the "set already narrowed to one echo" case — just enough to catch a set icon that was clearly misread, not to require a strong text match. */
 const NAME_SANITY_THRESHOLD = 0.4;
+/**
+ * Per-char cost of dropping trailing OCR text when matching a name (a full
+ * edit costs 1) — see prefixTolerantSimilarity. At 0.5, "Dreamless" plus up
+ * to ~8 junk chars still clears NAME_MATCH_THRESHOLD, while a lightly
+ * garbled "Fog Lion Arch: Bdy" still prefers Fog Lion Arch: Body over its
+ * prefix echo Fog Lion Arch.
+ */
+const TRAILING_DROP_WEIGHT = 0.5;
 /** How many substats a max-level echo has — the app doesn't track echo level, so every scanned echo is assumed to be at this many. */
 const EXPECTED_SUBSTAT_COUNT = 5;
 
@@ -428,12 +436,17 @@ export function parseNameText(rawText: string): string | null {
 
 export type EchoNameMatch = { key: string; name: string; similarity: number };
 
+/** Both args already normalized. Tolerates trailing OCR junk after the name — see TRAILING_DROP_WEIGHT. */
+function nameSimilarity(ocrName: string, echoName: string): number {
+  return prefixTolerantSimilarity(ocrName, echoName, TRAILING_DROP_WEIGHT);
+}
+
 function bestNameMatch(rawName: string, pool: Echo[]): EchoNameMatch | null {
   const target = normalize(rawName);
   if (!target) return null;
   let best: EchoNameMatch | null = null;
   for (const echo of pool) {
-    const similarity = levenshteinSimilarity(target, normalize(echo.name));
+    const similarity = nameSimilarity(target, normalize(echo.name));
     if (!best || similarity > best.similarity) {
       best = { key: echo.key, name: echo.name, similarity };
     }
@@ -541,7 +554,7 @@ function resolveEchoBySet(
 
   if (matchedSet && pool.length === 1) {
     const only = pool[0];
-    const similarity = headerName ? levenshteinSimilarity(normalize(headerName), normalize(only.name)) : null;
+    const similarity = headerName ? nameSimilarity(normalize(headerName), normalize(only.name)) : null;
     // No name text to sanity-check against, or it's at least a loose match: trust the set narrowing.
     const trusted = similarity === null || similarity >= NAME_SANITY_THRESHOLD;
     return { echo: only.key, confidence: trusted ? "high" : "low" };

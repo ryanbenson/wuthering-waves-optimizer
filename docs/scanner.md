@@ -371,6 +371,17 @@ The current design, in `parse.ts`'s `resolveEchoByNameAndCost` +
    `NAME_BLOCK`'s single-line, no-wrap crop exists specifically to make
    this read reliable, since it now carries the primary identification
    burden rather than a secondary tie-break role.
+   The match tolerates **trailing OCR junk** (`prefixTolerantSimilarity`,
+   `TRAILING_DROP_WEIGHT` in `parse.ts`): `NAME_BLOCK` is sized for the
+   longest names, so a short one ("Dreamless") leaves background art in
+   the rest of the crop that tesseract reads as junk ("Dreamless LQ Va A").
+   Whole-string similarity charged each junk char as a full edit, so the
+   same echo passed or failed depending on how much junk a frame produced.
+   Trailing chars can now be dropped at half the cost of an edit. They
+   still cost *something*, so a lightly garbled longer name ("Chop Chop:
+   Headlss", "Fog Lionarch: Bdy") keeps beating its prefix echo ("Chop
+   Chop", "Fog Lionarch"), the only prefix families in the pool. Very short
+   names (Jué) still only tolerate a couple of junk chars.
 4. **If an echo resolves**, look up its own `sets`:
    - **Exactly one** (33% of the pool): done — the set is known directly,
      with *no image matching at all*, not even attempted.

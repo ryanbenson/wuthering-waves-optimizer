@@ -9,8 +9,9 @@ import {
   parseEchoCandidate,
   inferCostFromSecondaryStat,
   resolveEchoByNameAndCost,
+  NAME_MATCH_THRESHOLD,
 } from "../../src/scanner/parse";
-import { getEchoData } from "../../src/echoes/index";
+import { getEchoData, mainEchoesData } from "../../src/echoes/index";
 
 // Ground-truth transcripts read directly off real screenshots/debug-crop
 // text the user provided, typed out as tesseract would plausibly return
@@ -216,6 +217,58 @@ describe("matchEchoName", () => {
     const match = matchEchoName("Jué");
     expect(match?.similarity).toBe(1);
     expect(getEchoData(match!.key).name).toBe("Jué");
+  });
+
+  // Real name-crop OCR of the same Dreamless echo across frames: a short
+  // name leaves background art in the fixed-width crop, read as trailing
+  // junk. Plain whole-string similarity failed the first (5 junk chars)
+  // and passed the others (4), so the same echo matched inconsistently.
+  it.each(["Dreamless LQ Va A", "Dreamless LQ Va", "Dreamless ws dS", "Dreamless LQ Va Axy"])(
+    "matches a short name through trailing OCR junk (%s)",
+    (raw) => {
+      const match = matchEchoName(raw);
+      expect(match?.key).toBe("Dreamless");
+      expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+    },
+  );
+
+  // Very short names only tolerate a little junk: a 3-char name followed by
+  // lots of junk is too close to "random text starting with ju" to trust.
+  it("still matches a short accented name through a little trailing junk", () => {
+    const match = matchEchoName("Jue dS");
+    expect(getEchoData(match!.key).name).toBe("Jué");
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  // Echo names that are a prefix of other echo names: dropping trailing
+  // text must not let the shorter one steal the longer one's reads.
+  it.each([
+    ["Chop Chop", "Chop Chop"],
+    ["Chop Chop ws dS", "Chop Chop"],
+    ["Chop Chop: Headless", "Chop Chop: Headless"],
+    ["Chop Chop: Headlss", "Chop Chop: Headless"],
+    ["Chop Chop Lcftlcss", "Chop Chop: Leftless"],
+    ["Chop Chop: Rightless LQ", "Chop Chop: Rightless"],
+    ["Fog Lionarch", "Fog Lionarch"],
+    ["Fog Lionarch: Bdy", "Fog Lionarch: Body"],
+    ["Fog Lionarch Hcad", "Fog Lionarch: Head"],
+  ])("resolves prefix-family name %s to %s", (raw, expected) => {
+    const match = matchEchoName(raw);
+    expect(getEchoData(match!.key).name).toBe(expected);
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  it("matches every known echo name to itself exactly", () => {
+    for (const echo of Object.values(mainEchoesData)) {
+      const match = matchEchoName(echo.name);
+      expect(match?.similarity, echo.name).toBe(1);
+      expect(match?.key, echo.name).toBe(echo.key);
+    }
+  });
+
+  it("still rejects text that isn't an echo name", () => {
+    const match = matchEchoName("zzz totally not an echo zzz");
+    expect(match!.similarity).toBeLessThan(NAME_MATCH_THRESHOLD);
   });
 });
 
