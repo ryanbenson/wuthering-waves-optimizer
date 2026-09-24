@@ -71,6 +71,11 @@ Key choices, each with a reason:
   `CalculatorEchoParser.vue`'s own 5-separate-crop approach, which is what
   should have been followed from the start) once that was diagnosed. See
   `docs/scanner.md`'s "Substat OCR" section.
+  **Superseded 2026-09-23:** per-row crops are now a fallback. The
+  primary substat pass OCRs a label column and a value column separately
+  and pairs them by line position, because wrapped Resonance
+  Skill/Liberation labels kept pushing rows out of their fixed crops. See
+  `docs/scanner.md`'s "Substat OCR" section.
 - **Echo identity is narrowed by matched set + cost first, the same way
   `CalculatorEchoParser.vue`'s `filteredEchoKeys` narrowing works** — name
   text (Levenshtein vs. `mainEchoesData`) only breaks a tie within that

@@ -37,11 +37,12 @@
  * and every following row sits at a further ~0.0373 down, consistently
  * across all three measured resolutions.
  *
- * SUBSTAT_BLOCK is a *fallback*, not the primary path: if the 5 individual
- * substat-row crops don't yield all 5 substats (expected every time now
- * that level is assumed max), one extra OCR call against this wider block
- * — spanning all 5 rows plus wrap allowance — is parsed with
- * `splitStatBlock` instead. Long labels wrapping to a second line
+ * Substats are read primarily from two columns over SUBSTAT_BLOCK's span
+ * (SUBSTAT_LABEL_COLUMN / SUBSTAT_VALUE_COLUMN), paired by line position.
+ * The per-row SUBSTAT_ROWS crops and the whole SUBSTAT_BLOCK are only OCR'd
+ * as fallbacks when the column pass doesn't yield all 5 substats (expected
+ * every time now that level is assumed max); SUBSTAT_BLOCK is parsed with
+ * `splitStatBlock`. Long labels wrapping to a second line
  * ("Resonance Skill DMG Bonus") is the main reason per-row crops fall
  * short: the game doesn't reserve consistent spacing for a wrap, so a
  * wrapped row can shift everything below it down by an amount that varies
@@ -179,6 +180,39 @@ export const SUBSTAT_BLOCK: RegionFrac = {
 };
 
 /**
+ * x where the substat label column ends and the value column begins.
+ * Measured with a column scan for bright text pixels across 11 real
+ * 2880x1800 Echo screenshots: label text always ends at or before 0.887
+ * (the widest single-line label, "Heavy Attack DMG Bonus"), and values
+ * (right-aligned) always start at or after 0.922 (the widest value, e.g.
+ * "10.5%"). The split sits in the middle of that ~0.035 (≈100px) gap so
+ * either side can drift a little without leaking into the other column.
+ */
+const SUBSTAT_COLUMN_SPLIT_X = 0.905;
+
+/**
+ * Primary substat pass: SUBSTAT_BLOCK's span, split into a label-only
+ * column and a value-only column, each OCR'd on its own. A wrapped label
+ * ("Resonance Skill DMG" / "Bonus") only adds a line to the label column;
+ * the value column always reads one value per row, lined up with the first
+ * line of its label. parse.ts's parseSubstatColumns pairs them by each
+ * line's vertical position. See docs/scanner.md's "Substat OCR".
+ */
+export const SUBSTAT_LABEL_COLUMN: RegionFrac = {
+  x: STAT_ROW_X,
+  y: SUBSTAT_BLOCK.y,
+  width: SUBSTAT_COLUMN_SPLIT_X - STAT_ROW_X,
+  height: SUBSTAT_BLOCK.height,
+};
+
+export const SUBSTAT_VALUE_COLUMN: RegionFrac = {
+  x: SUBSTAT_COLUMN_SPLIT_X,
+  y: SUBSTAT_BLOCK.y,
+  width: STAT_ROW_X + STAT_ROW_WIDTH - SUBSTAT_COLUMN_SPLIT_X,
+  height: SUBSTAT_BLOCK.height,
+};
+
+/**
  * Main stat row through the end of SUBSTAT_BLOCK — fingerprinted (not
  * OCR'd) at a fine grid alongside the coarse PANEL_BOX fingerprint, so the
  * change-detection gate notices when only the stat text changes. The
@@ -206,6 +240,8 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
   { key: "setIcon", label: "Set icon", region: SET_ICON_BOX },
   { key: "main", label: "Main stat", region: MAIN_STAT_ROW },
   { key: "secondary", label: "Fixed secondary", region: SECONDARY_STAT_ROW },
+  { key: "substatLabels", label: "Substat labels", region: SUBSTAT_LABEL_COLUMN },
+  { key: "substatValues", label: "Substat values", region: SUBSTAT_VALUE_COLUMN },
   ...SUBSTAT_ROWS.map((region, i) => ({ key: `sub${i}`, label: `Substat ${i + 1}`, region })),
   { key: "substatBlock", label: "Substat fallback block", region: SUBSTAT_BLOCK },
 ];

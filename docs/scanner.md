@@ -14,12 +14,15 @@ capture.ts (FrameSource: live share or uploaded video)
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
     something new?" gate — no OCR yet (coarse panel fingerprint AND a
     fine stat-rows fingerprint; see "Change detection" below)
-  → on settle: grab name + main-stat + fixed-secondary + up to 5
-    individually-cropped substat-row bitmaps, plus a full-frame bitmap
-      → echoScanner.worker.ts: OCR each crop separately (tesseract.js, self-hosted)
+  → on settle: grab name + main-stat + fixed-secondary + the substat
+    label column + the substat value column
+      → echoScanner.worker.ts: OCR each crop separately (tesseract.js,
+        self-hosted), returning text plus each line's vertical position
       → echoParser.worker.ts: matchSetFirst (existing set-icon matcher, reused)
-  → if the 5 per-row substat crops don't add up to all 5 substats: one more
-    OCR call against a wider SUBSTAT_BLOCK crop, parsed as a fallback pass
+  → parse.ts pairs each substat value with the label line at its height
+  → if that doesn't add up to all 5 substats: one more batch OCRs the 5
+    per-row SUBSTAT_ROWS crops plus the wider SUBSTAT_BLOCK crop as
+    fallback passes; whichever pass recovers the most wins
   → parse.ts: raw OCR text + matched set → ParsedEchoSlot candidate (echo
     identity: narrow mainEchoesData by the matched set first, same as
     CalculatorEchoParser.vue's filteredEchoKeys minus its cost half —
@@ -199,8 +202,13 @@ comment says what was actually measured.
 - `SET_ICON_BOX` has had three revisions, all from real usage — see "Set
   icon matching" below for the geometry history and the (larger) separate
   fix to how the crop is matched, not just how tightly it's cropped.
-- `SUBSTAT_BLOCK` — a fallback, not primary, region — spans all 5 substat
-  rows plus wrap allowance; see "Substat OCR" below.
+- `SUBSTAT_BLOCK` spans all 5 substat rows plus wrap allowance. The
+  primary substat regions, `SUBSTAT_LABEL_COLUMN` and `SUBSTAT_VALUE_COLUMN`,
+  split that same span at x = 0.905. That split was measured with a
+  bright-text column scan over 11 real 2880x1800 Echo screenshots: label
+  text always ends at or before 0.887 (the longest one-line label, "Heavy
+  Attack DMG Bonus"), and the right-aligned values always start at or after
+  0.922. The split sits in the middle of that gap. See "Substat OCR" below.
 - Only 16:10 has been measured. A very different aspect ratio is rejected
   up front (`isSupportedAspect`) rather than silently producing garbage; a
   calibration UI for non-16:10/ultrawide is a known follow-up, not built here.
@@ -208,58 +216,80 @@ comment says what was actually measured.
 If a future WuWa UI update moves the panel, re-run the same kind of
 measurement against a fresh screenshot before touching the fractions by feel.
 
-## Substat OCR: per-row crops first, a wider block as fallback
+## Substat OCR: label and value columns first, per-row and block as fallbacks
 
-The first version of this scanner OCR'd the whole stats area as one
-multi-line block and asked tesseract to segment it into rows itself. Real
-usage surfaced this as a cause of missing substats: block-level line
-segmentation can silently merge two rows together or drop a row's text
-entirely when line spacing is tight, with no way to recover it from the
-block's recognized text afterward. That was replaced with 5 separate,
-individually-cropped substat regions — mirroring `CalculatorEchoParser.vue`'s
-proven approach for the Discord-bot image (5 separate crops there too) —
-which fixed that failure mode but introduced a different one: `SUBSTAT_ROWS`
-crops are taller than one line (to still catch a wrapped label's
-continuation, which lands in the next row's space), and real debug-crop
-captures showed that overlap regularly catching a *neighboring* row's
-actual text too, not just blank margin — visible as two consecutive
-substat crops both containing the same line. A wrapped label earlier in
-the panel is the root cause either way: WuWa doesn't reserve consistent
-spacing for a wrap, so it shifts every row below it down by an amount
-that varies echo to echo, which no *fixed*-position crop's height alone
-can fully account for.
+Substats are the part of the panel that shifts from echo to echo. A long
+label ("Resonance Skill DMG Bonus", "Resonance Liberation DMG Bonus") wraps
+to a second line, and WuWa doesn't reserve space for the wrap, so every row
+below it moves down by a varying amount. The scanner has had three designs
+for this:
 
-The current design is two passes, per the user's own suggestion after
-seeing the debug-crop bleed-over directly:
+1. **One multi-line block** (the first version). Tesseract's own line
+   segmentation sometimes merged two rows or dropped one, with no way to
+   recover it afterward.
+2. **Five fixed per-row crops** (`SUBSTAT_ROWS`), mirroring
+   `CalculatorEchoParser.vue`'s Discord-bot approach, with `SUBSTAT_BLOCK`
+   as a fallback. A wrap above a row pushes that row's text out of its
+   fixed crop. Crops were made taller than one line to compensate, which
+   then caught a neighboring row's text. Resonance Skill/Liberation rows were
+   the main source of EMPTY substats, and some shifted rows were read with
+   another row's value without any warning.
+3. **Label and value columns** (current primary pass, the user's idea). The
+   substat span is split into `SUBSTAT_LABEL_COLUMN` and
+   `SUBSTAT_VALUE_COLUMN` (see "ROI layout" for the measured split). Each
+   is OCR'd once, and the worker returns every line's vertical bounds
+   along with its text.
 
-1. **Per-row pass** (primary): the 5 individually-cropped `SUBSTAT_ROWS`,
-   as before. `parse.ts`'s `parseStatRow` only accepts a candidate row
-   whose label actually looks like a real stat name
-   (`isPlausibleLabel`) — keeps scanning past noise (including a
-   neighboring row's leaked-in text, or the excluded icon's OCR garbage
-   if any still gets through) rather than grabbing the first thing that
-   merely *shaped* like "label value".
-2. **Block fallback**: if the per-row pass doesn't add up to all 5
-   substats — expected every time now that level is assumed max, so
-   anything less is treated as a miss to recover, not a legitimately
-   partial echo — one more OCR call goes out against `SUBSTAT_BLOCK` (all
-   5 rows + wrap allowance, in one wider crop), parsed by `splitStatBlock`
-   (the same per-row plausibility gate, generalized to keep finding more
-   rows instead of stopping at the first). If that recovers more than the
-   per-row pass did, its result *replaces* the per-row one outright,
-   rather than trying to merge two different partial views position by
-   position — `usedSubstatBlockFallback` on both the parse result and the
-   saved `ScanCandidate` records when this happened, shown in the debug view.
+Why columns work: values never wrap, so the value column always reads one
+clean line per row. A wrap only adds a line to the *label* column, and the
+value is right-aligned to the label's *first* line. `parse.ts`'s
+`parseSubstatColumns`:
 
-This costs more OCR calls per candidate than the original single-block
-design (up to 8 baseline, +1 only when the fallback triggers) — a
-deliberate accuracy-over-speed tradeoff per `CLAUDE.md`'s priority order,
-offset by giving `echoScanner.worker.ts` a 3-worker pool (up from 2) so a
-candidate's row crops OCR in parallel.
+- keeps value lines that are numbers after trimming punctuation around them;
+- pairs each value with the unpaired label line whose vertical center is
+  closest, within half a line height;
+- appends the unpaired label line directly below a paired one as its
+  continuation ("Resonance Skill DMG" + "Bonus", "Resonance Liberation" +
+  "DMG Bonus"), but only when it starts within 1.85x a value line's height
+  (top to top) and the merged text reads as one known label. Measured on
+  real crops: a continuation starts ~1.65-1.75x below, the next row ~2.05x,
+  and the Echo Skill text below the last substat ≥ 3x;
+- drops any pair whose label isn't a plausible stat name. The columns run
+  past the last substat into the Echo Skill description, which otherwise
+  pairs stray digits with description text.
 
-### Row parsing: what a wrapped/split row's text actually looks like
+Pairing by position rather than list index means one dropped or garbled
+line only costs its own row. ATK vs ATK% (and HP/DEF) still comes from the
+paired value's `%`, the same as every other path.
 
-`parse.ts`'s `scanStatRows` (shared by `parseStatRow` and `splitStatBlock`)
+Measured against the old per-row + block pipeline on the same 11 real
+screenshots (real tesseract.js output, same preprocessing), the column pass
+read every substat correctly. The old pipeline garbled one row
+("Cl IL. RdlC 0.970" for "Crit. Rate 6.3%"), and on one echo it assigned
+two values to the wrong rows (6.4% / 11.6% for a real 8.6% / 8.6%) without
+any warning. The second case is worse than an empty slot.
+
+**Fallbacks.** If the column pass finds fewer than 5 substats (every echo is
+assumed max-level, so fewer than 5 counts as a miss), a second OCR batch
+reads the 5 `SUBSTAT_ROWS` crops plus `SUBSTAT_BLOCK`. `parseEchoCandidate`
+keeps whichever pass recovered the most rows (ties go to the earlier pass,
+columns first), and replaces the result outright rather than merging partial
+views row by row. `substatSource` (`"columns" | "rows" | "block"`) on the
+parse result and on the `ScanCandidate` records which pass won, and the
+debug view shows it. An echo below +25 legitimately has fewer than 5
+substats, so it always triggers the fallback batch; the column result still
+wins unless a fallback does better.
+
+The common case is now 5 OCR calls per candidate (name, main, secondary,
+two columns), down from 8. The fallback case costs 11, run in two batches
+through the 3-worker pool. The fallbacks stay in place as a safety net
+until the column pass has held up across more real scans; after that they
+can be removed in a small follow-up.
+
+### Row parsing (fallback passes): what a wrapped/split row's text actually looks like
+
+`parse.ts`'s `scanStatRows` (shared by `parseStatRow` and `splitStatBlock`,
+i.e. the per-row and block fallbacks — not the column pass)
 has to reassemble a row's label from however tesseract split it across
 lines. Real debug-crop footage confirmed three distinct shapes, not just
 the one originally assumed:
@@ -625,7 +655,9 @@ wrong:
 - **Per-candidate crop grid**: every captured candidate also carries
   `debugCrops` — a labeled `data:` URL thumbnail of exactly what was
   cropped for each region (including `substatBlock`, the fallback region),
-  plus that region's own OCR text. The `setIcon` entry shows
+  plus that region's own OCR text. `substatLabels`/`substatValues` are
+  the primary substat crops; `sub0`-`sub4` and `substatBlock` only show OCR
+  text when the fallback batch actually ran. The `setIcon` entry shows
   `resolveEchoIdentity`'s `debugLabel` instead of a generic placeholder —
   which of the identification paths actually ran ("Resolved by name
   (single possible set): …", "Resolved by name; narrowed image match (N
@@ -639,9 +671,9 @@ wrong:
   a placeholder. `capture.ts`'s `grabRegionWithPreview` produces both the
   bitmap sent to the worker and the thumbnail from one canvas draw, so
   what's shown is provably the same pixels that were actually
-  OCR'd/matched, not a re-derived approximation. A candidate whose substat
-  block fallback pass actually fired shows a small "Used substat fallback
-  pass" note (`usedSubstatBlockFallback`).
+  OCR'd/matched, not a re-derived approximation. A candidate whose substats
+  came from a fallback pass instead of the columns shows a small note
+  saying which one (`substatSource`).
 
 This is what caught `SET_ICON_BOX` being badly mispositioned (see its doc
 comment) — every scan confidently returning the same wrong set is exactly
