@@ -31,3 +31,19 @@ export function buffMatchesSearch(buff: FilterableBuff, query: string): boolean 
 export function buffIsUsed(buff: FilterableBuff, isEnabled: boolean): boolean {
   return Boolean(buff.alwaysEnabled) || isEnabled;
 }
+
+/**
+ * "Hide impossible" filter: a buff tagged with the weapon type that grants
+ * it (weapon team buffs carry `weaponType`) is only possible if one of the
+ * selected teammates can wield that type. Untagged buffs (character/echo)
+ * and an empty team (nothing to rule out against) are always possible.
+ */
+export function buffIsPossibleForTeam(
+  buff: { weaponType?: string },
+  teamWeaponTypes: readonly string[],
+): boolean {
+  if (!buff.weaponType || !teamWeaponTypes.length) {
+    return true;
+  }
+  return teamWeaponTypes.includes(buff.weaponType);
+}

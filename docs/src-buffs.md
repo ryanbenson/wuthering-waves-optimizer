@@ -11,6 +11,7 @@ This folder defines **team buffs**: modifiers that come from other characters (e
     - `modifiers`: array of `{ modifier, modifierValue }` (e.g. `ATK`, `DMGDeepen:Basic`, `Glacio`)
     - `alwaysEnabled` (optional)
   - **`allEchoBuffs`**: Buffs provided by echoes (used in calculator/orchestrator).
+  - **`allWeaponTeamBuffs`**: Buffs a teammate's weapon grants the team. Each entry carries `weaponType` (`"Sword"`, `"Broadblade"`, `"Pistol"`, `"Gauntlet"`, `"Rectifier"` — same values as `allCharactersList[].weapon`), used by the Team Buffs workspace's "Hide impossible" filter; `tests/buffs/buffFilters.test.ts` checks every entry against the weapon registry.
   - **`utilityAttacks`**: Utility attack definitions used in rotations (e.g. placeholder or non-damage actions).
 
 ## How it’s used

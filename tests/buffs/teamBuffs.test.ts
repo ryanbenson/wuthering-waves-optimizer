@@ -3,7 +3,6 @@ import {
   resolveTeamBuffInstance,
   aggregateTeamBuffStats,
   getSequenceNodeRequirement,
-  categorizeBuffModifier,
   getModifierLabel,
   type TeamBuffDef,
 } from "../../src/buffs/teamBuffs";
@@ -243,34 +242,6 @@ describe("getSequenceNodeRequirement", () => {
   it("returns null for buff names that aren't sequence-node-gated", () => {
     expect(getSequenceNodeRequirement("Outro: Silversnow")).toBeNull();
     expect(getSequenceNodeRequirement("Euphonia")).toBeNull();
-  });
-});
-
-describe("categorizeBuffModifier", () => {
-  it("categorizes the core single-key stats", () => {
-    expect(categorizeBuffModifier("ATK")).toBe("atk");
-    expect(categorizeBuffModifier("CritRate")).toBe("critRate");
-    expect(categorizeBuffModifier("CritDMG")).toBe("critDMG");
-    expect(categorizeBuffModifier("EnergyRegen")).toBe("energyRegen");
-  });
-
-  it("categorizes damage-increasing/defense-shredding keys as 'damage'", () => {
-    expect(categorizeBuffModifier("DMGBonus")).toBe("damage");
-    expect(categorizeBuffModifier("DMGDeepen:Heavy")).toBe("damage");
-    expect(categorizeBuffModifier("Fusion")).toBe("damage");
-    expect(categorizeBuffModifier("EchoDMGBonus")).toBe("damage");
-    expect(categorizeBuffModifier("AllElementAttributeBonus")).toBe("damage");
-    expect(categorizeBuffModifier("ResistShred:Aero")).toBe("damage");
-    expect(categorizeBuffModifier("DEFIgnore:Havoc")).toBe("damage");
-    expect(categorizeBuffModifier("DefReduction")).toBe("damage");
-  });
-
-  it("safely skips keys it can't confidently place rather than guessing", () => {
-    expect(categorizeBuffModifier("EnableAttack")).toBeNull();
-    expect(categorizeBuffModifier("specialMultiplier")).toBeNull();
-    expect(categorizeBuffModifier("tuneBreakBoost")).toBeNull();
-    expect(categorizeBuffModifier("CritDMG:Echo")).toBeNull();
-    expect(categorizeBuffModifier("ATK_FLAT")).toBeNull();
   });
 });
 

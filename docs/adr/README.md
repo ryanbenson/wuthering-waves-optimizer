@@ -61,7 +61,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032) first, then redesign-chapter A
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, stores |
 | [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`) | calculator, components, weapons, characters |
-| [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`) | calculator, components, buffs, characters |
+| [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
 | [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, stores |
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
@@ -74,6 +74,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032) first, then redesign-chapter A
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | | team-rotations, components |
 | [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes |
 | [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, echoes |
+| [0033](./0033-team-buffs-summary-grouping-and-hide-impossible.md) | Team Buffs summary: drop contribution totals, group the active tray, add "Hide impossible" | accepted | | components, buffs, weapons |
 
 ## When to write a new ADR
 

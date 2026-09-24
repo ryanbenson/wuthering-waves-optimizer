@@ -2910,6 +2910,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Static Mist",
     key: "StaticMistATK",
+    weaponType: "Pistol",
     hasStacks: true,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StaticMist.png",
     modifiers: [
@@ -2933,6 +2934,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Stellar Symphony",
     key: "StellarSymphonyATK",
+    weaponType: "Rectifier",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StellarSymphony.png",
     modifiers: [
@@ -2955,6 +2957,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Luminous Hymn Spectro Frazzle Amplify",
     key: "LuminousHymnSpectroFrazzle",
+    weaponType: "Rectifier",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LuminousHymn.png",
     modifiers: [
@@ -2977,6 +2980,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Bloodpact's Pledge Aero Amplify",
     key: "BloodpactsPledgeAeroDeepen",
+    weaponType: "Sword",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BloodpactsPledge.webp",
     modifiers: [
@@ -2999,6 +3003,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Woodland Aria Aero RES Reduction",
     key: "WoodlandAriaAeroShred",
+    weaponType: "Pistol",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WoodlandAria.webp",
     modifiers: [
@@ -3021,6 +3026,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Wildfire Mark",
     key: "WildfireMarkDMGBonus",
+    weaponType: "Broadblade",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WildfireMark.png",
     modifiers: [
@@ -3043,6 +3049,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Emerald Sentence",
     key: "EmeraldSentenceEchoDMGBonus",
+    weaponType: "Sword",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/EmeraldSentence.png",
     modifiers: [
@@ -3065,6 +3072,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Kumokiri",
     key: "ThreadofFateAllAttribute",
+    weaponType: "Broadblade",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Kumokiri.png",
     modifiers: [
@@ -3087,6 +3095,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Spectrum Blaster",
     key: "SpectrumBlasterAllDMG",
+    weaponType: "Pistol",
     hasStacks: true,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SpectrumBlaster.png",
     modifiers: [
@@ -3109,6 +3118,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Starfield Calibrator",
     key: "StarfieldCalibratorCritDMG",
+    weaponType: "Broadblade",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StarfieldCalibrator.png",
     modifiers: [
@@ -3131,6 +3141,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Forged Dwarf Star",
     key: "ForgedDwarfStarATKBonus",
+    weaponType: "Rectifier",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/ForgedDwarfStar.png",
     modifiers: [
@@ -3153,6 +3164,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Skull Thrasher",
     key: "SkullThrasherHackShiftingATKBonus",
+    weaponType: "Pistol",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SkullThrasher.png",
     modifiers: [
@@ -3175,6 +3187,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Freeze Frame",
     key: "FreezeFrameResonatorsATKBonus",
+    weaponType: "Rectifier",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/FreezeFrame.png",
     modifiers: [
@@ -3197,6 +3210,7 @@ export const allWeaponTeamBuffs = [
   {
     name: "Firstlight's Herald",
     key: "DewImbiberATKBonus",
+    weaponType: "Rectifier",
     hasStacks: false,
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/FirstlightsHerald.png",
     modifiers: [
