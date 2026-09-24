@@ -100,4 +100,22 @@ describe("Calculator Team Buffs", () => {
       "50",
     );
   });
+
+  it("hides weapon buffs no selected teammate can equip via Hide impossible buffs", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
+    cy.get('[data-test-calculator-nav="team"]').click();
+    cy.get("[data-test-party-buffs-hide-impossible]").check();
+
+    // No teammates yet: nothing can be ruled out.
+    cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("exist");
+
+    // Shorekeeper wields a Rectifier: Pistol buffs go, Rectifier buffs stay.
+    cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
+    cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("not.exist");
+    cy.get(`[data-test-party-buff-enabled="StellarSymphonyATK"]`).should("exist");
+
+    cy.get("[data-test-party-buffs-hide-impossible]").uncheck();
+    cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("exist");
+  });
 });

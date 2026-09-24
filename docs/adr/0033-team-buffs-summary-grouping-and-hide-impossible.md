@@ -48,6 +48,9 @@ Crit DMG / Buffs Active) above a flat Active Buffs tray. In use:
    - Only weapon buffs are affected; echo buffs can be used by anyone, and
      character buffs already belong to the selected teammate.
 
+   **Update 2026-09-24:** the same toggle (same persisted key, same helper)
+   was also added to the legacy, flag-off `CalculatorPartyBuffs.vue`.
+
 Display-only: none of this touches `teamBuffsData` or any calculator path.
 
 ## Consequences
