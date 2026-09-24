@@ -12,6 +12,14 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-23",
+    dateLabel: "September 23, 2026",
+    items: [
+      "New labs feature! Echo scanner! In the Inventory page, there's a new option to Scan Echoes. It allows you to upload a video, or screen share in your browser, and you can click through the game's Inventory > Echoes page one by one to auto-import echoes into the app. You can do that using screen share or record your own video and upload it. And it's all done safely, securly, with privacy-first so none of your data leaves your computer.",
+      "Update to the Teams feature: you can now customize the resist for each element of the team (in case you end up fighting more than one enemy for example)"
+    ],
+  },
+  {
     date: "2026-09-19",
     dateLabel: "September 19, 2026",
     items: [
