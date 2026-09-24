@@ -36,6 +36,8 @@ import {
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
   SUBSTAT_BLOCK,
+  SUBSTAT_LABEL_COLUMN,
+  SUBSTAT_VALUE_COLUMN,
   SET_ICON_BOX,
   DEBUG_REGIONS,
   isSupportedAspect,
@@ -45,7 +47,7 @@ import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
-import type { ScanCandidate } from "../scanner/types";
+import type { OcrLine, ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
@@ -231,12 +233,12 @@ export function useEchoScanner() {
     const id = randomString();
     const keys = Object.keys(regions);
     const bitmaps = keys.map((key) => regions[key]);
-    return new Promise<Record<string, string>>((resolve, reject) => {
+    return new Promise<{ texts: Record<string, string>; lines: Record<string, OcrLine[]> }>((resolve, reject) => {
       const handler = (e: MessageEvent) => {
         if (e.data?.id !== id) return;
         ocrWorker?.removeEventListener("message", handler);
         if (e.data.type === "candidateResult") {
-          resolve(e.data.texts as Record<string, string>);
+          resolve({ texts: e.data.texts, lines: e.data.lines });
         } else {
           reject(new Error(e.data.error ?? "OCR failed"));
         }
@@ -458,22 +460,13 @@ export function useEchoScanner() {
     if (event !== "stable-novel") return;
 
     try {
-      const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
-      const [nameBitmap, mainBitmap, secondaryBitmap, ...substatBitmaps] = await Promise.all([
+      const [nameBitmap, mainBitmap, secondaryBitmap, labelsBitmap, valuesBitmap] = await Promise.all([
         grabRegionBitmap(videoEl, NAME_BLOCK),
         grabRegionBitmap(videoEl, MAIN_STAT_ROW),
         grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
-        ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
+        grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN),
+        grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN),
       ]);
-
-      const regions: Record<string, ImageBitmap> = {
-        name: nameBitmap,
-        main: mainBitmap,
-        secondary: secondaryBitmap,
-      };
-      substatKeys.forEach((key, i) => {
-        regions[key] = substatBitmaps[i];
-      });
 
       // Debug crops don't depend on OCR text, so they still run in
       // parallel with it — but echo/set identity now does (name+cost
@@ -481,44 +474,51 @@ export function useEchoScanner() {
       // *sometimes* needs a follow-up image-match call after that), so it
       // can no longer run alongside OCR the way the old unconditional
       // matchSetIcon call did. See resolveEchoIdentity's doc comment.
-      const [texts, debugCrops] = await Promise.all([
-        recognizeCandidate(regions),
+      const [{ texts, lines }, debugCrops] = await Promise.all([
+        recognizeCandidate({
+          name: nameBitmap,
+          main: mainBitmap,
+          secondary: secondaryBitmap,
+          substatLabels: labelsBitmap,
+          substatValues: valuesBitmap,
+        }),
         debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
       ]);
 
       const identity = await resolveEchoIdentity(videoEl, texts.name ?? "", texts.secondary ?? "");
 
-      let parsed = parseEchoCandidate({
+      const candidateInput = {
         nameText: texts.name ?? "",
         mainStatText: texts.main ?? "",
         secondaryStatText: texts.secondary ?? "",
-        substatTexts: substatKeys.map((key) => texts[key] ?? ""),
+        substatLabelLines: lines.substatLabels ?? [],
+        substatValueLines: lines.substatValues ?? [],
         matchedSet: identity.matchedSet,
         preResolvedEcho: identity.preResolvedEcho,
-      });
+      };
+      let parsed = parseEchoCandidate(candidateInput);
 
-      // The 5 per-row crops didn't add up to all 5 substats — most often a
-      // wrapped label upstream having shifted every row below it down by
-      // an amount the fixed-position crops didn't anticipate. Re-OCR one
-      // wider block spanning all 5 rows (+ wrap allowance) and re-parse
-      // with that as a fallback — see parse.ts's parseEchoCandidate and
-      // layout.ts's SUBSTAT_BLOCK doc comments.
+      // The label/value column pass didn't add up to all 5 substats. OCR
+      // the older per-row crops and the whole substat block in one batch
+      // and let parseEchoCandidate keep whichever pass recovers the most —
+      // see its doc comment and docs/scanner.md's "Substat OCR".
       if (parsed.slot.substats.some((s) => !s.subStat)) {
-        const blockBitmap = await grabRegionBitmap(videoEl, SUBSTAT_BLOCK);
-        const blockTexts = await recognizeCandidate({ substatBlock: blockBitmap });
-        parsed = parseEchoCandidate({
-          nameText: texts.name ?? "",
-          mainStatText: texts.main ?? "",
-          secondaryStatText: texts.secondary ?? "",
-          substatTexts: substatKeys.map((key) => texts[key] ?? ""),
-          substatBlockText: blockTexts.substatBlock ?? "",
-          matchedSet: identity.matchedSet,
-          preResolvedEcho: identity.preResolvedEcho,
+        const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
+        const [blockBitmap, ...rowBitmaps] = await Promise.all([
+          grabRegionBitmap(videoEl, SUBSTAT_BLOCK),
+          ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
+        ]);
+        const fallbackRegions: Record<string, ImageBitmap> = { substatBlock: blockBitmap };
+        substatKeys.forEach((key, i) => {
+          fallbackRegions[key] = rowBitmaps[i];
         });
-        if (debugCrops && parsed.usedSubstatBlockFallback) {
-          const blockCrop = debugCrops.crops.find((c) => c.key === "substatBlock");
-          if (blockCrop) blockCrop.text = blockTexts.substatBlock ?? "";
-        }
+        const fallback = await recognizeCandidate(fallbackRegions);
+        Object.assign(texts, fallback.texts);
+        parsed = parseEchoCandidate({
+          ...candidateInput,
+          substatTexts: substatKeys.map((key) => fallback.texts[key] ?? ""),
+          substatBlockText: fallback.texts.substatBlock ?? "",
+        });
       }
       stability.commitScan(fingerprint);
 
@@ -539,7 +539,7 @@ export function useEchoScanner() {
         slot: parsed.slot,
         confidence: parsed.confidence,
         needsMainStatSelection: false,
-        usedSubstatBlockFallback: parsed.usedSubstatBlockFallback,
+        substatSource: parsed.substatSource,
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,

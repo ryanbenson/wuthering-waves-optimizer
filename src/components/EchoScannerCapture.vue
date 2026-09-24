@@ -280,8 +280,9 @@
 
           <details v-if="candidate.debugCrops?.length" class="mt-1 text-xs opacity-70" open>
             <summary class="cursor-pointer">Debug: what each region actually captured</summary>
-            <p v-if="candidate.usedSubstatBlockFallback" class="badge badge-xs badge-info mt-2">
-              Per-row substat crops came up short — used the wider substat-block fallback pass instead
+            <p v-if="candidate.substatSource !== 'columns'" class="badge badge-xs badge-info mt-2">
+              Label/value columns came up short — used the
+              {{ candidate.substatSource === "rows" ? "per-row" : "substat-block" }} fallback pass instead
             </p>
 
             <div v-if="candidate.debugFullFrame" class="relative inline-block mt-2 max-w-full">

@@ -8,9 +8,10 @@
  * src/echoes/*, keeping the "workers receive/return plain serializable
  * objects only" rule simple to hold to.
  *
- * One region per named crop (header, main stat, fixed secondary, and each
- * of up to 5 individually-cropped substat rows — see layout.ts) rather
- * than one big multi-line block, mirroring CalculatorEchoParser.vue's
+ * One region per named crop (name, main stat, fixed secondary, the substat
+ * label and value columns, and — only as a fallback — the per-row substat
+ * crops and the substat block; see layout.ts) rather than one big
+ * multi-line block, mirroring CalculatorEchoParser.vue's
  * proven-reliable per-row Discord-bot-image approach: a crop that can only
  * contain one row's text can't have that row's text merged into or lost
  * behind a neighboring row the way a whole block's line segmentation can.
@@ -22,7 +23,7 @@
  * Message flow:
  *  {type:"init"} -> {type:"ready"}
  *  {type:"recognizeCandidate", id, regions: {key, bitmap}[]} ->
- *    {type:"candidateResult", id, texts: Record<key, string>}
+ *    {type:"candidateResult", id, texts: Record<key, string>, lines: Record<key, OcrLine[]>}
  *  {type:"terminate"}
  */
 import { createWorker, type Worker as TesseractWorker } from "tesseract.js";
@@ -30,10 +31,12 @@ import { createWorker, type Worker as TesseractWorker } from "tesseract.js";
 const CHAR_WHITELIST =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜàáâãäåèéêëìíîïòóôõöùúûü0123456789.:,-'+% ";
 const PSM_SINGLE_BLOCK = 6;
-/** Header + main + secondary + up to 5 substats = up to 8 crops per candidate, up from 2 when this was two big blocks — a bigger pool keeps per-candidate latency down. */
+/** Name + main + secondary + the two substat columns = 5 crops per candidate normally (up to 11 when the per-row/block fallbacks run) — a pool keeps per-candidate latency down. */
 const POOL_SIZE = 3;
 
 type Region = { key: string; bitmap: ImageBitmap };
+/** One recognized line plus its vertical extent within its own (preprocessed) crop — parse.ts's parseSubstatColumns pairs label and value lines by position. */
+type OcrLine = { text: string; y0: number; y1: number };
 
 type RecognizeCandidateMessage = {
   type: "init" | "recognizeCandidate" | "terminate";
@@ -102,12 +105,17 @@ function preprocess(bitmap: ImageBitmap): OffscreenCanvas {
   return canvas;
 }
 
-async function recognizeBitmap(bitmap: ImageBitmap): Promise<string> {
+async function recognizeBitmap(bitmap: ImageBitmap): Promise<{ text: string; lines: OcrLine[] }> {
   const canvas = preprocess(bitmap);
   const worker = nextWorker();
   const blob = await canvas.convertToBlob();
-  const result = await worker.recognize(blob);
-  return result.data.text.trim();
+  // tesseract.js v6 only returns the block/line tree when asked for it.
+  const result = await worker.recognize(blob, {}, { text: true, blocks: true });
+  const lines = (result.data.blocks ?? [])
+    .flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines))
+    .map((line) => ({ text: line.text.trim(), y0: line.bbox.y0, y1: line.bbox.y1 }))
+    .filter((line) => line.text);
+  return { text: result.data.text.trim(), lines };
 }
 
 self.addEventListener("message", (event: MessageEvent<RecognizeCandidateMessage>) => {
@@ -134,10 +142,12 @@ async function handleMessage(data: RecognizeCandidateMessage) {
       for (const region of regions) region.bitmap.close();
 
       const texts: Record<string, string> = {};
+      const lines: Record<string, OcrLine[]> = {};
       regions.forEach((region, i) => {
-        texts[region.key] = recognized[i];
+        texts[region.key] = recognized[i].text;
+        lines[region.key] = recognized[i].lines;
       });
-      self.postMessage({ type: "candidateResult", id: data.id, texts });
+      self.postMessage({ type: "candidateResult", id: data.id, texts, lines });
       return;
     }
 

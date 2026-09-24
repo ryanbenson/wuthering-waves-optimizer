@@ -6,6 +6,8 @@ import {
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
   SUBSTAT_BLOCK,
+  SUBSTAT_LABEL_COLUMN,
+  SUBSTAT_VALUE_COLUMN,
   STATS_BLOCK,
   SET_ICON_BOX,
   DEBUG_REGIONS,
@@ -109,9 +111,23 @@ describe("layout", () => {
     // comment. MAIN_STAT_ROW/SECONDARY_STAT_ROW/SUBSTAT_ROWS/SUBSTAT_BLOCK
     // should all share the same (icon-excluding) left edge.
     const xs = new Set(
-      [MAIN_STAT_ROW, SECONDARY_STAT_ROW, SUBSTAT_BLOCK, ...SUBSTAT_ROWS].map((r) => r.x),
+      [MAIN_STAT_ROW, SECONDARY_STAT_ROW, SUBSTAT_BLOCK, SUBSTAT_LABEL_COLUMN, ...SUBSTAT_ROWS].map((r) => r.x),
     );
     expect(xs.size).toBe(1);
+  });
+
+  it("splits SUBSTAT_BLOCK into non-overlapping label and value columns that cover it exactly", () => {
+    for (const frame of REAL_RESOLUTIONS) {
+      const block = toPixelRegion(SUBSTAT_BLOCK, frame);
+      const labels = toPixelRegion(SUBSTAT_LABEL_COLUMN, frame);
+      const values = toPixelRegion(SUBSTAT_VALUE_COLUMN, frame);
+      expect(labels.y).toBe(block.y);
+      expect(values.y).toBe(block.y);
+      expect(labels.height).toBe(block.height);
+      expect(values.height).toBe(block.height);
+      expect(labels.x + labels.width).toBeLessThanOrEqual(values.x + 1);
+      expect(Math.abs(values.x + values.width - (block.x + block.width))).toBeLessThanOrEqual(1);
+    }
   });
 
   it("lists every named ROI exactly once in DEBUG_REGIONS, for the scanner's debug view", () => {
@@ -130,6 +146,8 @@ describe("layout", () => {
         "sub3",
         "sub4",
         "substatBlock",
+        "substatLabels",
+        "substatValues",
       ]),
     );
   });

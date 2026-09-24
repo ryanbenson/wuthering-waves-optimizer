@@ -42,6 +42,12 @@ export type ParsedEchoSlot = {
 /** Per-field confidence, surfaced in the review UI so nothing low-confidence auto-saves silently. */
 export type FieldConfidence = "high" | "low";
 
+/** One OCR'd line and its vertical extent within its own crop (echoScanner.worker.ts). Only relative position within one crop is meaningful. */
+export type OcrLine = { text: string; y0: number; y1: number };
+
+/** Which substat pass produced a candidate's substats — see parse.ts's parseEchoCandidate. */
+export type SubstatSource = "columns" | "rows" | "block";
+
 export type ScanCandidate = {
   id: string;
   slot: ParsedEchoSlot;
@@ -54,8 +60,8 @@ export type ScanCandidate = {
   };
   /** True when the panel had no main stat selected yet (freshly acquired echo) — should be skipped, not saved. */
   needsMainStatSelection: boolean;
-  /** True when the per-row substat crops came up short and the wider SUBSTAT_BLOCK fallback pass was used instead — see parse.ts's parseEchoCandidate. */
-  usedSubstatBlockFallback: boolean;
+  /** Which substat pass won — "columns" is the primary pass; "rows"/"block" mean a fallback recovered more. See parse.ts's parseEchoCandidate. */
+  substatSource: SubstatSource;
   /** Dedupe signature — see dedupe.ts. */
   signature: string;
   /** Small preview crop of the echo portrait, for the review list UI. */
