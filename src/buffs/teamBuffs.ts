@@ -50,44 +50,6 @@ export function getSequenceNodeRequirement(buffName: string): string | null {
   return match ? `Requires S${match[1]}` : null;
 }
 
-export type BuffContributionCategory = "atk" | "critRate" | "critDMG" | "energyRegen" | "damage" | null;
-
-/**
- * Buckets a *resolved* stat key (as produced by `aggregateTeamBuffStats`)
- * into a coarse category for display-only summary totals — never fed back
- * into the real calculation pipeline, so a miscategorized future key is a
- * cosmetic gap, not an accuracy bug. Keys this can't confidently place
- * (`EnableAttack`'s array, `specialMultiplier`'s different math, the
- * Denia-only `tuneBreakBoost`, echo-specific `CritDMG:Echo`) fall through to
- * `null` on purpose rather than being force-fit into a bucket.
- */
-export function categorizeBuffModifier(modifierKey: string): BuffContributionCategory {
-  switch (modifierKey) {
-    case "ATK":
-      return "atk";
-    case "CritRate":
-      return "critRate";
-    case "CritDMG":
-      return "critDMG";
-    case "EnergyRegen":
-      return "energyRegen";
-    default:
-      break;
-  }
-  if (
-    modifierKey.startsWith("DMGDeepen") ||
-    modifierKey.endsWith("Bonus") ||
-    modifierKey.startsWith("ResistShred") ||
-    modifierKey.startsWith("ResistIgnore") ||
-    modifierKey.startsWith("DEFIgnore") ||
-    modifierKey === "DefReduction" ||
-    (ELEMENT_NAMES as readonly string[]).includes(modifierKey)
-  ) {
-    return "damage";
-  }
-  return null;
-}
-
 /**
  * A short, human-readable label for a *resolved* stat key (as produced by
  * `resolveTeamBuffInstance`/`aggregateTeamBuffStats`) — e.g. "ATK",
