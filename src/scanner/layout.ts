@@ -11,6 +11,17 @@
  * See docs/scanner.md for how these were derived and what to re-measure if
  * a future WuWa UI update moves the panel.
  *
+ * **The fractions are for a 16:10 frame (REFERENCE_ASPECT).** Other
+ * supported aspects are mapped onto it by toPixelRegion / regionPercentStyle
+ * (via regionForFrame) rather than getting a table of their own: WuWa scales
+ * this screen's UI with the frame's *width* and anchors it to the top, so
+ * at 16:9 every x fraction is unchanged and every y/height fraction grows by
+ * (16/9) / (16/10) = 10/9. Verified by overlaying the mapped boxes on a real
+ * 16:9 Echo Management screenshot (every box, including the tight set icon
+ * and the substat column split, landed on its target) and OCR'ing the
+ * mapped crops (name, main/secondary, wrapped substat labels and values all
+ * read correctly). See docs/scanner.md's "Aspect ratios".
+ *
  * Two simplifications, both from real usage:
  * - **No level or cost OCR.** The app doesn't persist echo level yet (every
  *   scanned echo is treated as max-level), so there's nothing to gain from
@@ -246,27 +257,60 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
   { key: "substatBlock", label: "Substat fallback block", region: SUBSTAT_BLOCK },
 ];
 
+/** The aspect every RegionFrac in this file was measured at — see this file's top doc comment. */
+export const REFERENCE_ASPECT = 16 / 10;
+
+/**
+ * Frame aspects the scanner has been verified against. 16:10 is the
+ * measured reference; 16:9 maps onto it (regionForFrame). Anything else —
+ * ultrawide, 4:3, a 16:9 game letterboxed inside a 16:10 capture — is
+ * rejected up front rather than silently producing garbage crops.
+ */
+export const SUPPORTED_ASPECTS = [16 / 10, 16 / 9] as const;
+const ASPECT_TOLERANCE = 0.05;
+
+/** The supported aspect this frame is (within tolerance), or null if none. */
+export function matchSupportedAspect(frame: FrameSize): number | null {
+  const aspect = frame.width / frame.height;
+  return SUPPORTED_ASPECTS.find((supported) => Math.abs(aspect - supported) < ASPECT_TOLERANCE) ?? null;
+}
+
+export function isSupportedAspect(frame: FrameSize): boolean {
+  return matchSupportedAspect(frame) !== null;
+}
+
+/**
+ * Maps a reference (16:10) region onto this frame's own 0-1 fractions: x
+ * and width unchanged, y and height scaled by aspect / REFERENCE_ASPECT
+ * (the UI scales with frame width, top-anchored). Snaps to the matched
+ * supported aspect rather than the frame's exact one, so a 16:10 capture a
+ * few pixels off (2800x1752) resolves exactly as before. An unsupported
+ * frame is left unscaled — the caller has already flagged it.
+ */
+export function regionForFrame(region: RegionFrac, frame: FrameSize): RegionFrac {
+  const aspect = matchSupportedAspect(frame) ?? REFERENCE_ASPECT;
+  const scale = aspect / REFERENCE_ASPECT;
+  if (scale === 1) return region;
+  return { x: region.x, y: region.y * scale, width: region.width, height: region.height * scale };
+}
+
 export function toPixelRegion(region: RegionFrac, frame: FrameSize): RegionPx {
+  const mapped = regionForFrame(region, frame);
   return {
-    x: Math.round(region.x * frame.width),
-    y: Math.round(region.y * frame.height),
-    width: Math.round(region.width * frame.width),
-    height: Math.round(region.height * frame.height),
+    x: Math.round(mapped.x * frame.width),
+    y: Math.round(mapped.y * frame.height),
+    width: Math.round(mapped.width * frame.width),
+    height: Math.round(mapped.height * frame.height),
   };
 }
 
-/** WuWa's Echo Management screen is 16:10. Frames far off that ratio need the calibration fallback (Phase 4 of the plan). */
-export function isSupportedAspect(frame: FrameSize): boolean {
-  const aspect = frame.width / frame.height;
-  return Math.abs(aspect - 1.6) < 0.05;
-}
-
-/** CSS for drawing a region's box over an image/video that fills its container at the frame's own aspect — the 0-1 fractions are already the right percentages. */
-export function regionPercentStyle(region: RegionFrac) {
+/** CSS for drawing a region's box over an image/video that fills its container at the frame's own aspect — the frame-mapped 0-1 fractions are already the right percentages. */
+export function regionPercentStyle(region: RegionFrac, frame: FrameSize) {
+  const mapped = regionForFrame(region, frame);
   return {
-    left: `${region.x * 100}%`,
-    top: `${region.y * 100}%`,
-    width: `${region.width * 100}%`,
-    height: `${region.height * 100}%`,
+    left: `${mapped.x * 100}%`,
+    top: `${mapped.y * 100}%`,
+    width: `${mapped.width * 100}%`,
+    height: `${mapped.height * 100}%`,
   };
 }

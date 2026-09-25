@@ -239,7 +239,7 @@ comment says what was actually measured.
 - Row bands: the main-stat row starts at a fixed fraction of frame height
   (~0.384) with a consistent ~0.0373 pitch between single-line rows,
   **regardless of capture resolution** — checked against three real
-  resolutions that share WuWa's fixed 16:10 UI aspect: 2880x1800,
+  resolutions that share the 16:10 reference aspect: 2880x1800,
   2304x1440, and 2800x1752.
 - **No cost or level OCR.** The app doesn't persist echo level (every
   scanned echo is assumed max-level), and cost is derived from the
@@ -267,9 +267,35 @@ comment says what was actually measured.
   text always ends at or before 0.887 (the longest one-line label, "Heavy
   Attack DMG Bonus"), and the right-aligned values always start at or after
   0.922. The split sits in the middle of that gap. See "Substat OCR" below.
-- Only 16:10 has been measured. A very different aspect ratio is rejected
-  up front (`isSupportedAspect`) rather than silently producing garbage; a
-  calibration UI for non-16:10/ultrawide is a known follow-up, not built here.
+- 16:10 is the measured reference; 16:9 is mapped onto it (next section).
+  Any other aspect ratio is rejected up front (`isSupportedAspect`) rather
+  than silently producing garbage; a calibration UI for ultrawide and other
+  aspects is a known follow-up, not built here.
+
+### Aspect ratios
+
+Every `RegionFrac` in `layout.ts` is a fraction of a **16:10** frame
+(`REFERENCE_ASPECT`). WuWa scales the Echo Management UI with the frame's
+**width** and anchors it to the top, so on a 16:9 frame the panel sits at
+the same x fractions but every y/height fraction is 10/9 larger ((16/9) /
+(16/10)). `regionForFrame` applies that mapping, and `toPixelRegion` (every
+crop) and `regionPercentStyle` (every debug overlay) go through it, so no
+caller needs a second ROI table. It snaps to the matched supported aspect
+(`SUPPORTED_ASPECTS`, ±0.05) rather than the frame's exact ratio, so 16:10
+captures a few pixels off (2800x1752) resolve exactly as they did before.
+
+Verified against a real 16:9 Echo Management screenshot (1400x788, a
+downscaled JPEG): the mapped boxes landed on their targets, including the
+tight `SET_ICON_BOX` and the `SUBSTAT_COLUMN_SPLIT_X` gap. Tesseract read
+the mapped name, main/secondary rows, and label/value columns correctly,
+including a wrapped "Resonance Liberation / DMG Bonus". A full-resolution
+16:9 capture (1920x1080 or 2560x1440) is still worth checking in-app with
+debug mode on.
+
+Not handled: a 16:9 game **letterboxed** inside a 16:10 capture (e.g. a 16:9
+window on a 16:10 laptop shared as the whole screen). The frame reads as
+16:10 but the content is offset by the black bars. The guide's "share the
+Window, not the screen" step avoids this.
 
 If a future WuWa UI update moves the panel, re-run the same kind of
 measurement against a fresh screenshot before touching the fractions by feel.
@@ -750,8 +776,8 @@ isn't user data, so no store or migration), then from the **How to scan**
 button. It's text only on purpose: screenshots would be large and go stale
 with each game UI update. Keep its steps in line with this list:
 
-1. Desktop Chrome/Edge, English client, game at 16:10 (full screen on a
-   16:10 display or a 16:10 window).
+1. Desktop Chrome/Edge, English client, game at 16:10 or 16:9 (full screen
+   or windowed).
 2. In game: Backpack → Echoes, click the first echo.
 3. In the app: Inventory → Scan echoes → Share screen (live), then pick the
    game on the picker's **Window** tab.

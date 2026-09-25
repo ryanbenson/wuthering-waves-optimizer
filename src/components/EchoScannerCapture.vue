@@ -126,7 +126,7 @@
         anywhere, and it's discarded when you close this window.
       </p>
       <div class="flex flex-col items-center gap-3">
-        <div class="relative w-full max-w-md aspect-[8/5]">
+        <div class="relative w-full max-w-md" :style="previewAspectStyle">
           <div
             ref="previewContainer"
             class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
@@ -192,7 +192,7 @@
 
     <template v-else-if="status === 'starting' || status === 'running'">
       <div class="flex flex-col items-center gap-3">
-        <div class="relative w-full max-w-md aspect-[8/5]">
+        <div class="relative w-full max-w-md" :style="previewAspectStyle">
           <div
             ref="previewContainer"
             class="w-full h-full bg-base-300 rounded overflow-hidden"></div>
@@ -210,8 +210,8 @@
         </div>
         <div v-if="unsupportedAspect" class="alert alert-warning text-sm">
           This capture's aspect ratio doesn't look like WuWa's Echo
-          Management screen (16:10). Results may be unreliable — make sure
-          you're sharing the full game window.
+          Management screen (16:10 or 16:9), so it isn't being scanned —
+          make sure you're sharing the full game window.
         </div>
         <div class="stats shadow">
           <div class="stat place-items-center py-2 px-4">
@@ -405,7 +405,7 @@ import {
 import EchoScannerTimings from "./EchoScannerTimings.vue";
 import EchoScannerGuide from "./EchoScannerGuide.vue";
 import EchoScannerResultCard from "./EchoScannerResultCard.vue";
-import type { ScanCandidate } from "../scanner/types";
+import type { FrameSize, RegionFrac, ScanCandidate } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
   inventoryOnly: false,
@@ -477,8 +477,36 @@ watch(videoDuration, (duration) => {
   trimEnd.value = duration ?? 0;
 });
 
-/** The video preview fills its container exactly (object-fit: contain on a matching-aspect source), so a region's own 0-1 fraction is already the right %. */
-const regionOverlayStyle = regionPercentStyle;
+/**
+ * The preview video's own frame size: sizes the preview box to the
+ * capture's aspect (16:10 or 16:9), and maps the debug ROI boxes onto it
+ * (layout.ts's regionForFrame). 16:10 until the video reports its size.
+ */
+const previewFrame = ref<FrameSize>({ width: 16, height: 10 });
+watch(previewVideoEl, (videoEl, _, onCleanup) => {
+  if (!videoEl) return;
+  const sync = () => {
+    if (videoEl.videoWidth && videoEl.videoHeight) {
+      previewFrame.value = { width: videoEl.videoWidth, height: videoEl.videoHeight };
+    }
+  };
+  sync();
+  // "resize" fires when a live share's stream dimensions change (e.g. the game window is resized).
+  videoEl.addEventListener("loadedmetadata", sync);
+  videoEl.addEventListener("resize", sync);
+  onCleanup(() => {
+    videoEl.removeEventListener("loadedmetadata", sync);
+    videoEl.removeEventListener("resize", sync);
+  });
+});
+const previewAspectStyle = computed(() => ({
+  aspectRatio: `${previewFrame.value.width} / ${previewFrame.value.height}`,
+}));
+
+/** The video preview fills its container exactly (object-fit: contain on a matching-aspect source), so a region's frame-mapped 0-1 fraction is already the right %. */
+function regionOverlayStyle(region: RegionFrac) {
+  return regionPercentStyle(region, previewFrame.value);
+}
 
 function formatTime(seconds: number): string {
   const total = Math.max(0, Math.round(seconds));

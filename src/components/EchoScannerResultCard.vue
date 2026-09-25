@@ -101,13 +101,14 @@
         <img
           :src="candidate.debugFullFrame"
           class="block max-w-full border border-base-300"
-          alt="Full frame with ROI boxes" />
+          alt="Full frame with ROI boxes"
+          @load="onDebugFrameLoad" />
         <div class="absolute inset-0 pointer-events-none">
           <div
             v-for="r in DEBUG_REGIONS"
             :key="r.key"
             class="absolute border border-dashed border-warning"
-            :style="regionPercentStyle(r.region)">
+            :style="regionPercentStyle(r.region, debugFrame)">
             <span class="absolute -top-3.5 left-0 text-[9px] leading-none bg-warning text-warning-content px-0.5 rounded-sm whitespace-nowrap">
               {{ r.label }}
             </span>
@@ -160,7 +161,7 @@ import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { echoSetImageMap } from "../echoes/stats";
 import { DEBUG_REGIONS, regionPercentStyle } from "../scanner/layout";
 import { hasLowConfidence } from "../scanner/review";
-import type { ScanCandidate } from "../scanner/types";
+import type { FrameSize, ScanCandidate } from "../scanner/types";
 
 const props = defineProps<{
   candidate: ScanCandidate;
@@ -180,6 +181,13 @@ const emit = defineEmits<{
 
 // Open by default on flagged echoes — those are the ones worth comparing.
 const showCapture = ref(props.attention);
+
+/** The debug full-frame snapshot's size (it keeps the capture's aspect), so the ROI boxes map onto a 16:9 frame too — see layout.ts's regionForFrame. */
+const debugFrame = ref<FrameSize>({ width: 16, height: 10 });
+function onDebugFrameLoad(event: Event) {
+  const img = event.target as HTMLImageElement;
+  if (img.naturalWidth && img.naturalHeight) debugFrame.value = { width: img.naturalWidth, height: img.naturalHeight };
+}
 
 // Same shape as InventoryEchoesBrowser.vue's local echoCardBinder — feeds
 // the same InventoryEchoTile.vue used everywhere else echoes are shown, so

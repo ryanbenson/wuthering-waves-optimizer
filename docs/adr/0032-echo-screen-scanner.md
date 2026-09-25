@@ -160,7 +160,10 @@ explicit user direction for this feature.
 - Cons: only 16:10 is supported today (`isSupportedAspect`
   rejects other aspects up front rather than silently misreading them) — a
   calibration UI for non-16:10/ultrawide is a known, explicitly deferred
-  follow-up, not built here; `public/tesseract/` adds ~19MB of static assets
+  follow-up, not built here **Superseded 2026-09-25:** 16:9 is now
+  supported too, by mapping the 16:10 ROIs rather than a calibration UI —
+  see docs/scanner.md's "Aspect ratios"; ultrawide is still rejected;
+  `public/tesseract/` adds ~19MB of static assets
   to the repo (fetched lazily, only when a scan session starts, so it
   doesn't affect normal app load); individually-cropped substat rows mean
   up to 8 OCR calls per candidate instead of 2, a deliberate
