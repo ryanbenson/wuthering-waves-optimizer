@@ -64,8 +64,10 @@ export type ScanCandidate = {
   substatSource: SubstatSource;
   /** Dedupe signature — see dedupe.ts. */
   signature: string;
-  /** Small preview crop of the echo portrait, for the review list UI. */
-  thumbnailDataUrl?: string;
+  /** 1-based order this echo was captured in this session (at capture, not OCR), so "#137" matches the order the user clicked. */
+  captureIndex: number;
+  /** Downscaled JPEG of the in-game detail panel at capture time — the review list's "in-game capture". In memory only; see capture.ts's grabRegionPreviewJpeg. */
+  panelPreviewUrl?: string;
   /** Raw OCR text this candidate was parsed from — shown as a diagnostic for low-confidence fields, not used for parsing itself. */
   rawHeaderText: string;
   rawStatsText: string;

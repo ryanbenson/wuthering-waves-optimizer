@@ -1,5 +1,5 @@
 <template>
-  <dialog :id="modalId" class="modal">
+  <dialog :id="modalId" class="modal" @close="referenceImageUrl = null">
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
     </form>
@@ -10,6 +10,7 @@
         </button>
       </form>
       <div class="py-4">
+        <EchoScanReferenceImage v-if="referenceImageUrl" :src="referenceImageUrl" class="mb-4" />
         <div
           class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
           <div class="echo__item__img-actions flex flex-col gap-2 items-center shrink-0">
@@ -602,6 +603,7 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import EchoScanReferenceImage from "./EchoScanReferenceImage.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -828,6 +830,12 @@ watch(
 function setEchoId(id: string | null) {
   echoId.value = id;
   syncMainStats();
+}
+
+/** The scanner's in-game capture for this echo — cleared when the dialog closes so it never shows for a later, unrelated edit. */
+const referenceImageUrl = ref<string | null>(null);
+function setReferenceImage(url: string | null) {
+  referenceImageUrl.value = url;
 }
 
 async function updateEchoChoice(
@@ -1206,6 +1214,7 @@ const allEchoesListFiltered = computed(() => {
 
 defineExpose({
   setEchoId,
+  setReferenceImage,
   handleOpenModal,
 });
 </script>

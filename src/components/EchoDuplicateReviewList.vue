@@ -80,7 +80,7 @@
         class="btn btn-primary"
         :disabled="!hasSelectedEchoes"
         @click="emit('confirm')">
-        Add selected to inventory
+        Save {{ selectedCount }} selected
       </button>
     </template>
     <template v-else>
@@ -95,13 +95,14 @@
         class="btn btn-primary"
         :disabled="!hasSelectedEchoes"
         @click="emit('confirm')">
-        Add selected to inventory & apply
+        Save {{ selectedCount }} selected & apply
       </button>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import {
   getEchoSetIconByType,
   getEchoSetLabelByType,
@@ -112,11 +113,13 @@ import { getEchoData } from "../echoes/index";
 import type { MappedEcho } from "../echoes/parsedEchoMapping";
 import type { DuplicateReviewItem } from "../composables/useEchoDuplicateReview";
 
-defineProps<{
+const props = defineProps<{
   items: DuplicateReviewItem[];
   inventoryOnly: boolean;
   hasSelectedEchoes: boolean;
 }>();
+
+const selectedCount = computed(() => props.items.filter((item) => item.selected).length);
 
 const emit = defineEmits<{
   cancel: [];

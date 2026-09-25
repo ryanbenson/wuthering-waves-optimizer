@@ -441,12 +441,64 @@ function nameSimilarity(ocrName: string, echoName: string): number {
   return prefixTolerantSimilarity(ocrName, echoName, TRAILING_DROP_WEIGHT);
 }
 
+/** Same lowercasing/accent transliteration as normalize(), but split into words instead of joined: "Jué wll" → ["jue", "wll"]. */
+function nameWords(text: string): string[] {
+  return text.split(/[^\p{L}\p{N}]+/u).map(normalize).filter(Boolean);
+}
+
+function startsWithWords(words: string[], prefix: string[]): boolean {
+  return prefix.length > 0 && prefix.every((word, i) => words[i] === word);
+}
+
+let prefixFamilyNames: Set<string> | null = null;
+
+/**
+ * Echoes whose full name is the leading words of another echo's name
+ * ("Chop Chop" → "Chop Chop: Headless", "Fog Lionarch" → "Fog Lionarch:
+ * Body"). The whole-word rule in bestNameMatch never applies to these: a
+ * junk-trailed read of the longer name would otherwise fall back to the
+ * short one whenever its own fuzzy score came up short.
+ */
+function getPrefixFamilyNames(): Set<string> {
+  if (prefixFamilyNames) return prefixFamilyNames;
+  const all = Object.values(mainEchoesData ?? {}).map((echo) => ({ key: echo.key, words: nameWords(echo.name) }));
+  prefixFamilyNames = new Set(
+    all
+      .filter((a) => all.some((b) => b.words.length > a.words.length && startsWithWords(b.words, a.words)))
+      .map((a) => a.key),
+  );
+  return prefixFamilyNames;
+}
+
+/**
+ * Whole-word rule: OCR text that starts with an echo's complete name as
+ * separate words, followed by more words, counts as that echo — scored at
+ * least NAME_MATCH_THRESHOLD. It's a floor, not an override, so a stronger
+ * fuzzy match to another echo still wins.
+ *
+ * Needed for very short names. A real "Jué" read as "Jue wll" (name
+ * perfect, background art as junk) scored 1 − 1.5 / (3 + 1.5) = 0.667
+ * under prefixTolerantSimilarity — the 3-char name makes the denominator
+ * tiny, so 3 junk chars were enough to miss the 0.68 threshold. Requiring
+ * an exact whole word (then a word break) keeps random text that merely
+ * starts with "ju" out.
+ */
+function matchesWholeNamePrefix(ocrWords: string[], echo: Echo): boolean {
+  if (getPrefixFamilyNames().has(echo.key)) return false;
+  const words = nameWords(echo.name);
+  return ocrWords.length > words.length && startsWithWords(ocrWords, words);
+}
+
 function bestNameMatch(rawName: string, pool: Echo[]): EchoNameMatch | null {
   const target = normalize(rawName);
   if (!target) return null;
+  const ocrWords = nameWords(rawName);
   let best: EchoNameMatch | null = null;
   for (const echo of pool) {
-    const similarity = nameSimilarity(target, normalize(echo.name));
+    let similarity = nameSimilarity(target, normalize(echo.name));
+    if (similarity < NAME_MATCH_THRESHOLD && matchesWholeNamePrefix(ocrWords, echo)) {
+      similarity = NAME_MATCH_THRESHOLD;
+    }
     if (!best || similarity > best.similarity) {
       best = { key: echo.key, name: echo.name, similarity };
     }

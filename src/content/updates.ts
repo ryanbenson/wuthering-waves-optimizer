@@ -12,6 +12,13 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-25",
+    dateLabel: "September 25, 2026",
+    items: [
+      "Update to the Labs feature: Echo Scanner - Added a \"How to scan\" guide, an optional beep each time an echo is captured, and a faster review: results are in two columns with filters (Needs attention, Unknown echo, Already in inventory), each echo is numbered in the order you clicked it, and you can see the in-game capture of each echo (also shown while editing) to fix anything it misread. The save button now tells you exactly what it will do, and short echo names like Jué are recognized more reliably",
+    ],
+  },
+  {
     date: "2026-09-24",
     dateLabel: "September 24, 2026",
     items: [

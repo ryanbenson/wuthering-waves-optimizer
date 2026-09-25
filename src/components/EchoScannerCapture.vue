@@ -1,7 +1,27 @@
 <template>
   <div class="echo-scanner">
-    <template v-if="status === 'idle' || status === 'error'">
-      <h2 class="text-xl font-bold">Scan echoes from the game</h2>
+    <template v-if="(status === 'idle' || status === 'error') && showGuide">
+      <EchoScannerGuide @close="closeGuide" />
+    </template>
+
+    <template v-else-if="status === 'idle' || status === 'error'">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-xl font-bold">Scan echoes from the game</h2>
+        <button type="button" class="btn btn-ghost btn-sm" @click="showGuide = true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="h-4 w-4 stroke-current">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
+          </svg>
+          How to scan
+        </button>
+      </div>
       <p class="mb-2">
         Share your WuWa window (Backpack → Echoes) and click through your
         echoes one at a time, or upload a video you already recorded doing
@@ -25,7 +45,8 @@
             Screen sharing and video upload are both processed entirely in
             your browser — no server, no upload, no account, nothing saved
             anywhere but this device. Once you close this window (or a
-            video finishes scanning), the captured frames are gone. There's
+            video finishes scanning), the captured frames and the
+            in-game snapshots shown for review are gone. There's
             no data collection, no privacy tradeoff, and nothing to worry
             about using either option.
           </p>
@@ -41,6 +62,19 @@
       </ul>
       <div v-if="errorMessage" class="alert alert-error mb-4 text-sm">
         {{ errorMessage }}
+      </div>
+      <div class="form-control mb-1">
+        <label class="label inline-flex justify-start gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            class="toggle toggle-sm toggle-primary"
+            v-model="captureCueEnabled"
+            data-test-scanner-beep-toggle />
+          <span class="label-text">
+            Beep on each capture — hear when an echo was read, so you know
+            it's safe to click the next one (live sharing only)
+          </span>
+        </label>
       </div>
       <div class="form-control mb-3">
         <label class="label inline-flex justify-start gap-2 cursor-pointer">
@@ -206,10 +240,12 @@
           class="progress progress-primary w-full max-w-md"
           :value="progress.current"
           :max="progress.total"></progress>
-        <p v-else class="text-sm opacity-70">
-          Click through your echoes in-game — new ones will appear below as
-          they're captured.
-        </p>
+        <ul v-else class="steps steps-horizontal text-xs w-full max-w-md" data-test-scanner-rhythm>
+          <li class="step step-primary">Click an echo</li>
+          <li class="step step-primary">Wait ~2 seconds</li>
+          <li class="step step-primary">Click the next</li>
+          <li class="step">Stop when done</li>
+        </ul>
         <p class="text-xs opacity-60 flex items-center gap-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -246,108 +282,48 @@
         (right side of the Echo Management screen) is visible while you
         click through echoes.
       </p>
-      <div v-else class="space-y-3 max-h-[60vh] overflow-y-auto mb-4">
-        <div v-for="candidate in candidates" :key="candidate.id">
-          <div v-if="!candidate.slot.echo" class="alert alert-warning text-sm mb-1 py-2">
-            Unknown echo — couldn't match a name. Edit it by hand below.
-          </div>
-          <div v-else-if="hasLowConfidence(candidate)" class="flex flex-wrap gap-1 mb-1">
-            <span v-if="candidate.confidence.name === 'low'" class="badge badge-xs badge-warning">
-              Check name
-            </span>
-            <span v-if="candidate.confidence.cost === 'low'" class="badge badge-xs badge-warning">
-              Check cost
-            </span>
-            <span v-if="candidate.confidence.set === 'low'" class="badge badge-xs badge-warning">
-              Check set
-            </span>
-            <span v-if="candidate.confidence.mainStat === 'low'" class="badge badge-xs badge-warning">
-              Check main stat
-            </span>
-            <span
-              v-if="candidate.confidence.substats.some((c) => c === 'low')"
-              class="badge badge-xs badge-warning">
-              Check substats
-            </span>
-          </div>
-
-          <InventoryEchoTile
-            v-bind="tileProps(candidate)"
-            hide-inventory-actions
-            :hide-edit="!inventoryOnly"
-            delete-label="Remove"
-            delete-tooltip="Remove this from the scan results (it won't be saved)"
-            @edit="handleEditCandidate(candidate.id)"
-            @delete="scanner.removeCandidate(candidate.id)" />
-
-          <details v-if="hasLowConfidence(candidate)" class="mt-1 text-xs opacity-70">
-            <summary class="cursor-pointer">Show what OCR actually read</summary>
-            <pre class="whitespace-pre-wrap bg-base-200 rounded p-2 mt-1">{{
-              candidate.rawHeaderText
-            }}
----
-{{ candidate.rawStatsText }}</pre>
-          </details>
-
-          <details v-if="candidate.debugCrops?.length" class="mt-1 text-xs opacity-70" open>
-            <summary class="cursor-pointer">Debug: what each region actually captured</summary>
-            <p v-if="candidate.substatSource !== 'columns'" class="badge badge-xs badge-info mt-2">
-              Label/value columns came up short — used the
-              {{ candidate.substatSource === "rows" ? "per-row" : "substat-block" }} fallback pass instead
-            </p>
-
-            <div v-if="candidate.debugFullFrame" class="relative inline-block mt-2 max-w-full">
-              <img
-                :src="candidate.debugFullFrame"
-                class="block max-w-full border border-base-300"
-                alt="Full frame with ROI boxes" />
-              <div class="absolute inset-0 pointer-events-none">
-                <div
-                  v-for="r in scanner.debugRegions"
-                  :key="r.key"
-                  class="absolute border border-dashed border-warning"
-                  :style="regionOverlayStyle(r.region)">
-                  <span class="absolute -top-3.5 left-0 text-[9px] leading-none bg-warning text-warning-content px-0.5 rounded-sm whitespace-nowrap">
-                    {{ r.label }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 p-2 bg-base-200 rounded">
-              <div v-for="crop in candidate.debugCrops" :key="crop.key" class="flex flex-col gap-1">
-                <span class="font-semibold">{{ crop.label }}</span>
-                <!--
-                  For setIcon specifically, show the matched reference icon
-                  right next to the captured crop — a direct side-by-side,
-                  not just a "Matched: <name>" label, so a bad match (or a
-                  still-off scale/crop) is visible at a glance instead of
-                  requiring a separate lookup of what that set's icon even
-                  looks like.
-                -->
-                <div v-if="crop.key === 'setIcon'" class="flex gap-1 items-start">
-                  <div class="flex flex-col gap-1 items-center">
-                    <img :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
-                    <span class="text-[9px] opacity-60">captured</span>
-                  </div>
-                  <div v-if="candidate.slot.set && echoSetImageMap[candidate.slot.set]" class="flex flex-col gap-1 items-center">
-                    <img
-                      :src="echoSetImageMap[candidate.slot.set]"
-                      class="border border-base-300 bg-base-100 max-w-full"
-                      :alt="`Reference: ${candidate.slot.set}`" />
-                    <span class="text-[9px] opacity-60">reference</span>
-                  </div>
-                </div>
-                <img v-else :src="crop.dataUrl" class="border border-base-300 bg-base-100 max-w-full" :alt="crop.label" />
-                <span class="opacity-70 break-words">{{ crop.text || "(empty)" }}</span>
-              </div>
-            </div>
-          </details>
+      <template v-else-if="candidates.length">
+        <div role="tablist" class="tabs tabs-boxed tabs-sm mb-3 w-fit flex-wrap" data-test-scanner-filters>
+          <button
+            v-for="tab in filterTabs"
+            :key="tab.key"
+            type="button"
+            role="tab"
+            class="tab gap-1"
+            :class="{ 'tab-active': activeFilter === tab.key }"
+            :aria-selected="activeFilter === tab.key"
+            @click="activeFilter = tab.key">
+            {{ tab.label }}
+            <span class="badge badge-sm" :class="tab.badgeClass">{{ tab.count }}</span>
+          </button>
         </div>
-      </div>
+        <div class="max-h-[60vh] overflow-y-auto mb-4">
+          <div v-if="!filteredCandidates.length" class="py-8 text-center text-sm opacity-80">
+            <p class="mb-2">{{ emptyFilterMessage }}</p>
+            <button type="button" class="btn btn-sm btn-ghost" @click="activeFilter = 'all'">
+              Show all {{ summary.total }}
+            </button>
+          </div>
+          <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
+            <EchoScannerResultCard
+              v-for="candidate in filteredCandidates"
+              :key="candidate.id"
+              :candidate="candidate"
+              :attention="stillNeedsAttention(candidate, reviewContext)"
+              :reviewed="reviewedIds.has(candidate.id)"
+              :in-inventory="inventoryIds.has(candidate.id)"
+              :inventory-only="inventoryOnly"
+              @edit="handleEditCandidate(candidate)"
+              @remove="scanner.removeCandidate(candidate.id)"
+              @toggle-reviewed="toggleReviewed(candidate.id)"
+              @open-capture="openCapture(candidate)" />
+          </div>
+        </div>
+      </template>
       <p v-if="candidates.length && inventoryOnly" class="text-xs opacity-70 mb-2">
-        "Edit" opens the same editor as your inventory, and saves this echo
-        right away — the rest still wait for "Continue" below.
+        "Edit" opens the same editor as your inventory, with this echo's
+        in-game capture shown for reference, and saves this echo right away
+        — the rest still wait for the save button below.
       </p>
       <div
         v-if="!inventoryOnly"
@@ -362,27 +338,74 @@
           </label>
         </div>
       </div>
+      <ul
+        v-if="candidates.length && willSaveToInventory"
+        class="text-sm flex flex-wrap justify-end gap-x-4 gap-y-1 mb-2"
+        data-test-scanner-save-summary>
+        <li>
+          <strong>{{ summary.newCount }}</strong> new
+          echo{{ summary.newCount === 1 ? "" : "es" }} will be saved
+        </li>
+        <li v-if="summary.inventoryCount" class="text-info">
+          <strong>{{ summary.inventoryCount }}</strong> already in your
+          inventory (you'll choose next)
+        </li>
+        <li v-if="summary.attentionCount - summary.unknownCount > 0" class="text-warning">
+          <strong>{{ summary.attentionCount - summary.unknownCount }}</strong>
+          still flagged (saved as shown)
+        </li>
+        <li v-if="summary.unknownCount" class="text-warning">
+          <strong>{{ summary.unknownCount }}</strong> unknown
+          echo{{ summary.unknownCount === 1 ? "" : "es" }} (saved without a name)
+        </li>
+      </ul>
       <div class="flex gap-2 justify-end">
         <button class="btn" :disabled="status === 'stopping'" @click="handleRetry">Scan again</button>
         <button
           class="btn btn-primary"
           :disabled="!candidates.length || status === 'stopping'"
+          data-test-scanner-save
           @click="handleContinue">
-          Continue
+          {{ continueLabel }}
         </button>
       </div>
     </template>
+
+    <dialog ref="captureDialog" class="modal" @close="openCaptureCandidate = null">
+      <div v-if="openCaptureCandidate" class="modal-box max-w-xl p-3">
+        <p class="text-sm font-semibold mb-2">
+          In-game capture #{{ openCaptureCandidate.captureIndex }}
+        </p>
+        <img
+          :src="openCaptureCandidate.panelPreviewUrl"
+          class="w-full h-auto max-h-[80vh] object-contain rounded"
+          :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
-import { echoSetImageMap } from "../echoes/stats";
-import InventoryEchoTile from "./InventoryEchoTile.vue";
+import { useInventoryStore } from "../stores/inventory";
+import { buildIdentityKeySet, getEchoIdentityKey } from "../utils/echoIdentity";
+import { regionPercentStyle } from "../scanner/layout";
+import {
+  filterCandidates,
+  stillNeedsAttention,
+  summarizeCandidates,
+  type ReviewContext,
+  type ReviewFilter,
+} from "../scanner/review";
 import EchoScannerTimings from "./EchoScannerTimings.vue";
-import type { ScanCandidate, RegionFrac } from "../scanner/types";
+import EchoScannerGuide from "./EchoScannerGuide.vue";
+import EchoScannerResultCard from "./EchoScannerResultCard.vue";
+import type { ScanCandidate } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
   inventoryOnly: false,
@@ -398,7 +421,7 @@ const emit = defineEmits<{
    * which this component deliberately doesn't mount a second copy of — see
    * CalculatorEchoImporter.vue's pass-through of this event.
    */
-  "edit-candidate": [echoId: string];
+  "edit-candidate": [payload: { echoId: string; referenceImageUrl?: string }];
 }>();
 
 const scanner = useEchoScanner();
@@ -455,14 +478,7 @@ watch(videoDuration, (duration) => {
 });
 
 /** The video preview fills its container exactly (object-fit: contain on a matching-aspect source), so a region's own 0-1 fraction is already the right %. */
-function regionOverlayStyle(region: RegionFrac) {
-  return {
-    left: `${region.x * 100}%`,
-    top: `${region.y * 100}%`,
-    width: `${region.width * 100}%`,
-    height: `${region.height * 100}%`,
-  };
-}
+const regionOverlayStyle = regionPercentStyle;
 
 function formatTime(seconds: number): string {
   const total = Math.max(0, Math.round(seconds));
@@ -471,48 +487,10 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-// Same shape as InventoryEchoesBrowser.vue's local echoCardBinder — feeds
-// the same InventoryEchoTile.vue used everywhere else echoes are shown, so
-// a scanned candidate looks identical to a normal inventory echo.
-function tileProps(candidate: ScanCandidate) {
-  const [mapped] = mapParsedEchoes([candidate.slot], false);
-  const str = (v: unknown) => (v == null ? "" : String(v));
-  const numish = (v: unknown): number | string => (v == null ? 0 : (v as number | string));
-  return {
-    rank: mapped.rank ?? 5,
-    type: str(mapped.type),
-    echoId: candidate.id,
-    echoSet: str(mapped.echoSet),
-    stat: str(mapped.stat),
-    echo: str(mapped.echo),
-    echoSubStatsType1: str(mapped.echoSubStatsType1),
-    echoSubStatsValue1: numish(mapped.echoSubStatsValue1),
-    echoSubStatsType2: str(mapped.echoSubStatsType2),
-    echoSubStatsValue2: numish(mapped.echoSubStatsValue2),
-    echoSubStatsType3: str(mapped.echoSubStatsType3),
-    echoSubStatsValue3: numish(mapped.echoSubStatsValue3),
-    echoSubStatsType4: str(mapped.echoSubStatsType4),
-    echoSubStatsValue4: numish(mapped.echoSubStatsValue4),
-    echoSubStatsType5: str(mapped.echoSubStatsType5),
-    echoSubStatsValue5: numish(mapped.echoSubStatsValue5),
-  };
-}
-
-function hasLowConfidence(candidate: ScanCandidate): boolean {
-  const c = candidate.confidence;
-  return (
-    c.name === "low" ||
-    c.cost === "low" ||
-    c.mainStat === "low" ||
-    c.set === "low" ||
-    c.substats.some((s) => s === "low")
-  );
-}
-
-function handleEditCandidate(id: string) {
+function handleEditCandidate(candidate: ScanCandidate) {
   if (!props.inventoryOnly) return;
-  const echoId = scanner.saveCandidateNow(id);
-  if (echoId) emit("edit-candidate", echoId);
+  const echoId = scanner.saveCandidateNow(candidate.id);
+  if (echoId) emit("edit-candidate", { echoId, referenceImageUrl: candidate.panelPreviewUrl });
 }
 
 function triggerFileSelect() {
@@ -543,6 +521,145 @@ async function handleStartVideoScan() {
 function handleRetry() {
   status.value = "idle";
 }
+
+// --- Guide ---------------------------------------------------------------
+
+// Per-viewer convenience only (not user data): auto-open the guide the
+// first time, then only on request. Storage can throw or be empty in a
+// private window — the guide then just opens every time, which is fine.
+const GUIDE_SEEN_KEY = "echoScanner.guideSeen";
+const CAPTURE_CUE_KEY = "echoScanner.captureCue";
+
+function readFlag(key: string): boolean {
+  try {
+    return localStorage.getItem(key) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeFlag(key: string, value: boolean) {
+  try {
+    localStorage.setItem(key, value ? "1" : "0");
+  } catch {
+    // ignore — see above
+  }
+}
+
+const showGuide = ref(!readFlag(GUIDE_SEEN_KEY));
+
+function closeGuide() {
+  showGuide.value = false;
+  writeFlag(GUIDE_SEEN_KEY, true);
+}
+
+const captureCueEnabled = scanner.captureCueEnabled;
+captureCueEnabled.value = readFlag(CAPTURE_CUE_KEY);
+watch(captureCueEnabled, (enabled) => writeFlag(CAPTURE_CUE_KEY, enabled));
+
+// --- Review --------------------------------------------------------------
+
+const inventoryStore = useInventoryStore();
+const inventoryKeys = computed(() => buildIdentityKeySet(inventoryStore.echoes));
+
+/** Candidates whose exact echo is already saved — same rule as useEchoDuplicateReview's duplicate step. */
+const inventoryIds = computed(() => {
+  const ids = new Set<string>();
+  for (const candidate of candidates.value) {
+    if (!candidate.slot.echo) continue;
+    const [mapped] = mapParsedEchoes([candidate.slot], false);
+    if (inventoryKeys.value.has(getEchoIdentityKey(mapped))) ids.add(candidate.id);
+  }
+  return ids;
+});
+
+/** "Looks right" — UI-only, never changes a candidate's slot or confidence. */
+const reviewedIds = ref(new Set<string>());
+
+function toggleReviewed(id: string) {
+  const next = new Set(reviewedIds.value);
+  if (next.has(id)) next.delete(id);
+  else next.add(id);
+  reviewedIds.value = next;
+}
+
+const reviewContext = computed<ReviewContext>(() => ({
+  reviewedIds: reviewedIds.value,
+  inventoryIds: inventoryIds.value,
+}));
+
+const summary = computed(() => summarizeCandidates(candidates.value, reviewContext.value));
+
+const activeFilter = ref<ReviewFilter>("all");
+
+// Land on "Needs attention" when a scan finishes with anything flagged.
+watch(status, (next, previous) => {
+  if (next !== "stopped" || previous === "stopped") return;
+  reviewedIds.value = new Set();
+  activeFilter.value = summary.value.attentionCount > 0 ? "attention" : "all";
+});
+
+const filterTabs = computed(() => [
+  { key: "all" as const, label: "All", count: summary.value.total, badgeClass: "badge-ghost" },
+  {
+    key: "attention" as const,
+    label: "Needs attention",
+    count: summary.value.attentionCount,
+    badgeClass: summary.value.attentionCount ? "badge-warning" : "badge-ghost",
+  },
+  {
+    key: "unknown" as const,
+    label: "Unknown echo",
+    count: summary.value.unknownCount,
+    badgeClass: summary.value.unknownCount ? "badge-warning" : "badge-ghost",
+  },
+  {
+    key: "inventory" as const,
+    label: "Already in inventory",
+    count: summary.value.inventoryCount,
+    badgeClass: summary.value.inventoryCount ? "badge-info" : "badge-ghost",
+  },
+]);
+
+const filteredCandidates = computed(() =>
+  filterCandidates(candidates.value, activeFilter.value, reviewContext.value),
+);
+
+const emptyFilterMessage = computed(() => {
+  switch (activeFilter.value) {
+    case "attention":
+      return "Nothing needs attention — every echo looks good.";
+    case "unknown":
+      return "Every echo was recognized.";
+    case "inventory":
+      return "None of these are in your inventory yet.";
+    default:
+      return "Nothing here.";
+  }
+});
+
+const captureDialog = ref<HTMLDialogElement | null>(null);
+const openCaptureCandidate = ref<ScanCandidate | null>(null);
+
+async function openCapture(candidate: ScanCandidate) {
+  openCaptureCandidate.value = candidate;
+  await nextTick();
+  captureDialog.value?.showModal();
+}
+
+// --- Save ----------------------------------------------------------------
+
+const willSaveToInventory = computed(() => props.inventoryOnly || isSavingToInventory.value);
+
+/** Says what the button will actually do: save straight away, or stop at the duplicate step first. */
+const continueLabel = computed(() => {
+  if (!willSaveToInventory.value) return "Continue";
+  const { total, inventoryCount } = summary.value;
+  if (inventoryCount > 0) {
+    return `Review ${inventoryCount} duplicate${inventoryCount === 1 ? "" : "s"} →`;
+  }
+  return `Save ${total} echo${total === 1 ? "" : "es"}`;
+});
 
 function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);

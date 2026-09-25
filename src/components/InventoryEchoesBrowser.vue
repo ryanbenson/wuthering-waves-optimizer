@@ -9,7 +9,7 @@
   <EchoScannerModal
     v-if="isEchoScanningEnabled"
     ref="echoScanner"
-    @edit-candidate="handleEditEcho"></EchoScannerModal>
+    @edit-candidate="handleEditScannedEcho"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -1009,9 +1009,15 @@ function echoCardBinder(e: InventoryEchoRow) {
   };
 }
 
-function handleEditEcho(echoId: string) {
+function handleEditEcho(echoId: string, referenceImageUrl: string | null = null) {
+  inventoryEchoEditRef.value?.setReferenceImage(referenceImageUrl);
   inventoryEchoEditRef.value?.setEchoId(echoId);
   inventoryEchoEditRef.value?.handleOpenModal();
+}
+
+/** From the scanner's results — shows that echo's in-game capture in the editor for reference. */
+function handleEditScannedEcho(payload: { echoId: string; referenceImageUrl?: string }) {
+  handleEditEcho(payload.echoId, payload.referenceImageUrl ?? null);
 }
 
 function toggleDuplicatesFilter() {

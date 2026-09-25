@@ -40,3 +40,10 @@ export function getEchoIdentityKey(echo: {
     .map(String)
     .join(":");
 }
+
+/** Every echo's identity key, for O(1) "is this exact echo already here?" checks against a whole inventory. */
+export function buildIdentityKeySet(echoes: Iterable<Parameters<typeof getEchoIdentityKey>[0]>): Set<string> {
+  const keys = new Set<string>();
+  for (const echo of echoes) keys.add(getEchoIdentityKey(echo));
+  return keys;
+}

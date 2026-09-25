@@ -438,8 +438,18 @@ The current design, in `parse.ts`'s `resolveEchoByNameAndCost` +
    Trailing chars can now be dropped at half the cost of an edit. They
    still cost *something*, so a lightly garbled longer name ("Chop Chop:
    Headlss", "Fog Lionarch: Bdy") keeps beating its prefix echo ("Chop
-   Chop", "Fog Lionarch"), the only prefix families in the pool. Very short
-   names (Jué) still only tolerate a couple of junk chars.
+   Chop", "Fog Lionarch"), the only prefix families in the pool.
+   **Whole-word rule for short names:** when the OCR text *starts with an
+   echo's complete name as whole words* followed by more words, that echo
+   scores at least `NAME_MATCH_THRESHOLD` (`matchesWholeNamePrefix`). A real
+   Jué read as "Jue wll" otherwise scored 1 − 1.5 / (3 + 1.5) = 0.667 and
+   came back "Unknown echo": with a 3-letter name, 3 junk chars were
+   enough. It's a floor, not an override, so a stronger fuzzy match to
+   another echo still wins, and it needs an exact whole word plus a word
+   break ("Juewll" and "Jux wll" don't qualify). It never applies to a
+   name that is the leading words of another echo's name (Chop Chop, Fog
+   Lionarch), so a junk-trailed read of "Chop Chop: Leftless" can't fall
+   back to plain Chop Chop.
 4. **If an echo resolves**, look up its own `sets`:
    - **Exactly one** (33% of the pool): done — the set is known directly,
      with *no image matching at all*, not even attempted.
@@ -506,9 +516,10 @@ name misses, these were identified but held back until needed, in order:
    - Require a margin between the best and runner-up match before trusting
      it, so a wrong echo can't win by a hair.
 
-Known limit of the current matcher: very short names (Jué, 3 chars) still
-tolerate only about 2 junk chars. Options 1 and 2 address that by
-reducing junk at the source, rather than by loosening the matcher.
+Known limit of the current matcher: a very short name (Jué, 3 chars) only
+tolerates about 2 junk chars when the junk isn't separated by a space.
+The whole-word rule covers the common case (junk after a word break).
+Options 1 and 2 would reduce junk at the source instead.
 
 ## Set icon matching: shape-mask the background, not just crop tighter
 
@@ -729,6 +740,91 @@ invalid"), even though the exact same string resolves fine as a normal
 fetch from this worker itself. The Discord-bot importer's tesseract.js
 usage never hits this because it uses tesseract's default CDN path, which
 is already a full `https://` URL — self-hosting is what exposes it.
+
+## Using the scanner (the in-app guide)
+
+`EchoScannerGuide.vue` is the "How to scan" walkthrough on the start
+screen. It opens automatically the first time (a per-browser
+`localStorage` flag, `echoScanner.guideSeen`, wrapped in try/catch; it
+isn't user data, so no store or migration), then from the **How to scan**
+button. It's text only on purpose: screenshots would be large and go stale
+with each game UI update. Keep its steps in line with this list:
+
+1. Desktop Chrome/Edge, English client, game at 16:10 (full screen on a
+   16:10 display or a 16:10 window).
+2. In game: Backpack → Echoes, click the first echo.
+3. In the app: Inventory → Scan echoes → Share screen (live), then pick the
+   game on the picker's **Window** tab.
+4. Click an echo → wait ~2s → click the next. Keep the panel unobstructed.
+5. Stop scanning; queued echoes still finish.
+6. Review (below), then save.
+
+While scanning, a short "Click → wait ~2s → click next → Stop" strip
+replaces the old one-line hint.
+
+**Beep on each capture** (toggle on the start screen, off by default,
+remembered in `localStorage` as `echoScanner.captureCue`):
+`captureCue.ts` plays a ~80ms WebAudio blip on each `stable-novel`
+capture. The user is usually full screen in the game and can't see the
+counter, so the beep says it's safe to click on. The `AudioContext` is
+created inside the Start click (browsers keep one created without a
+gesture suspended) and closed in `releaseCapture`. Only live shares open
+it, so a video scan never beeps.
+
+## Reviewing results
+
+Every candidate now carries:
+
+- `captureIndex`: 1-based capture order, assigned in `handleTick` at
+  capture time rather than after OCR, so "#137" matches the order the
+  user clicked.
+- `panelPreviewUrl`: a ~480px-wide JPEG of `PANEL_BOX` from the same
+  frame (`grabRegionPreviewJpeg`), always kept, not only in debug mode.
+  At ~30-50KB each, a 200-echo scan holds under ~10MB in memory. It's
+  never persisted and goes away with the candidate list when the modal
+  closes.
+
+`src/scanner/review.ts` holds the pure rules (unit-tested in
+`tests/scanner/review.test.ts`):
+
+- **Needs attention** = a low-confidence field or no echo match, minus
+  echoes the user marked **Looks right**. That mark is UI-only (a set of
+  ids in `EchoScannerCapture.vue`) and never changes the slot or its
+  confidence. An unknown echo can't be marked, since there's no echo to
+  save.
+- **Already in inventory** uses the same exact identity-key rule as the
+  duplicate step (`useEchoDuplicateReview`), via `buildIdentityKeySet`
+  (`src/utils/echoIdentity.ts`), a set lookup instead of scanning the
+  inventory for each echo.
+
+The results view (`EchoScannerCapture.vue` + `EchoScannerResultCard.vue`):
+
+- filter tabs **All / Needs attention / Unknown echo / Already in
+  inventory** with counts, opening on Needs attention when anything is
+  flagged;
+- a two-column grid (one column below `lg`);
+- a **Show in-game capture** toggle per echo, open by default on flagged
+  ones, with a click-to-enlarge dialog.
+
+**Edit** still saves the echo right away and opens the inventory editor
+(see `saveCandidateNow`). It now passes the capture along (`edit-candidate`
+→ `{ echoId, referenceImageUrl }`), and both editors
+(`InventoryEchoEdit.vue` and the labs `InventoryEchoEditPanel.vue` →
+`CalculatorEchoEditPanel.vue`) show it through `EchoScanReferenceImage.vue`.
+They clear it on close, so it never appears on a later, unrelated edit.
+
+**Save button.** It used to say "Continue" whatever came next. It now says
+what will happen:
+
+- **Save N echoes** when nothing matches the inventory. This saves
+  directly and closes.
+- **Review K duplicates →** when something does. This opens
+  `EchoDuplicateReviewList.vue`, with duplicates unchecked; its button
+  now reads "Save N selected".
+
+A summary line above the button shows the new / already-in-inventory /
+still-flagged / unknown counts. After saving, `onFinalized(savedCount)`
+drives a "Saved N echoes to your inventory" toast.
 
 ## Debug view
 
