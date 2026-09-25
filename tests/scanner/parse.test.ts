@@ -240,6 +240,28 @@ describe("matchEchoName", () => {
     expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
   });
 
+  // Real report: a Jué scan came back "Unknown echo" with name OCR
+  // "Jue wll" — the name read perfectly, but 3 junk chars were enough to
+  // drop a 3-letter name under the threshold. A complete name as whole
+  // words at the start of the text now counts (see bestNameMatch).
+  it.each(["Jue wll", "Jué wll", "Jue wll Axy"])("matches a short name followed by junk words (%s)", (raw) => {
+    const match = matchEchoName(raw);
+    expect(getEchoData(match!.key).name).toBe("Jué");
+    expect(match!.similarity).toBeGreaterThanOrEqual(NAME_MATCH_THRESHOLD);
+  });
+
+  it.each(["Juewll", "Jux wll"])("doesn't apply the whole-word rule without an exact whole word (%s)", (raw) => {
+    const match = matchEchoName(raw);
+    expect(match!.similarity).toBeLessThan(NAME_MATCH_THRESHOLD);
+  });
+
+  it("never applies the whole-word rule to a name that starts another echo's name", () => {
+    // "Chop Chop" + junk could be a garbled Chop Chop: Headless/Leftless/Rightless.
+    const match = matchEchoName("Chop Chop Lxxxxxxx");
+    const isPlainChopChop = match && getEchoData(match.key).name === "Chop Chop";
+    expect(isPlainChopChop && match!.similarity >= NAME_MATCH_THRESHOLD).toBeFalsy();
+  });
+
   // Echo names that are a prefix of other echo names: dropping trailing
   // text must not let the shorter one steal the longer one's reads.
   it.each([
@@ -335,6 +357,12 @@ describe("resolveEchoByNameAndCost", () => {
     expect(result.echo).toBeNull();
     expect(result.confidence).toBe("low");
     expect(result.candidateSets).toEqual([]);
+  });
+
+  it("resolves the real 'Jue wll' name read (Jué, cost 4) instead of Unknown echo", () => {
+    const result = resolveEchoByNameAndCost("Jue wll", "ATK 150");
+    expect(result.echo).toBe("Jué");
+    expect(result.confidence).toBe("high");
   });
 
   it("returns no match for blank name text", () => {

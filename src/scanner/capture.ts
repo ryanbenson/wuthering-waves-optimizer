@@ -309,6 +309,33 @@ export async function grabRegionWithPreview(
 }
 
 /**
+ * A downscaled JPEG of one region — the review list's "in-game capture"
+ * of each echo's detail panel (PANEL_BOX), kept for every candidate, not
+ * only in debug mode, so a flagged echo can be checked against what the
+ * game actually showed. JPEG at maxWidth keeps one at ~30-50KB; they live
+ * only in memory and are dropped with the candidate list.
+ *
+ * Draws synchronously before returning, like the other grab* helpers, so
+ * a caller starting it alongside them gets the same frame.
+ */
+export function grabRegionPreviewJpeg(
+  videoEl: HTMLVideoElement,
+  regionFrac: RegionFrac,
+  maxWidth = 480,
+): string {
+  const frame: FrameSize = { width: videoEl.videoWidth, height: videoEl.videoHeight };
+  const region = toPixelRegion(regionFrac, frame);
+  const scale = Math.min(1, maxWidth / region.width);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(region.width * scale));
+  canvas.height = Math.max(1, Math.round(region.height * scale));
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Couldn't get a 2d canvas context.");
+  ctx.drawImage(videoEl, region.x, region.y, region.width, region.height, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.8);
+}
+
+/**
  * A downscaled snapshot of the *whole* frame — for the scanner's debug
  * view (EchoScannerCapture.vue) to draw every ROI box on top of, as one
  * reviewable image per candidate rather than only the small per-region

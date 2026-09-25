@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-6xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -48,10 +48,11 @@ import EchoScannerCapture from "./EchoScannerCapture.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
+import { useToast } from "../composables/useToast";
 
 const emit = defineEmits<{
   /** Pass-through from EchoScannerCapture.vue — see its own doc comment on the same event. */
-  "edit-candidate": [echoId: string];
+  "edit-candidate": [payload: { echoId: string; referenceImageUrl?: string }];
 }>();
 
 const modalId = "modal-echo-scanner-inventory";
@@ -102,8 +103,20 @@ const {
 } = useEchoDuplicateReview({
   inventoryOnly: () => true,
   character: () => "",
-  onFinalized: triggerCloseModal,
+  onFinalized: handleFinalized,
 });
+
+const { showToast } = useToast();
+
+function handleFinalized(savedCount: number) {
+  triggerCloseModal();
+  showToast(
+    savedCount
+      ? `Saved ${savedCount} echo${savedCount === 1 ? "" : "es"} to your inventory.`
+      : "No echoes were saved.",
+    savedCount ? "success" : "info",
+  );
+}
 
 function handleCancelDuplicateReview() {
   triggerCloseModal();

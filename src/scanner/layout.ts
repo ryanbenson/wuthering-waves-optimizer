@@ -260,3 +260,13 @@ export function isSupportedAspect(frame: FrameSize): boolean {
   const aspect = frame.width / frame.height;
   return Math.abs(aspect - 1.6) < 0.05;
 }
+
+/** CSS for drawing a region's box over an image/video that fills its container at the frame's own aspect — the 0-1 fractions are already the right percentages. */
+export function regionPercentStyle(region: RegionFrac) {
+  return {
+    left: `${region.x * 100}%`,
+    top: `${region.y * 100}%`,
+    width: `${region.width * 100}%`,
+    height: `${region.height * 100}%`,
+  };
+}

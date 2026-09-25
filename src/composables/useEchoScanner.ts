@@ -20,6 +20,7 @@ import {
   grabRegionWithPreview,
   grabFullFrameSnapshot,
   grabCircularMaskedBitmap,
+  grabRegionPreviewJpeg,
   type FrameSource,
   type VideoFileHandle,
   type VideoScanOptions,
@@ -28,6 +29,8 @@ import { computeFingerprint, STATS_FINGERPRINT_GRID } from "../scanner/fingerpri
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
 import { createSerialQueue, type SerialQueue } from "../scanner/queue";
+import { createCaptureCue } from "../scanner/captureCue";
+import { needsAttention } from "../scanner/review";
 import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
 import {
   PANEL_BOX,
@@ -131,12 +134,16 @@ type FrameSnapshot = {
   setIcon: ImageBitmap;
   /** substatBlock + sub0..sub4 — the per-row/block fallback passes. */
   fallback: Record<string, ImageBitmap>;
+  /** The review list's "in-game capture" — see capture.ts's grabRegionPreviewJpeg. */
+  panelPreview: string;
   debug?: Awaited<ReturnType<typeof captureDebugCropsFromVideo>>;
 };
 
 type ScanJob = {
   snapshot: Promise<FrameSnapshot>;
   capturedAt: number;
+  /** 1-based capture order within the session — see ScanCandidate.captureIndex. */
+  captureIndex: number;
   session: number;
 };
 
@@ -252,6 +259,7 @@ function snapshotFrame(videoEl: HTMLVideoElement, withDebug: boolean): Promise<F
     ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
   ]);
   const debug = withDebug ? captureDebugCropsFromVideo(videoEl) : Promise.resolve(undefined);
+  const panelPreview = grabRegionPreviewJpeg(videoEl, PANEL_BOX);
 
   return Promise.all([primary, setIcon, fallback, debug]).then(
     ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops]) => {
@@ -263,6 +271,7 @@ function snapshotFrame(videoEl: HTMLVideoElement, withDebug: boolean): Promise<F
         primary: { name, main, secondary, substatLabels, substatValues },
         setIcon: setIconBitmap,
         fallback: fallbackBitmaps,
+        panelPreview,
         debug: debugCrops,
       };
     },
@@ -294,17 +303,14 @@ export function useEchoScanner() {
   /** Tick/queue/OCR timings for the debug view — see ScannerTimings. */
   const timings = ref<ScannerTimings>(emptyTimings());
 
-  const reviewNeededCount = computed(
-    () =>
-      candidates.value.filter(
-        (c) =>
-          c.confidence.name === "low" ||
-          c.confidence.cost === "low" ||
-          c.confidence.mainStat === "low" ||
-          c.confidence.set === "low" ||
-          c.confidence.substats.some((s) => s === "low"),
-      ).length,
-  );
+  const reviewNeededCount = computed(() => candidates.value.filter((c) => needsAttention(c)).length);
+  /**
+   * Play a short blip on each live capture — see captureCue.ts. Set by the
+   * component before starting; only live shares use it (a video scan has
+   * no one clicking along).
+   */
+  const captureCueEnabled = ref(false);
+  const captureCue = createCaptureCue();
 
   let frameSource: FrameSource | null = null;
   let openVideoHandle: VideoFileHandle | null = null;
@@ -319,6 +325,7 @@ export function useEchoScanner() {
    */
   let session = 0;
   let lastTickAt: number | null = null;
+  let captureCount = 0;
   // A fresh queue per session: aborting terminates the OCR worker, which
   // can leave the in-flight job's promise unresolved forever — it must not
   // block the next session's queue.
@@ -382,6 +389,7 @@ export function useEchoScanner() {
     pendingCount.value = 0;
     timings.value = emptyTimings();
     lastTickAt = null;
+    captureCount = 0;
   }
 
   async function initWorkers() {
@@ -627,7 +635,9 @@ export function useEchoScanner() {
     // echo as already taken, or it would be queued again on every tick
     // until its OCR finished.
     stability.commitScan(fingerprint);
-    queue.enqueue({ snapshot, capturedAt: performance.now(), session });
+    captureCount++;
+    queue.enqueue({ snapshot, capturedAt: performance.now(), captureIndex: captureCount, session });
+    captureCue.play();
   }
 
   /** OCR + match + parse one queued snapshot, then add it to the candidate list. Runs one at a time, in capture order (see queue.ts). */
@@ -692,6 +702,8 @@ export function useEchoScanner() {
         slot: parsed.slot,
         confidence: parsed.confidence,
         needsMainStatSelection: false,
+        captureIndex: job.captureIndex,
+        panelPreviewUrl: snapshot.panelPreview,
         substatSource: parsed.substatSource,
         signature,
         rawHeaderText: parsed.rawHeaderText,
@@ -714,6 +726,7 @@ export function useEchoScanner() {
 
   /** Ends capture (and with it the screen share / video file) without touching the OCR workers — queued snapshots can still finish. */
   function releaseCapture() {
+    captureCue.close();
     frameSource?.stop();
     frameSource = null;
     if (openVideoHandle) {
@@ -767,6 +780,8 @@ export function useEchoScanner() {
   async function startLive() {
     resetState();
     status.value = "starting";
+    // Opened here, inside the Start click, or the browser keeps it suspended.
+    if (captureCueEnabled.value) captureCue.open();
     try {
       await initWorkers();
       frameSource = await createScreenShareSource();
@@ -898,6 +913,7 @@ export function useEchoScanner() {
     previewVideoEl,
     videoDuration,
     debugMode,
+    captureCueEnabled,
     pendingCount,
     timings,
     debugRegions: DEBUG_REGIONS,

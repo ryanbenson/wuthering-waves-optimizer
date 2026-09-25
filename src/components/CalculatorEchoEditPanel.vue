@@ -88,6 +88,10 @@
         </button>
       </div>
 
+      <div v-if="referenceImageUrl" class="px-4 pt-3 shrink-0">
+        <EchoScanReferenceImage :src="referenceImageUrl" />
+      </div>
+
       <EchoEditFields :target="target" />
     </div>
   </template>
@@ -104,6 +108,7 @@ import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEch
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import EchoEditFields from "./EchoEditFields.vue";
 import EchoPickerDialog from "./EchoPickerDialog.vue";
+import EchoScanReferenceImage from "./EchoScanReferenceImage.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
 
@@ -113,6 +118,8 @@ const props = defineProps<{
   character?: string;
   index?: number;
   isOpen: boolean;
+  /** The scanner's in-game capture, when opened from scan results. */
+  referenceImageUrl?: string | null;
 }>();
 
 const emit = defineEmits<{

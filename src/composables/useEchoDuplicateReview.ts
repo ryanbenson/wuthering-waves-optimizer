@@ -15,7 +15,7 @@ import { computed, ref } from "vue";
 import { mapParsedEchoes, type MappedEcho, type ParsedEcho } from "../echoes/parsedEchoMapping";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { getEchoIdentityKey } from "../utils/echoIdentity";
+import { buildIdentityKeySet, getEchoIdentityKey } from "../utils/echoIdentity";
 
 export type DuplicateReviewItem = {
   index: number;
@@ -28,8 +28,8 @@ export function useEchoDuplicateReview(options: {
   /** Re-read on every call rather than captured once, since callers pass these as prop-backed getters. */
   inventoryOnly: () => boolean;
   character: () => string;
-  /** Called once an import/scan has been fully applied — the caller closes its own modal in response. */
-  onFinalized: () => void;
+  /** Called once an import/scan has been fully applied, with how many echoes were saved to the inventory — the caller closes its own modal in response. */
+  onFinalized: (savedCount: number) => void;
 }) {
   const characterStore = useCharacterStore();
   const inventoryStore = useInventoryStore();
@@ -45,27 +45,27 @@ export function useEchoDuplicateReview(options: {
     duplicateReviewItems.value = [];
   }
 
-  function isExactInventoryMatch(echo: MappedEcho) {
+  function isExactInventoryMatch(echo: MappedEcho, inventoryKeys: Set<string>) {
     if (!echo.echo) {
       return false;
     }
-    const identityKey = getEchoIdentityKey(echo);
-    return inventoryStore.echoes.some(
-      (inventoryEcho: MappedEcho) => getEchoIdentityKey(inventoryEcho) === identityKey,
-    );
+    return inventoryKeys.has(getEchoIdentityKey(echo));
   }
 
   async function saveSelectedToInventory(
     echoes: MappedEcho[],
     inventoryEchoIndexes: Set<number>,
   ) {
+    let savedCount = 0;
     for (const index of inventoryEchoIndexes) {
       const echo = echoes[index];
       if (!echo?.echoId) {
         continue;
       }
       await inventoryStore.saveEcho(echo);
+      savedCount++;
     }
+    return savedCount;
   }
 
   async function finalizeImport(
@@ -73,10 +73,10 @@ export function useEchoDuplicateReview(options: {
     inventoryEchoIndexes: Set<number> | null,
   ) {
     if (options.inventoryOnly()) {
-      if (inventoryEchoIndexes) {
-        await saveSelectedToInventory(echoes, inventoryEchoIndexes);
-      }
-      options.onFinalized();
+      const savedCount = inventoryEchoIndexes
+        ? await saveSelectedToInventory(echoes, inventoryEchoIndexes)
+        : 0;
+      options.onFinalized(savedCount);
       return;
     }
 
@@ -94,6 +94,7 @@ export function useEchoDuplicateReview(options: {
     await inventoryStore.deleteEquippedPreset(character);
     await inventoryStore.removeCharacterFromAllEquipped(character);
 
+    let savedCount = 0;
     if (inventoryEchoIndexes) {
       for (const index of inventoryEchoIndexes) {
         const echo = characterEchoes[index];
@@ -101,13 +102,14 @@ export function useEchoDuplicateReview(options: {
           continue;
         }
         await inventoryStore.saveEcho(echo);
+        savedCount++;
         const equippedData: Record<string, number> = {};
         equippedData[character] = index;
         await inventoryStore.setEquippedData(echo.echoId, equippedData);
       }
     }
 
-    options.onFinalized();
+    options.onFinalized(savedCount);
   }
 
   async function handleApplyToCharacterOnly() {
@@ -140,8 +142,9 @@ export function useEchoDuplicateReview(options: {
       return;
     }
 
+    const inventoryKeys = buildIdentityKeySet(inventoryStore.echoes);
     const reviewItems: DuplicateReviewItem[] = echoes.map((echo, index) => {
-      const isDuplicate = isExactInventoryMatch(echo);
+      const isDuplicate = isExactInventoryMatch(echo, inventoryKeys);
       return {
         index,
         echo,
