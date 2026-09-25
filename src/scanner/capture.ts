@@ -91,7 +91,7 @@ export async function createScreenShareSource(): Promise<FrameSource> {
 
   function start(onTick: (tick: FrameTick) => void | Promise<void>) {
     intervalId = setInterval(() => {
-      if (ticking) return; // skip a tick if OCR from the previous one is still running
+      if (ticking) return; // skip a tick if the previous one's (async) onTick hasn't returned yet
       ticking = true;
       void Promise.resolve(onTick({ frameIndex: frameIndex++, totalFrames: null })).finally(
         () => {

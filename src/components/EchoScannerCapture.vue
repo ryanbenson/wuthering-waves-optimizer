@@ -196,6 +196,10 @@
             <div class="stat-title text-xs">Skipped</div>
             <div class="stat-value text-lg">{{ skippedCount }}</div>
           </div>
+          <div class="stat place-items-center py-2 px-4">
+            <div class="stat-title text-xs">Reading</div>
+            <div class="stat-value text-lg">{{ pendingCount }}</div>
+          </div>
         </div>
         <progress
           v-if="progress.total"
@@ -222,6 +226,7 @@
           stops the moment you click Stop (or close this window).
         </p>
         <button class="btn" @click="scanner.stop()">Stop scanning</button>
+        <EchoScannerTimings v-if="scanner.debugMode.value" :timings="timings" />
       </div>
     </template>
 
@@ -230,7 +235,13 @@
         {{ candidates.length }} echo{{ candidates.length === 1 ? "" : "es" }}
         captured
       </h2>
-      <p v-if="!candidates.length" class="mb-4 opacity-80">
+      <p v-if="status === 'stopping'" class="mb-4 flex items-center gap-2 text-sm">
+        <span class="loading loading-spinner loading-sm"></span>
+        Capture stopped — still reading {{ pendingCount }} more
+        echo{{ pendingCount === 1 ? "" : "es" }}…
+      </p>
+      <EchoScannerTimings v-if="scanner.debugMode.value" :timings="timings" class="mb-4" />
+      <p v-if="!candidates.length && status === 'stopped'" class="mb-4 opacity-80">
         Nothing was captured. Try again and make sure the Echo detail panel
         (right side of the Echo Management screen) is visible while you
         click through echoes.
@@ -352,10 +363,10 @@
         </div>
       </div>
       <div class="flex gap-2 justify-end">
-        <button class="btn" @click="handleRetry">Scan again</button>
+        <button class="btn" :disabled="status === 'stopping'" @click="handleRetry">Scan again</button>
         <button
           class="btn btn-primary"
-          :disabled="!candidates.length"
+          :disabled="!candidates.length || status === 'stopping'"
           @click="handleContinue">
           Continue
         </button>
@@ -370,6 +381,7 @@ import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { echoSetImageMap } from "../echoes/stats";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
+import EchoScannerTimings from "./EchoScannerTimings.vue";
 import type { ScanCandidate, RegionFrac } from "../scanner/types";
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
@@ -401,6 +413,8 @@ const {
   unsupportedAspect,
   previewVideoEl,
   videoDuration,
+  pendingCount,
+  timings,
 } = scanner;
 
 const fileInput = ref<HTMLInputElement | null>(null);
