@@ -27,6 +27,7 @@ import {
 import { computeFingerprint, STATS_FINGERPRINT_GRID } from "../scanner/fingerprint";
 import { createStableFrameDetector } from "../scanner/stability";
 import { createDedupeSet, computeSignature } from "../scanner/dedupe";
+import { createSerialQueue, type SerialQueue } from "../scanner/queue";
 import { parseEchoCandidate, resolveEchoByNameAndCost } from "../scanner/parse";
 import {
   PANEL_BOX,
@@ -106,9 +107,167 @@ export type ScannerStatus =
   | "trimming" // a video file is open and previewable, waiting for the user to confirm a range/rate and start scanning
   | "starting"
   | "running"
-  | "stopping"
+  | "stopping" // capture has ended; still OCR'ing whatever was queued before it did
   | "stopped"
   | "error";
+
+/**
+ * A video file can simply wait for OCR to catch up, so its seek loop pauses
+ * once this many snapshots are queued — keeps memory bounded on a long clip.
+ * A live share can't wait (the user is still clicking), so it has no cap;
+ * each snapshot is only a few MB of small crops. See docs/scanner.md's
+ * "Capture queue".
+ */
+const VIDEO_MAX_PENDING = 3;
+
+/**
+ * Every crop one candidate could need, all drawn from the *same* frame at
+ * the tick it settled — see snapshotFrame. The set icon and fallback crops
+ * are only sometimes used, but grabbing them later would read whatever
+ * echo the user has clicked to since.
+ */
+type FrameSnapshot = {
+  primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues", ImageBitmap>;
+  setIcon: ImageBitmap;
+  /** substatBlock + sub0..sub4 — the per-row/block fallback passes. */
+  fallback: Record<string, ImageBitmap>;
+  debug?: Awaited<ReturnType<typeof captureDebugCropsFromVideo>>;
+};
+
+type ScanJob = {
+  snapshot: Promise<FrameSnapshot>;
+  capturedAt: number;
+  session: number;
+};
+
+/** Running min/avg/max of a series of millisecond samples — for the debug view's timing readout. */
+type TimingStat = { count: number; avgMs: number; maxMs: number };
+
+export type ScannerTimings = {
+  /** Gap between live ticks while this page was visible vs. hidden (e.g. the game full screen on top). The live timer targets 125ms; a hidden page's timers get throttled by the browser. */
+  tickGap: { visible: TimingStat; hidden: TimingStat };
+  /** Settle → queued job starts processing. */
+  queueWait: TimingStat;
+  /** One job's OCR + matching + parsing. */
+  process: TimingStat;
+  /** Most jobs queued at once this session. */
+  maxPending: number;
+};
+
+function emptyStat(): TimingStat {
+  return { count: 0, avgMs: 0, maxMs: 0 };
+}
+
+function recordStat(stat: TimingStat, ms: number) {
+  stat.avgMs = (stat.avgMs * stat.count + ms) / (stat.count + 1);
+  stat.count++;
+  stat.maxMs = Math.max(stat.maxMs, ms);
+}
+
+function emptyTimings(): ScannerTimings {
+  return {
+    tickGap: { visible: emptyStat(), hidden: emptyStat() },
+    queueWait: emptyStat(),
+    process: emptyStat(),
+    maxPending: 0,
+  };
+}
+
+function closeSnapshot(snapshot: FrameSnapshot) {
+  // Transferred bitmaps are already detached; close() on them is a no-op.
+  for (const bitmap of Object.values(snapshot.primary)) bitmap.close();
+  for (const bitmap of Object.values(snapshot.fallback)) bitmap.close();
+  snapshot.setIcon.close();
+}
+
+/**
+ * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry, plus a
+ * whole-frame snapshot to draw all of them on top of as one reviewable
+ * image (EchoScannerCapture.vue), from the current (stable,
+ * about-to-be-scanned) frame. Independent of the OCR-dedicated
+ * grabRegionBitmap calls in snapshotFrame — these are their own draws, so
+ * nothing here competes with what the worker actually OCR's. Text is
+ * filled in by the caller once `texts`/`matchedSet` are known; `panel`
+ * (fingerprint-only, not OCR'd or matched) keeps a placeholder.
+ *
+ * `setIcon`'s thumbnail is the actual circularly-masked crop
+ * (grabCircularMaskedBitmap) that gets sent to matchSetFirst, not the
+ * plain rectangle every other region shows — the mask is the fix for
+ * the background-color contamination bug (see capture.ts's doc
+ * comment), so the debug view should make it visible that it's really
+ * being applied, not just describe it.
+ *
+ * Every draw here happens synchronously on call (before any await), so
+ * snapshotFrame can start this alongside its own grabs and get the same frame.
+ */
+async function captureDebugCropsFromVideo(videoEl: HTMLVideoElement) {
+  const [crops, fullFrame] = await Promise.all([
+    Promise.all(
+      DEBUG_REGIONS.map(async ({ key, label, region }) => {
+        if (key === "setIcon") {
+          const masked = await grabCircularMaskedBitmap(videoEl, region);
+          const canvas = document.createElement("canvas");
+          canvas.width = masked.width;
+          canvas.height = masked.height;
+          const ctx = canvas.getContext("2d");
+          // A mid-gray backdrop so the masked-out (transparent) corners
+          // are visibly different from the page background either theme.
+          if (ctx) {
+            ctx.fillStyle = "#80808080";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(masked, 0, 0);
+          }
+          masked.close();
+          return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
+        }
+        const { bitmap, dataUrl } = await grabRegionWithPreview(videoEl, region);
+        bitmap.close();
+        return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
+      }),
+    ),
+    grabFullFrameSnapshot(videoEl),
+  ]);
+  return { crops, fullFrame };
+}
+
+/**
+ * Starts every crop a candidate could need from the video's *current*
+ * frame. Each grab* helper in capture.ts draws to its own canvas
+ * synchronously before its first await, so starting them all in this one
+ * synchronous call pins every crop to the same frame, even though the
+ * returned promise settles later. The caller must not await anything
+ * between the stability check and this call.
+ */
+function snapshotFrame(videoEl: HTMLVideoElement, withDebug: boolean): Promise<FrameSnapshot> {
+  const primary = Promise.all([
+    grabRegionBitmap(videoEl, NAME_BLOCK),
+    grabRegionBitmap(videoEl, MAIN_STAT_ROW),
+    grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
+    grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN),
+    grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN),
+  ]);
+  const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
+  const fallback = Promise.all([
+    grabRegionBitmap(videoEl, SUBSTAT_BLOCK),
+    ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
+  ]);
+  const debug = withDebug ? captureDebugCropsFromVideo(videoEl) : Promise.resolve(undefined);
+
+  return Promise.all([primary, setIcon, fallback, debug]).then(
+    ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops]) => {
+      const fallbackBitmaps: Record<string, ImageBitmap> = { substatBlock: block };
+      rows.forEach((bitmap, i) => {
+        fallbackBitmaps[`sub${i}`] = bitmap;
+      });
+      return {
+        primary: { name, main, secondary, substatLabels, substatValues },
+        setIcon: setIconBitmap,
+        fallback: fallbackBitmaps,
+        debug: debugCrops,
+      };
+    },
+  );
+}
 
 export function useEchoScanner() {
   const status = ref<ScannerStatus>("idle");
@@ -130,6 +289,10 @@ export function useEchoScanner() {
    * sessions don't need it.
    */
   const debugMode = ref(false);
+  /** Settled echoes captured but not yet OCR'd (queued + in flight). */
+  const pendingCount = ref(0);
+  /** Tick/queue/OCR timings for the debug view — see ScannerTimings. */
+  const timings = ref<ScannerTimings>(emptyTimings());
 
   const reviewNeededCount = computed(
     () =>
@@ -150,6 +313,26 @@ export function useEchoScanner() {
   let setWorkerReady: Promise<void> | null = null;
   const stability = createStableFrameDetector();
   const dedupe = createDedupeSet();
+  /**
+   * Bumped whenever a session is reset or aborted, so a job still in
+   * flight from an older session can tell it's stale and drop its result.
+   */
+  let session = 0;
+  let lastTickAt: number | null = null;
+  // A fresh queue per session: aborting terminates the OCR worker, which
+  // can leave the in-flight job's promise unresolved forever — it must not
+  // block the next session's queue.
+  let queue: SerialQueue<ScanJob> = createScanQueue();
+
+  function createScanQueue() {
+    return createSerialQueue<ScanJob>(processJob, {
+      onDiscard: (job) => void job.snapshot.then(closeSnapshot, () => {}),
+      onPendingChange: (pending) => {
+        pendingCount.value = pending;
+        if (pending > timings.value.maxPending) timings.value.maxPending = pending;
+      },
+    });
+  }
 
   // Usage analytics (Umami, see utils/analytics.ts) — one "scanner-started"
   // and at most one "scanner-finished" per scan session. Mode/outcome/timing
@@ -193,6 +376,12 @@ export function useEchoScanner() {
     errorMessage.value = null;
     unsupportedAspect.value = false;
     stability.reset();
+    session++;
+    queue.clear();
+    queue = createScanQueue();
+    pendingCount.value = 0;
+    timings.value = emptyTimings();
+    lastTickAt = null;
   }
 
   async function initWorkers() {
@@ -256,23 +445,22 @@ export function useEchoScanner() {
   }
 
   /**
-   * Shared plumbing for both set-matching calls below: grab and circularly
-   * mask the icon crop (see capture.ts's grabCircularMaskedBitmap — the
-   * worker's own black-only masking is wrong for this scanner's actual
-   * game-UI background, so the crop is pre-masked before it ever reaches
-   * the worker), send it as the source image, then post whichever match
+   * Shared plumbing for both set-matching calls below: send the snapshot's
+   * circularly-masked icon crop (see capture.ts's grabCircularMaskedBitmap
+   * — the worker's own black-only masking is wrong for this scanner's
+   * actual game-UI background, so the crop is pre-masked before it ever
+   * reaches the worker) as the source image, then post whichever match
    * message the caller wants against it. setCoords covers the whole
    * already-cropped, already-masked bitmap (no further cropping needed
    * from the worker's own — now effectively no-op for this path —
-   * masking pass).
+   * masking pass). Transfers maskedBitmap to the worker.
    */
   async function runSetMatch(
-    videoEl: HTMLVideoElement,
+    maskedBitmap: ImageBitmap,
     message: { type: "matchSetFirst" | "matchSet"; data: Record<string, unknown> },
   ): Promise<string | null> {
     if (!setWorker) return null;
     await setWorkerReady;
-    const maskedBitmap = await grabCircularMaskedBitmap(videoEl, SET_ICON_BOX);
     const setCoords = { x: 0, y: 0, width: maskedBitmap.width, height: maskedBitmap.height };
     return new Promise<string | null>((resolve) => {
       const readyHandler = (e: MessageEvent) => {
@@ -306,8 +494,8 @@ export function useEchoScanner() {
    * file's SCANNER_SET_MATCH_WEIGHTS doc comment and docs/scanner.md's
    * "Echo identification" section for why this stopped being primary.
    */
-  async function matchSetIcon(videoEl: HTMLVideoElement): Promise<string | null> {
-    return runSetMatch(videoEl, {
+  async function matchSetIcon(maskedBitmap: ImageBitmap): Promise<string | null> {
+    return runSetMatch(maskedBitmap, {
       type: "matchSetFirst",
       data: { allSetImageUrls: echoSetImageMap, setMatchWeights: SCANNER_SET_MATCH_WEIGHTS },
     });
@@ -324,12 +512,12 @@ export function useEchoScanner() {
    * (usually) visually distinct, since the echo itself is already resolved
    * by name.
    */
-  async function matchSetNarrowed(videoEl: HTMLVideoElement, candidateSets: string[]): Promise<string | null> {
+  async function matchSetNarrowed(maskedBitmap: ImageBitmap, candidateSets: string[]): Promise<string | null> {
     const setImageUrls: Record<string, string> = {};
     for (const key of candidateSets) {
       if (echoSetImageMap[key]) setImageUrls[key] = echoSetImageMap[key];
     }
-    return runSetMatch(videoEl, { type: "matchSet", data: { possibleSets: candidateSets, setImageUrls } });
+    return runSetMatch(maskedBitmap, { type: "matchSet", data: { possibleSets: candidateSets, setImageUrls } });
   }
 
   /**
@@ -349,7 +537,7 @@ export function useEchoScanner() {
    * information now that there's more than one path.
    */
   async function resolveEchoIdentity(
-    videoEl: HTMLVideoElement,
+    setIconBitmap: ImageBitmap,
     nameText: string,
     secondaryStatText: string,
   ): Promise<{ preResolvedEcho: string | null; matchedSet: string | null; debugLabel: string }> {
@@ -366,7 +554,7 @@ export function useEchoScanner() {
             : "Resolved by name (no set on file for this echo)",
         };
       }
-      const narrowedSet = await matchSetNarrowed(videoEl, byName.candidateSets);
+      const narrowedSet = await matchSetNarrowed(setIconBitmap, byName.candidateSets);
       return {
         preResolvedEcho: byName.echo,
         matchedSet: narrowedSet,
@@ -379,7 +567,7 @@ export function useEchoScanner() {
     // Name+cost couldn't confidently resolve an echo at all — fall back to
     // the old set-icon-first path (full 30-set image match, then name
     // breaks ties within that set).
-    const fallbackSet = await matchSetIcon(videoEl);
+    const fallbackSet = await matchSetIcon(setIconBitmap);
     return {
       preResolvedEcho: null,
       matchedSet: fallbackSet,
@@ -389,53 +577,24 @@ export function useEchoScanner() {
     };
   }
 
-  /**
-   * Grabs a labeled crop thumbnail for every DEBUG_REGIONS entry, plus a
-   * whole-frame snapshot to draw all of them on top of as one reviewable
-   * image (EchoScannerCapture.vue), from the current (stable,
-   * about-to-be-scanned) frame. Independent of the OCR-dedicated
-   * grabRegionBitmap calls in handleTick — these are their own draws, so
-   * nothing here competes with what the worker actually OCR's. Text is
-   * filled in by the caller once `texts`/`matchedSet` are known; `panel`
-   * (fingerprint-only, not OCR'd or matched) keeps a placeholder.
-   *
-   * `setIcon`'s thumbnail is the actual circularly-masked crop
-   * (grabCircularMaskedBitmap) that gets sent to matchSetFirst, not the
-   * plain rectangle every other region shows — the mask is the fix for
-   * the background-color contamination bug (see capture.ts's doc
-   * comment), so the debug view should make it visible that it's really
-   * being applied, not just describe it.
-   */
-  async function captureDebugCrops(videoEl: HTMLVideoElement) {
-    const [crops, fullFrame] = await Promise.all([
-      Promise.all(
-        DEBUG_REGIONS.map(async ({ key, label, region }) => {
-          if (key === "setIcon") {
-            const masked = await grabCircularMaskedBitmap(videoEl, region);
-            const canvas = document.createElement("canvas");
-            canvas.width = masked.width;
-            canvas.height = masked.height;
-            const ctx = canvas.getContext("2d");
-            // A mid-gray backdrop so the masked-out (transparent) corners
-            // are visibly different from the page background either theme.
-            if (ctx) {
-              ctx.fillStyle = "#80808080";
-              ctx.fillRect(0, 0, canvas.width, canvas.height);
-              ctx.drawImage(masked, 0, 0);
-            }
-            return { key, label, dataUrl: canvas.toDataURL("image/png"), text: "(image-matched, not OCR'd)" };
-          }
-          const { dataUrl } = await grabRegionWithPreview(videoEl, region);
-          return { key, label, dataUrl, text: key === "panel" ? "(image-matched, not OCR'd)" : "" };
-        }),
-      ),
-      grabFullFrameSnapshot(videoEl),
-    ]);
-    return { crops, fullFrame };
+  function recordTickGap() {
+    const now = performance.now();
+    if (lastTickAt !== null) {
+      const hidden = typeof document !== "undefined" && document.visibilityState === "hidden";
+      recordStat(hidden ? timings.value.tickGap.hidden : timings.value.tickGap.visible, now - lastTickAt);
+    }
+    lastTickAt = now;
   }
 
-  async function handleTick() {
+  /**
+   * The per-tick gate: fingerprint the frame, and once it settles on a new
+   * echo, snapshot every crop from that frame and queue it. Never awaits
+   * OCR, so the live tick loop keeps sampling while earlier echoes are
+   * still being read — see docs/scanner.md's "Capture queue".
+   */
+  function handleTick() {
     if (!frameSource) return;
+    recordTickGap();
     const videoEl = frameSource.videoEl;
     const frame = frameSource.frameSize();
     if (frame.width === 0 || frame.height === 0) return;
@@ -459,33 +618,34 @@ export function useEchoScanner() {
     const event = stability.observe(fingerprint);
     if (event !== "stable-novel") return;
 
+    // No await between observe() and here — the snapshot must be this frame.
+    const snapshot = snapshotFrame(videoEl, debugMode.value);
+    // processJob awaits it later; this only stops an early rejection from
+    // being reported as unhandled while the job waits its turn.
+    snapshot.catch(() => {});
+    // Committed at capture, not after OCR: the next ticks must see this
+    // echo as already taken, or it would be queued again on every tick
+    // until its OCR finished.
+    stability.commitScan(fingerprint);
+    queue.enqueue({ snapshot, capturedAt: performance.now(), session });
+  }
+
+  /** OCR + match + parse one queued snapshot, then add it to the candidate list. Runs one at a time, in capture order (see queue.ts). */
+  async function processJob(job: ScanJob) {
+    const snapshot = await job.snapshot;
+    if (job.session !== session) {
+      closeSnapshot(snapshot);
+      return;
+    }
+    const startedAt = performance.now();
+    recordStat(timings.value.queueWait, startedAt - job.capturedAt);
     try {
-      const [nameBitmap, mainBitmap, secondaryBitmap, labelsBitmap, valuesBitmap] = await Promise.all([
-        grabRegionBitmap(videoEl, NAME_BLOCK),
-        grabRegionBitmap(videoEl, MAIN_STAT_ROW),
-        grabRegionBitmap(videoEl, SECONDARY_STAT_ROW),
-        grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN),
-        grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN),
-      ]);
+      const { primary, fallback, debug } = snapshot;
+      const { texts, lines } = await recognizeCandidate({ ...primary });
+      if (job.session !== session) return;
 
-      // Debug crops don't depend on OCR text, so they still run in
-      // parallel with it — but echo/set identity now does (name+cost
-      // matching needs the name and secondary-stat text first, and only
-      // *sometimes* needs a follow-up image-match call after that), so it
-      // can no longer run alongside OCR the way the old unconditional
-      // matchSetIcon call did. See resolveEchoIdentity's doc comment.
-      const [{ texts, lines }, debugCrops] = await Promise.all([
-        recognizeCandidate({
-          name: nameBitmap,
-          main: mainBitmap,
-          secondary: secondaryBitmap,
-          substatLabels: labelsBitmap,
-          substatValues: valuesBitmap,
-        }),
-        debugMode.value ? captureDebugCrops(videoEl) : Promise.resolve(undefined),
-      ]);
-
-      const identity = await resolveEchoIdentity(videoEl, texts.name ?? "", texts.secondary ?? "");
+      const identity = await resolveEchoIdentity(snapshot.setIcon, texts.name ?? "", texts.secondary ?? "");
+      if (job.session !== session) return;
 
       const candidateInput = {
         nameText: texts.name ?? "",
@@ -504,23 +664,16 @@ export function useEchoScanner() {
       // see its doc comment and docs/scanner.md's "Substat OCR".
       if (parsed.slot.substats.some((s) => !s.subStat)) {
         const substatKeys = SUBSTAT_ROWS.map((_, i) => `sub${i}`);
-        const [blockBitmap, ...rowBitmaps] = await Promise.all([
-          grabRegionBitmap(videoEl, SUBSTAT_BLOCK),
-          ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region)),
-        ]);
-        const fallbackRegions: Record<string, ImageBitmap> = { substatBlock: blockBitmap };
-        substatKeys.forEach((key, i) => {
-          fallbackRegions[key] = rowBitmaps[i];
-        });
-        const fallback = await recognizeCandidate(fallbackRegions);
-        Object.assign(texts, fallback.texts);
+        const fallbackResult = await recognizeCandidate({ ...fallback });
+        if (job.session !== session) return;
+        Object.assign(texts, fallbackResult.texts);
         parsed = parseEchoCandidate({
           ...candidateInput,
-          substatTexts: substatKeys.map((key) => fallback.texts[key] ?? ""),
-          substatBlockText: fallback.texts.substatBlock ?? "",
+          substatTexts: substatKeys.map((key) => fallbackResult.texts[key] ?? ""),
+          substatBlockText: fallbackResult.texts.substatBlock ?? "",
         });
       }
-      stability.commitScan(fingerprint);
+      recordStat(timings.value.process, performance.now() - startedAt);
 
       if (parsed.needsMainStatSelection) {
         skippedCount.value++;
@@ -543,21 +696,24 @@ export function useEchoScanner() {
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,
-        debugCrops: debugCrops?.crops.map((crop) => ({
+        debugCrops: debug?.crops.map((crop) => ({
           ...crop,
           text: crop.key === "setIcon" ? identity.debugLabel : (texts[crop.key] ?? crop.text),
         })),
-        debugFullFrame: debugCrops?.fullFrame,
+        debugFullFrame: debug?.fullFrame,
       });
     } catch (err) {
       // One bad OCR shouldn't kill the whole session — surface it via the
       // low-confidence path implicitly (candidate just won't appear) and
       // keep going. Log for diagnosis.
       console.error("Echo scanner: failed to process a candidate frame", err);
+    } finally {
+      closeSnapshot(snapshot);
     }
   }
 
-  function releaseResources() {
+  /** Ends capture (and with it the screen share / video file) without touching the OCR workers — queued snapshots can still finish. */
+  function releaseCapture() {
     frameSource?.stop();
     frameSource = null;
     if (openVideoHandle) {
@@ -566,6 +722,9 @@ export function useEchoScanner() {
     }
     previewVideoEl.value = null;
     videoDuration.value = null;
+  }
+
+  function releaseWorkers() {
     ocrWorker?.postMessage({ type: "terminate" });
     ocrWorker?.terminate();
     ocrWorker = null;
@@ -573,10 +732,35 @@ export function useEchoScanner() {
     setWorker = null;
   }
 
-  function stop() {
-    trackSessionEnd("stopped");
+  /**
+   * Stops capturing immediately, then finishes OCR'ing whatever was
+   * already queued (status "stopping") before releasing the workers.
+   * Shared by the Stop button and a video scan reaching its end; a no-op
+   * if a finish is already under way.
+   */
+  async function finishSession(outcome: "completed" | "stopped") {
+    if (status.value === "stopping" || status.value === "stopped") return;
+    trackSessionEnd(outcome);
     status.value = "stopping";
-    releaseResources();
+    releaseCapture();
+    const finishing = session;
+    await queue.onIdle();
+    if (finishing !== session) return; // aborted or restarted meanwhile
+    releaseWorkers();
+    status.value = "stopped";
+  }
+
+  function stop() {
+    return finishSession("stopped");
+  }
+
+  /** Tears everything down right away, dropping queued snapshots — for when the component itself is going away. */
+  function abort() {
+    trackSessionEnd("stopped");
+    session++;
+    queue.clear();
+    releaseCapture();
+    releaseWorkers();
     status.value = "stopped";
   }
 
@@ -591,7 +775,7 @@ export function useEchoScanner() {
       trackSessionStart("live");
       frameSource.start((tick) => {
         progress.value = { current: tick.frameIndex, total: null };
-        return handleTick();
+        handleTick();
       });
     } catch (err) {
       trackError("live", "start", err);
@@ -652,11 +836,12 @@ export function useEchoScanner() {
       });
       await frameSource.start(async (tick) => {
         progress.value = { current: tick.frameIndex, total: tick.totalFrames };
-        await handleTick();
+        handleTick();
+        // Unlike a live share, a video can wait for OCR to catch up.
+        await queue.waitForRoom(VIDEO_MAX_PENDING);
       });
-      trackSessionEnd("completed");
-      releaseResources();
-      status.value = "stopped";
+      // No-op if Stop was already pressed mid-scan (it owns the finish then).
+      await finishSession("completed");
     } catch (err) {
       trackError("video", trackedMode ? "scan" : "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
@@ -694,8 +879,10 @@ export function useEchoScanner() {
   }
 
   onBeforeUnmount(() => {
-    if (status.value === "running" || status.value === "starting" || status.value === "trimming") {
-      stop();
+    // Includes "stopping": a Stop that's still draining the queue has
+    // nowhere to deliver its results once the component is gone.
+    if (["running", "starting", "trimming", "stopping"].includes(status.value)) {
+      abort();
     }
   });
 
@@ -711,6 +898,8 @@ export function useEchoScanner() {
     previewVideoEl,
     videoDuration,
     debugMode,
+    pendingCount,
+    timings,
     debugRegions: DEBUG_REGIONS,
     isEchoNameKnown: (key: string) => Boolean(mainEchoesData?.[key]),
     startLive,

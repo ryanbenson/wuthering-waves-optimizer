@@ -14,8 +14,10 @@ capture.ts (FrameSource: live share or uploaded video)
   → fingerprint.ts + stability.ts: cheap "did the panel settle on
     something new?" gate — no OCR yet (coarse panel fingerprint AND a
     fine stat-rows fingerprint; see "Change detection" below)
-  → on settle: grab name + main-stat + fixed-secondary + the substat
-    label column + the substat value column
+  → on settle: snapshot every crop from that one frame (name, main-stat,
+    fixed-secondary, both substat columns, set icon, fallback rows/block)
+    and queue it — see "Capture queue" below; sampling never pauses for OCR
+  → queue.ts runs one snapshot at a time, in capture order:
       → echoScanner.worker.ts: OCR each crop separately (tesseract.js,
         self-hosted), returning text plus each line's vertical position
       → echoParser.worker.ts: matchSetFirst (existing set-icon matcher, reused)
@@ -80,6 +82,7 @@ shape (an `HTMLVideoElement` plus a `start`/`stop`). Only *how a tick is
 driven* differs:
 
 - **Live** (`getDisplayMedia`): a fixed ~8fps timer over real elapsed time.
+  The tick itself never waits on OCR (see "Capture queue").
 - **Video file**: a deterministic **seek-and-capture** loop — step
   `currentTime` forward, await `seeked`, capture, repeat — decoupled from
   real time. This is faster than live (a ~49s clip becomes ~100 sequential
@@ -114,6 +117,60 @@ rather than scanning a whole file blind:
 check, that Tacet-Lab didn't support video upload at all — it does, and
 this flow was built to match its actual approach once that was corrected.)
 
+## Capture queue: sampling never waits for OCR
+
+Before this, the live tick loop skipped every tick while the previous
+echo was still being OCR'd (one echo is 5-11 OCR crops plus a set-icon
+match, often a couple of seconds). An echo clicked past during that window
+was never seen at all. Real report: 36 echoes clicked every ~5s scanned
+33; clicked every ~2s, only 25.
+
+Now `handleTick` is synchronous. On `stable-novel` it:
+
+1. calls `snapshotFrame`, which starts **every** crop the candidate could
+   need from the current frame: the five primary crops, the masked set
+   icon, the five `SUBSTAT_ROWS` plus `SUBSTAT_BLOCK` fallbacks, and the
+   debug crops if debug mode is on. Each `grab*` helper in `capture.ts`
+   draws to its own canvas synchronously before its first `await`, so
+   starting them all in one synchronous block pins them to the same frame;
+2. calls `stability.commitScan` right away, not after OCR, or the next
+   ticks would queue the same echo again;
+3. enqueues the snapshot on `queue.ts`'s `createSerialQueue`.
+
+`processJob` then OCRs, matches, and parses one snapshot at a time, in
+capture order (the OCR worker already spreads one job's crops over its
+tesseract pool, so running two jobs at once would only split that pool).
+
+This also fixed a mixed-echo bug. The set icon and the fallback crops
+used to be grabbed from the live video *after* the first OCR pass
+returned. If the user had clicked on by then, echo A's name and main
+stat could be paired with echo B's set or substats. The fallback and
+set-icon crops are now always grabbed up front, even though they're
+only sometimes used (unused bitmaps are closed after the job).
+
+Memory: a snapshot is a few MB of small crops. A live share has no cap,
+since the user is still clicking and can't be made to wait. A video file
+can wait, so its seek loop pauses while `VIDEO_MAX_PENDING` (3) snapshots
+are queued.
+
+Stopping: **Stop** (and a video reaching its end) ends capture at once
+(the screen share indicator goes away right then), then status stays
+`stopping` while the queue drains, with a "still reading N more" line in
+the results view. Continue and Scan again are disabled until it finishes.
+Workers are released only after that. Unmounting the component instead
+calls `abort()`: it drops queued snapshots and tears everything down
+immediately. Each session gets a fresh queue and a `session` number, so a
+job still in flight from an aborted session drops its result instead of
+writing into the next one.
+
+Debug mode adds a timing table (`EchoScannerTimings.vue`): the gap between
+live ticks, split by whether the page was visible or hidden (the game full
+screen on top), how long each snapshot waited in the queue, OCR + parse
+time, and the deepest the queue got. The live timer targets 125ms. A
+hidden-page gap near 1000ms means the browser is throttling the timer,
+which is the next thing to fix (driving ticks from a worker timer or
+`MediaStreamTrackProcessor` instead of a main-thread `setInterval`).
+
 ### Cleanup: nothing keeps running once you're done
 
 Nothing here ever leaves the browser (see `EchoScannerCapture.vue`'s
@@ -142,11 +199,12 @@ done. Every capture path releases the same way:
   whether the video finished scanning normally, the user hits Cancel
   during trim, or hits Stop mid-scan.
 - **Component unmount**: `useEchoScanner.ts` registers an `onBeforeUnmount`
-  that calls `stop()` whenever the composable's owning component
+  that calls `abort()` whenever the composable's owning component
   (`EchoScannerCapture.vue`) disappears while a session was still
-  `starting`/`running`/`trimming` — the safety net for "the modal closed
-  out from under an active session," not just the explicit Stop/Cancel
-  buttons.
+  `starting`/`running`/`trimming`/`stopping`. That's the safety net for
+  "the modal closed out from under an active session," not just the
+  explicit Stop/Cancel buttons. Unlike Stop, it doesn't let the capture
+  queue drain first (see "Capture queue").
 - **The `<dialog>` itself**: `EchoScannerModal.vue`/`CalculatorEchoImporter.vue`
   wire `@close` on the `<dialog>` element itself, not just `@click` on the
   backdrop and ✕ button — a real gap found from asking "does this actually
@@ -753,7 +811,8 @@ text, or frames.
 
 `scanner-finished` fires at most once per session: for video, `stop()`
 reports `stopped` and clears the session, so the scan loop's own exit
-afterward doesn't double-report.
+afterward doesn't double-report. `durationSeconds` is measured when
+capture ends, not after the capture queue finishes draining.
 
 ## Extending / debugging
 
@@ -762,7 +821,7 @@ afterward doesn't double-report.
   scanner — fix a mapping bug once, both flows benefit. Don't re-duplicate
   it back into a component.
 - Unit tests: `tests/scanner/*` (fingerprint/stability with synthetic
-  frames, layout at the three measured real resolutions, parse against real
+  frames, the capture queue's ordering/backpressure/clear, layout at the three measured real resolutions, parse against real
   transcripts read off the provided screenshots) and
   `tests/echoes/parsedEchoMapping.test.ts`. There is deliberately no
   end-to-end tesseract-in-CI test — OCR accuracy against real captures is a
