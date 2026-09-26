@@ -24,7 +24,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierSpecialMultiply",
         modifySpecificTalents: [
           "BanishBreakdownFormStage1DMG",
           "BanishBreakdownFormStage2DMG",

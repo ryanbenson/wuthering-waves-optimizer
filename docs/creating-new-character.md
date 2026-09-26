@@ -56,6 +56,8 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
   },
 ```
 
+Every `talentModifierMultiply` source on the same attack (self buffs, resonance chains, rotation buffs) is **summed** before being applied as `MV * (1 + sum)`. If an effect multiplies on top of the other multiplier bonuses in game instead (e.g. Denia S2: `MV * (1 + 150% * Dark Cores) * 1.4`), use `talentModifierSpecialMultiply` — a separate layer applied after, as `* (1 + value)`. Other examples: Qingxiao S3, Mornye S4.
+
 ### Base talent multiplier additional
 
 When you need to add a multiplier to the base talent value (e.g. Changli R5), but it's a straight addition to the multiplier (e.g. Zani S3). Only works with Resonance Chains right now.
