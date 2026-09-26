@@ -31,8 +31,12 @@
     empty rotations list), cutting off exactly the options a first-time
     user needs (Import/List Presets). Teleporting to <body> escapes every
     such ancestor unconditionally instead of depending on how tall
-    surrounding content happens to be. -->
-    <Teleport to="body">
+    surrounding content happens to be. The one exception is a menu inside
+    a modal <dialog> (e.g. CalculatorManageBuilds.vue's Export menu):
+    showModal() puts the dialog in the browser's top layer, above anything
+    in <body> regardless of z-index, so there the menu teleports into the
+    dialog itself instead (see teleportTarget below). -->
+    <Teleport :to="teleportTarget">
       <ul
         v-if="isOpen"
         ref="menuRef"
@@ -73,6 +77,8 @@ const rootRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
 const menuRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
+// Resolved at open time — the nearest open <dialog> ancestor, else <body>.
+const teleportTarget = ref<string | HTMLElement>("body");
 const menuStyle = reactive({ top: "0px", left: "0px" });
 
 const MENU_GAP_PX = 4;
@@ -110,6 +116,8 @@ async function toggleMenu(event: MouseEvent) {
     closeMenu();
     return;
   }
+  teleportTarget.value =
+    rootRef.value?.closest<HTMLDialogElement>("dialog[open]") ?? "body";
   isOpen.value = true;
   await nextTick();
   updatePosition();

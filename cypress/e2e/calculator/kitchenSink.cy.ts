@@ -252,7 +252,8 @@ describe("Calculator Kitchen Sink", () => {
 
     // enable custom buffs giving everything 2 (resist ignore stays 0 —
     // it stacks with resist reduction and would change expected damage.
-    // Total Damage stays 0 so we don't need to re-baseline every expected hit.)
+    // Total Damage and Total DMG (Endgame) stay 0 so we don't need to
+    // re-baseline every expected hit.)
     cy.get('[data-test-calculator-nav="customBuffs"]').click();
     cy.get(".custom__buffs-list .form-control").each(($formControl) => {
       cy.wrap($formControl)
@@ -260,7 +261,8 @@ describe("Calculator Kitchen Sink", () => {
         .then(($input) => {
           const value =
             $input.attr("data-test-custom-buff-resist-ignore") !== undefined ||
-            $input.attr("data-test-custom-buff-total-damage") !== undefined
+            $input.attr("data-test-custom-buff-total-damage") !== undefined ||
+            $input.attr("data-test-custom-buff-total-damage-endgame") !== undefined
               ? "0"
               : "2";
           cy.wrap($input).clear().type(value);

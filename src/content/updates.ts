@@ -12,6 +12,30 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-25",
+    dateLabel: "September 25, 2026",
+    items: [
+      "Update to the Labs feature: Echo Scanner - Added a \"How to scan\" guide, an optional beep each time an echo is captured, and a faster review: results are in two columns with filters (Needs attention, Unknown echo, Already in inventory), each echo is numbered in the order you clicked it, and you can see the in-game capture of each echo (also shown while editing) to fix anything it misread. The save button now tells you exactly what it will do, and short echo names like Jué are recognized more reliably",
+    ],
+  },
+  {
+    date: "2026-09-24",
+    dateLabel: "September 24, 2026",
+    items: [
+      "Added a new toggle on team buffs (classic and v3 UI) to hide impossible buffs. it mostly applies to Weapons right now, so it hides weapons that your teammates cannot use",
+      "On v3 UI, on team buffs, i removed the top level stat aggregations since there are a lot of buffs don't line up really well with that, so it added more confusion than value. i did update the list of active buffs so that they're categorized by \"where they came from\"",
+      "Update to the Labs feature: Echo Scanner - Released two improvements on how it processes and matches echoes and substats. Made a good improvement. The video reference I linked above has processed with 100% accuracy (36 echoes)",
+    ],
+  },
+  {
+    date: "2026-09-23",
+    dateLabel: "September 23, 2026",
+    items: [
+      "New labs feature! Echo scanner! In the Inventory page, there's a new option to Scan Echoes. It allows you to upload a video, or screen share in your browser, and you can click through the game's Inventory > Echoes page one by one to auto-import echoes into the app. You can do that using screen share or record your own video and upload it. And it's all done safely, securly, with privacy-first so none of your data leaves your computer.",
+      "Update to the Teams feature: you can now customize the resist for each element of the team (in case you end up fighting more than one enemy for example)"
+    ],
+  },
+  {
     date: "2026-09-19",
     dateLabel: "September 19, 2026",
     items: [

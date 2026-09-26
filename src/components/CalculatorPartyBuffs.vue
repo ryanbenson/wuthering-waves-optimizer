@@ -50,6 +50,16 @@
           <span class="label-text">Hide unused buffs</span>
         </label>
       </div>
+      <div class="form-control" title="Hide weapon buffs from weapon types your selected teammates can't equip">
+        <label class="label cursor-pointer flex gap-2 justify-start">
+          <input
+            v-model="hideImpossibleBuffs"
+            type="checkbox"
+            class="toggle toggle-primary toggle-sm"
+            data-test-party-buffs-hide-impossible />
+          <span class="label-text">Hide impossible buffs</span>
+        </label>
+      </div>
     </div>
     <div class="teammate_selects flex justify-center">
       <div class="teammate__select rounded-lg bg-base-100 p-4">
@@ -327,7 +337,7 @@ import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
-import { buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
+import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
 
 type PartyBuffEmit = { key: string; data: Record<string, unknown> };
 
@@ -366,6 +376,7 @@ type PartyBuffDef = {
   modifierBasedOn?: string | null;
   realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
+  weaponType?: string;
 };
 
 const buffsByCharacterIndex = buffsByCharacter as Record<string, PartyBuffDef[]>;
@@ -419,6 +430,32 @@ const hideUnusedBuffs = computed({
       teamBuffs: { hideUnused: value },
     });
   },
+});
+
+// Same persisted key and semantics as CalculatorTeamBuffsWorkspace.vue's
+// "Hide impossible" (ADR 0033).
+const hideImpossibleBuffs = computed({
+  get() {
+    return (
+      (currentCharacter.value as { teamBuffs?: { hideImpossible?: boolean } })?.teamBuffs
+        ?.hideImpossible ?? false
+    );
+  },
+  set(value: boolean) {
+    void setCharacterData(props.character, {
+      teamBuffs: { hideImpossible: value },
+    });
+  },
+});
+
+// Weapon types the selected teammates can equip. Empty rules nothing out.
+const teamWeaponTypes = computed(() => {
+  const types = new Set<string>();
+  [selectedCharacter1.value, selectedCharacter2.value].forEach((key) => {
+    const weapon = key ? allCharactersList.find((c) => c.key === key)?.weapon : undefined;
+    if (weapon) types.add(weapon);
+  });
+  return [...types];
 });
 
 function resetSearch() {
@@ -568,7 +605,12 @@ const echoBuffCount = computed(() => getEnabledBuffCount(echoBuffKeys));
 const weaponBuffCount = computed(() => getEnabledBuffCount(weaponBuffKeys));
 
 function buffMatchesFilters(buff: PartyBuffDef): boolean {
-  if (hideUnusedBuffs.value && !buffIsUsed(buff, Boolean(storedTeamBuffs.value[buff.key]?.isEnabled))) {
+  const enabled = Boolean(storedTeamBuffs.value[buff.key]?.isEnabled);
+  if (hideUnusedBuffs.value && !buffIsUsed(buff, enabled)) {
+    return false;
+  }
+  // An enabled buff is never hidden, so it can't keep applying unseen.
+  if (hideImpossibleBuffs.value && !enabled && !buffIsPossibleForTeam(buff, teamWeaponTypes.value)) {
     return false;
   }
   return buffMatchesSearch(buff, searchQuery.value);

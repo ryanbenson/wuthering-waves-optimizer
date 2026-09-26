@@ -31,7 +31,8 @@ describe("Calculator Custom Buffs", () => {
     cy.get(customBuffInputs).each(($input) => {
       const value =
         $input.attr("data-test-custom-buff-resist-ignore") !== undefined ||
-        $input.attr("data-test-custom-buff-total-damage") !== undefined
+        $input.attr("data-test-custom-buff-total-damage") !== undefined ||
+        $input.attr("data-test-custom-buff-total-damage-endgame") !== undefined
           ? "0"
           : "50";
       cy.wrap($input).clear().type(value);

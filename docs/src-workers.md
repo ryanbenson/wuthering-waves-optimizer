@@ -1,11 +1,16 @@
 # `src/workers` — Web workers
 
-Heavy or long-running work runs in **web workers** so the main thread stays responsive. Workers are used for the **optimizer** (combo/loadout evaluation) and for **echo parsing** (OCR and image recognition when importing a character).
+Heavy or long-running work runs in **web workers** so the main thread stays responsive. Workers are used for the **optimizer** (combo/loadout evaluation) and for **echo parsing** (OCR and image recognition, both for the Discord-bot image importer and the live/video echo scanner).
 
 ## Why workers
 
 - **Optimizer**: Evaluates many echo loadouts and damage combinations. Doing this on the main thread would freeze the UI; workers parallelize batches.
-- **Echo parser**: OCR and image matching (e.g. with OffscreenCanvas and pixel comparison) are CPU-heavy. Running them in a worker avoids blocking the UI during import.
+- **Echo parser / scanner**: OCR (tesseract.js) and image matching (OffscreenCanvas + pixel comparison) are CPU-heavy. Running them in a worker avoids blocking the UI during import or while scanning.
+
+Note the two echo-OCR paths differ in **where OCR itself runs**, for historical reasons — `echoParser.worker.ts` predates `echoScanner.worker.ts` and only ever did image matching:
+
+- **Discord-bot image import** (`CalculatorEchoParser.vue`): OCR (tesseract.js `createWorker`) runs **on the main thread**; only echo/set *image* matching is offloaded to `echoParser.worker.ts`. A single 1920x1080 image with 5 echoes is small enough that this hasn't been worth moving.
+- **Screen/video scanner** (`useEchoScanner.ts`, `src/scanner/`): OCR runs **inside `echoScanner.worker.ts`**, since a scanning session can trigger OCR many times per minute and must not compete with the live capture/preview on the main thread. It still calls out to the existing `echoParser.worker.ts` for set-icon matching (`matchSetFirst`) — echo *name* matching is done separately as fuzzy text matching (`src/scanner/parse.ts`), not image matching, since the name is printed as text in the detail panel.
 
 ## Worker files
 
@@ -13,7 +18,8 @@ Heavy or long-running work runs in **web workers** so the main thread stays resp
 |------|--------|
 | **`processor.worker.ts`** | **Optimizer processor.** Receives batches of echo loadouts and optimization context from the main thread. For each loadout: computes echo stats and set bonuses, runs the stats pipeline (base + echo + buffs), then damage for the optimization target (e.g. stat value, single attack, or full rotation). Returns an array of results (loadout + target value). Message flow: `init` → `ready`; `process` (batch + context) → `result` or `error`. Uses `calculator/stats.ts`, `calculator/attacks.ts`, `echoes/stats.ts`, `echoes/sets.ts`, and character/attack data. |
 | **`generator.worker.ts`** | **Optimizer generator.** Generates echo loadout combinations (e.g. from inventory and constraints). Produces batches that the main thread sends to processor workers. Coordinates with the main thread so the UI can show progress (e.g. total combos, processed count). Can run as one of several **shards** (`shardIndex`/`shardCount` in the `start` message), each covering a disjoint slice of the top-level search space — see "Configurable worker count" below. |
-| **`echoParser.worker.ts`** | **Echo import / OCR.** Loads echo reference images and uses image matching (e.g. pixelmatch) to identify echoes and sets from a screenshot. Message flow: `init` (reference images) → `ready`; `parseEcho` / `matchSet` with image data and coords → match results. Uses OffscreenCanvas for processing so the main thread is not blocked. |
+| **`echoParser.worker.ts`** | **Echo import / OCR (image matching).** Loads echo reference images and uses image matching (e.g. pixelmatch) to identify echoes and sets from a screenshot or a live-captured frame. Message flow: `init` (reference images) → `ready`; `parseEcho` / `matchSet` / `matchSetFirst` with image data and coords → match results. Uses OffscreenCanvas for processing so the main thread is not blocked. Used by both `CalculatorEchoParser.vue` (Discord-bot image) and `useEchoScanner.ts` (screen/video scanner, set-icon matching only). |
+| **`echoScanner.worker.ts`** | **Echo scanner OCR.** Runs the actual OCR (a small self-hosted tesseract.js pool, `public/tesseract/`) for the screen/video scanner. Purely mechanical — preprocesses (grayscale, contrast, 3x upscale) and recognizes text from header/stats-block crops it's given; doesn't import any echo game-data modules itself, so it only ever returns raw recognized strings. All name/stat matching and value snapping happens on the main thread in `src/scanner/parse.ts`. Message flow: `init` → `ready`; `recognizeCandidate` (named crop bitmaps) → `candidateResult` (per-crop text, plus each line's vertical bounds so the substat label and value columns can be paired) or `error`; `terminate`. See [scanner.md](./scanner.md). |
 
 ## Conventions
 

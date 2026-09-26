@@ -10,7 +10,7 @@ export {
   mergeMainEchoBuffStats,
 } from "./mainEchoBuffs";
 
-interface Echo {
+export interface Echo {
   key: string;
   name: string;
   class: string;

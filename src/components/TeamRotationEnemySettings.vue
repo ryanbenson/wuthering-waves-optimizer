@@ -77,7 +77,43 @@
         </div>
       </div>
 
-      <div class="data-input--talents mt-4" data-test-team-rotation-enemy-resist>
+      <label class="label cursor-pointer justify-start gap-2 mt-2">
+        <input
+          v-model="isPerAttributeResist"
+          type="checkbox"
+          class="toggle toggle-sm toggle-primary"
+          data-test-team-rotation-enemy-per-attribute-toggle />
+        <span class="label-text">Per-attribute resistance</span>
+      </label>
+      <p class="text-xs opacity-70 mb-4">
+        Use a separate resistance for each attribute, so each teammate's damage
+        is reduced by the resistance matching their own attribute.
+      </p>
+
+      <template v-if="isPerAttributeResist">
+        <div
+          v-for="element in visibleResistElements"
+          :key="element"
+          class="data-input--talents mt-4"
+          :data-test-team-rotation-enemy-element-resist="element">
+          <div class="flex flex-col pb-7 relative">
+            <label class="talent__label">
+              {{ element }} Resistance
+              <span class="text-primary">{{ Math.round(resistForElement(element) * 100) }}%</span>
+            </label>
+            <input
+              :value="resistForElement(element)"
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              class="range range-xs"
+              :data-test-team-rotation-enemy-element-resist-input="element"
+              @input="setResistForElement(element, Number(($event.target as HTMLInputElement).value))" />
+          </div>
+        </div>
+      </template>
+      <div v-else class="data-input--talents mt-4" data-test-team-rotation-enemy-resist>
         <div class="flex flex-col pb-7 relative">
           <label class="talent__label" data-test-team-rotation-enemy-resist-label>
             Enemy Resistance <span class="text-primary">{{ Math.round(enemyResist * 100) }}%</span>
@@ -286,6 +322,7 @@ export interface TeamEnemySettingsValue {
   enemyLevel: number;
   enemyResist: number;
   enemyType: string;
+  enemyResistByElement?: Record<string, number> | null;
   enemyBrowserKey?: string | null;
   strainStacks?: number;
   spectroFrazzleStacks?: number;
@@ -301,7 +338,12 @@ export interface TeamEnemySettingsValue {
 const props = defineProps<{
   modelValue: TeamEnemySettingsValue;
   characterElement?: string;
+  // Distinct attributes of the team's current members — which per-attribute
+  // resistance sliders to show.
+  teamElements?: string[];
 }>();
+
+const ALL_RESIST_ELEMENTS = ["Aero", "Electro", "Fusion", "Glacio", "Havoc", "Physical", "Spectro"];
 
 const emit = defineEmits<{
   "update:modelValue": [value: TeamEnemySettingsValue];
@@ -334,6 +376,44 @@ const enemyResist = computed({
   get: () => props.modelValue.enemyResist ?? 0.1,
   set: (value: number) => patch({ enemyResist: value }),
 });
+
+const isPerAttributeResist = computed({
+  get: () => !!props.modelValue.enemyResistByElement,
+  set: (enabled: boolean) =>
+    patch({ enemyResistByElement: enabled ? seedResistByElement() : null }),
+});
+
+// Only the team's attributes get a slider (all seven while the team is
+// empty), but every attribute is stored so swapping a teammate keeps a value.
+const visibleResistElements = computed(() =>
+  props.teamElements?.length ? props.teamElements : ALL_RESIST_ELEMENTS,
+);
+
+function resistForElement(element: string): number {
+  return props.modelValue.enemyResistByElement?.[element] ?? enemyResist.value;
+}
+
+function setResistForElement(element: string, value: number) {
+  patch({
+    enemyResistByElement: {
+      ...(props.modelValue.enemyResistByElement ?? seedResistByElement()),
+      [element]: value,
+    },
+  });
+}
+
+// Starting values for per-attribute mode: the chosen enemy preset's real
+// per-attribute resistances when there is one, otherwise the current shared
+// value for every attribute (so turning the toggle on changes no numbers).
+function seedResistByElement(entry: Enemy | null = selectedEnemyEntry.value): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const element of ALL_RESIST_ELEMENTS) {
+    out[element] = entry
+      ? getEnemyResistFractionForElement(entry.resist, element)
+      : enemyResist.value;
+  }
+  return out;
+}
 
 const enemyType = computed({
   get: () => props.modelValue.enemyType ?? "Calamity",
@@ -399,11 +479,12 @@ const enemySummaryName = computed(
 );
 
 const enemySummaryMeta = computed(() => {
-  const parts: string[] = [
-    `Lv ${enemyLevel.value}`,
-    `${Math.round(enemyResist.value * 100)}% Resist`,
-    enemyType.value,
-  ];
+  const resistPart = isPerAttributeResist.value
+    ? visibleResistElements.value
+        .map((element) => `${element} ${Math.round(resistForElement(element) * 100)}%`)
+        .join(" / ")
+    : `${Math.round(enemyResist.value * 100)}% Resist`;
+  const parts: string[] = [`Lv ${enemyLevel.value}`, resistPart, enemyType.value];
   return parts.join(" · ");
 });
 
@@ -421,10 +502,16 @@ function onEnemyChosenFromBrowser(key: string) {
   const resist = props.characterElement
     ? getEnemyResistFractionForElement(entry.resist, props.characterElement)
     : 0.1;
+  // A mixed-attribute team (or one already in per-attribute mode) takes the
+  // preset's full per-attribute table; a mono-attribute team keeps the single
+  // shared value, which is already exact for it.
+  const usePerAttribute =
+    isPerAttributeResist.value || new Set(props.teamElements ?? []).size > 1;
   patch({
     enemyBrowserKey: key,
     enemyType: mapEnemyTypeToBrowserCategory(entry.type),
     enemyResist: resist,
+    enemyResistByElement: usePerAttribute ? seedResistByElement(entry) : null,
   });
 }
 

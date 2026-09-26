@@ -20,16 +20,40 @@ function visitWithFlagEnabled() {
 }
 
 // The legacy spec's testAttacks/testStats scope to `.results` — the
-// flag-off split pane. With the flag on, CalculatorLiveResultDetail renders
-// the same CalculatorStats/CalculatorDamages components (and the same
-// `.stat-*`/`.{attack}-dmg` classes) inside the slide-out detail panel
-// instead, so these mirror those helpers scoped there.
+// flag-off split pane. With the flag on, CalculatorLiveResultDetail shows
+// them in tabs instead: the Attacks tab reuses CalculatorDamage rows (same
+// `.{attack}-dmg` classes), but the Overview tab has its own stat rows keyed
+// by `data-test-live-result-stat-row-key`, and only lists the character's own
+// element — so the legacy `.stat-*` selectors are mapped onto those keys here,
+// and other elements' bonuses (covered by calculator/teamBuffs.cy.ts) skipped.
+const OVERVIEW_STAT_KEYS: Record<string, string> = {
+  ".stat-hp": "totalHp",
+  ".stat-atk": "totalAtk",
+  ".stat-def": "totalDef",
+  ".stat-cr": "totalCritRate",
+  ".stat-cd": "totalCritDMG",
+  ".stat-er": "energyRegen",
+  ".stat-basic": "basicAttackDmgBonus",
+  ".stat-heavy": "heavyAttackDmgBonus",
+  ".stat-skill": "resonanceSkillDmgBonus",
+  ".stat-liberation": "resonanceLiberationDmgBonus",
+  ".stat-glacio": "elementDmgBonus", // Carlotta's own element
+  ".stat-healing": "healingBonus",
+};
 function testStatsInDetail(stats: StatTests) {
+  cy.get("[data-test-live-result-detail-tab-overview]").click();
   stats.forEach(({ selector, value }) => {
-    cy.get(`[data-test-live-result-detail] ${selector}`).should("contain.text", value);
+    const key = OVERVIEW_STAT_KEYS[selector];
+    if (!key) return;
+    cy.get(
+      `[data-test-live-result-detail] [data-test-live-result-stat-row-key="${key}"]`,
+    ).should("contain.text", value);
   });
 }
 function testAttacksInDetail(attackTests: AttackTests) {
+  // Attack groups are a collapsed-by-default accordion.
+  cy.get("[data-test-live-result-detail-tab-attacks]").click();
+  cy.get("[data-test-live-result-attacks-expand-all]").click();
   attackTests.forEach(({ selector, values }) => {
     cy.get(`[data-test-live-result-detail] ${selector}`).should(($el) => {
       values.forEach((text) => {
@@ -105,7 +129,7 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.get('[data-test-team-buffs-buff-stacks="PactofNeonlightLeap"]').should("have.value", "50");
   });
 
-  it("supports the redesign's own affordances: search, contribution totals, and the active-buffs tray", () => {
+  it("supports the redesign's own affordances: search and the grouped active-buffs tray", () => {
     visitWithFlagEnabled();
     cy.selectWorkspaceCharacter("Carlotta");
     cy.get('[data-test-calculator-nav="team"]').click();
@@ -116,10 +140,10 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.get('[data-test-team-buffs-buff-enabled="ImpermanenceHeron"]').should("not.exist");
     cy.get('[data-test-team-buffs-workspace-search]').clear();
 
-    // Enabling a buff updates the Team Contribution totals and the active tray.
+    // Enabling a buff lists it in the active tray under its source's group.
     cy.get('[data-test-team-buffs-buff-enabled="FallacyOfNoReturn"]').check();
-    cy.get("[data-test-team-buffs-active-tray]").should("contain.text", "Fallacy of No Return");
-    cy.get("[data-test-team-buffs-contribution-value]").first().should("contain.text", "10%");
+    cy.get('[data-test-team-buffs-tray-group="echo"]').should("contain.text", "Fallacy of No Return");
+    cy.get('[data-test-team-buffs-tray-group="weapon"]').should("not.exist");
 
     // The tray's ✕ disables the buff without opening the section again.
     cy.get('[data-test-team-buffs-tray-remove="FallacyOfNoReturn"]').click();
@@ -147,6 +171,24 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
 
     cy.get("[data-test-team-buffs-hide-unused]").uncheck();
     cy.get('[data-test-team-buffs-buff-enabled="FallacyOfNoReturn"]').scrollIntoView().should("be.visible");
+  });
+
+  it("hides weapon buffs no selected teammate can equip via the Hide impossible toggle", () => {
+    visitWithFlagEnabled();
+    cy.selectWorkspaceCharacter("Carlotta");
+    cy.get('[data-test-calculator-nav="team"]').click();
+
+    // No teammates yet: nothing can be ruled out, so the toggle is a no-op.
+    cy.get("[data-test-team-buffs-hide-impossible]").check();
+    cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("exist");
+
+    // Shorekeeper wields a Rectifier: Pistol buffs go, Rectifier buffs stay.
+    cy.selectTeamBuffsSlotCharacter(1, "Shorekeeper");
+    cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("not.exist");
+    cy.get('[data-test-team-buffs-buff-enabled="StellarSymphonyATK"]').should("exist");
+
+    cy.get("[data-test-team-buffs-hide-impossible]").uncheck();
+    cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("exist");
   });
 
   it("toggles a teammate's buff list by clicking anywhere on the bar, not just the chevron", () => {

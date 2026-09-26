@@ -1,9 +1,11 @@
-// Labs-flagged docked panel / bottom sheet echo editor (src/components/
-// CalculatorEchoEditPanel.vue) — see docs/adr/0014-echo-editor-redesign.md.
-// Covers the Calculator's build-strip context; the Inventory context has
-// its own spec at cypress/e2e/inventory/echoEditPanel.cy.ts. The legacy
-// modal (flag off) already has full coverage in calculator/echoes.cy.ts and
-// is untouched by this feature.
+// Labs-flagged echo editor, Calculator build-strip context. Originally a
+// docked panel / bottom sheet (docs/adr/0014-echo-editor-redesign.md); in the
+// build context that was replaced by inline expand-in-place editing on
+// CalculatorEchoTile.vue (docs/adr/0030-echoes-tab-v3-redesign.md, decision
+// #3), sharing the same EchoEditFields/EchoPickerDialog body. The docked
+// panel itself still backs the Inventory context, which has its own spec at
+// cypress/e2e/inventory/echoEditPanel.cy.ts. The legacy modal (flag off)
+// already has full coverage in calculator/echoes.cy.ts.
 
 function enableLiveResultBarLab() {
   cy.visit("/", {
@@ -28,36 +30,44 @@ function pickEcho(echoKey: string) {
   cy.get(`[data-test-echo-picker-option="${echoKey}"]`).click();
 }
 
+function collapseEcho(index: number) {
+  cy.get(`[data-test-echo-item="${index}"] [data-test-echo-item-collapse]`).click();
+}
+
 function pickFromOpenMenu(text: string) {
   cy.get(".app-rich-select__menu:visible").contains(".app-rich-select__option", text).click();
 }
 
 describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
-  it("opens the docked panel from a build-strip tile, and closes via the close button", () => {
+  it("expands a build-strip tile's inline editor on click, and collapses via the collapse button", () => {
     openBrantEchoesTab();
-    cy.get("[data-test-echo-edit-panel]").should("not.exist");
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "false");
 
     cy.get('[data-test-echo-item="0"]').click();
-    cy.get("[data-test-echo-edit-panel]").should("be.visible");
-
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "true");
+    cy.get('[data-test-echo-item="0"] [data-test-echo-edit-find]').should("be.visible");
+    // Inline on the tile — no docked panel in the build context.
     cy.get("[data-test-echo-edit-panel]").should("not.exist");
+
+    collapseEcho(0);
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "false");
+    cy.get("[data-test-echo-edit-find]").should("not.exist");
   });
 
-  it("closes when navigating away to a different tab", () => {
+  it("expands only one tile at a time", () => {
     openBrantEchoesTab();
     cy.get('[data-test-echo-item="0"]').click();
-    cy.get("[data-test-echo-edit-panel]").should("be.visible");
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "true");
 
-    cy.get('[data-test-calculator-nav="enemy"]').click();
-    cy.get("[data-test-echo-edit-panel]").should("not.exist");
+    cy.get('[data-test-echo-item="1"]').click();
+    cy.get('[data-test-echo-item="1"]').should("have.attr", "aria-expanded", "true");
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "false");
   });
 
-  it("closes on Escape", () => {
+  it("expands from the keyboard with Enter", () => {
     openBrantEchoesTab();
-    cy.get('[data-test-echo-item="0"]').click();
-    cy.get("[data-test-echo-edit-panel]").should("be.visible").type("{esc}");
-    cy.get("[data-test-echo-edit-panel]").should("not.exist");
+    cy.get('[data-test-echo-item="0"]').focus().trigger("keydown", { key: "Enter" });
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "true");
   });
 
   it("picking an echo drives the real Live Result Bar number live, not a separate preview", () => {
@@ -146,11 +156,11 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get('[data-test-echo-edit-slot="0"] input[type=range]').invoke("val", 7).trigger("input");
     cy.get('[data-test-echo-edit-slot="0"]').should("contain.text", "10.5");
 
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    collapseEcho(0);
     cy.get('[data-test-echo-item="0"] [data-test-echo-item-substat="0"]').should("contain.text", "10.5%");
   });
 
-  it("opens as a bottom sheet with a scrim on a mobile viewport", () => {
+  it("expands inline on a mobile viewport too — no bottom sheet or scrim", () => {
     cy.viewport(390, 844);
     enableLiveResultBarLab();
     cy.selectWorkspaceCharacter("Brant");
@@ -158,15 +168,9 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
     cy.get('[data-test-echo-item="0"]').click();
 
-    // The scrim spans the full viewport (position: fixed; inset: 0), but its
-    // bounding-box center sits under the sheet itself (which legitimately
-    // covers ~80% of the screen on top of it) — so Cypress's strict
-    // visibility check on the scrim element fails even though it's exactly
-    // where it should be. Assert its positioning instead of "visible".
-    cy.get("[data-test-echo-edit-panel-scrim]")
-      .should("exist")
-      .and("have.css", "position", "fixed");
-    cy.get("[data-test-echo-edit-panel-scrim]").click({ force: true });
+    cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "true");
+    cy.get('[data-test-echo-item="0"] [data-test-echo-edit-find]').should("be.visible");
+    cy.get("[data-test-echo-edit-panel-scrim]").should("not.exist");
     cy.get("[data-test-echo-edit-panel]").should("not.exist");
   });
 

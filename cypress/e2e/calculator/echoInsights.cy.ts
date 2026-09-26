@@ -1,8 +1,10 @@
 // Echo Insights panel (src/components/CalculatorEchoInsightsPanel.vue) —
 // see docs/adr/0014-echo-editor-redesign.md decision #10. Two-column split
 // of the Echoes tab: the existing build strip on the left, this aggregation
-// panel on the right (stacked below on mobile). Only rendered when the
-// liveResultBar Labs flag is on; the flag-off path has no insights panel.
+// panel on the right as an always-expanded sticky sidebar. On mobile a second,
+// collapsible instance is pinned above the strip instead (docs/adr/0030).
+// Only rendered when the liveResultBar Labs flag is on; the flag-off path has
+// no insights panel.
 
 function enableLiveResultBarLab() {
   cy.visit("/", {
@@ -31,6 +33,10 @@ function pickFromOpenMenu(text: string) {
   cy.get(".app-rich-select__menu:visible").contains(".app-rich-select__option", text).click();
 }
 
+function collapseEcho(index: number) {
+  cy.get(`[data-test-echo-item="${index}"] [data-test-echo-item-collapse]`).click();
+}
+
 function assignSlot(index: number, statLabel: string) {
   cy.get(`[data-test="echo-edit-slot-type-${index}"]`).click();
   pickFromOpenMenu(statLabel);
@@ -39,8 +45,14 @@ function assignSlot(index: number, statLabel: string) {
 describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
   it("shows an empty state before any echo is equipped", () => {
     openBrantEchoesTab();
-    cy.get("[data-test-echo-insights-panel]").should("be.visible");
-    cy.get("[data-test-echo-insights-equipped-count]").should("contain.text", "0/5");
+    cy.get(".echoes-sidebar [data-test-echo-insights-panel]").should("be.visible");
+    cy.get(".echoes-sidebar [data-test-echo-insights-build-score]").should(
+      "contain.text",
+      "Equip an echo to see build insights here",
+    );
+    // The details (equipped count, CV, substat rows) only render once
+    // something is equipped.
+    cy.get("[data-test-echo-insights-equipped-count]").should("not.exist");
   });
 
   it("sums total CV and per-substat totals across equipped echoes, ordered by Brant's priority weights", () => {
@@ -61,7 +73,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(2, "Basic Attack DMG Bonus");
     assignSlot(3, "ATK%");
     assignSlot(4, "HP%");
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    collapseEcho(0);
 
     cy.get("[data-test-echo-insights-equipped-count]").should("contain.text", "1/5");
     // CV = CritRate 10.5 * 2 + CritDMG 21 = 42
@@ -98,7 +110,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(2, "Basic Attack DMG Bonus");
     assignSlot(3, "ATK%");
     assignSlot(4, "HP%");
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    collapseEcho(0);
 
     cy.get('[data-test-echo-insights-row="EnergyRegen"]')
       .should("have.class", "echo-insights__row--missing")
@@ -111,29 +123,35 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     cy.get('[data-test-echo-item="0"]').click();
     pickEcho("BellBorneGeochelone");
     assignSlot(0, "Crit Rate");
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    collapseEcho(0);
 
     cy.get('[data-test-echo-item="1"]').click();
     pickEcho("BellBorneGeochelone");
     assignSlot(0, "Crit Rate");
-    cy.get("[data-test-echo-edit-panel-close]").click();
+    collapseEcho(1);
 
     cy.get('[data-test-echo-insights-row="CritRate"]').should("contain.text", "×2");
   });
 
-  it("stacks the insights panel below the strip on a mobile viewport", () => {
+  it("pins the Build Score panel above the strip on a mobile viewport, hiding the desktop sidebar", () => {
     cy.viewport(390, 844);
     enableLiveResultBarLab();
     cy.selectWorkspaceCharacter("Brant");
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
 
+    // Mobile gets its own pinned, collapsible instance above the tiles
+    // (docs/adr/0030-echoes-tab-v3-redesign.md); the always-expanded desktop
+    // sidebar instance is hidden by CSS at this width.
+    cy.get(".echoes-sidebar").should("not.be.visible");
     cy.get('[data-test-echo-item="0"]').then(($strip) => {
-      cy.get("[data-test-echo-insights-panel]").then(($insights) => {
-        expect($insights[0].getBoundingClientRect().top).to.be.greaterThan(
-          $strip[0].getBoundingClientRect().bottom - 1,
-        );
-      });
+      cy.get(".echoes-mobile-score[data-test-echo-insights-panel]")
+        .should("be.visible")
+        .then(($insights) => {
+          expect($insights[0].getBoundingClientRect().bottom).to.be.lessThan(
+            $strip[0].getBoundingClientRect().top + 1,
+          );
+        });
     });
   });
 

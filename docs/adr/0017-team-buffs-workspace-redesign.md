@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-31
 tags: [calculator, components, buffs, characters]
-superseded_by: [0026]
+superseded_by: [0026, 0033]
 ---
 
 # 17. Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -65,6 +65,11 @@ made for this whole redesign wave.
    emitted to the calculator) — a future modifier key either doesn't
    recognize is a gap in the summary/tray, not an accuracy bug in the real
    stats/damages.
+
+   **Superseded 2026-09-24 (ADR [0033](0033-team-buffs-summary-grouping-and-hide-impossible.md)):**
+   the "Team Contribution" tiles and `categorizeBuffModifier()` were removed
+   (the aggregated totals were misleading). The per-chip `getModifierLabel()`
+   readout remains, and the tray is now grouped by source.
 
 5. **Enabled/stacks/refinement/base-attribute-value stay fully independent
    controls**, matching `CalculatorPartyBuff.vue` exactly: checking a

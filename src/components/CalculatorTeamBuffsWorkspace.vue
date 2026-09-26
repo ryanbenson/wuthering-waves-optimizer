@@ -35,6 +35,16 @@
             data-test-team-buffs-hide-unused />
           Hide unused
         </label>
+        <label
+          class="flex items-center gap-2 text-xs cursor-pointer shrink-0 opacity-70 hover:opacity-100"
+          title="Hide weapon buffs from weapon types your selected teammates can't equip">
+          <input
+            v-model="hideImpossible"
+            type="checkbox"
+            class="toggle toggle-primary toggle-xs"
+            data-test-team-buffs-hide-impossible />
+          Hide impossible
+        </label>
       </div>
 
     </div>
@@ -306,51 +316,54 @@
           data-test-team-buffs-empty>
           <span class="text-sm font-semibold">No team buffs active</span>
           <p class="text-xs opacity-60 max-w-xs">
-            Turn on buffs from your teammates, echoes, or weapons and this panel will show what they add to
-            ATK, DMG Bonus and Crit DMG, plus a quick list of everything that's enabled.
+            Turn on buffs from your teammates, echoes, or weapons and this panel will list everything that's
+            enabled, grouped by where it comes from.
           </p>
         </div>
         <template v-else>
-      <div>
-        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">Team Contribution</div>
-        <div class="flex flex-wrap gap-5">
-          <div v-for="tile in contributionTiles" :key="tile.label" class="flex flex-col gap-0.5">
-            <span class="text-lg font-bold font-mono leading-none" data-test-team-buffs-contribution-value>{{
-              tile.value
-            }}</span>
-            <span class="text-[.66rem] opacity-50">{{ tile.label }}</span>
+          <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
+            Active buffs
+            <span class="font-mono normal-case tracking-normal opacity-70">({{ activeTrayEntries.length }})</span>
           </div>
-        </div>
-      </div>
 
-      <div class="border-t border-base-300 pt-2">
-        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
-          Active buffs
-          <span class="font-mono normal-case tracking-normal opacity-70">({{ activeTrayEntries.length }})</span>
-        </div>
-
-        <div class="flex flex-wrap gap-1.5" data-test-team-buffs-active-tray>
-          <div
-            v-for="entry in activeTrayEntries"
-            :key="entry.key"
-            class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1 !pr-1">
-            <button type="button" class="flex flex-wrap items-center gap-1.5 min-w-0" @click="jumpTo(entry.key)">
-              {{ entry.label }}
-              <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
-                >+{{ formatPct(c.value) }} {{ c.label }}</span
-              >
-            </button>
-            <button
-              type="button"
-              class="opacity-70 hover:opacity-100 shrink-0 px-1"
-              :aria-label="`Remove ${entry.label}`"
-              :data-test-team-buffs-tray-remove="entry.key"
-              @click="disableBuff(entry.key)">
-              ✕
-            </button>
+          <div class="flex flex-col gap-3" data-test-team-buffs-active-tray>
+            <div
+              v-for="group in activeTrayGroups"
+              :key="group.id"
+              class="flex flex-col gap-1.5"
+              :data-test-team-buffs-tray-group="group.id">
+              <div class="flex items-center gap-2 text-xs font-semibold">
+                <span
+                  v-if="group.image"
+                  class="team-buffs-workspace__tray-avatar shrink-0"
+                  :style="{ backgroundImage: `url(${group.image})` }"
+                  aria-hidden="true" />
+                <span class="truncate">{{ group.label }}</span>
+                <span class="font-mono font-normal opacity-50">({{ group.entries.length }})</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                <div
+                  v-for="entry in group.entries"
+                  :key="entry.key"
+                  class="btn btn-xs btn-primary gap-1.5 h-auto max-w-full flex-wrap justify-start text-left py-1 !pr-1">
+                  <button type="button" class="flex flex-wrap items-center gap-1.5 min-w-0" @click="jumpTo(entry.key)">
+                    {{ entry.label }}
+                    <span v-for="c in entry.contributions" :key="c.label" class="font-mono"
+                      >+{{ formatPct(c.value) }} {{ c.label }}</span
+                    >
+                  </button>
+                  <button
+                    type="button"
+                    class="opacity-70 hover:opacity-100 shrink-0 px-1"
+                    :aria-label="`Remove ${entry.label}`"
+                    :data-test-team-buffs-tray-remove="entry.key"
+                    @click="disableBuff(entry.key)">
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
         </template>
       </div>
     </template>
@@ -372,11 +385,10 @@ import {
   resolveTeamBuffInstance,
   getExclusiveTeamBuffKeys,
   aggregateTeamBuffStats,
-  categorizeBuffModifier,
   getModifierLabel,
   type PartyBuffModifier,
 } from "../buffs/teamBuffs";
-import { buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
+import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
 import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
 
@@ -395,6 +407,7 @@ export interface PartyBuffDef {
   modifierBasedOn?: string | null;
   realisticBaseAttrValue?: number;
   hasRefinements?: boolean;
+  weaponType?: string;
 }
 
 interface Props {
@@ -613,32 +626,39 @@ function activeCount(defs: PartyBuffDef[]): number {
   return defs.filter(isBuffEnabled).length;
 }
 
-const contributionTiles = computed(() => {
-  const buckets: Record<"atk" | "damage" | "critDMG", number> = { atk: 0, damage: 0, critDMG: 0 };
-  Object.entries(teamBuffsData.value).forEach(([key, value]) => {
-    if (typeof value !== "number") return;
-    const category = categorizeBuffModifier(key);
-    if (category === "atk" || category === "damage" || category === "critDMG") {
-      buckets[category] += value;
-    }
-  });
-  return [
-    { label: "ATK", value: formatPct(buckets.atk) },
-    { label: "DMG Bonus", value: formatPct(buckets.damage) },
-    { label: "Crit DMG", value: formatPct(buckets.critDMG) },
-    { label: "Buffs Active", value: String(allRelevantDefs.value.filter(isBuffEnabled).length) },
-  ];
-});
+function trayEntriesFor(defs: PartyBuffDef[]) {
+  return defs.filter(isBuffEnabled).map((def) => ({
+    key: def.key,
+    label: def.name.replace(/^Sequence Node \d+: /, "").replace(/^Outro( Skill)?:\s*/, ""),
+    contributions: resolvedContributions(def),
+  }));
+}
 
-const activeTrayEntries = computed(() =>
-  allRelevantDefs.value
-    .filter(isBuffEnabled)
-    .map((def) => ({
-      key: def.key,
-      label: def.name.replace(/^Sequence Node \d+: /, "").replace(/^Outro( Skill)?:\s*/, ""),
-      contributions: resolvedContributions(def),
-    })),
+/**
+ * Active buffs grouped by source (teammate 1, teammate 2, echoes, weapons)
+ * so a long list reads as a few short labelled rows instead of one wall of
+ * chips. Empty groups are dropped.
+ */
+const activeTrayGroups = computed(() =>
+  [
+    {
+      id: "team1",
+      label: partyMember1DisplayName.value,
+      image: selectedCharacter1.value ? getCharacterImage(selectedCharacter1.value) : null,
+      entries: trayEntriesFor(char1Buffs.value),
+    },
+    {
+      id: "team2",
+      label: partyMember2DisplayName.value,
+      image: selectedCharacter2.value ? getCharacterImage(selectedCharacter2.value) : null,
+      entries: trayEntriesFor(char2Buffs.value),
+    },
+    { id: "echo", label: "Echo Buffs", image: null, entries: trayEntriesFor(echoBuffList) },
+    { id: "weapon", label: "Weapon Buffs", image: null, entries: trayEntriesFor(weaponTeamBuffList) },
+  ].filter((group) => group.entries.length > 0),
 );
+
+const activeTrayEntries = computed(() => activeTrayGroups.value.flatMap((group) => group.entries));
 
 const hideUnused = computed({
   get() {
@@ -651,10 +671,37 @@ const hideUnused = computed({
   },
 });
 
+const hideImpossible = computed({
+  get() {
+    return (
+      (currentCharacter.value as { teamBuffs?: { hideImpossible?: boolean } })?.teamBuffs?.hideImpossible ??
+      false
+    );
+  },
+  set(value: boolean) {
+    void setCharacterData(props.character, { teamBuffs: { hideImpossible: value } });
+  },
+});
+
+// Weapon types the selected teammates can equip — what "Hide impossible"
+// checks weapon buffs against. Empty (no teammates) rules nothing out.
+const teamWeaponTypes = computed(() => {
+  const types = new Set<string>();
+  [selectedCharacter1.value, selectedCharacter2.value].forEach((key) => {
+    const weapon = key ? allCharactersList.find((c) => c.key === key)?.weapon : undefined;
+    if (weapon) types.add(weapon);
+  });
+  return [...types];
+});
+
 function computeSection(defs: PartyBuffDef[], rawQuery: string): PartyBuffDef[] {
   const q = rawQuery.trim();
   return defs.filter((d) => {
-    if (hideUnused.value && !buffIsUsed(d, isBuffEnabled(d))) return false;
+    const enabled = isBuffEnabled(d);
+    if (hideUnused.value && !buffIsUsed(d, enabled)) return false;
+    // An enabled buff stays visible even when impossible, so it can't keep
+    // applying to the calculation from a row the user can no longer see.
+    if (hideImpossible.value && !enabled && !buffIsPossibleForTeam(d, teamWeaponTypes.value)) return false;
     return buffMatchesSearch(d, q);
   });
 }
@@ -777,6 +824,15 @@ function getCharacterImage(character: string) {
 .team-buffs-workspace__collapse-inner {
   overflow: hidden;
   min-height: 0;
+}
+.team-buffs-workspace__tray-avatar {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid oklch(var(--bc) / 0.2);
 }
 .team-buffs-workspace__avatar {
   position: relative;

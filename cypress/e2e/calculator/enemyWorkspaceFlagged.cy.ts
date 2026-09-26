@@ -97,7 +97,11 @@ describe("Enemy Workspace (liveResultBar flag)", () => {
     cy.selectWorkspaceCharacter("Phoebe");
     cy.get('[data-test-calculator-nav="enemy"]').click();
 
-    cy.get('[data-test-enemy-workspace-status-row="spectroFrazzleStacks"]').should("be.visible");
+    // Kit-specific rows sort after the always-shown ones, which puts them
+    // below the fold of the scrolling workspace at the default 720px viewport.
+    cy.get('[data-test-enemy-workspace-status-row="spectroFrazzleStacks"]')
+      .scrollIntoView()
+      .should("be.visible");
     cy.get('[data-test-enemy-workspace-status-row="aeroErosionStacks"]').should("not.exist");
     // Always-shown regardless of character.
     cy.get('[data-test-enemy-workspace-status-row="strainStacks"]').should("be.visible");

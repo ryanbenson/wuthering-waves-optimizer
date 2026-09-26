@@ -29,10 +29,14 @@ describe("Calculator Data Verification: Lupa (32 workers, sharded generator)", (
     cy.get("[data-test-optimizer-optimize-btn]").click();
     cy.wait(100);
     cy.get("[data-test-optimizer-optimize-btn]").click();
-    cy.get('[data-test-optimizer-results-index="0"]').should("exist");
+    // 32 workers take a while to spin up under the Vite dev server (each one
+    // loads its module graph separately), well past the 4s default — and
+    // results render progressively, so row 0 can show a not-yet-final
+    // loadout for a while before the full search settles on the best one.
     cy.get(
       `[data-test-optimizer-results-index="0"] [data-test-optimizer-rotation-damage-total]`,
-    ).contains(optimizerResults.totalNormal);
+      { timeout: 60000 },
+    ).should("contain", optimizerResults.totalNormal);
     cy.get(
       `[data-test-optimizer-results-index="0"] [data-test-optimizer-rotation-damage-total-avg]`,
     )

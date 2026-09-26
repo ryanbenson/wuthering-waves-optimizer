@@ -52,7 +52,7 @@
               </span>
             </template>
           </div>
-          <div class="flex items-center gap-1 mt-0.5">
+          <div v-if="!hideInventoryActions" class="flex items-center gap-1 mt-0.5">
             <EchoFavoriteButton :echo-id="echoId || null" />
             <EchoLockTrashActions v-if="echoId" :echo-id="echoId" layout="row" size="xs" />
           </div>
@@ -69,6 +69,7 @@
       <div class="flex items-start gap-3 mt-2">
         <div class="flex flex-col gap-1.5 shrink-0 self-start">
           <button
+            v-if="!hideEdit"
             type="button"
             class="btn btn-xs btn-primary justify-start"
             data-test-echo-action-edit
@@ -81,6 +82,7 @@
             Edit
           </button>
           <button
+            v-if="!hideInventoryActions"
             type="button"
             class="btn btn-xs btn-ghost justify-start"
             data-test-echo-action-duplicate
@@ -93,7 +95,7 @@
             Duplicate
           </button>
           <span
-            v-tooltip="locked ? 'This echo is locked and cannot be deleted' : 'Delete this echo from your inventory'">
+            v-tooltip="locked ? 'This echo is locked and cannot be deleted' : deleteTooltip">
             <button
               type="button"
               class="btn btn-xs btn-error btn-outline justify-start w-full"
@@ -105,7 +107,7 @@
                   d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
                   fill="currentColor" />
               </svg>
-              Delete
+              {{ deleteLabel }}
             </button>
           </span>
           <!-- Equipped-by avatars: inventory-only element, under the buttons. -->
@@ -153,8 +155,20 @@ const props = withDefaults(
     echoSubStatsType5: string;
     echoSubStatsValue5: number | string;
     locked?: boolean;
+    /** True outside a real inventory context (e.g. a not-yet-saved scanner candidate) — hides Favorite/Lock/Duplicate, which only make sense for an echo that already exists in the inventory store. */
+    hideInventoryActions?: boolean;
+    /** True when there's nowhere to route an edit request to (e.g. the scanner used outside the Inventory screen) — hides Edit rather than showing a button that does nothing. */
+    hideEdit?: boolean;
+    deleteLabel?: string;
+    deleteTooltip?: string;
   }>(),
-  { locked: false },
+  {
+    locked: false,
+    hideInventoryActions: false,
+    hideEdit: false,
+    deleteLabel: "Delete",
+    deleteTooltip: "Delete this echo from your inventory",
+  },
 );
 
 const emit = defineEmits<{ edit: []; duplicate: []; delete: [] }>();

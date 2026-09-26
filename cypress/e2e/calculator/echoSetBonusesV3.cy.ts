@@ -30,12 +30,15 @@ function pickEcho(echoKey: string) {
   cy.get(`[data-test-echo-picker-option="${echoKey}"]`).click();
 }
 
-/** Configures one build-strip slot: pick the echo, assign it to FrostyResolve. */
+/**
+ * Configures one build-strip slot: expand the tile's inline editor, pick the
+ * echo, assign it to FrostyResolve, collapse.
+ */
 function configureFrostyResolveEcho(index: number, echoKey: string) {
   cy.get(`[data-test-echo-item="${index}"]`).click();
   pickEcho(echoKey);
-  cy.get('[data-test-echo-edit-panel] button[aria-label="FrostyResolve"]').click();
-  cy.get("[data-test-echo-edit-panel-close]").click();
+  cy.get(`[data-test-echo-item="${index}"] button[aria-label="FrostyResolve"]`).click();
+  cy.get(`[data-test-echo-item="${index}"] [data-test-echo-item-collapse]`).click();
 }
 
 describe("Echo Set Bonuses / Main Echo panel — v3 (Labs flag)", () => {

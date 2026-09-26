@@ -163,9 +163,10 @@ describe("Calculator build export/import", () => {
     cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
       cy.get("[data-test-manage-builds-export]").click();
     });
-    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
-      cy.get("[data-test-manage-builds-export-clipboard]").click({ force: true });
-    });
+    // AppOverflowMenu teleports its menu out of the row (into the open
+    // <dialog> here), so the item isn't inside the row. No force: this must be
+    // genuinely clickable, not hidden under the modal's top layer.
+    cy.get("[data-test-manage-builds-export-clipboard]").click();
     cy.get("@writeText").should("have.been.calledOnce");
 
     cy.get("@writeText").then((stub: any) => {
@@ -230,8 +231,6 @@ describe("Calculator build export/import", () => {
     cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
       cy.get("[data-test-manage-builds-export]").click();
     });
-    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
-      cy.get("[data-test-manage-builds-export-file]").click({ force: true });
-    });
+    cy.get("[data-test-manage-builds-export-file]").click();
   });
 });

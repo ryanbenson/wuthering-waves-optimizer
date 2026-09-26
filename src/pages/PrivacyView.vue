@@ -13,6 +13,23 @@
       is stored or collected about you and we don't use cookies for analytics.
       <a href="https://umami.is" rel="noreferrer"> Umami </a>
     </p>
+    <h2>Your data (builds, inventory, settings)</h2>
+    <p>
+      Everything you enter — characters, builds, echo inventory, settings —
+      is stored only in your browser's local storage, on your own device.
+      None of it is sent to us or to any server; we have no account system
+      and nothing to log in to.
+    </p>
+    <h2>Echo scanner (screen share / video upload)</h2>
+    <p>
+      The optional echo scanner (Labs → Echo scanning) lets you share your
+      game window or upload a recording so the app can read your echoes'
+      stats automatically. Both options are processed entirely in your
+      browser — nothing is uploaded to a server, no video or screen capture
+      ever leaves your device, and no frames or images are kept once
+      you're done. Closing the scanner (including pressing Escape) stops
+      screen sharing immediately, the same as clicking "Stop scanning."
+    </p>
     <h2>Changes</h2>
     <p>
       Changes may occur to this policy at any time, so check back to this for
@@ -33,6 +50,32 @@
           information is stored or collected about you, and we don't use
           cookies for analytics.
           <a href="https://umami.is" rel="noreferrer" class="link">Umami</a>.
+        </p>
+      </div>
+      <div class="border-t border-base-300 pt-4">
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
+          Your data (builds, inventory, settings)
+        </div>
+        <p class="text-sm opacity-80">
+          Everything you enter — characters, builds, echo inventory,
+          settings — is stored only in your browser's local storage, on
+          your own device. None of it is sent to us or to any server; we
+          have no account system and nothing to log in to.
+        </p>
+      </div>
+      <div class="border-t border-base-300 pt-4">
+        <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 mb-2">
+          Echo scanner (screen share / video upload)
+        </div>
+        <p class="text-sm opacity-80">
+          The optional echo scanner (Labs → Echo scanning) lets you share
+          your game window or upload a recording so the app can read your
+          echoes' stats automatically. Both options are processed entirely
+          in your browser — nothing is uploaded to a server, no video or
+          screen capture ever leaves your device, and no frames or images
+          are kept once you're done. Closing the scanner (including
+          pressing Escape) stops screen sharing immediately, the same as
+          clicking "Stop scanning."
         </p>
       </div>
       <div class="border-t border-base-300 pt-4">

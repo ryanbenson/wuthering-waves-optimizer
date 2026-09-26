@@ -76,6 +76,12 @@ const labsFeatures = ref<LabFeature[]>([
     details:
       "A major UI overhaul. It seeks to improve the overall user experience, give you more access to insights while still providing the data you need.",
   },
+  {
+    key: "echoScanning",
+    label: "Echo scanning",
+    details:
+      "Adds a \"Scan echoes\" button to your inventory. Share your game window (or upload a recording) while browsing your in-game Echo list and it reads each echo's stats automatically — everything runs in your browser, nothing is uploaded anywhere. Still being tuned for accuracy.",
+  },
 ]);
 </script>
 

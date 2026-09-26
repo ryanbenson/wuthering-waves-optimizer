@@ -126,16 +126,15 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       });
   });
 
-  it("shows family-colored substat chips in compact density", () => {
+  it("shows roll-quality colored substat rows in compact density", () => {
     visitInventoryWithEcho("compact");
+    // Compact uses the same EchoCardSubstatList rows as comfy (the old
+    // family-colored chips are gone), just at the smaller "xs" size.
     cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
       .closest(".echo__item-wrap")
-      .should("be.visible");
-    // ATK is a "flat" family substat -> neutral bg-base-300 chip
-    cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
-      .closest(".echo__item-wrap")
-      .find(".bg-base-300")
-      .should("exist");
+      .find('[data-test-echo-card-substat="0"]')
+      .should("have.class", "border-l-4")
+      .and("contain.text", "ATK");
   });
 
   it("stays off by default — the legacy modal renders unchanged", () => {
