@@ -12,6 +12,22 @@ export interface UpdateEntry {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-09-26",
+    dateLabel: "September 26, 2026",
+    items: [
+      "Fixed Denia's buffs with her s2 and dark core buffs",
+      "Echo scanner (lab feature) now suports 16:9 ratio",
+      "Echo scanner (lab feature) fixed a bug where on some browsers it was having issues with the background jobs and live scanning mode",
+    ],
+  },
+  {
+    date: "2026-09-25",
+    dateLabel: "September 25, 2026",
+    items: [
+      "Update to the Labs feature: Echo Scanner - Added a \"How to scan\" guide, an optional beep each time an echo is captured, and a faster review: results are in two columns with filters (Needs attention, Unknown echo, Already in inventory), each echo is numbered in the order you clicked it, and you can see the in-game capture of each echo (also shown while editing) to fix anything it misread. The save button now tells you exactly what it will do, and short echo names like Jué are recognized more reliably",
+    ],
+  },
+  {
     date: "2026-09-25",
     dateLabel: "September 25, 2026",
     items: [
