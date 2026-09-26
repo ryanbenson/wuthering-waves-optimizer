@@ -82,7 +82,10 @@ shape (an `HTMLVideoElement` plus a `start`/`stop`). Only *how a tick is
 driven* differs:
 
 - **Live** (`getDisplayMedia`): a fixed ~8fps timer over real elapsed time.
-  The tick itself never waits on OCR (see "Capture queue").
+  The tick itself never waits on OCR (see "Capture queue"). `startLive`
+  calls `getDisplayMedia` *before* awaiting the OCR workers: the browser
+  only allows it within the Start click's transient activation, and a cold
+  Tesseract load can outlast that and throw `InvalidStateError`.
 - **Video file**: a deterministic **seek-and-capture** loop — step
   `currentTime` forward, await `seeked`, capture, repeat — decoupled from
   real time. This is faster than live (a ~49s clip becomes ~100 sequential
