@@ -902,8 +902,8 @@ text, or frames.
 | `scanner-opened` | `EchoScannerModal.vue` | — |
 | `scanner-started` | `useEchoScanner` | `mode` (`live`/`video`); video adds `fps`, `scanSeconds` |
 | `scanner-finished` | `useEchoScanner` | `mode`, `outcome` (`completed` = video reached the end, `stopped` = user stop/close), `durationSeconds` |
-| `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share) |
-| `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp) — once per session |
+| `scanner-error` | `useEchoScanner` | `mode`, `stage` (`start`/`open`/`scan`), `error` (the `Error.name`, e.g. `NotAllowedError` for a declined screen share; for a non-Error throw, `Event:<type>`, `string`, etc.), `message` (the error message, truncated to 120 chars, or `null`) — see `describeError` in `src/scanner/analytics.ts` |
+| `scanner-unsupported-aspect` | `useEchoScanner` | `mode`, `aspect` (width/height, 2dp), `ratio` (nearest common ratio — `16:9`, `21:9`, `32:9`, `4:3`, …, or `portrait`/`other`), `resolution` (`<width>x<height>` of the captured frame) — once per session |
 
 `scanner-finished` fires at most once per session: for video, `stop()`
 reports `stopped` and clears the session, so the scan loop's own exit

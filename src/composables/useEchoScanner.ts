@@ -9,6 +9,7 @@
  */
 import { onBeforeUnmount, ref, computed } from "vue";
 import { trackEvent } from "../utils/analytics";
+import { describeAspect, describeError } from "../scanner/analytics";
 import {
   createScreenShareSource,
   createVideoFileSource,
@@ -370,7 +371,7 @@ export function useEchoScanner() {
     trackEvent("scanner-error", {
       mode,
       stage,
-      error: err instanceof Error ? err.name : "unknown",
+      ...describeError(err),
     });
     trackedMode = null;
   }
@@ -613,7 +614,7 @@ export function useEchoScanner() {
         trackedAspect = true;
         trackEvent("scanner-unsupported-aspect", {
           mode: trackedMode,
-          aspect: (frame.width / frame.height).toFixed(2),
+          ...describeAspect(frame),
         });
       }
       return;
