@@ -2866,6 +2866,20 @@ CD: 20s.`,
     alwaysEnabled: false,
   },
   {
+    key: "_StayTunedElite1",
+    name: "Stay tuned",
+    details: `Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.`,
+    imageUrl: "",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
     key: "ReminiscenceDenia",
     name: "Reminiscence: Denia",
     details: `Within the next 15s, casting Outro Skill grants the incoming Resonator 12.00% Fusion DMG Bonus for 15s.<br>

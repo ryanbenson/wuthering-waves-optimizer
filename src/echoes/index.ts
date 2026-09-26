@@ -145,7 +145,22 @@ export const mainEchoesData: MainEchoes = {
 Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
 CD: 20s</span>`,
     modifiers: [],
-    actions: [],
+    actions: [
+      {
+        key: "_StayTunedElite1DMG",
+        label: "Summon DMG",
+        description: `Use Echo Skill to summon a Soulfrayer, dealing 60.79%/70.92%/81.05%/91.18% Electro DMG 3 times.`,
+        talents: {
+          "1": "60.79%*3",
+          "2": "60.79%*3",
+          "3": "70.92%*3",
+          "4": "81.05%*3",
+          "5": "91.18%*3",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
     sets: ["HeartofSwornVigil", "FlashofElectricReflection"],
   },
   _StayTunedElite2: {
@@ -156,8 +171,31 @@ CD: 20s</span>`,
     details: `<span>Use Echo Skill to summon a Formrender, dealing 273.60% Fusion DMG.
 The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.
 CD: 20s</span>`,
-    modifiers: [],
-    actions: [],
+    modifiers: [
+      {
+        key: "_StayTunedElite2ER",
+        details: `The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+        alwaysEnabled: true,
+      },
+    ],
+    actions: [
+      {
+        key: "_StayTunedElite2DMG",
+        label: "Summon DMG",
+        description: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
     sets: ["HeartofSwornVigil", "FlowerofTingedYearning"],
   },
   _StayTunedCommon1: {
