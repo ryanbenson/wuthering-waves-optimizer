@@ -163,7 +163,7 @@ CD: 20s</span>`,
   _StayTunedCommon1: {
     key: "_StayTunedCommon1",
     name: "Stay tuned",
-    class: "Elite",
+    class: "Common",
     image: "",
     details: `<span>Summon a Bloomburst Puppet to startle the target, dealing 1 instance of 25.92% Glacio DMG, followed by 2 instances of 12.96% Glacio DMG and 1 instance of 77.76% Glacio DMG.
 CD: 8s</span>`,
