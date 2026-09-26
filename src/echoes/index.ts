@@ -92,7 +92,7 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [
       {
         key: "_StayTunedCalamity1Electro1",
-        details: `The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus`,
+        details: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus`,
         modifier: "Electro",
         modifierValue: 0.1,
         alwaysEnabled: true,
@@ -149,7 +149,9 @@ CD: 20s</span>`,
       {
         key: "_StayTunedElite1DMG",
         label: "Summon DMG",
-        description: `Use Echo Skill to summon a Soulfrayer, dealing 60.79%/70.92%/81.05%/91.18% Electro DMG 3 times.`,
+        description: `Use Echo Skill to summon a Soulfrayer, dealing 91.18% Electro DMG 3 times.
+Casting Outro Skill within 15s after summoning Soulfrayer grants 12.00% Electro DMG Bonus to the incoming Resonator for 15s.
+CD: 20s`,
         talents: {
           "1": "60.79%*3",
           "2": "60.79%*3",
@@ -168,13 +170,13 @@ CD: 20s</span>`,
     name: "Stay tuned",
     class: "Elite",
     image: "",
-    details: `<span>Use Echo Skill to summon a Formrender, dealing 273.60% Fusion DMG.
+    details: `<span>Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.
 The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.
 CD: 20s</span>`,
     modifiers: [
       {
         key: "_StayTunedElite2ER",
-        details: `The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
+        details: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.<br>The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
         modifier: "EnergyRegen",
         modifierValue: 0.1,
         alwaysEnabled: true,
