@@ -66,7 +66,7 @@ const steps: { title: string; lines: string[] }[] = [
     title: "Before you start",
     lines: [
       "Use desktop <strong>Chrome or Edge</strong> with the game set to <strong>English</strong>.",
-      "Run the game full screen on a 16:10 display, or in a window sized to 16:10, so the echo detail panel is where the scanner expects it.",
+      "Run the game full screen, or in a window, at <strong>16:10 or 16:9</strong> (e.g. 2560×1600 or 1920×1080) so the echo detail panel is where the scanner expects it.",
     ],
   },
   {

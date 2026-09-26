@@ -13,6 +13,9 @@ import {
   DEBUG_REGIONS,
   toPixelRegion,
   isSupportedAspect,
+  matchSupportedAspect,
+  regionForFrame,
+  regionPercentStyle,
 } from "../../src/scanner/layout";
 
 // Real capture resolutions reviewed from the user's provided footage
@@ -25,8 +28,19 @@ const REAL_RESOLUTIONS = [
   { width: 2800, height: 1752 }, // first session's sample screenshot
 ];
 
+// 16:9 frames, mapped onto the 16:10 table by regionForFrame (see
+// layout.ts's top doc comment). 1400x788 is the real 16:9 screenshot the
+// mapping was verified against; the others are common 16:9 monitors.
+const SIXTEEN_NINE_RESOLUTIONS = [
+  { width: 1400, height: 788 },
+  { width: 1920, height: 1080 },
+  { width: 2560, height: 1440 },
+];
+
+const ALL_RESOLUTIONS = [...REAL_RESOLUTIONS, ...SIXTEEN_NINE_RESOLUTIONS];
+
 describe("layout", () => {
-  it.each(REAL_RESOLUTIONS)("keeps the panel box in-bounds at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("keeps the panel box in-bounds at %ox%o", (frame) => {
     const region = toPixelRegion(PANEL_BOX, frame);
     expect(region.x).toBeGreaterThan(0);
     expect(region.y).toBeGreaterThan(0);
@@ -34,7 +48,7 @@ describe("layout", () => {
     expect(region.y + region.height).toBeLessThanOrEqual(frame.height);
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps the main/secondary stat rows inside the panel box at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("keeps the main/secondary stat rows inside the panel box at %ox%o", (frame) => {
     const panel = toPixelRegion(PANEL_BOX, frame);
     for (const row of [MAIN_STAT_ROW, SECONDARY_STAT_ROW]) {
       const region = toPixelRegion(row, frame);
@@ -45,7 +59,7 @@ describe("layout", () => {
     }
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps the name block above the main stat row, which sits above the secondary row at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("keeps the name block above the main stat row, which sits above the secondary row at %ox%o", (frame) => {
     const name = toPixelRegion(NAME_BLOCK, frame);
     const main = toPixelRegion(MAIN_STAT_ROW, frame);
     const secondary = toPixelRegion(SECONDARY_STAT_ROW, frame);
@@ -53,7 +67,7 @@ describe("layout", () => {
     expect(main.y).toBeLessThan(secondary.y);
   });
 
-  it.each(REAL_RESOLUTIONS)("lays out all 5 substat row slots below the secondary row, each further down than the last, at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("lays out all 5 substat row slots below the secondary row, each further down than the last, at %ox%o", (frame) => {
     const secondary = toPixelRegion(SECONDARY_STAT_ROW, frame);
     expect(SUBSTAT_ROWS).toHaveLength(5);
     let previousY = secondary.y;
@@ -69,7 +83,7 @@ describe("layout", () => {
     expect(SUBSTAT_ROWS[0].height).toBeGreaterThan(SECONDARY_STAT_ROW.height);
   });
 
-  it.each(REAL_RESOLUTIONS)(
+  it.each(ALL_RESOLUTIONS)(
     "keeps the (pixel-measured) set icon box inside the panel and below the name block, tightly cropped to roughly a square, at %ox%o — regression: the original guessed box missed the icon entirely, causing every scan to return the same wrong set",
     (frame) => {
       const panel = toPixelRegion(PANEL_BOX, frame);
@@ -84,7 +98,7 @@ describe("layout", () => {
     },
   );
 
-  it.each(REAL_RESOLUTIONS)("keeps SUBSTAT_BLOCK spanning at least all 5 substat rows, inside the panel, at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("keeps SUBSTAT_BLOCK spanning at least all 5 substat rows, inside the panel, at %ox%o", (frame) => {
     const panel = toPixelRegion(PANEL_BOX, frame);
     const block = toPixelRegion(SUBSTAT_BLOCK, frame);
     const firstRow = toPixelRegion(SUBSTAT_ROWS[0], frame);
@@ -94,7 +108,7 @@ describe("layout", () => {
     expect(block.y + block.height).toBeLessThanOrEqual(panel.y + panel.height);
   });
 
-  it.each(REAL_RESOLUTIONS)("keeps STATS_BLOCK covering the main stat row through SUBSTAT_BLOCK, inside the panel, at %ox%o", (frame) => {
+  it.each(ALL_RESOLUTIONS)("keeps STATS_BLOCK covering the main stat row through SUBSTAT_BLOCK, inside the panel, at %ox%o", (frame) => {
     const panel = toPixelRegion(PANEL_BOX, frame);
     const stats = toPixelRegion(STATS_BLOCK, frame);
     const main = toPixelRegion(MAIN_STAT_ROW, frame);
@@ -117,7 +131,7 @@ describe("layout", () => {
   });
 
   it("splits SUBSTAT_BLOCK into non-overlapping label and value columns that cover it exactly", () => {
-    for (const frame of REAL_RESOLUTIONS) {
+    for (const frame of ALL_RESOLUTIONS) {
       const block = toPixelRegion(SUBSTAT_BLOCK, frame);
       const labels = toPixelRegion(SUBSTAT_LABEL_COLUMN, frame);
       const values = toPixelRegion(SUBSTAT_VALUE_COLUMN, frame);
@@ -158,9 +172,53 @@ describe("layout", () => {
     }
   });
 
+  it("accepts 16:9", () => {
+    for (const frame of SIXTEEN_NINE_RESOLUTIONS) {
+      expect(isSupportedAspect(frame)).toBe(true);
+      expect(matchSupportedAspect(frame)).toBeCloseTo(16 / 9);
+    }
+  });
+
   it("rejects a very different aspect ratio (e.g. a webcam or unrelated capture)", () => {
-    expect(isSupportedAspect({ width: 1920, height: 1080 })).toBe(false); // 16:9
     expect(isSupportedAspect({ width: 640, height: 480 })).toBe(false); // 4:3
+    expect(isSupportedAspect({ width: 3440, height: 1440 })).toBe(false); // 21:9 ultrawide
+  });
+
+  it("leaves regions unchanged on 16:10 frames, including ones a few pixels off exact 16:10", () => {
+    for (const frame of REAL_RESOLUTIONS) {
+      expect(regionForFrame(SET_ICON_BOX, frame)).toBe(SET_ICON_BOX);
+    }
+    // Snaps to 16:10 rather than scaling by 2800x1752's exact 1.598 ratio.
+    expect(toPixelRegion(MAIN_STAT_ROW, { width: 2800, height: 1752 }).y).toBe(Math.round(0.384 * 1752));
+  });
+
+  it("maps 16:9 by keeping x fractions and scaling y fractions by 10/9 (UI scales with width, top-anchored)", () => {
+    const mapped = regionForFrame(MAIN_STAT_ROW, { width: 1920, height: 1080 });
+    expect(mapped.x).toBe(MAIN_STAT_ROW.x);
+    expect(mapped.width).toBe(MAIN_STAT_ROW.width);
+    expect(mapped.y).toBeCloseTo((MAIN_STAT_ROW.y * 10) / 9);
+    expect(mapped.height).toBeCloseTo((MAIN_STAT_ROW.height * 10) / 9);
+  });
+
+  it("lands on the targets measured off a real 16:9 screenshot (1400x788)", () => {
+    const frame = { width: 1400, height: 788 };
+    // Pixel positions read off the screenshot itself: the set icon sits at
+    // ~(1018-1040, 145-166); "Crit. DMG" main-stat text starts at x≈998, y≈340.
+    const icon = toPixelRegion(SET_ICON_BOX, frame);
+    expect(icon.x).toBeLessThanOrEqual(1018);
+    expect(icon.x + icon.width).toBeGreaterThanOrEqual(1040);
+    expect(icon.y).toBeLessThanOrEqual(145);
+    expect(icon.y + icon.height).toBeGreaterThanOrEqual(166);
+    const main = toPixelRegion(MAIN_STAT_ROW, frame);
+    expect(main.x).toBeCloseTo(998, -1);
+    expect(main.y).toBeGreaterThanOrEqual(330);
+    expect(main.y).toBeLessThanOrEqual(342);
+  });
+
+  it("maps debug overlay percentages with the same 16:9 scaling as the crops", () => {
+    const style = regionPercentStyle(MAIN_STAT_ROW, { width: 1920, height: 1080 });
+    expect(parseFloat(style.left)).toBeCloseTo(MAIN_STAT_ROW.x * 100);
+    expect(parseFloat(style.top)).toBeCloseTo(((MAIN_STAT_ROW.y * 10) / 9) * 100);
   });
 
   it("resolves fractional regions to integer pixels", () => {
