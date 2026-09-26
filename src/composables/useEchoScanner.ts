@@ -784,9 +784,12 @@ export function useEchoScanner() {
     // Opened here, inside the Start click, or the browser keeps it suspended.
     if (captureCueEnabled.value) captureCue.open();
     try {
-      await initWorkers();
+      // Share first: getDisplayMedia needs the Start click's transient
+      // activation, which a cold Tesseract load in initWorkers can outlast
+      // (Chrome ~5s, stricter elsewhere) → InvalidStateError.
       frameSource = await createScreenShareSource();
       previewVideoEl.value = frameSource.videoEl;
+      await initWorkers();
       status.value = "running";
       trackSessionStart("live");
       frameSource.start((tick) => {
@@ -794,6 +797,9 @@ export function useEchoScanner() {
         handleTick();
       });
     } catch (err) {
+      // Worker init can fail after the share is already up — end it, or
+      // the browser's sharing indicator stays on.
+      releaseCapture();
       trackError("live", "start", err);
       errorMessage.value = err instanceof Error ? err.message : String(err);
       status.value = "error";
