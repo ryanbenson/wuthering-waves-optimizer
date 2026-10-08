@@ -34,8 +34,9 @@ function renderList(slots: EchoCardSubstatSlot[]) {
 }
 
 describe("EchoCardSubstatList", () => {
-  it("gives a filled slot a neutral border when the liveResultBar flag is off", () => {
+  it("gives a filled slot a neutral border in the classic UI", () => {
     setActivePinia(createPinia());
+    useSettingsStore().config = { useClassicUi: true };
     const { container } = renderList([filledSlot()]);
     const row = container.querySelector("[data-test-echo-card-substat='0']");
     expect(row?.className).toContain("border-l-base-300");

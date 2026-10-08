@@ -25,7 +25,10 @@ describe("UpdatesView", () => {
   it("renders one heading and one list per entry, in source order", async () => {
     render(UpdatesView, {
       global: {
-        plugins: [router, createTestingPinia({ stubActions: false })],
+        plugins: [router, createTestingPinia({
+            stubActions: false,
+            initialState: { settings: { config: { useClassicUi: true } } },
+          })],
       },
     });
 

@@ -560,6 +560,7 @@ import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { trackEvent } from "../utils/analytics";
 import { useRoute } from "vue-router";
@@ -696,7 +697,7 @@ export default defineComponent({
 
     // Live Result Bar (Labs flag) — see src/calculator/liveResultBar.ts.
     const isLiveResultBarEnabled = computed(
-      () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+      () => isV3UiEnabled(settingsStore),
     );
     const liveResultBarTarget = ref(null);
     const liveResultBarDamageType = ref("Average");

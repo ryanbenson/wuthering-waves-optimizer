@@ -95,10 +95,11 @@
 import { computed } from "vue";
 import Nav from "../components/navigation/Nav.vue";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 </script>
 

@@ -79,6 +79,10 @@ const characterStore = useCharacterStore();
 import { useInventoryStore } from "./stores/inventory";
 const inventoryStore = useInventoryStore();
 
+// Count sessions still on the classic UI (ADR 0038). Needs Pinia, so after .use(pinia).
+import { reportClassicUiSession } from "./composables/useClassicUi";
+reportClassicUiSession();
+
 // prevent bfcache
 window.addEventListener("unload", () => {
   console.log("unloading app");

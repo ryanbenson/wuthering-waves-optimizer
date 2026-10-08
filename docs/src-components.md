@@ -2,6 +2,8 @@
 
 All Vue components that power the app live here. The **Calculator** is the main orchestrator: it owns the calculation state, wires stores and character/echo/weapon data, and drives stats and damage updates.
 
+> **"Behind the `liveResultBar` Labs flag" = the v3 UI.** Since ADR [0038](./adr/0038-v3-ui-default.md), v3 is the default and classic is an opt-in (`config.useClassicUi`). Every branch goes through `isV3UiEnabled()` (`src/utils/uiVersion.ts`); "flag on/off" below means "v3/classic". Switching lives in the theme menu's Interface section (`ThemeChooser.vue`), Settings → Preferences, and the "What's new" modal (`AppUpdateBanner.vue`, shown for announcements with `whatsNew: true`).
+
 ## Calculator.vue — main orchestrator
 
 **Location**: `src/components/Calculator.vue`

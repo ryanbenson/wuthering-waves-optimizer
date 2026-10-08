@@ -221,6 +221,7 @@ import AppOverflowMenu from "./AppOverflowMenu.vue";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -359,7 +360,7 @@ watch(currentCharacter, () => void recomputeCharacterContext(), { deep: true });
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 // Rotation Flow (Labs) list/summary — sort-driven ranking replaces manual

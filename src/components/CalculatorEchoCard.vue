@@ -542,6 +542,7 @@ import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 const props = withDefaults(
   defineProps<{
@@ -616,7 +617,7 @@ const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass }
 // exactly as it was before that redesign touched this file.
 const settingsStore = useSettingsStore() as any;
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 function substatColorClasses(type: string, value: number | string) {
   return isLiveResultBarEnabled.value ? getSubstatRollQualityClasses(type, value) : null;

@@ -259,6 +259,7 @@ import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
@@ -289,7 +290,7 @@ const inventoryStore = useInventoryStore() as any;
 const settingsStore = useSettingsStore() as any;
 
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 const echoesImporter = ref<any>(null);

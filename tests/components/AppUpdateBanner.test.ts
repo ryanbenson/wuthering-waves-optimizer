@@ -19,13 +19,10 @@ const router = createRouter({
 const testAnnouncement: Announcement = {
   date: "2026-09-29",
   headline: "Version 3.7 (first half) is up!",
+  whatsNew: true,
 };
 
-// The action buttons are hidden by default (see showActions in the
-// component); tests exercising them opt back in.
-function renderBanner(
-  props: { showActions?: boolean; announcement?: Announcement | null } = { showActions: true },
-) {
+function renderBanner(props: { announcement?: Announcement | null } = {}) {
   return render(AppUpdateBanner, {
     props: { announcement: testAnnouncement, ...props },
     global: { plugins: [router] },
@@ -50,44 +47,20 @@ describe("AppUpdateBanner", () => {
     expect(getByText("Version 3.7 (first half) is up!")).toBeTruthy();
   });
 
-  it("hides the v3 toggle and 'See what's new' by default, leaving only dismiss", () => {
-    const { container } = renderBanner({});
+  it("shows only dismiss for an announcement without whatsNew", () => {
+    const { container } = renderBanner({
+      announcement: { date: "2026-09-29", headline: "Version 3.7 (first half) is up!" },
+    });
     const buttons = container.querySelectorAll("[data-test-update-banner] button");
     expect(buttons).toHaveLength(1);
     expect(buttons[0].hasAttribute("data-test-update-banner-dismiss")).toBe(true);
   });
 
-  it("shows the 'Try the v3 UI' CTA when the flag is off, and enables it on click", async () => {
-    const settingsStore = useSettingsStore() as any;
+  it("has no v3/classic switch in the banner itself, only 'See what's new' and dismiss", () => {
     const { container } = renderBanner();
-    // The same label also lives in the (unopened) modal, so target the
-    // banner's own copy of the button by its data-test hook.
-    const enableBtn = container.querySelector("[data-test-update-banner-enable-v3]")!;
-    await fireEvent.click(enableBtn);
-    expect(settingsStore.labs?.liveResultBar?.isEnabled).toBe(true);
-  });
-
-  it("shows a 'Switch back to classic UI' button in place of the CTA once the flag is on, and disables it on click", async () => {
-    const settingsStore = useSettingsStore() as any;
-    settingsStore.upsertLab({ liveResultBar: { isEnabled: true } });
-    const { queryByText, getByText, container } = renderBanner();
-    expect(queryByText("Try the v3 UI")).toBeNull();
-    expect(getByText("See what's new")).toBeTruthy();
-
-    const disableBtn = container.querySelector("[data-test-update-banner-disable-v3]")!;
-    await fireEvent.click(disableBtn);
-    expect(settingsStore.labs?.liveResultBar?.isEnabled).toBe(false);
-  });
-
-  it("headline stays the same regardless of the flag", () => {
-    const settingsStore = useSettingsStore() as any;
-    const off = renderBanner();
-    expect(off.getByText("Version 3.7 (first half) is up!")).toBeTruthy();
-    off.unmount();
-
-    settingsStore.upsertLab({ liveResultBar: { isEnabled: true } });
-    const on = renderBanner();
-    expect(on.getByText("Version 3.7 (first half) is up!")).toBeTruthy();
+    const buttons = container.querySelectorAll("[data-test-update-banner] button");
+    expect(buttons).toHaveLength(2);
+    expect(buttons[0].hasAttribute("data-test-update-banner-changelog")).toBe(true);
   });
 
   it("'See what's new' opens the v3 features modal instead of navigating away", async () => {
@@ -141,31 +114,25 @@ describe("AppUpdateBanner", () => {
     expect(getByText("Full changelog").closest("a")?.getAttribute("href")).toBe("/updates");
   });
 
-  it("the modal enables v3 UI and closes when the flag is off", async () => {
+  it("the modal offers the classic UI by default, switches to it and closes", async () => {
     const settingsStore = useSettingsStore() as any;
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]");
-    // "Try the v3 UI" also appears in the banner itself while the flag is
-    // off, so target the modal's copy of the button by its data-test hook.
-    const modalEnableBtn = dialog!.querySelector("[data-test-whats-new-enable-v3]")!;
-    await fireEvent.click(modalEnableBtn);
-    expect(settingsStore.labs?.liveResultBar?.isEnabled).toBe(true);
-    expect(dialog?.hasAttribute("open")).toBe(false);
+    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    expect(dialog.querySelector("[data-test-whats-new-use-v3]")).toBeNull();
+    await fireEvent.click(dialog.querySelector("[data-test-whats-new-use-classic]")!);
+    expect(settingsStore.config?.useClassicUi).toBe(true);
+    expect(dialog.hasAttribute("open")).toBe(false);
   });
 
-  it("the modal offers 'Switch back to classic UI' and disables the flag when it's on", async () => {
+  it("the modal offers v3 to a classic UI user and switches back", async () => {
     const settingsStore = useSettingsStore() as any;
-    settingsStore.upsertLab({ liveResultBar: { isEnabled: true } });
+    settingsStore.addToConfig({ useClassicUi: true });
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]");
-    // The banner itself also shows a "Switch back to classic UI" button once
-    // the flag is on, so target the modal's copy by its data-test hook.
-    const modalDisableBtn = dialog!.querySelector("[data-test-whats-new-disable-v3]")!;
-    await fireEvent.click(modalDisableBtn);
-    expect(settingsStore.labs?.liveResultBar?.isEnabled).toBe(false);
-    expect(dialog?.hasAttribute("open")).toBe(false);
+    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    await fireEvent.click(dialog.querySelector("[data-test-whats-new-use-v3]")!);
+    expect(settingsStore.config?.useClassicUi).toBe(false);
   });
 
   it("dismiss persists the announcement's date and hides the banner", async () => {

@@ -74,7 +74,8 @@ describe("CalculatorRotationAction Rotation Flow (Labs)", () => {
     setActivePinia(createPinia());
   });
 
-  it("keeps the legacy Configure Stats UI and hides the new controls when the flag is off", () => {
+  it("keeps the legacy Configure Stats UI and hides the new controls in the classic UI", () => {
+    useSettingsStore().config = { useClassicUi: true };
     const { container } = renderAction();
     expect(container.querySelector("[data-test-rotation-action-configure-stats]")).not.toBeNull();
     expect(container.querySelector("[data-test-rotation-action-manage-buffs]")).toBeNull();

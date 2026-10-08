@@ -130,6 +130,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
@@ -201,7 +202,7 @@ const emit = defineEmits<{
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 const showAdvancedBuffs = ref(false);

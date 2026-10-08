@@ -661,6 +661,7 @@ import {
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import InventoryEchoTile from "./InventoryEchoTile.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
@@ -711,7 +712,7 @@ const inventoryEchoEditRef = ref<
   | null
 >(null);
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 const isEchoScanningEnabled = computed(
   () => settingsStore.labs?.echoScanning?.isEnabled ?? false,

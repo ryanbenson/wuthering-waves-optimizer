@@ -332,6 +332,7 @@ import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import AppRichSelect, {
@@ -503,7 +504,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 const isEditing = ref(false);

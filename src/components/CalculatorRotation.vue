@@ -516,6 +516,7 @@ import {
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import {
   applyBulkAdvancedConfigOverride,
   hasAdvancedConfigOverrides,
@@ -612,7 +613,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 const isOpenLocal = ref(false);

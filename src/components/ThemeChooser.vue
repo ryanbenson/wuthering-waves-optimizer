@@ -76,6 +76,27 @@
             </svg>
           </button>
         </li>
+        <li class="menu-title text-xs mt-2">Interface</li>
+        <li v-for="option in uiOptions" :key="option.label">
+          <button
+            type="button"
+            class="gap-3 px-2"
+            :data-set-ui="option.classic ? 'classic' : 'v3'"
+            @click="setClassicUi(option.classic, 'theme-menu')">
+            <div class="w-32 truncate">{{ option.label }}</div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="h-3 w-3 shrink-0 ml-auto"
+              :class="isClassicUi === option.classic ? 'opacity-100' : 'opacity-0'">
+              <path
+                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
+            </svg>
+          </button>
+        </li>
       </ul>
     </div>
   </div>
@@ -85,6 +106,7 @@
 import { computed, onMounted, ref } from "vue";
 import { THEME_OPTIONS, useTheme } from "../composables/useTheme";
 import { useUiDensity, type UiDensity } from "../composables/useUiDensity";
+import { useClassicUi } from "../composables/useClassicUi";
 
 defineOptions({ name: "ThemeChooser" });
 
@@ -95,6 +117,13 @@ const themeOptions = THEME_OPTIONS;
 const densityOptions: Array<{ value: UiDensity; label: string }> = [
   { value: "comfy", label: "Comfy" },
   { value: "compact", label: "Compact" },
+];
+
+// v3 is the default; classic is an opt-in until it's retired (ADR 0038).
+const { isClassicUi, setClassicUi } = useClassicUi();
+const uiOptions = [
+  { classic: false, label: "v3 (default)" },
+  { classic: true, label: "Classic" },
 ];
 
 const theme = ref("dark");

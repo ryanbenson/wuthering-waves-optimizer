@@ -11,6 +11,19 @@ Cypress.on("uncaught:exception", (err) => {
   return true;
 });
 
+// The v3 UI is the app's default (ADR 0038). Specs that don't seed their own
+// settings keep exercising the classic UI, which stays supported until it's
+// retired. Registered here, before any spec, so a spec's own cy.visit
+// onBeforeLoad runs after this and wins (that's how v3 specs opt in).
+Cypress.on("window:before:load", (win) => {
+  if (!win.localStorage.getItem("settings")) {
+    win.localStorage.setItem(
+      "settings",
+      JSON.stringify({ config: { useClassicUi: true }, labs: {} }),
+    );
+  }
+});
+
 beforeEach(() => {
   // Google Fonts (and related) can stall window.load for tens of seconds in
   // Cypress Electron. Stub them so cy.visit resolves promptly.

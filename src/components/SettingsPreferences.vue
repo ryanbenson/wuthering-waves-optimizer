@@ -6,6 +6,27 @@
       <div :class="variant === 'v3' ? '' : 'card-body'">
         <label class="label cursor-pointer justify-start gap-4">
           <input
+            v-model="useClassicUiPref"
+            type="checkbox"
+            class="toggle toggle-primary"
+            data-test-use-classic-ui />
+          <span>
+            <span :class="variant === 'v3' ? 'font-bold text-base block' : 'label-text font-bold block'">
+              Use the classic UI
+            </span>
+            <span :class="variant === 'v3' ? 'text-sm opacity-70' : 'text-sm text-neutral-content'">
+              Switch back to the previous layout. Your builds, echoes and settings are shared
+              between both, so you can switch any time. You can also switch from the theme menu.
+            </span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div :class="variant === 'v3' ? 'bg-base-200 rounded-xl p-4' : 'card card-bordered card-compact bg-base-100 shadow'">
+      <div :class="variant === 'v3' ? '' : 'card-body'">
+        <label class="label cursor-pointer justify-start gap-4">
+          <input
             v-model="hideWontBuildCharacters"
             type="checkbox"
             class="toggle toggle-primary"
@@ -100,6 +121,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
+import { useClassicUi } from "../composables/useClassicUi";
 import {
   CHART_DAMAGE_METRIC_OPTIONS,
   CHART_GROUP_BY_OPTIONS,
@@ -127,6 +149,12 @@ type ChartPrefsConfig = {
   chartGroupBy?: ChartGroupBy;
   optimizerWorkerCount?: OptimizerWorkerCount;
 };
+
+const { isClassicUi, setClassicUi } = useClassicUi();
+const useClassicUiPref = computed({
+  get: () => isClassicUi.value,
+  set: (value: boolean) => setClassicUi(value, "settings"),
+});
 
 const hideWontBuildCharacters = computed({
   get: () =>

@@ -71,12 +71,6 @@ type LabFeature = { key: string; label: string; details: string };
 
 const labsFeatures = ref<LabFeature[]>([
   {
-    key: "liveResultBar",
-    label: "UI Overhaul 3.0",
-    details:
-      "A major UI overhaul. It seeks to improve the overall user experience, give you more access to insights while still providing the data you need.",
-  },
-  {
     key: "echoScanning",
     label: "Echo scanning",
     details:

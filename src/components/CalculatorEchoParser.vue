@@ -162,6 +162,7 @@ import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 import { useToast } from "../composables/useToast";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 const { showToast } = useToast();
 
@@ -210,7 +211,7 @@ const worker = ref<TessWorker | null>(null);
 const echoParserWorker = ref<Worker | null>(null);
 const imageBitmap = ref<ImageBitmap | null>(null);
 const settingsStore = useSettingsStore() as any;
-const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 // v3 saves to inventory by default; the legacy checkbox stays opt-in.
 const defaultSaveToInventory = () => isV3.value;
 const isSavingToInventory = ref(defaultSaveToInventory());
