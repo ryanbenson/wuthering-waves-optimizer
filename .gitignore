@@ -162,4 +162,5 @@ cypress/screenshots
 cypress/downloads
 
 # AI
-.serenapackages/scanner-core/dist/
+.serena
+packages/*/dist/

@@ -1,0 +1,33 @@
+{
+  "name": "@wutheringtools/formulas",
+  "version": "0.1.1",
+  "description": "Wuthering Waves damage, healing, shield, Tune Break and negative-status formulas used by Wuthering Tools, verified against in-game numbers.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "keywords": [
+    "wuthering-waves",
+    "wuwa",
+    "damage-calculator",
+    "formulas"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanbenson/wuthering-waves-optimizer.git",
+    "directory": "packages/formulas"
+  },
+  "homepage": "https://github.com/ryanbenson/wuthering-waves-optimizer/tree/master/packages/formulas#readme",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  }
+}

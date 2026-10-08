@@ -157,7 +157,16 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { createWorker } from "tesseract.js";
-import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
+import {
+  buildCardRegions,
+  isBuildCardSize,
+  parseBuildCard,
+  preprocessForOcr,
+  RECOMMENDED_OCR_PARAMS,
+  type BuildCardEchoSlot,
+  type Region,
+} from "@wutheringtools/build-card-scanner";
+import { mainEchoesData, echoCostClassMap } from "../echoes/index";
 import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 import { useToast } from "../composables/useToast";
@@ -166,25 +175,10 @@ import { isV3UiEnabled } from "../utils/uiVersion";
 
 const { showToast } = useToast();
 
-type RegionCoords = { x: number; y: number; width: number; height: number };
-
-type EchoSlotCoords = {
-  cost: RegionCoords;
-  mainStatLabel: RegionCoords;
-  substats: RegionCoords[];
-  echoImage: RegionCoords;
-  set: RegionCoords;
-};
-
-type ParsedSubstat = { subStat: string; subStatValue: string };
-
-type ParsedEchoSlot = {
-  cost: number | string | null;
-  mainStatLabel: string;
-  substats: ParsedSubstat[];
-  echo: string | null;
-  set: string | null;
-};
+// Card layout, text parsing and the read order live in @wutheringtools/build-card-scanner;
+// this component supplies the OCR (tesseract.js) and image matching (echoParser.worker).
+type RegionCoords = Region;
+type ParsedEchoSlot = BuildCardEchoSlot;
 
 const props = withDefaults(
   defineProps<{
@@ -219,31 +213,10 @@ const isSavingToInventory = ref(defaultSaveToInventory());
 const fileUpload = ref<HTMLInputElement | null>(null);
 const imageRef = ref<HTMLImageElement | null>(null);
 
-const echoCoordinates = computed((): EchoSlotCoords[] => {
-  const spacingX = 374;
-  const baseY = 674;
-  const echoesCoords: EchoSlotCoords[] = [];
-  for (let i = 0; i < 5; i++) {
-    const offsetX = i * spacingX;
-    echoesCoords.push({
-      cost: { x: 336 + offsetX, y: baseY, width: 18, height: 24 },
-      mainStatLabel: { x: 215 + offsetX, y: 720, width: 173, height: 40 },
-      substats: [
-        { x: 64 + offsetX, y: 880, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 918, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 950, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 984, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 1019, width: 320, height: 38 },
-      ],
-      echoImage: { x: 22 + offsetX, y: 650, width: 192, height: 182 },
-      set: { x: 264 + offsetX, y: 660, width: 56, height: 56 },
-    });
-  }
-  return echoesCoords;
-});
+const echoCoordinates = buildCardRegions();
 
 const allBoxes = computed(() =>
-  echoCoordinates.value.flatMap((echo) => [
+  echoCoordinates.flatMap((echo) => [
     echo.cost,
     echo.echoImage,
     echo.mainStatLabel,
@@ -332,56 +305,6 @@ function getFixedBoxStyle(box: RegionCoords) {
   };
 }
 
-function ensureValidSubStatValue(mainStat: string, value: string) {
-  if (mainStat === "Crit. Rate" && value === "17.5%") {
-    return "7.5%";
-  }
-  if (mainStat === "Crit. Rate" && value === "1.5%") {
-    return "7.5%";
-  }
-  if ((mainStat === "DEF" || mainStat === "DEF Y") && value === "11.9%") {
-    return "11.8%";
-  }
-  return value;
-}
-
-function convertCanvasToGrayscale(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-) {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    data[i] = gray;
-    data[i + 1] = gray;
-    data[i + 2] = gray;
-  }
-  ctx.putImageData(imageData, 0, 0);
-}
-
-function increaseContrast(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number,
-  factor = 1.5,
-) {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const gray = data[i];
-    const adjusted = Math.max(0, Math.min(255, (gray - 128) * factor + 128));
-    data[i] = adjusted;
-    data[i + 1] = adjusted;
-    data[i + 2] = adjusted;
-  }
-  ctx.putImageData(imageData, 0, 0);
-}
-
 async function extractTextFromRegion(coords: RegionCoords) {
   const w = worker.value;
   const img = imageElement.value;
@@ -402,8 +325,9 @@ async function extractTextFromRegion(coords: RegionCoords) {
     coords.width,
     coords.height,
   );
-  convertCanvasToGrayscale(ctx, coords.width, coords.height);
-  increaseContrast(ctx, coords.width, coords.height);
+  const imageData = ctx.getImageData(0, 0, coords.width, coords.height);
+  preprocessForOcr(imageData.data);
+  ctx.putImageData(imageData, 0, 0);
   const result = await w.recognize(canvas.toDataURL());
   return result.data.text.trim();
 }
@@ -554,97 +478,18 @@ async function matchSetRegion(
   });
 }
 
-async function parseEchoes(): Promise<ParsedEchoSlot[]> {
-  const results: ParsedEchoSlot[] = [];
-
-  for (const echo of echoCoordinates.value) {
-    let cost: number | string | null = await extractTextFromRegion(echo.cost);
-    if (cost === "<B>") {
-      cost = 4;
-    } else if (cost) {
-      const costNum = parseInt(String(cost), 10);
-      if (!isNaN(costNum)) {
-        cost = costNum;
-      } else {
-        const match = String(cost).match(/\d+/);
-        if (match) {
-          cost = parseInt(match[0], 10);
-        } else {
-          cost = null;
-        }
-      }
-    }
-    const mainStatLabel = await extractTextFromRegion(echo.mainStatLabel);
-
-    const substats: ParsedSubstat[] = [];
-    for (const sub of echo.substats) {
-      const raw = await extractTextFromRegion(sub);
-      const cleaned = raw
-        .replace(/\n/g, " ")
-        .replace(/[^\w.%+ ]/g, "")
-        .trim();
-      const m = cleaned.match(/(.+?)\s+(\d+(\.\d+)?%?)(\s|$)/);
-      if (m) {
-        substats.push({
-          subStat: m[1].trim(),
-          subStatValue: ensureValidSubStatValue(m[1].trim(), m[2].trim()),
-        });
-      } else if (cleaned) {
-        substats.push({ subStat: cleaned, subStatValue: "" });
-      }
-    }
-
-    const matchedSet = await matchSetRegionFirst(echo.set);
-    let matchedEcho: string | null = null;
-    let set: string | null = matchedSet;
-
-    if (matchedSet) {
-      let filteredEchoKeys = Object.values(mainEchoesData ?? {})
-        .filter((echoData) => echoData.sets?.includes(matchedSet))
-        .map((echoData) => echoData.key);
-
-      if (cost) {
-        filteredEchoKeys = filteredEchoKeys.filter((echoKey) => {
-          const echoData = getEchoData(echoKey);
-          const echoCost = getCostByClass(echoData.class);
-          return echoCost === cost;
-        });
-      }
-
-      matchedEcho = await matchEchoRegion(echo.echoImage, filteredEchoKeys);
-
-      if (matchedEcho) {
-        const echoData = getEchoData(matchedEcho);
-        if (!cost) {
-          cost = getCostByClass(echoData.class);
-        }
-      }
-    } else {
-      matchedEcho = await matchEchoRegion(echo.echoImage);
-      if (matchedEcho) {
-        const echoData = getEchoData(matchedEcho);
-        if (!cost) {
-          cost = getCostByClass(echoData.class);
-        }
-        const echoSets = echoData.sets ?? [];
-        if (echoSets.length === 1) {
-          set = echoSets[0];
-        } else {
-          set = await matchSetRegion(echo.set, echoSets);
-        }
-      }
-    }
-
-    results.push({
-      cost,
-      mainStatLabel: mainStatLabel.trim(),
-      substats,
-      echo: matchedEcho,
-      set,
-    });
-  }
-
-  return results;
+function parseEchoes(): Promise<ParsedEchoSlot[]> {
+  return parseBuildCard(
+    {
+      readText: extractTextFromRegion,
+      matchSet: (region, possibleSets) =>
+        possibleSets === null
+          ? matchSetRegionFirst(region)
+          : matchSetRegion(region, possibleSets),
+      matchEcho: matchEchoRegion,
+    },
+    { echoes: mainEchoesData, echoCostByClass: echoCostClassMap },
+  );
 }
 
 async function handleImageFile(file: File) {
@@ -654,7 +499,7 @@ async function handleImageFile(file: File) {
     console.time("Parse");
     imageElement.value = img;
     imageSrc.value = img.src;
-    if (img.naturalWidth !== 1920 || img.naturalHeight !== 1080) {
+    if (!isBuildCardSize(img.naturalWidth, img.naturalHeight)) {
       showToast("Image must be 1920x1080", "error");
       reset();
       return;
@@ -663,11 +508,9 @@ async function handleImageFile(file: File) {
     imageBitmap.value = await createImageBitmap(img);
 
     worker.value = await createWorker("eng");
-    const whitelist =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
     await worker.value.setParameters({
-      tessedit_char_whitelist: whitelist,
-      tessedit_pageseg_mode: 7 as never,
+      tessedit_char_whitelist: RECOMMENDED_OCR_PARAMS.tessedit_char_whitelist,
+      tessedit_pageseg_mode: RECOMMENDED_OCR_PARAMS.tessedit_pageseg_mode as never,
     });
 
     await initEchoParserWorker();

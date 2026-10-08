@@ -10,6 +10,8 @@ server, no upload. See [ADR 0032](./adr/0032-echo-screen-scanner.md) for why.
 
 The scanner's pure logic (layouts, stability, parsing, matching, review, dedupe) lives in **`packages/scanner-core/`** and is published as `@wutheringtools/scanner-core` so Wavescan can share it ([ADR 0034](adr/0034-scanner-core-package.md)). The old paths under `src/scanner/` (and `src/echoes/parsedEchoMapping.ts`, `src/utils/echoIdentity.ts`) are one-line re-exports, so imports throughout this doc still work. Edit the real files in `packages/scanner-core/src/`. The package gets game data from `src/scanner/gameData.ts` instead of importing `src/echoes/*`. Browser-only pieces (`capture.ts`, `captureCue.ts`, `analytics.ts`, the workers) stay in `src/`.
 
+The older **build card** import (`CalculatorEchoParser.vue`, the Discord bot's 1920×1080 image) is a separate parser: its layout, text parsing and read order live in **`packages/build-card-scanner/`**, published as `@wutheringtools/build-card-scanner` ([ADR 0037](adr/0037-build-card-scanner-package.md)). The component supplies tesseract.js and the `echoParser.worker` image matching as adapters.
+
 The same game data is published for the desktop scanner as **`/scanner-data.json`**. It's generated at build time by `src/scanner/scannerData.ts` via a Vite plugin, and is never committed ([ADR 0035](adr/0035-publish-scanner-data-json.md)). Its shape is a public contract: add fields additively.
 
 ## Mental model

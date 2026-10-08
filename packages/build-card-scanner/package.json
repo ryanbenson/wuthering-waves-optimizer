@@ -1,0 +1,34 @@
+{
+  "name": "@wutheringtools/build-card-scanner",
+  "version": "0.1.1",
+  "description": "Reads the five echoes off an exported Wuthering Waves build card image (the 1920×1080 card from Discord bots): layout, OCR text parsing and match order. Bring your own OCR and image matching.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "keywords": [
+    "wuthering-waves",
+    "wuwa",
+    "build-card",
+    "ocr",
+    "echoes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryanbenson/wuthering-waves-optimizer.git",
+    "directory": "packages/build-card-scanner"
+  },
+  "homepage": "https://github.com/ryanbenson/wuthering-waves-optimizer/tree/master/packages/build-card-scanner#readme",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  }
+}
