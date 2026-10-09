@@ -33,6 +33,15 @@
           Import
         </a>
         <a
+          v-if="isWavescanEnabled"
+          href="#"
+          class="tab-link text-base-content px-4 py-2"
+          :class="getActiveClasses('wavescan')"
+          @click="setTab('wavescan')"
+          data-test-settings-wavescan>
+          Wavescan
+        </a>
+        <a
           href="#"
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('advanced')"
@@ -55,6 +64,7 @@
         <SettingsPreferences v-if="tab === 'preferences'" />
         <SettingsExport v-if="tab === 'export'" />
         <SettingsImport v-if="tab === 'import'" />
+        <SettingsWavescan v-if="tab === 'wavescan' && isWavescanEnabled" />
         <SettingsDelete v-if="tab === 'advanced'" />
         <SettingsLabs v-if="tab === 'labs'" />
       </div>
@@ -63,21 +73,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
 import SettingsLabs from "./SettingsLabs.vue";
 import SettingsPreferences from "./SettingsPreferences.vue";
+import SettingsWavescan from "./SettingsWavescan.vue";
+import { useSettingsStore } from "../stores/settings";
 
 type SettingsTab =
   | "preferences"
   | "export"
   | "import"
+  | "wavescan"
   | "advanced"
   | "labs";
 
 const tab = ref<SettingsTab>("preferences");
+
+const settingsStore = useSettingsStore();
+const isWavescanEnabled = computed(
+  () => settingsStore.labs?.wavescanImport?.isEnabled ?? false,
+);
 
 function setTab(next: SettingsTab) {
   tab.value = next;

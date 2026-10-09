@@ -1,0 +1,1201 @@
+{
+  "format": "WutheringToolsScan",
+  "version": 1,
+  "meta": {
+    "scannerVersion": "0.0.1",
+    "scannedAt": "2026-10-09T15:00:06.475Z",
+    "platform": "windows",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "language": "en",
+    "mode": "watch"
+  },
+  "echoes": [
+    {
+      "scanId": "scan-echo-1",
+      "echo": "ReminiscenceSuhsintheInevitable",
+      "echoSet": "HeartofSwornVigil",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.1
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 50
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-2",
+      "echo": "ReminiscenceSuhsintheInevitable",
+      "echoSet": "HeartofSwornVigil",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "CritDMG",
+          "value": 16.2
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 7.1
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 10.8
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-3",
+      "echo": "ThousandPuppetPavilion",
+      "echoSet": "SongofFeatheredTrace",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "HealingBonus",
+      "substats": [
+        {
+          "type": "DEF_FLAT",
+          "value": 40
+        },
+        {
+          "type": "HP",
+          "value": 8.6
+        },
+        {
+          "type": "CritDMG",
+          "value": 16.2
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 11.6
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 10.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-4",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ATK_FLAT",
+          "value": 30
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 60
+        },
+        {
+          "type": "CritDMG",
+          "value": 15
+        },
+        {
+          "type": "ATK",
+          "value": 7.9
+        },
+        {
+          "type": "DEF",
+          "value": 11.8
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-5",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 390
+        },
+        {
+          "type": "CritRate",
+          "value": 8.7
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 7.1
+        },
+        {
+          "type": "DEF",
+          "value": 10.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-6",
+      "echo": "Sigillum",
+      "echoSet": "TrailblazingStar",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 17.4
+        },
+        {
+          "type": "CritRate",
+          "value": 6.9
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "HP",
+          "value": 10.1
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-7",
+      "echo": "Sigillum",
+      "echoSet": "TrailblazingStar",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "HP",
+          "value": 7.9
+        },
+        {
+          "type": "CritDMG",
+          "value": 13.8
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 510
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-8",
+      "echo": "ReminiscenceThrenodianLeviathan",
+      "echoSet": "ThreadofSeveredFate",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 6.3
+        },
+        {
+          "type": "CritDMG",
+          "value": 15
+        },
+        {
+          "type": "ATK",
+          "value": 7.9
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 430
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 9.4
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-9",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "GustsofWelkin",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritRate",
+      "substats": [
+        {
+          "type": "ATK",
+          "value": 10.1
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 40
+        },
+        {
+          "type": "CritRate",
+          "value": 8.1
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 10
+        },
+        {
+          "type": "CritDMG",
+          "value": 16.2
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-10",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 510
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 50
+        },
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-11",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 6.4
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 430
+        },
+        {
+          "type": "ATK",
+          "value": 10.1
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 8.6
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-12",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "DEF_FLAT",
+          "value": 60
+        },
+        {
+          "type": "CritDMG",
+          "value": 19.8
+        },
+        {
+          "type": "ATK",
+          "value": 7.9
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 10.9
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 8.4
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-13",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "CritDMG",
+          "value": 17.4
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 10
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 580
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 10.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-14",
+      "echo": "Dreamless",
+      "echoSet": "HavocEclipse",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 15
+        },
+        {
+          "type": "CritRate",
+          "value": 9.3
+        },
+        {
+          "type": "HP",
+          "value": 7.9
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 7.1
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-15",
+      "echo": "Dreamless",
+      "echoSet": "HavocEclipse",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritRate",
+      "substats": [
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 50
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 7.1
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 50
+        },
+        {
+          "type": "CritRate",
+          "value": 8.1
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-16",
+      "echo": "BellBorneGeochelone",
+      "echoSet": "RejuvenatingGlow",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "HealingBonus",
+      "substats": [
+        {
+          "type": "ATK",
+          "value": 10.1
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 50
+        },
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "DEF",
+          "value": 9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-17",
+      "echo": "BellBorneGeochelone",
+      "echoSet": "RejuvenatingGlow",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "ATK",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "HP",
+          "value": 7.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-18",
+      "echo": "BellBorneGeochelone",
+      "echoSet": "RejuvenatingGlow",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "HP",
+      "substats": [
+        {
+          "type": "EnergyRegen",
+          "value": 10
+        },
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 40
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 9.4
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-19",
+      "echo": "ThousandPuppetPavilion",
+      "echoSet": "SongofFeatheredTrace",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "CritRate",
+          "value": 6.3
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 30
+        },
+        {
+          "type": "ATK",
+          "value": 10.9
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 430
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-20",
+      "echo": "ThousandPuppetPavilion",
+      "echoSet": "SongofFeatheredTrace",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "CritDMG",
+          "value": 19.8
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        },
+        {
+          "type": "ATK",
+          "value": 10.1
+        },
+        {
+          "type": "CritRate",
+          "value": 8.1
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-21",
+      "echo": "ReminiscenceDenia",
+      "echoSet": "ChromaticFoam",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 18.6
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "CritRate",
+          "value": 8.7
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-22",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "CritRate",
+          "value": 10.5
+        },
+        {
+          "type": "HP",
+          "value": 10.1
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 390
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-23",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 15
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "DEF",
+          "value": 11.8
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 9.2
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 8.6
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-24",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "EnergyRegen",
+          "value": 10
+        },
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 6.4
+        },
+        {
+          "type": "CritDMG",
+          "value": 17.4
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 60
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-25",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 540
+        },
+        {
+          "type": "DEF",
+          "value": 8.1
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-26",
+      "echo": "ReminiscenceThrenodianVoidborneConstruct",
+      "echoSet": "WishesofQuietSnowfall",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 18.6
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.1
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        },
+        {
+          "type": "DEF",
+          "value": 11.8
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-27",
+      "echo": "Sigillum",
+      "echoSet": "TrailblazingStar",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "EnergyRegen",
+          "value": 10.8
+        },
+        {
+          "type": "CritDMG",
+          "value": 15
+        },
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "DEF",
+          "value": 12.8
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-28",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "WindwardPilgrimage",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "CritRate",
+          "value": 6.9
+        },
+        {
+          "type": "DEF",
+          "value": 10
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 8.4
+        },
+        {
+          "type": "CritDMG",
+          "value": 17.4
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-29",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "WindwardPilgrimage",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 17.4
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "DEF",
+          "value": 10
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-30",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "WindwardPilgrimage",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 8.7
+        },
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 6.8
+        },
+        {
+          "type": "ATK",
+          "value": 8.6
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-31",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "WindwardPilgrimage",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritRate",
+          "value": 6.3
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 390
+        },
+        {
+          "type": "ATK",
+          "value": 10.1
+        },
+        {
+          "type": "CritDMG",
+          "value": 12.6
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 50
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-32",
+      "echo": "ReminiscenceFleurdelys",
+      "echoSet": "GustsofWelkin",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 21
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 40
+        },
+        {
+          "type": "HeavyAttackDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 9.2
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-33",
+      "echo": "Hecate",
+      "echoSet": "EmpyreanAnthem",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritRate",
+      "substats": [
+        {
+          "type": "ATK",
+          "value": 8.6
+        },
+        {
+          "type": "CritRate",
+          "value": 7.5
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 40
+        },
+        {
+          "type": "ATK_FLAT",
+          "value": 50
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-34",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "DEF",
+          "value": 12.8
+        },
+        {
+          "type": "CritRate",
+          "value": 9.3
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 10.1
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 9.2
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 50
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-35",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "CritDMG",
+          "value": 13.8
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 60
+        },
+        {
+          "type": "ResonanceLiberationDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 7.9
+        },
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 7.9
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-36",
+      "echo": "Jué",
+      "echoSet": "CelestialLight",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "ResonanceSkillDMGBonus",
+          "value": 8.6
+        },
+        {
+          "type": "CritRate",
+          "value": 6.9
+        },
+        {
+          "type": "HP_FLAT",
+          "value": 390
+        },
+        {
+          "type": "HP",
+          "value": 8.6
+        },
+        {
+          "type": "EnergyRegen",
+          "value": 9.2
+        }
+      ],
+      "equippedBy": null
+    },
+    {
+      "scanId": "scan-echo-37",
+      "echo": "Dreamless",
+      "echoSet": "HavocEclipse",
+      "cost": 4,
+      "rank": 5,
+      "level": 25,
+      "stat": "CritDMG",
+      "substats": [
+        {
+          "type": "BasicAttackDMGBonus",
+          "value": 9.4
+        },
+        {
+          "type": "DEF_FLAT",
+          "value": 50
+        },
+        {
+          "type": "CritRate",
+          "value": 6.9
+        },
+        {
+          "type": "ATK",
+          "value": 7.9
+        },
+        {
+          "type": "HP",
+          "value": 9.4
+        }
+      ],
+      "equippedBy": null
+    }
+  ]
+}

@@ -16,6 +16,7 @@
         <SettingsPreferences v-if="activeSection === 'preferences'" variant="v3" />
         <SettingsBackupRestore v-else-if="activeSection === 'backup-restore'" />
         <SettingsDelete v-else-if="activeSection === 'danger-zone'" variant="v3" />
+        <SettingsWavescan v-else-if="activeSection === 'wavescan' && isWavescanEnabled" />
         <SettingsLabs v-else-if="activeSection === 'labs'" variant="v3" />
       </div>
     </div>
@@ -25,12 +26,19 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
-type SectionId = "preferences" | "backup-restore" | "danger-zone" | "labs";
+type SectionId =
+  | "preferences"
+  | "backup-restore"
+  | "danger-zone"
+  | "wavescan"
+  | "labs";
 
 import SettingsBackupRestore from "./SettingsBackupRestore.vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsLabs from "./SettingsLabs.vue";
 import SettingsPreferences from "./SettingsPreferences.vue";
+import SettingsWavescan from "./SettingsWavescan.vue";
+import { useSettingsStore } from "../stores/settings";
 import WorkspaceSideNav, { type WorkspaceNavGroup } from "./WorkspaceSideNav.vue";
 
 // Hand-inlined icons (rendered via v-html), matching the convention already
@@ -50,12 +58,20 @@ const ICONS = {
   dangerZone: svgIcon(
     '<polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>',
   ),
+  wavescan: svgIcon(
+    '<path d="M3 7V5a2 2 0 012-2h2"></path><path d="M17 3h2a2 2 0 012 2v2"></path><path d="M21 17v2a2 2 0 01-2 2h-2"></path><path d="M7 21H5a2 2 0 01-2-2v-2"></path><line x1="7" y1="12" x2="17" y2="12"></line>',
+  ),
   labs: svgIcon(
     '<path d="M9 2v6.3L4.2 17a2 2 0 001.8 3h12a2 2 0 001.8-3L15 8.3V2"></path><line x1="8.5" y1="2" x2="15.5" y2="2"></line><line x1="8" y1="15" x2="16" y2="15"></line>',
   ),
 };
 
-const sectionGroups: WorkspaceNavGroup[] = [
+const settingsStore = useSettingsStore();
+const isWavescanEnabled = computed(
+  () => settingsStore.labs?.wavescanImport?.isEnabled ?? false,
+);
+
+const sectionGroups = computed<WorkspaceNavGroup[]>(() => [
   {
     label: "General",
     items: [{ id: "preferences", label: "Preferences", icon: ICONS.preferences }],
@@ -64,6 +80,9 @@ const sectionGroups: WorkspaceNavGroup[] = [
     label: "Your Data",
     items: [
       { id: "backup-restore", label: "Backup & Restore", icon: ICONS.backupRestore },
+      ...(isWavescanEnabled.value
+        ? [{ id: "wavescan", label: "Wavescan", icon: ICONS.wavescan }]
+        : []),
       { id: "danger-zone", label: "Danger Zone", icon: ICONS.dangerZone },
     ],
   },
@@ -71,13 +90,15 @@ const sectionGroups: WorkspaceNavGroup[] = [
     label: "Labs",
     items: [{ id: "labs", label: "Labs", icon: ICONS.labs, badge: "1" }],
   },
-];
+]);
 
-const allSections = sectionGroups.flatMap((g) => g.items);
+const allSections = computed(() => sectionGroups.value.flatMap((g) => g.items));
 
 const activeSection = ref<SectionId>("preferences");
 const activeSectionMeta = computed(
-  () => allSections.find((s) => s.id === activeSection.value) ?? allSections[0],
+  () =>
+    allSections.value.find((s) => s.id === activeSection.value) ??
+    allSections.value[0],
 );
 
 function selectSection(id: string) {
