@@ -135,10 +135,16 @@ export function useEchoInventory() {
       return false;
     }
 
+    // Read who has it equipped before the mapping is deleted, or the
+    // characters keep a copy of an echo that's no longer in the inventory.
+    const equippedCharsData = { ...inventoryStore.getEquippedEchoData(echoId) };
     await inventoryStore.deleteEcho(echoId);
     await inventoryStore.deleteEchoEquippedMapping(echoId);
-    const equippedCharsData = inventoryStore.getEquippedEchoData(echoId);
     for (const [character, index] of Object.entries(equippedCharsData)) {
+      // Only clear the slot if it still holds this echo — a stale mapping
+      // (deleted character, slot since reassigned) must not wipe another echo.
+      const slot = characterStore.characters?.[character]?.echoes?.[Number(index)];
+      if (slot?.echoId !== echoId) continue;
       await characterStore.removeCharacterEcho(character, Number(index));
     }
     return true;
