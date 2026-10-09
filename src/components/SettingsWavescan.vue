@@ -8,14 +8,29 @@
 
     <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
       <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
-        Wavescan file
+        Wavescan data
       </div>
+      <p class="text-sm opacity-70">Upload the exported file…</p>
       <input
         type="file"
         accept=".json,application/json"
         class="file-input file-input-bordered file-input-sm max-w-sm"
         @change="handleFileChange"
         data-test-wavescan-file-input />
+      <p class="text-sm opacity-70">…or paste what Wavescan copied.</p>
+      <textarea
+        v-model="pastedText"
+        class="textarea textarea-bordered text-xs font-mono max-w-xl"
+        rows="4"
+        placeholder='{ "format": "WutheringToolsScan", ... }'
+        data-test-wavescan-paste></textarea>
+      <button
+        class="btn btn-sm btn-primary self-start"
+        :disabled="!pastedText.trim()"
+        @click="handlePaste"
+        data-test-wavescan-paste-button>
+        Read pasted data
+      </button>
       <p v-if="parseError" class="text-sm text-error" data-test-wavescan-error>
         {{ parseError }}
       </p>
@@ -101,7 +116,8 @@
 
 <script setup lang="ts">
 /**
- * Labs-gated (`wavescanImport`) import of a Wavescan export file. Parsing,
+ * Labs-gated (`wavescanImport`) import of a Wavescan export, uploaded as a
+ * file or pasted as text. Parsing,
  * validation and the append/replace plan live in src/wavescan/ (pure);
  * this panel only reads the file, asks how to apply it, and applies it.
  * See docs/wavescan-import.md and ADR 0038.
@@ -129,6 +145,7 @@ const meta = ref<WavescanMeta | null>(null);
 const mapped = ref<WavescanEchoMapResult | null>(null);
 const mode = ref<WavescanImportMode>("append");
 const isImporting = ref(false);
+const pastedText = ref("");
 
 const scannedAtLabel = computed(() => {
   const scannedAt = meta.value?.scannedAt;
@@ -164,6 +181,15 @@ async function handleFileChange(event: Event) {
     parseError.value = "Couldn't read that file.";
     return;
   }
+  loadRaw(raw);
+}
+
+function handlePaste() {
+  reset();
+  loadRaw(pastedText.value);
+}
+
+function loadRaw(raw: string) {
   const result = parseWavescanFile(raw);
   if (!result.ok) {
     parseError.value = result.error;

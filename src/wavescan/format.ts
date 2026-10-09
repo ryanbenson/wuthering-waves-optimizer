@@ -59,7 +59,7 @@ export function parseWavescanFile(raw: string): WavescanParseResult {
   try {
     data = JSON.parse(raw);
   } catch {
-    return { ok: false, error: "This file isn't valid JSON." };
+    return { ok: false, error: "This isn't valid JSON." };
   }
   if (!isRecord(data) || data.format !== WAVESCAN_FORMAT) {
     return { ok: false, error: "This doesn't look like a Wavescan export." };

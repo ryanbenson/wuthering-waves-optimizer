@@ -1,6 +1,6 @@
 # Wavescan import
 
-Imports the JSON file exported by Wavescan, the desktop scanner. It's behind the **Import with Wavescan** Labs flag (`settingsStore.labs.wavescanImport`). When the flag is on, Settings shows a **Wavescan** section: under "Your Data" in the v3 workspace, or as a tab in the legacy settings page. For the reasoning behind it, see [ADR 0038](adr/0038-wavescan-import.md).
+Imports the JSON exported by Wavescan, the desktop scanner — uploaded as a file or pasted as text. It's behind the **Import with Wavescan** Labs flag (`settingsStore.labs.wavescanImport`). When the flag is on, Settings shows a **Wavescan** section: under "Your Data" in the v3 workspace, or as a tab in the legacy settings page. For the reasoning behind it, see [ADR 0038](adr/0038-wavescan-import.md).
 
 ## Where the code lives
 
@@ -8,7 +8,7 @@ Imports the JSON file exported by Wavescan, the desktop scanner. It's behind the
 |------|------|
 | `src/wavescan/format.ts` | File types and `parseWavescanFile`, which checks format and version only |
 | `src/wavescan/echoes.ts` | `mapWavescanEchoes` (validate and map rows) and `planWavescanEchoImport` (append/replace diff). Pure code |
-| `src/components/SettingsWavescan.vue` | Reads the file, picks the mode, confirms a replace, and applies the plan to the inventory store |
+| `src/components/SettingsWavescan.vue` | Reads the uploaded file or pasted text, picks the mode, confirms a replace, and applies the plan to the inventory store |
 | `fixtures/wavescan.json` | A real sample export, used by the tests |
 | `tests/wavescan/`, `tests/components/SettingsWavescan.test.ts` | Unit and component tests |
 

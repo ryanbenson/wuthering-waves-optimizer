@@ -54,6 +54,28 @@ describe("SettingsWavescan", () => {
     expect(inventoryStore.echoes[0].echoId).toBe("existing");
   });
 
+  it("reads pasted data the same way as an uploaded file", async () => {
+    const inventoryStore = useInventoryStore();
+    const { container, findByText } = render(SettingsWavescan);
+    const textarea = container.querySelector("[data-test-wavescan-paste]")!;
+    await fireEvent.update(textarea, JSON.stringify(fixture));
+    await fireEvent.click(container.querySelector("[data-test-wavescan-paste-button]")!);
+    await findByText(/ready to import/);
+    await fireEvent.click(container.querySelector("[data-test-wavescan-import-echoes]")!);
+
+    await waitFor(() =>
+      expect(inventoryStore.echoes).toHaveLength(fixture.echoes.length),
+    );
+  });
+
+  it("shows a parse error for pasted text that isn't JSON", async () => {
+    const { container, findByText } = render(SettingsWavescan);
+    const textarea = container.querySelector("[data-test-wavescan-paste]")!;
+    await fireEvent.update(textarea, "not json");
+    await fireEvent.click(container.querySelector("[data-test-wavescan-paste-button]")!);
+    expect(await findByText("This isn't valid JSON.")).toBeTruthy();
+  });
+
   it("replace asks first, then keeps only locked echoes plus the scan", async () => {
     confirmMock.mockResolvedValue(true);
     const inventoryStore = useInventoryStore();
