@@ -35,6 +35,10 @@ tags: [scanner, data, interop]
 - **Do** add new fields additively. Bump `SCANNER_DATA_VERSION` only for breaking changes, and coordinate with Wavescan.
 - **Don't** add anything user-specific or large (images are URLs only).
 
+## Updates
+
+- 2026-10-10: echoes also carry `icon`, the URL of the echo's picture on the assets site (or null). Additive, so `version` stays 1. Wavescan bundles small copies (from wherever the URL points) to show next to echo names.
+
 ## Related
 
 - `src/scanner/scannerData.ts`, `vite.config.ts`, `tests/scanner/scannerData.test.ts`, [ADR 0034](./0034-scanner-core-package.md)
