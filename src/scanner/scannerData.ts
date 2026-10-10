@@ -22,7 +22,15 @@ import { getWeaponsByType } from "../weapons/weapons";
 /** Bump when the shape of `data` changes in a way consumers must handle. */
 export const SCANNER_DATA_VERSION = 1;
 
+/** An echo as published: what scanner-core needs, plus its picture for display. */
+export interface ScannerDataEcho extends ScannerEcho {
+  /** URL of the echo's picture on the assets site, or null if it has none. */
+  icon: string | null;
+}
+
 export interface ScannerDataPayload extends ScannerGameData {
+  /** Every echo, keyed by its registry key, with its picture (Wavescan shows it on echo cards). */
+  echoes: Record<string, ScannerDataEcho>;
   /** Sonata sets: display name and icon URL (for set-icon matching). */
   echoSets: Record<string, { name: string; icon: string | null }>;
   /** Playable characters (for reading "Equipped by …" and, later, character scans). */
@@ -56,9 +64,15 @@ type WeaponTiers = Record<string, { key: string; name: string }[]>;
 export function buildScannerData(): ScannerDataPayload {
   const echoes = Object.fromEntries(
     Object.values(mainEchoesData)
-      .map((echo): [string, ScannerEcho] => [
+      .map((echo): [string, ScannerDataEcho] => [
         echo.key,
-        { key: echo.key, name: echo.name, class: echo.class, sets: [...(echo.sets ?? [])] },
+        {
+          key: echo.key,
+          name: echo.name,
+          class: echo.class,
+          sets: [...(echo.sets ?? [])],
+          icon: echo.image || null,
+        },
       ])
       .sort(([a], [b]) => a.localeCompare(b)),
   );

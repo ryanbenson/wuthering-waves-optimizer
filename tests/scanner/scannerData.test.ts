@@ -20,9 +20,16 @@ describe("scanner-data.json", () => {
       name: mainEchoesData.AbyssalGladius.name,
       class: mainEchoesData.AbyssalGladius.class,
       sets: mainEchoesData.AbyssalGladius.sets,
+      icon: mainEchoesData.AbyssalGladius.image,
     });
     // Only the scanner fields are published, not descriptions or buff modifiers.
-    expect(Object.keys(sample).sort()).toEqual(["class", "key", "name", "sets"]);
+    expect(Object.keys(sample).sort()).toEqual(["class", "icon", "key", "name", "sets"]);
+  });
+
+  it("gives every echo a picture URL (Wavescan bundles small copies)", () => {
+    const data = buildScannerData();
+    const missing = Object.values(data.echoes).filter((echo) => !echo.icon?.startsWith("https://"));
+    expect(missing.map((echo) => echo.key)).toEqual([]);
   });
 
   it("includes characters, weapons with rarity, and echo sets with icons", () => {
