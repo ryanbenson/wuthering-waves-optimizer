@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { useEchoInventory } from "../../src/composables/useEchoInventory";
 import { useInventoryStore } from "../../src/stores/inventory";
+import { useCharacterStore } from "../../src/stores/character";
 
 describe("useEchoInventory", () => {
   beforeEach(() => {
@@ -112,6 +113,54 @@ describe("useEchoInventory", () => {
       const removed = await removeEchoFully("e1");
 
       expect(removed).toBe(true);
+      expect(inventoryStore.getEchoById("e1")).toBeFalsy();
+    });
+  });
+
+  describe("removeEchoFully unequips the echo", () => {
+    function setup() {
+      const inventoryStore = useInventoryStore();
+      const characterStore = useCharacterStore();
+      inventoryStore.saveEcho({ echoId: "e1", echo: "AbyssalGladius" });
+      characterStore.characters = {
+        Jinhsi: {
+          echoes: [
+            { echoId: "other", echo: "Other" },
+            { echoId: "e1", echo: "AbyssalGladius" },
+          ],
+        },
+      };
+      return { inventoryStore, characterStore };
+    }
+
+    it("clears the slot of every character that has it equipped", async () => {
+      const { inventoryStore, characterStore } = setup();
+      inventoryStore.setEquippedData("e1", { Jinhsi: 1 });
+
+      await useEchoInventory().removeEchoFully("e1");
+
+      expect(characterStore.characters.Jinhsi.echoes[1]).toMatchObject({
+        echoId: null,
+        echo: null,
+      });
+      expect(characterStore.characters.Jinhsi.echoes[0].echoId).toBe("other");
+      expect(inventoryStore.equipped.e1).toBeUndefined();
+    });
+
+    it("leaves a slot alone when a stale mapping points at a different echo", async () => {
+      const { inventoryStore, characterStore } = setup();
+      inventoryStore.setEquippedData("e1", { Jinhsi: 0 });
+
+      await useEchoInventory().removeEchoFully("e1");
+
+      expect(characterStore.characters.Jinhsi.echoes[0].echoId).toBe("other");
+    });
+
+    it("ignores a mapping for a character that no longer exists", async () => {
+      const { inventoryStore } = setup();
+      inventoryStore.setEquippedData("e1", { Deleted: 0 });
+
+      await expect(useEchoInventory().removeEchoFully("e1")).resolves.toBe(true);
       expect(inventoryStore.getEchoById("e1")).toBeFalsy();
     });
   });

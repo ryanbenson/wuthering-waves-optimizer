@@ -25,6 +25,7 @@ Root agent briefing: [CLAUDE.md](../CLAUDE.md).
 | **Weapons** | Weapon definitions | [src-weapons.md](./src-weapons.md) |
 | **Workers** | Web workers (optimizer, echo parser/OCR) | [src-workers.md](./src-workers.md) |
 | **Echo scanner** | Screen-share/video echo scanner (OCR pipeline, ROI measurement) | [scanner.md](./scanner.md) |
+| **Wavescan import** | Importing the desktop scanner's export file (Labs-flagged) | [wavescan-import.md](./wavescan-import.md) |
 | **New character** | Authoring guide | [creating-new-character.md](./creating-new-character.md) |
 | **Accuracy verification** | How to verify formulas/buffs against real numbers | [accuracy-verification.md](./accuracy-verification.md) |
 

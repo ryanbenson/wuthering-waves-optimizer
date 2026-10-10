@@ -47,6 +47,36 @@ export const updateEntries: UpdateEntry[] = [
     ],
   },
   {
+    date: "2026-10-09",
+    dateLabel: "October 9, 2026",
+    items: [
+      "Fixed an edge case bug where if you delete an echo, it won't always clean up the character that had it equipped",
+      "New labs feature: Import from Wavescan - relies on the Wavescan app progress. but it allows you to use the wavescan app to scan your echoes, the past the data it finds into the import feature and it imports the echoes it scanned into your inventory",
+    ],
+  },
+  {
+    date: "2026-10-08",
+    dateLabel: "October 8, 2026",
+    items: [
+      "Fixes notification messages where they were hidden, or blocked you from clicking things outside of it.",
+      "Major code from the app is now published on npm: https://www.npmjs.com/~wutheringtools - so far it's the formulas, scanner, and build importer",
+    ],
+  },
+  {
+    date: "2026-10-07",
+    dateLabel: "October 7, 2026",
+    items: [
+      "Improved the scanner in how it handles HP stats",
+    ],
+  },
+  {
+    date: "2026-10-06",
+    dateLabel: "October 6, 2026",
+    items: [
+      "Fixes typo in Jade Serpent",
+    ],
+  },
+  {
     date: "2026-10-04",
     dateLabel: "October 4, 2026",
     items: [
