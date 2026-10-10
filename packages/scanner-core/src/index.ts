@@ -28,3 +28,4 @@ export {
   type ParsedSubstat as LooseParsedSubstat,
 } from "./parsedEchoMapping.js";
 export * from "./echoIdentity.js";
+export * from "./equippedBy.js";

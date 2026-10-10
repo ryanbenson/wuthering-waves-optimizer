@@ -1,6 +1,6 @@
 {
   "name": "@wutheringtools/scanner-core",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Wuthering Waves echo-screen scanning logic (OCR parsing, layouts, matching, dedupe) shared by Wuthering Tools and Wavescan.",
   "license": "GPL-3.0-or-later",
   "type": "module",
