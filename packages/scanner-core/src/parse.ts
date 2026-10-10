@@ -98,6 +98,9 @@ function normalize(text: string): string {
     .trim();
 }
 
+/** `normalize`, for name matchers in other modules (e.g. equippedBy.ts). */
+export const normalizeOcrText = normalize;
+
 const KNOWN_LABEL_WORDS = ["ATK", "DEF", "HP"];
 
 /**

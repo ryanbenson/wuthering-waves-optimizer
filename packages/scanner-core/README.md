@@ -139,6 +139,24 @@ const inventoryKeys = buildIdentityKeySet(existingEchoes);
 const alreadyOwned = inventoryKeys.has(getEchoIdentityKey(echo));
 ```
 
+### 5. Who it's equipped by
+
+Below the Echo Skill description, an equipped echo shows "Equipped by <name>". Its height depends on the description's length, so OCR a tall band and pass every line:
+
+```ts
+import { matchEquippedBy, PLAYER_CHARACTER_KEY } from "@wutheringtools/scanner-core";
+
+// characters: every playable character, { key, name }[] (Wavescan: scanner-data.json `characters`).
+// playerName: the name the player gave the main character in game, or null if unknown.
+const equipped = matchEquippedBy(bandLines, characters, playerName);
+// { kind: "none" }                        not equipped
+// { kind: "character", key, similarity }  e.g. key "Yangyang"
+// { kind: "player", similarity }          the main character: export PLAYER_CHARACTER_KEY ("Rover")
+// { kind: "unknown", name }               a name that didn't clearly match: flag it, don't guess
+```
+
+The game shows Rover as the player's chosen name, never "Rover", so Rover's entries in `characters` are ignored and the name is matched against `playerName` instead. Rover has one build at a time, so the importing app decides which of its Rover entries `"Rover"` means. The character list is an argument, not part of `ScannerGameData`.
+
 ---
 
 ## Live capture: only OCR when something new is on screen
@@ -211,6 +229,7 @@ const summary = summarizeCandidates(candidates, context);
 | `dedupe` | `computeSignature`, `createDedupeSet` |
 | `parsedEchoMapping` | `mapParsedEchoes`, `getSubstatType`, `getSubstatValue` (`ParsedSubstat` is exported from the root as `LooseParsedSubstat`) |
 | `echoIdentity` | `getEchoIdentityKey`, `buildIdentityKeySet` |
+| `equippedBy` | `matchEquippedBy`, `findEquippedByName`, `PLAYER_CHARACTER_KEY`, `isPlayerCharacterKey` |
 | `levenshtein` | `levenshteinSimilarity`, `prefixTolerantSimilarity` |
 | `types` | `RegionFrac`, `FrameSize`, `OcrLine`, `ParsedEchoSlot`, `ScanCandidate`, `FieldConfidence` |
 
