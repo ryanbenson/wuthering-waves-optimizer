@@ -5,7 +5,7 @@ Short, immutable records of **important** technical and product decisions. Writt
 **Two kinds live here — read the right one for what you need:**
 
 - **Architecture ADRs** (0001–0012, 0029) — durable, cross-cutting, rarely reversed (pure calculator, workers, no classes, stores-hold-user-data, etc.). Read these for **why** a lasting constraint exists.
-- **Redesign ADRs** (0013+, currently the "UI Overhaul 3.0" chapters behind the `liveResultBar` Labs flag) — a dated log of one evolving surface being rebuilt in steps. Each is real and useful as **archaeology** (why a specific layout/behavior exists), but a later chapter routinely rewrites part of an earlier one's Decision without making the earlier one wrong to *cite*, just wrong to *trust wholesale*.
+- **Redesign ADRs** (0013+, the "UI Overhaul 3.0" chapters; v3 is the default UI since ADR 0038, with classic as an opt-in) — a dated log of one evolving surface being rebuilt in steps. Each is real and useful as **archaeology** (why a specific layout/behavior exists), but a later chapter routinely rewrites part of an earlier one's Decision without making the earlier one wrong to *cite*, just wrong to *trust wholesale*.
 
 **For current behavior, don't reconstruct it from the redesign-ADR chain.** Start at the relevant area doc (`docs/src-components.md`, etc.) — it describes what's true today and links the ADR(s) for rationale. Read a redesign ADR end-to-end when you need the *why*, are about to touch that surface, or are about to reverse something — not to figure out current state from scratch.
 
@@ -61,6 +61,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038) 
 | [0035](./0035-publish-scanner-data-json.md) | Publish `scanner-data.json` for the desktop scanner | accepted | | scanner, data, interop |
 | [0036](./0036-formulas-package.md) | Publish the damage formulas as `@wutheringtools/formulas` | accepted | | calculator, packages, architecture |
 | [0037](./0037-build-card-scanner-package.md) | Extract the build card parser into `@wutheringtools/build-card-scanner` | accepted | | scanner, packages, architecture |
+| [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar), 0038 (v3 is the default; Labs flag retired) | calculator, components, stores |
 | [0038](./0038-wavescan-import.md) | Import Wavescan exports (Labs-flagged, echoes first) | accepted | | scanner, interop, stores, components |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
@@ -80,6 +81,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038) 
 | [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes |
 | [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, echoes |
 | [0033](./0033-team-buffs-summary-grouping-and-hide-impossible.md) | Team Buffs summary: drop contribution totals, group the active tray, add "Hide impossible" | accepted | | components, buffs, weapons |
+| [0038](./0038-v3-ui-default.md) | Make the v3 UI the default, with classic as an opt-in | accepted | | components, stores, analytics, release |
 
 ## When to write a new ADR
 

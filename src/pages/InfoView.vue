@@ -201,11 +201,12 @@ import WorkspaceSideNav, {
   type WorkspaceNavGroup,
 } from "../components/WorkspaceSideNav.vue";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { useDocumentTitle } from "../composables/useDocumentTitle";
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 // Sets a page-specific title/description for /info (and every /info/* path

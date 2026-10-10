@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-08-25
 tags: [calculator, components, stores]
-superseded_by: [0018, 0019]
+superseded_by: [0018, 0019, 0038]
 ---
 
 # 13. Live Result Bar (Labs-flagged layout)
@@ -24,6 +24,8 @@ Because this replaces the top-level layout of the app's main page, it ships
 behind the existing (previously unused) Labs mechanism — `settingsStore.labs`
 + `SettingsLab.vue`'s toggle — rather than as the new default. `labsFeatures`
 in `SettingsLabs.vue` had never had an entry registered; this is the first.
+
+**Superseded 2026-10-10 (ADR [0038](0038-v3-ui-default.md)):** v3 is now the default. The Labs entry is gone and `labs.liveResultBar` is ignored; classic is an opt-in (`config.useClassicUi`), and every branch goes through `isV3UiEnabled()` in `src/utils/uiVersion.ts`. "Flag on/off" throughout this ADR now means "v3/classic UI".
 
 ## Decision
 

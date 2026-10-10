@@ -131,6 +131,8 @@ describe("TeamRotationActionEditor Rotation Flow (Labs)", () => {
 describe("TeamRotationActionEditor — partial sync (issue #508)", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    // Exercises the classic UI's Configure buffs panel.
+    useSettingsStore().config = { useClassicUi: true };
   });
 
   function openBuffPanel(container: HTMLElement) {

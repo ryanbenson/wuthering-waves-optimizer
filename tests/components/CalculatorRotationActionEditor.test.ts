@@ -90,6 +90,8 @@ describe("CalculatorRotationActionEditor Rotation Flow (Labs) — synced-buff vi
 describe("CalculatorRotationActionEditor — partial sync (issue #508)", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    // Exercises the classic UI's Configure buffs panel.
+    useSettingsStore().config = { useClassicUi: true };
   });
 
   function openBuffPanel(container: HTMLElement) {

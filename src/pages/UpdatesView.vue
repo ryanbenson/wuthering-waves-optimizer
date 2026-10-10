@@ -22,10 +22,11 @@ import Nav from "../components/navigation/Nav.vue";
 import UpdatesWorkspace from "../components/UpdatesWorkspace.vue";
 import { updateEntries } from "../content/updates";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 </script>
 

@@ -9,31 +9,14 @@
       <span class="text-sm truncate">{{ headline }}</span>
     </div>
     <div class="flex items-center gap-2 md:ml-auto shrink-0">
-      <template v-if="showActions">
       <button
-        v-if="!isLiveResultBarEnabled"
-        type="button"
-        class="btn btn-primary btn-xs"
-        data-test-update-banner-enable-v3
-        @click="enableV3('banner')">
-        Try the v3 UI
-      </button>
-      <button
-        v-else
-        type="button"
-        class="btn btn-ghost btn-xs"
-        data-test-update-banner-disable-v3
-        @click="disableV3('banner')">
-        Switch back to classic UI
-      </button>
-      <button
+        v-if="announcement?.whatsNew"
         type="button"
         class="btn btn-ghost btn-xs"
         data-test-update-banner-changelog
         @click="openWhatsNew">
         See what's new
       </button>
-      </template>
       <button
         type="button"
         class="btn btn-circle btn-ghost btn-xs"
@@ -68,8 +51,8 @@
       </form>
       <h3 class="text-lg font-bold">What's new in the v3 UI</h3>
       <p class="text-sm opacity-70 mt-1">
-        A redesign of the app focused to bring quick insights and actions for you. Here are
-        highlights:
+        The v3 UI is now the default: a redesign of the app focused on quick insights and
+        actions. Here are the highlights:
       </p>
 
       <div class="grid grid-cols-1 gap-4 mt-4">
@@ -113,29 +96,29 @@
       </div>
 
       <p class="text-xs opacity-50 mt-4">
-        This is currently in beta, and will be the main UI soon with the current UI being an
-        alternate experience for a period of time. If you find issues or have suggestions, drop
-        them in the Discord.
+        Prefer the previous layout? The classic UI is still available for now: switch to it here,
+        from the theme menu, or in Settings. Your builds and echoes are shared between both. If
+        you find issues or have suggestions, drop them in the Discord.
       </p>
       <div class="modal-action flex-wrap">
         <RouterLink to="/updates" class="btn btn-ghost btn-sm" @click="closeWhatsNew">
           Full changelog
         </RouterLink>
         <button
-          v-if="isLiveResultBarEnabled"
+          v-if="!isClassicUi"
           type="button"
           class="btn btn-ghost btn-sm"
-          data-test-whats-new-disable-v3
-          @click="disableV3AndClose">
-          Switch back to classic UI
+          data-test-whats-new-use-classic
+          @click="setClassicUiAndClose(true)">
+          Switch to the classic UI
         </button>
         <button
           v-else
           type="button"
           class="btn btn-primary btn-sm"
-          data-test-whats-new-enable-v3
-          @click="enableV3AndClose">
-          Try the v3 UI
+          data-test-whats-new-use-v3
+          @click="setClassicUiAndClose(false)">
+          Switch to the v3 UI
         </button>
       </div>
     </div>
@@ -166,25 +149,21 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
+import { useClassicUi } from "../composables/useClassicUi";
 import { currentAnnouncement, type Announcement } from "../content/updates";
-import { trackEvent } from "../utils/analytics";
 
 defineOptions({ name: "AppUpdateBanner" });
 
-// The v3 UI toggle + "See what's new" buttons (and the modal they open) are
-// kept wired up but hidden while the banner carries a plain game-version
-// announcement. Flip the default back to true to bring them back.
-// `announcement` defaults to the shipped one; tests pass their own.
-const { showActions = false, announcement = currentAnnouncement } = defineProps<{
-  showActions?: boolean;
+// "See what's new" (and the v3 highlights modal it opens) only shows for
+// announcements with `whatsNew: true`; plain game-version announcements get
+// just the headline. `announcement` defaults to the shipped one; tests pass their own.
+const { announcement = currentAnnouncement } = defineProps<{
   announcement?: Announcement | null;
 }>();
 
 const settingsStore = useSettingsStore() as any;
 
-const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
-);
+const { isClassicUi, setClassicUi } = useClassicUi();
 
 const dismissedDate = computed<string | null>(
   () => settingsStore.config?.dismissedUpdateBannerDate ?? null,
@@ -200,8 +179,6 @@ const visible = computed(
     !(dismissedDate.value && dismissedDate.value >= announcement.date),
 );
 
-// Same copy regardless of the flag. Previous v3 announcement copy:
-// "Redesigned v3 UI in beta"
 const headline = computed(() => announcement?.headline ?? "");
 
 // Screenshots live on the same asset CDN as the Optimizer Guide's images
@@ -303,16 +280,6 @@ function openLightbox(image: FeatureImage) {
   lightboxDialogEl.value?.showModal();
 }
 
-function enableV3(source: string) {
-  settingsStore.upsertLab({ liveResultBar: { isEnabled: true } });
-  trackEvent("v3-ui-enabled", { source });
-}
-
-function disableV3(source: string) {
-  settingsStore.upsertLab({ liveResultBar: { isEnabled: false } });
-  trackEvent("v3-ui-disabled", { source });
-}
-
 function dismiss() {
   if (!announcement) return;
   settingsStore.addToConfig({ dismissedUpdateBannerDate: announcement.date });
@@ -328,13 +295,8 @@ function closeWhatsNew() {
   whatsNewDialogEl.value?.close();
 }
 
-function enableV3AndClose() {
-  enableV3("modal");
-  closeWhatsNew();
-}
-
-function disableV3AndClose() {
-  disableV3("modal");
+function setClassicUiAndClose(enabled: boolean) {
+  setClassicUi(enabled, "whats-new");
   closeWhatsNew();
 }
 

@@ -42,12 +42,15 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
-describe("InfoView (flag off, legacy)", () => {
+describe("InfoView (classic UI, legacy)", () => {
   it("renders the full legacy article regardless of which /info/* path is visited", async () => {
     const router = makeRouter();
     render(InfoView, {
       global: {
-        plugins: [router, createTestingPinia({ stubActions: false })],
+        plugins: [router, createTestingPinia({
+            stubActions: false,
+            initialState: { settings: { config: { useClassicUi: true } } },
+          })],
       },
     });
 

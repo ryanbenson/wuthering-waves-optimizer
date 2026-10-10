@@ -68,6 +68,7 @@
 import { computed, ref } from "vue";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 defineOptions({ name: "CalculatorSaveEchoesPreset" });
 
@@ -78,7 +79,7 @@ const emit = defineEmits<{
 const inventoryStore = useInventoryStore();
 
 const settingsStore = useSettingsStore() as any;
-const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
 const echoPresetName = ref<string | null>(null);
 const echoPresetDescription = ref("");

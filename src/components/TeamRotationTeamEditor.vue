@@ -373,6 +373,7 @@ import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
 import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
@@ -809,7 +810,7 @@ function handleActionDuplicate(id: string) {
 // shared actions array instead of one character's.
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 const totalHits = computed(

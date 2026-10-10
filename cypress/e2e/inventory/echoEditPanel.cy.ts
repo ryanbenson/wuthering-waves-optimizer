@@ -108,10 +108,10 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       .and("contain.text", "ATK");
   });
 
-  it("keeps the original table-based comfy layout with the flag off — no CalculatorEchoTile-style list", () => {
+  it("keeps the original table-based comfy layout in the classic UI — no CalculatorEchoTile-style list", () => {
     cy.visit("/inventory", {
       onBeforeLoad(win) {
-        win.localStorage.setItem("settings", JSON.stringify({ config: { density: "comfy" }, labs: {} }));
+        win.localStorage.setItem("settings", JSON.stringify({ config: { density: "comfy", useClassicUi: true }, labs: {} }));
         win.localStorage.setItem(
           "inventory",
           JSON.stringify({ echoes: [seedEcho()], equipped: {}, echoPresets: [], equippedPresets: {} }),

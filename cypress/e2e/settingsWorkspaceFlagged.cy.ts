@@ -1,18 +1,17 @@
-// Covers the redesigned Settings page (src/components/SettingsWorkspace.vue)
-// behind the "UI Overhaul 3.0" liveResultBar labs flag. The legacy tab strip
-// is left untouched; this only exercises the new sidebar shell.
+// Covers the redesigned Settings page (src/components/SettingsWorkspace.vue),
+// the v3 UI's default. The classic tab strip is covered at the bottom.
 function visitWithFlagEnabled() {
   cy.visit("/settings", {
     onBeforeLoad(win) {
       win.localStorage.setItem(
         "settings",
-        JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+        JSON.stringify({ config: {}, labs: { echoScanning: { isEnabled: true } } }),
       );
     },
   });
 }
 
-describe("Settings Workspace (liveResultBar flag)", () => {
+describe("Settings Workspace (v3 UI)", () => {
   beforeEach(() => {
     cy.viewport(1280, 800);
   });
@@ -34,7 +33,7 @@ describe("Settings Workspace (liveResultBar flag)", () => {
     cy.contains("button", "Delete").should("be.visible");
 
     cy.get('[data-test-workspace-nav-item="labs"]').click();
-    cy.contains("UI Overhaul 3.0").should("be.visible");
+    cy.contains("Echo scanning").should("be.visible");
   });
 
   it("switches sections via the always-visible mobile pill row", () => {
@@ -76,10 +75,8 @@ describe("Settings Workspace (liveResultBar flag)", () => {
   });
 
   it("shows the active lab as enabled, persisted across reload", () => {
-    // Unchecking the only lab here would flip the very flag this workspace
-    // renders under - it's tested via the toggle's own store round trip in
-    // tests/settings/store.test.ts instead. This just confirms the card
-    // reflects and survives a reload while staying on.
+    // The seed turns Echo scanning (now the only lab) on; confirm the card
+    // reflects it and survives a reload.
     visitWithFlagEnabled();
     cy.get('[data-test-workspace-nav-item="labs"]').click();
     cy.get('input[type="checkbox"]').first().should("be.checked");
@@ -89,14 +86,14 @@ describe("Settings Workspace (liveResultBar flag)", () => {
   });
 });
 
-describe("Settings page (flag off, legacy)", () => {
+describe("Settings page (classic UI)", () => {
   it("still renders the legacy tab strip and lets you switch tabs", () => {
     cy.visit("/settings");
     cy.get("[data-test-settings-preferences]").should("have.class", "before:bg-primary");
     cy.get("[data-test-hide-wont-build-characters]").should("exist");
 
     cy.get("[data-test-settings-labs]").click();
-    cy.contains("UI Overhaul 3.0").should("be.visible");
+    cy.contains("Echo scanning").should("be.visible");
 
     cy.get("[data-test-settings-export]").click();
     cy.get("[data-test-settings-export-copy]").should("be.visible");

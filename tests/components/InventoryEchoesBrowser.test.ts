@@ -5,6 +5,7 @@ import InventoryEchoesBrowser from "../../src/components/InventoryEchoesBrowser.
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useInventoryStore } from "../../src/stores/inventory";
 import { useConfirm } from "../../src/composables/useConfirm";
+import { useSettingsStore } from "../../src/stores/settings";
 
 const ELITE_ECHO = "AbyssalGladius";
 const COMMON_ECHO = "AeroDrake";
@@ -76,6 +77,8 @@ describe("InventoryEchoesBrowser incomplete echoes filter", () => {
 
   beforeEach(() => {
     setActivePinia(createPinia());
+    // These assert the classic UI's echo cards.
+    useSettingsStore().config = { useClassicUi: true };
     inventoryStore = useInventoryStore();
     inventoryStore.echoes = [
       makeCompleteInventoryEcho("complete-1", ELITE_ECHO, 3, "EnergyRegen"),
@@ -132,6 +135,8 @@ describe("InventoryEchoesBrowser incomplete echoes filter", () => {
 describe("InventoryEchoesBrowser substat filter", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    // These assert the classic UI's echo cards.
+    useSettingsStore().config = { useClassicUi: true };
     const inventoryStore = useInventoryStore();
     inventoryStore.echoes = [
       makeInventoryEcho("has-crit-rate", ELITE_ECHO, 3, "EnergyRegen", {

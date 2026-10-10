@@ -194,6 +194,7 @@ import EchoEquippedIndicator from "./EchoEquippedIndicator.vue";
 import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 
@@ -225,7 +226,7 @@ const props = withDefaults(
 const characterStore = useCharacterStore();
 const settingsStore = useSettingsStore() as any;
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 // Reuses the exact same CV/RV/rating math CalculatorEchoCard.vue and

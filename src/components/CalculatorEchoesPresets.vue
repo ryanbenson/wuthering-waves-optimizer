@@ -115,6 +115,7 @@ import { getCharByName } from "../characters/characters.ts";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
 import EchoPresetV3Card from "./EchoPresetV3Card.vue";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 const props = defineProps<{ character: string }>();
 
 const characterStore = useCharacterStore();
@@ -122,7 +123,7 @@ const inventoryStore = useInventoryStore();
 const { echoPresets } = storeToRefs(inventoryStore);
 
 const settingsStore = useSettingsStore() as any;
-const isV3 = computed(() => settingsStore.labs?.liveResultBar?.isEnabled ?? false);
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
 // Stable per-preset slot maps (keyed by presetId) so the card's preview
 // watcher doesn't re-run on every parent render.

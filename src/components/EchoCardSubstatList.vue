@@ -29,6 +29,7 @@ import { getReadableSubStatLabel } from "../echoes/stats";
 import { getSubstatRollQualityClasses } from "../composables/useEchoCardStats";
 import { usePrioritySubstats } from "../composables/usePrioritySubstats";
 import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 
 export interface EchoCardSubstatSlot {
   index: number;
@@ -62,7 +63,7 @@ const { isPrioritySubstat } = usePrioritySubstats();
 // neutral border-l-base-300 an empty row does, not an uncolored border.
 const settingsStore = useSettingsStore() as any;
 const isLiveResultBarEnabled = computed(
-  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+  () => isV3UiEnabled(settingsStore),
 );
 
 function rowClass(slot: EchoCardSubstatSlot) {

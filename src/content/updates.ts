@@ -18,6 +18,8 @@ export interface Announcement {
    */
   date: string;
   headline: string;
+  /** Adds a "See what's new" button that opens the v3 UI highlights modal. */
+  whatsNew?: boolean;
 }
 
 /**
@@ -29,9 +31,21 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = null;
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-10-10",
+  headline: "The redesigned v3 UI is now the default!",
+  whatsNew: true,
+};
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-10",
+    dateLabel: "October 10, 2026",
+    items: [
+      "The v3 UI is now the default for everyone! It's a redesign of the whole app focused on quick insights and actions: a character control panel, a live damage monitor, weapon and echo impact at a glance, faster rotation setup, and a redesigned inventory. Click \"See what's new\" in the banner for the highlights.",
+      "Prefer the previous layout? You can switch back to the classic UI from the theme menu (top right) or in Settings → Preferences. Your builds, echoes and settings are shared between both, so you can switch any time.",
+    ],
+  },
   {
     date: "2026-10-09",
     dateLabel: "October 9, 2026",
