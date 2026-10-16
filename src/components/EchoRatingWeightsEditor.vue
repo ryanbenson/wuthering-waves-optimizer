@@ -53,6 +53,7 @@ import { subStats, getReadableSubStatLabel } from "../echoes/stats";
 import { clampSubstatWeight } from "../echoes/rating";
 import { useSettingsStore } from "../stores/settings";
 import { useCharacterStore } from "../stores/character";
+import { useConfirm } from "../composables/useConfirm";
 import Range from "./input/Range.vue";
 
 const WEIGHT_VALUES = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
@@ -83,7 +84,21 @@ function handleWeightChange(stat: string, value: number) {
   }
 }
 
-function handleReset() {
+const { confirm } = useConfirm();
+
+async function handleReset() {
+  const what =
+    mode.value === "character" && characterId.value
+      ? `${characterId.value}'s substat priorities`
+      : "the Echo Rating weights";
+  const confirmed = await confirm(`Reset ${what} to default? Your custom weights will be lost.`, {
+    title: "Reset to default",
+    confirmLabel: "Reset",
+    variant: "warning",
+  });
+  if (!confirmed) {
+    return;
+  }
   if (mode.value === "character" && characterId.value) {
     characterStore.resetCharacterSubstatWeights(characterId.value);
   } else {
