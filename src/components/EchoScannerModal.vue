@@ -13,14 +13,16 @@
         <EchoScannerCapture
           v-if="!isReviewingDuplicates"
           inventory-only
-          @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
+          @echoes-parsed="handleScanSaved"></EchoScannerCapture>
         <EchoDuplicateReviewList
           v-else
           :items="duplicateReviewItems"
           inventory-only
           :has-selected-echoes="hasSelectedEchoes"
+          apply-without-saving
           @cancel="handleCancelDuplicateReview"
-          @confirm="handleConfirmDuplicateReview"></EchoDuplicateReviewList>
+          @confirm="handleConfirmDuplicateReview"
+          @apply-to-character-only="handleApplyToCharacterOnly"></EchoDuplicateReviewList>
       </div>
     </div>
   </dialog>
@@ -48,6 +50,12 @@ import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
+import { useWavescanLoadouts, SCANNED_BUILD_NAME } from "../composables/useWavescanLoadouts";
+import { useInventoryStore } from "../stores/inventory";
+import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters";
+import { planScannedLoadouts, planScannedMarks } from "../scanner/scannedLoadouts";
+import { useEchoInventory } from "../composables/useEchoInventory";
+import type { ParsedEchoSlot } from "../scanner/types";
 
 const modalId = "modal-echo-scanner-inventory";
 
@@ -94,6 +102,7 @@ const {
   resetDuplicateReview,
   handleEchoesParsed,
   handleConfirmDuplicateReview,
+  handleApplyToCharacterOnly,
 } = useEchoDuplicateReview({
   inventoryOnly: () => true,
   character: () => "",
@@ -102,13 +111,61 @@ const {
 
 const { showToast } = useToast();
 
+const inventoryStore = useInventoryStore();
+// Only applyLoadoutWrites is used: each wearer's echoes go into its "Scanned" build (SCANNED_BUILD_NAME).
+const loadouts = useWavescanLoadouts({ mapped: ref(null), meta: ref(null), mode: ref("append") });
+loadouts.buildTarget.value = "scanned";
+let lastScan: { slots: ParsedEchoSlot[]; equipWearers: boolean } | null = null;
+
+function handleScanSaved(slots: ParsedEchoSlot[], saveToInventory: boolean, equipWearers: boolean) {
+  lastScan = { slots, equipWearers };
+  return handleEchoesParsed(slots, saveToInventory);
+}
+
+/** Equips each character's scanned echoes; returns a sentence for the toast, or "". */
+function equipScannedWearers(): string {
+  if (!lastScan?.equipWearers) return "";
+  const { writes, blocked } = planScannedLoadouts(
+    lastScan.slots,
+    inventoryStore.echoes,
+    allCharactersList.map((c) => c.key),
+  );
+  loadouts.applyLoadoutWrites(writes);
+  const names = (list: { characterKey: string }[]) => list.map((w) => getCharacterRosterDisplayName(w.characterKey)).join(", ");
+  return [
+    writes.length ? ` Equipped on ${names(writes)}, each in its "${SCANNED_BUILD_NAME}" build; other builds are unchanged.` : "",
+    blocked.length ? ` Not equipped (over the 5-echo / 12-cost limit): ${names(blocked)}.` : "",
+  ].join("");
+}
+
+const { setEchoLocked, setEchoTrash } = useEchoInventory();
+
+/** Copies the game's lock / discard marks onto the scanned echoes; returns a sentence for the toast, or "". */
+function copyScannedMarks(): string {
+  if (!lastScan) return "";
+  const changes = planScannedMarks(lastScan.slots, inventoryStore.echoes);
+  for (const { echoId, locked, trash } of changes) {
+    if (locked) setEchoLocked(echoId, true);
+    else if (trash) setEchoTrash(echoId, true);
+    else {
+      setEchoLocked(echoId, false);
+      setEchoTrash(echoId, false);
+    }
+  }
+  return changes.length
+    ? ` Updated the lock / discard mark on ${changes.length} echo${changes.length === 1 ? "" : "es"} to match the game.`
+    : "";
+}
+
 function handleFinalized(savedCount: number) {
   triggerCloseModal();
+  const marks = copyScannedMarks();
+  const equipped = equipScannedWearers();
   showToast(
-    savedCount
+    (savedCount
       ? `Saved ${savedCount} echo${savedCount === 1 ? "" : "es"} to your inventory.`
-      : "No echoes were saved.",
-    savedCount ? "success" : "info",
+      : "No echoes were saved.") + marks + equipped,
+    savedCount || marks || equipped ? "success" : "info",
   );
 }
 
