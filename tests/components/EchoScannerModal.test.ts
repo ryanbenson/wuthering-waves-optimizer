@@ -10,6 +10,17 @@ vi.mock("../../src/composables/useToast", () => ({
   useToast: () => ({ showToast: (message: string) => toasts.list.push(message) }),
 }));
 
+// The leave-the-scan question; `answer` is what the player picks (true = Discard).
+const confirmCalls = vi.hoisted(() => ({ list: [] as { message: string; options: Record<string, string> }[], answer: false }));
+vi.mock("../../src/composables/useConfirm", () => ({
+  useConfirm: () => ({
+    confirm: async (message: string, options: Record<string, string>) => {
+      confirmCalls.list.push({ message, options });
+      return confirmCalls.answer;
+    },
+  }),
+}));
+
 // The real capture needs screen sharing and workers; this stand-in exposes the same methods.
 const capture = vi.hoisted(() => ({ mounts: 0, stopCapture: 0, discardScan: 0, unsaved: 0 }));
 const EchoScannerCaptureStub = defineComponent({
@@ -39,6 +50,13 @@ function renderModal() {
   );
 }
 
+const dialog = (container: Element) => container.querySelector("dialog") as HTMLDialogElement;
+
+async function open(getByText: (text: string) => HTMLElement) {
+  await fireEvent.click(getByText("open"));
+  await flushPromises();
+}
+
 async function closeWithX(container: Element) {
   await fireEvent.click(container.querySelector(".modal-box .btn-circle")!);
   await flushPromises();
@@ -60,53 +78,71 @@ describe("EchoScannerModal", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     Object.assign(capture, { mounts: 0, stopCapture: 0, discardScan: 0, unsaved: 0 });
+    confirmCalls.list = [];
+    confirmCalls.answer = false;
     toasts.list = [];
   });
 
-  it("keeps the scan when the window closes: same capture on reopen, live capture stopped", async () => {
+  it("closes without asking when nothing is unsaved", async () => {
     const { container, getByText } = renderModal();
-    await fireEvent.click(getByText("open"));
-    await flushPromises();
-    expect(capture.mounts).toBe(1);
+    await open(getByText);
 
     await closeWithX(container);
-    expect(capture.stopCapture).toBeGreaterThan(0);
-
-    await fireEvent.click(getByText("open"));
-    await flushPromises();
-    expect(capture.mounts).toBe(1);
-    expect(capture.discardScan).toBe(0);
+    expect(confirmCalls.list).toEqual([]);
+    expect(dialog(container).open).toBe(false);
   });
 
-  it("tells the user where an unsaved scan went when they close the window", async () => {
+  it("asks before closing an unsaved scan, and Keep and close keeps it for the next open", async () => {
     const { container, getByText } = renderModal();
-    await fireEvent.click(getByText("open"));
-    await flushPromises();
+    await open(getByText);
     capture.unsaved = 3;
 
     await closeWithX(container);
-    expect(toasts.list).toHaveLength(1);
-    expect(toasts.list[0]).toContain("3 echoes not saved yet");
-    expect(toasts.list[0]).toContain("Scan echoes");
+    expect(confirmCalls.list).toHaveLength(1);
+    const [{ message, options }] = confirmCalls.list;
+    expect(message).toContain("3 echoes aren't saved yet");
+    expect(message).toContain("Scan echoes");
+    expect(options).toMatchObject({ confirmLabel: "Discard", cancelLabel: "Keep and close" });
+    expect(dialog(container).open).toBe(false);
+    expect(capture.stopCapture).toBeGreaterThan(0);
+    expect(capture.discardScan).toBe(0);
+
+    await open(getByText);
+    expect(capture.mounts).toBe(1);
   });
 
-  it("says nothing when there is nothing unsaved", async () => {
+  it("drops the scan when the player picks Discard", async () => {
     const { container, getByText } = renderModal();
-    await fireEvent.click(getByText("open"));
-    await flushPromises();
+    await open(getByText);
+    capture.unsaved = 2;
+    confirmCalls.answer = true;
 
     await closeWithX(container);
-    expect(toasts.list).toEqual([]);
+    expect(capture.discardScan).toBe(1);
+    expect(dialog(container).open).toBe(false);
   });
 
-  it("starts the next scan fresh after a save", async () => {
+  it("asks on Escape too, instead of letting the dialog close on its own", async () => {
     const { container, getByText } = renderModal();
-    await fireEvent.click(getByText("open"));
+    await open(getByText);
+    capture.unsaved = 1;
+
+    const escape = new Event("cancel", { cancelable: true });
+    dialog(container).dispatchEvent(escape);
     await flushPromises();
+    expect(escape.defaultPrevented).toBe(true);
+    expect(confirmCalls.list).toHaveLength(1);
+    expect(confirmCalls.list[0].message).toContain("1 echo isn't saved yet");
+    expect(dialog(container).open).toBe(false);
+  });
+
+  it("starts the next scan fresh after a save, without asking", async () => {
+    const { container, getByText } = renderModal();
+    await open(getByText);
 
     await fireEvent.click(container.querySelector("[data-test-stub-save]")!);
     await flushPromises();
     expect(capture.discardScan).toBe(1);
-    expect(toasts.list.some((t) => /not saved yet/.test(t))).toBe(false);
+    expect(confirmCalls.list).toEqual([]);
   });
 });

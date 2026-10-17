@@ -1,10 +1,10 @@
 <template>
-  <dialog :id="modalId" class="modal" @close="handleClose">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
+  <dialog :id="modalId" class="modal" @close="handleClose" @cancel="handleEscape">
+    <form method="dialog" class="modal-backdrop" @click.prevent="handleCloseRequest">
       <button>close</button>
     </form>
     <div v-if="hasOpened" class="modal-box max-w-6xl">
-      <form method="dialog" @click="handleClose">
+      <form method="dialog" @click.prevent="handleCloseRequest">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
         </button>
@@ -49,6 +49,7 @@ import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
+import { useConfirm } from "../composables/useConfirm";
 
 const modalId = "modal-echo-scanner-inventory";
 
@@ -93,17 +94,36 @@ function triggerCloseModal() {
   resetDuplicateReview();
 }
 
-/** The user closed the window (✕, backdrop, Escape, or Cancel on the duplicate review). */
+/** The dialog closed on its own (its native close event): tidy up. */
 function handleClose() {
-  if (!isOpen.value) return;
-  triggerCloseModal();
+  if (isOpen.value) triggerCloseModal();
+}
+
+/** Escape: with results to lose, ask first instead of letting the dialog close itself. */
+function handleEscape(event: Event) {
+  if (!captureRef.value?.unsavedCount()) return;
+  event.preventDefault();
+  void handleCloseRequest();
+}
+
+const { confirm } = useConfirm();
+
+/**
+ * The player asked to close (✕, backdrop, Escape, or Cancel on the duplicate review).
+ * With unsaved results, ask first: Discard drops them; Keep and close (or dismissing
+ * the question) keeps them, so opening the scanner again carries on the review.
+ */
+async function handleCloseRequest() {
   const unsaved = captureRef.value?.unsavedCount() ?? 0;
   if (unsaved) {
-    showToast(
-      `Scan kept: ${unsaved} echo${unsaved === 1 ? "" : "es"} not saved yet. Open Scan echoes again to continue. Reloading or closing this tab loses them.`,
-      "info",
+    const echoes = unsaved === 1 ? "1 echo isn't" : `${unsaved} echoes aren't`;
+    const discard = await confirm(
+      `${echoes} saved yet. Keep and close keeps them here: open Scan echoes again to carry on reviewing. They're lost if you reload or close this tab.`,
+      { title: "Leave this scan?", confirmLabel: "Discard", cancelLabel: "Keep and close", variant: "error" },
     );
+    if (discard) captureRef.value?.discardScan();
   }
+  triggerCloseModal();
 }
 
 const {
@@ -133,7 +153,7 @@ function handleFinalized(savedCount: number) {
 }
 
 function handleCancelDuplicateReview() {
-  handleClose();
+  void handleCloseRequest();
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });

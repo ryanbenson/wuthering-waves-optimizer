@@ -904,8 +904,13 @@ Every candidate now carries:
 (✕, backdrop, Escape, or Cancel on the duplicate review) keeps the results,
 Reviewed marks, saved edits and filter, and reopening continues where it
 was. A capture that's still going is stopped on close, keeping what it read.
-Closing with unsaved results shows a toast with the count; while there are
-any, the page asks before a reload or closing the tab (`beforeunload`). A
+Closing with unsaved results asks first (`useConfirm`): Discard drops the
+review, Keep and close (or dismissing the question) keeps it. Escape is
+intercepted on the dialog's `cancel` event so it asks too (browsers only let a
+page cancel Escape after the player has clicked in it; otherwise Escape closes
+and keeps the review). While there are
+unsaved results, the page asks before a reload or closing the tab
+(`beforeunload`). A
 save or "Scan again" (`discard()`) clears it. Everything stays in the
 tab's memory only.
 
