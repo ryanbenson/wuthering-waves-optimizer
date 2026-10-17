@@ -960,7 +960,7 @@ The detail panel's discard (heart, "Z") and lock (padlock, "C") toggles sit over
 - **Discarded:** the heart is drawn red instead of white (more red than white pixels).
 - **Locked:** the closed padlock's shackle reaches the body on both sides; the open one lifts its right leg. In the band just above the body (27-36% of the box height) the right half has at least half as many light pixels as the left when closed, and none when open.
 
-In game the two exclude each other (locking un-discards, discarding unlocks), so if both ever read true, locked wins. The result card shows a Locked / Discard badge. After a save, `planScannedMarks` finds every scanned echo in the inventory by identity (already-owned ones too) and lists those whose marks differ from the game's; `EchoScannerModal` applies them with `setEchoLocked` / `setEchoTrash`, which keep the app's flags exclusive the same way. Tests: `tests/scanner/echoMarks.test.ts` runs the regions over real locked / unlocked / discarded / equipped captures in `tests/scanner/fixtures/`.
+In game the two exclude each other (locking un-discards, discarding unlocks), so if both ever read true, locked wins. The result card shows a Locked / Discard badge. After a save, `planScannedMarks` finds every scanned echo in the inventory by identity (already-owned ones too) and lists those whose marks differ from the game's; `EchoScannerModal` applies them with `setEchoLocked` / `setEchoTrash`, which keep the app's flags exclusive the same way. Tests: `tests/scanner/echoMarks.test.ts` runs the regions over real locked / unlocked / discarded / equipped captures (1920x1080, 1280x720, 1920x1200) in `tests/scanner/fixtures/`.
 
 ## Debug view
 

@@ -4,7 +4,7 @@ import { DISCARD_ICON_BOX, LOCK_ICON_BOX, toPixelRegion } from "../../src/scanne
 import { readEchoMarks } from "@wutheringtools/scanner-core/echoMarks";
 import type { RegionFrac } from "../../src/scanner/types";
 
-// Real Echo Management captures at 16:9 and 16:10 (User ID blacked out).
+// Real Echo Management captures at 16:9 (1080p, 720p) and 16:10 (User ID blacked out).
 const fixture = (name: string) => `tests/scanner/fixtures/echo-panel-${name}.jpg`;
 
 async function iconPixels(file: string, region: RegionFrac) {
@@ -28,6 +28,9 @@ describe("readEchoMarks on real captures", () => {
     ["equipped-unlocked-1920x1200", { locked: false, trash: false }],
     ["equipped-discarded-1920x1200", { locked: false, trash: true }],
     ["locked-1920x1200", { locked: true, trash: false }],
+    ["equipped-locked-1280x720", { locked: true, trash: false }],
+    ["equipped-unlocked-1280x720", { locked: false, trash: false }],
+    ["locked-1280x720", { locked: true, trash: false }],
   ])("%s", async (name, expected) => {
     const file = fixture(name);
     expect(readEchoMarks(await iconPixels(file, DISCARD_ICON_BOX), await iconPixels(file, LOCK_ICON_BOX))).toEqual(expected);
