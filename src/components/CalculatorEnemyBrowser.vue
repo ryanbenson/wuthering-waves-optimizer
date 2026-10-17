@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalElementRef"
     title="Choose enemy"
     max-width-class="max-w-5xl"
@@ -76,7 +76,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -88,7 +88,7 @@ import {
   type ListedEnemy,
 } from "../enemies/index";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 interface Props {
   characterElement?: string;
@@ -137,7 +137,7 @@ const enemiesFilteredSorted = computed((): ListedEnemy[] => {
   return list;
 });
 
-const modalElementRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
   await modalElementRef.value?.triggerOpenModal();

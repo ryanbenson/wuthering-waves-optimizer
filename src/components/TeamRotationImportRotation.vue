@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="`Import a rotation for ${characterName}`"
     max-width-class="max-w-lg"
@@ -95,13 +95,13 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import type { SourceRotationAction } from "../calculator/teamRotation";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 type RotationRow = {
   id?: string;
@@ -128,7 +128,7 @@ const emit = defineEmits<{
 }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 watch(isOpen, (open) => {
   if (open) {

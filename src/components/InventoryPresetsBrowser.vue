@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="editModalRef"
     title="Edit preset"
     max-width-class="max-w-2xl"
@@ -23,7 +23,7 @@
       </template>
     </label>
     <button class="btn btn-primary btn-sm mt-4" @click="handleSavePreset">Update</button>
-  </AppChooserModal>
+  </AppModal>
 
   <div class="py-4">
     <div
@@ -248,7 +248,7 @@ import EchoCustomPreset from "./EchoCustomPreset.vue";
 import EchoPresetV3Card from "./EchoPresetV3Card.vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import RangeMinMax from "./input/RangeMinMax.vue";
@@ -276,7 +276,7 @@ const { viewMode, setViewMode } = usePresetsViewMode();
 
 const page = ref(1);
 const perPage = 10;
-const editModalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const editModalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoPresetName = ref<string | null>(null);
 const echoPresetId = ref<string | null>(null);
 

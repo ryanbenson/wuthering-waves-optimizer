@@ -912,7 +912,7 @@ describe("Team Rotations export/import", () => {
     );
     // Two AppFilterPanel instances are mounted at once here — the page's own
     // and the modal's — so scope to the modal to avoid an ambiguous match.
-    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+    cy.get(".app-modal__box [data-test-filter-panel-clear]").click();
 
     // The element filter matches any character in the team, not just the carry.
     cy.get('[data-test-team-rotations-presets-element-filter="Havoc"]').click();
@@ -922,7 +922,7 @@ describe("Team Rotations export/import", () => {
     cy.get('[data-test-team-rotations-preset="WuWaBuilds Aemeath S0R1 Hypercarry"]').should(
       "not.exist",
     );
-    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+    cy.get(".app-modal__box [data-test-filter-panel-clear]").click();
     cy.get("[data-test-team-rotations-presets-search]").should("have.value", "");
 
     // Favoriting a preset (the shared heart button) works independently of filtering.
@@ -940,7 +940,7 @@ describe("Team Rotations export/import", () => {
     cy.get('[data-test-team-rotations-preset="WuWaBuilds Camellya S0R1 Hypercarry"]').should(
       "not.exist",
     );
-    cy.get(".app-chooser-modal__box [data-test-filter-panel-clear]").click();
+    cy.get(".app-modal__box [data-test-filter-panel-clear]").click();
     cy.get("[data-test-team-rotations-presets-favorites-filter]").should(
       "not.have.class",
       "btn-active",

@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalElementRef"
     title="Choose character"
     max-width-class="max-w-5xl"
@@ -159,7 +159,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -184,7 +184,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 
@@ -302,7 +302,7 @@ const charactersList = computed((): ListedCharacter[] => {
   return characterList;
 });
 
-const modalElementRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
   await modalElementRef.value?.triggerOpenModal();

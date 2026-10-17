@@ -1,6 +1,6 @@
 <template>
   <CalculatorOptimizerGuide ref="optimizerGuide"></CalculatorOptimizerGuide>
-  <AppChooserModal
+  <AppModal
     ref="pickerRef"
     title="Choose echo"
     max-width-class="max-w-5xl"
@@ -66,7 +66,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
   <div class="optimizer" v-if="!isLoading">
     <div
       class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -386,7 +386,7 @@ import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import OptimizerStaleResultsAlert from "./OptimizerStaleResultsAlert.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import {
   normalizeLoadoutFormat,
   OPTIMIZER_EMPTY_REASON_MESSAGES,
@@ -436,7 +436,7 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);

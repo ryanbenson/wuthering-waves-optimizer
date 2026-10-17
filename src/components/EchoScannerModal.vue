@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="captureRef?.isShowingGuide ? 'How to scan your echoes' : 'Scan echoes from the game'"
     max-width-class="max-w-6xl"
@@ -39,7 +39,7 @@
       :has-selected-echoes="hasSelectedEchoes"
       @cancel="handleCancelDuplicateReview"
       @confirm="handleConfirmDuplicateReview"></EchoDuplicateReviewList>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -59,14 +59,14 @@
  * EchoDuplicateReviewList — only the capture UI and entry point differ.
  */
 import { ref } from "vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import EchoScannerCapture from "./EchoScannerCapture.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const captureRef = ref<InstanceType<typeof EchoScannerCapture> | null>(null);
 
 async function triggerOpenModal() {
@@ -76,7 +76,7 @@ async function triggerOpenModal() {
 
 /**
  * Programmatic close (saved or cancelled review). A user close (✕,
- * backdrop, Escape) is handled by AppChooserModal itself: it closes the
+ * backdrop, Escape) is handled by AppModal itself: it closes the
  * dialog, unmounts the body (lazy) and emits `close` → resetDuplicateReview.
  * Either way EchoScannerCapture unmounts, so its cleanup runs and a live
  * screen-share stream never keeps running behind a closed dialog — Escape

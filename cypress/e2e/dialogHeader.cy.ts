@@ -1,15 +1,15 @@
 // #632: every dialog's title and close (X) share one header row that stays put while the
-// dialog's body scrolls (AppChooserModal, ADR 0043).
+// dialog's body scrolls (AppModal, ADR 0043).
 describe("Dialog header", () => {
   it("keeps the Optimizer Guide's title and X in place while its body scrolls", () => {
     cy.visit("/");
     cy.get('[data-test-calculator-nav="optimizer"]').click();
     cy.get("[data-test-optimizer-guide-btn]").click();
 
-    cy.get(".modal[open] .app-chooser-modal__box").as("box");
+    cy.get(".modal[open] .app-modal__box").as("box");
     // The header is the box's first row; the guide's own body has h3s too.
     cy.get("@box").children().first().find("h3").should("have.text", "Optimizer Guide");
-    cy.get("@box").find(".app-chooser-modal__body").as("body");
+    cy.get("@box").find(".app-modal__body").as("body");
     cy.get("@body").should(($body) => {
       expect($body[0].scrollHeight, "guide is long enough to scroll").to.be.greaterThan($body[0].clientHeight);
     });
@@ -44,9 +44,9 @@ describe("Dialog header", () => {
     cy.contains("button", "Customize Weights").click();
 
     // 8px into the body, mid-width.
-    cy.get(".modal[open] .app-chooser-modal__body").then(($body) => {
+    cy.get(".modal[open] .app-modal__body").then(($body) => {
       cy.wrap($body).click($body[0].clientWidth / 2, 8);
     });
-    cy.get(".modal[open] .app-chooser-modal__box").should("be.visible");
+    cy.get(".modal[open] .app-modal__box").should("be.visible");
   });
 });

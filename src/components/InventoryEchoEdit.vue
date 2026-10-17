@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     :id="modalId"
     ref="editModalRef"
     title="Edit echo"
@@ -496,9 +496,9 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 
-  <AppChooserModal
+  <AppModal
     :id="modalIdPicker"
     ref="pickerRef"
     title="Choose echo"
@@ -567,7 +567,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -589,7 +589,7 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -1015,8 +1015,8 @@ function chooseMainEcho(echoKey: string) {
 }
 
 function closeEchoChooser() {
-  // The scrolling element is AppChooserModal's body (the body stays mounted, lazy=false).
-  const box = document.querySelector(`#${modalIdPicker.value} .app-chooser-modal__body`);
+  // The scrolling element is AppModal's body (the body stays mounted, lazy=false).
+  const box = document.querySelector(`#${modalIdPicker.value} .app-modal__body`);
   if (box) (box as HTMLElement).scrollTop = 0;
   pickerRef.value?.triggerCloseModal();
 }
@@ -1069,8 +1069,8 @@ const mainStatSelectOptions = computed((): AppRichSelectOption[] => [
 
 const modalId = computed(() => `echoModal`);
 const modalIdPicker = computed(() => `echoModalPicker`);
-const editModalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const editModalRef = ref<InstanceType<typeof AppModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const totalSubStatsEnabled = computed(() => {
   const allValues = Object.values(allSubStatsEnabled.value);

@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     :id="modalId"
     ref="editModalRef"
     title="Edit echo"
@@ -539,9 +539,9 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 
-  <AppChooserModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="resetFilters">
+  <AppModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="resetFilters">
     <div
       class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
       :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
@@ -604,7 +604,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 
   <div
     class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2"
@@ -877,7 +877,7 @@ import Range from "./input/Range.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -1160,8 +1160,8 @@ const mainStatSelectOptions = computed((): AppRichSelectOption[] => [
 ]);
 
 const modalId = computed(() => `echoModal${props.index}`);
-const editModalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const editModalRef = ref<InstanceType<typeof AppModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const totalSubStatsEnabled = computed(() => {
   const allValues = Object.values(allSubStatsEnabled.value);

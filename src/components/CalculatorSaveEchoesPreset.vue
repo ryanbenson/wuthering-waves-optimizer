@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Save echo preset"
     max-width-class="max-w-lg"
@@ -55,7 +55,7 @@
       Save
     </button>
     <div></div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -63,7 +63,7 @@ import { computed, ref } from "vue";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "CalculatorSaveEchoesPreset" });
 
@@ -87,7 +87,7 @@ const existingEchoPresetName = computed(() => {
   return data?.name ?? "";
 });
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal() {
   modalRef.value?.triggerOpenModal();

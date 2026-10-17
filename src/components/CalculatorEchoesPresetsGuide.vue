@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="isV3 ? 'How presets work' : 'Presets Guide'"
     max-width-class="max-w-5xl"
@@ -87,19 +87,19 @@
         inventory, but you can save them if you want.
       </p>
     </template>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 const settingsStore = useSettingsStore() as any;
 const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal() {
   modalRef.value?.triggerOpenModal();

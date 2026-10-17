@@ -377,7 +377,7 @@
       </div>
     </template>
 
-    <AppChooserModal
+    <AppModal
       ref="captureModal"
       :title="openCaptureCandidate ? `In-game capture #${openCaptureCandidate.captureIndex}` : ''"
       max-width-class="max-w-xl"
@@ -388,7 +388,7 @@
         :src="openCaptureCandidate.panelPreviewUrl"
         class="w-full h-auto max-h-[80vh] object-contain rounded"
         :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
-    </AppChooserModal>
+    </AppModal>
   </div>
 </template>
 
@@ -410,7 +410,7 @@ import EchoScannerTimings from "./EchoScannerTimings.vue";
 import EchoScannerGuide from "./EchoScannerGuide.vue";
 import EchoScannerResultCard from "./EchoScannerResultCard.vue";
 import EchoScannerSavedCard from "./EchoScannerSavedCard.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
@@ -771,7 +771,7 @@ const emptyFilterMessage = computed(() => {
   }
 });
 
-const captureModal = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const captureModal = ref<InstanceType<typeof AppModal> | null>(null);
 const openCaptureCandidate = ref<ScanCandidate | null>(null);
 
 async function openCapture(candidate: ScanCandidate) {

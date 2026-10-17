@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="chosenWeapon?.info?.name"
     max-width-class="max-w-2xl"
@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -121,7 +121,7 @@ import { estimateWeaponSwapImpact, type WeaponImpactRange } from "../../weapons/
 import { subStatLabelMap } from "../../echoes/stats";
 import { displayPercentage } from "../../utils/numbers";
 import { deltaToneTextClass, signedImpact } from "../../utils/signedDelta";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 
 const WEAPON_IMAGE_BASE = "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
@@ -153,7 +153,7 @@ const { characters } = storeToRefs(characterStore);
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const weaponKey = ref<string | null>(null);
 const chosenWeapon = ref<ChosenWeapon | null>(null);
 const impactR1 = ref<WeaponImpactRange | null>(null);

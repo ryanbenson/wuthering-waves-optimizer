@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Import echoes from a screenshot"
     max-width-class="max-w-5xl"
@@ -16,12 +16,12 @@
       @cancel="handleCancelDuplicateReview"
       @confirm="handleConfirmDuplicateReview"
       @apply-to-character-only="handleApplyToCharacterOnly"></EchoDuplicateReviewList>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import CalculatorEchoParser from "./CalculatorEchoParser.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
@@ -34,7 +34,7 @@ const props = withDefaults(
   { character: "", inventoryOnly: false },
 );
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
   await modalRef.value?.triggerOpenModal();
@@ -42,7 +42,7 @@ async function triggerOpenModal() {
 
 /**
  * Programmatic close (finished or cancelled review). A user close (✕,
- * backdrop, Escape) is handled by AppChooserModal itself, which then emits
+ * backdrop, Escape) is handled by AppModal itself, which then emits
  * `close` → resetDuplicateReview (see the template).
  */
 function triggerCloseModal() {

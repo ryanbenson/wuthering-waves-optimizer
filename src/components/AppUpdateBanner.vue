@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <AppChooserModal
+  <AppModal
     ref="whatsNewRef"
     title="What's new in the v3 UI"
     max-width-class="max-w-4xl"
@@ -117,9 +117,9 @@
         Switch to the v3 UI
       </button>
     </div>
-  </AppChooserModal>
+  </AppModal>
 
-  <AppChooserModal
+  <AppModal
     ref="lightboxRef"
     :title="lightboxImage?.alt"
     max-width-class="max-w-5xl"
@@ -132,7 +132,7 @@
       :src="lightboxImage.src"
       :alt="lightboxImage.alt"
       class="w-full h-auto rounded-lg" />
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -140,7 +140,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import { useClassicUi } from "../composables/useClassicUi";
 import { currentAnnouncement, type Announcement } from "../content/updates";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "AppUpdateBanner" });
 
@@ -262,7 +262,7 @@ function handleImageError(src: string) {
 
 type FeatureImage = { src: string; alt: string };
 
-const lightboxRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const lightboxRef = ref<InstanceType<typeof AppModal> | null>(null);
 const lightboxImage = ref<FeatureImage | null>(null);
 
 function openLightbox(image: FeatureImage) {
@@ -275,7 +275,7 @@ function dismiss() {
   settingsStore.addToConfig({ dismissedUpdateBannerDate: announcement.date });
 }
 
-const whatsNewRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const whatsNewRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function openWhatsNew() {
   whatsNewRef.value?.triggerOpenModal();

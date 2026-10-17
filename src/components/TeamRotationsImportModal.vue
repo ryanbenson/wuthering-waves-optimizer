@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Import a team"
     max-width-class="max-w-lg"
@@ -41,21 +41,21 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useToast } from "../composables/useToast";
 import { parseTeamImportPayload, type TeamExportData } from "../teamRotations/exportImport";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 const emit = defineEmits<{
   import: [data: TeamExportData];
 }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const importText = ref("");
 const { showToast } = useToast();
 

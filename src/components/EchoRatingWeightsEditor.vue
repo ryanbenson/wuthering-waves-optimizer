@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="mode === 'character' ? `Substat Priorities — ${characterId}` : 'Echo Rating Weights'"
     max-width-class="max-w-2xl"
@@ -33,7 +33,7 @@
           @update-value="handleWeightChange(stat, $event)" />
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -43,7 +43,7 @@ import { clampSubstatWeight } from "../echoes/rating";
 import { useSettingsStore } from "../stores/settings";
 import { useCharacterStore } from "../stores/character";
 import Range from "./input/Range.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 const WEIGHT_VALUES = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
 const subStatsList = subStats;
@@ -51,7 +51,7 @@ const subStatsList = subStats;
 const settingsStore = useSettingsStore();
 const characterStore = useCharacterStore();
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const mode = ref<"global" | "character">("global");
 const characterId = ref<string | null>(null);
 

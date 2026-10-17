@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal ref="modalRef" title="Echo Rating Guide" max-width-class="max-w-5xl" :lazy="false">
+  <AppModal ref="modalRef" title="Echo Rating Guide" max-width-class="max-w-5xl" :lazy="false">
     <p class="mt-2">
       Every echo with revealed substats gets a quality score. This guide
       explains what the scores mean and how they're calculated.
@@ -124,16 +124,16 @@
       than 5 revealed substats. The score is provisional, and it will
       likely change as the echo levels up and reveals the rest.
     </p>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { ECHO_RATING_GRADES } from "../echoes/rating";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal() {
   modalRef.value?.triggerOpenModal();

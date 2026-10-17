@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     id="modal-manage-builds"
     ref="modalRef"
     :title="mode === 'pick' ? 'Choose Build' : 'Manage Builds'"
@@ -194,7 +194,7 @@
         </div>
       </div>
     </template>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -210,7 +210,7 @@ import {
 } from "../characters/buildExportImport";
 import CalculatorBuildPreviewRow from "./CalculatorBuildPreviewRow.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "CalculatorManageBuilds" });
 
@@ -243,7 +243,7 @@ const characterStore = useCharacterStore();
 const { confirm } = useConfirm();
 const { showToast } = useToast();
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const newBuildName = ref("");
 const isOpen = ref(false);
 const isImportOpen = ref(false);
@@ -373,7 +373,7 @@ function triggerCloseModal() {
   isOpen.value = false;
 }
 
-// AppChooserModal emits `close` for the ✕, backdrop and Escape (not for
+// AppModal emits `close` for the ✕, backdrop and Escape (not for
 // triggerCloseModal, which resets isOpen itself).
 function handleDialogClose() {
   isOpen.value = false;

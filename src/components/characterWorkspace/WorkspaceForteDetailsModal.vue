@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal ref="modalRef" title="Forte Details" max-width-class="max-w-3xl" :lazy="false">
+  <AppModal ref="modalRef" title="Forte Details" max-width-class="max-w-3xl" :lazy="false">
     <div role="tablist" class="tabs tabs-bordered">
       <template v-for="track in tracks" :key="track.key">
         <input
@@ -23,12 +23,12 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 
 interface AttackInfo {
   name?: string;
@@ -70,7 +70,7 @@ const tracks = TRACK_DEFS.map((def) => ({
 }));
 
 const activeTab = ref<string>("basic");
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal(initialTab?: string) {
   if (initialTab) {

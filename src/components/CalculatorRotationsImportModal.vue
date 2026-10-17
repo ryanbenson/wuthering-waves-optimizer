@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Import a rotation"
     max-width-class="max-w-lg"
@@ -51,21 +51,21 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useToast } from "../composables/useToast";
 import { parseRotationImportPayload, type RotationExportData } from "../characters/rotationExportImport";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 const emit = defineEmits<{
   import: [data: RotationExportData];
 }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const importRotationData = ref<string | null>(null);
 const importRotationFile = ref<File | null>(null);
 const importRotationFileInputRef = ref<HTMLInputElement | null>(null);

@@ -1,23 +1,23 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, fireEvent } from "@testing-library/vue";
-import AppChooserModal from "../../src/components/AppChooserModal.vue";
+import AppModal from "../../src/components/AppModal.vue";
 
 function renderModal(props: Record<string, unknown> = {}) {
   return render({
-    components: { AppChooserModal },
+    components: { AppModal },
     data: () => ({ props }),
     template: `
       <button @click="$refs.modal.triggerOpenModal()">open</button>
-      <AppChooserModal ref="modal" title="Title" data-test-my-dialog v-bind="props">
+      <AppModal ref="modal" title="Title" data-test-my-dialog v-bind="props">
         <p>Body</p>
-      </AppChooserModal>
+      </AppModal>
     `,
   });
 }
 
 const dialog = () => document.querySelector("dialog[data-test-my-dialog]") as HTMLDialogElement | null;
 
-describe("AppChooserModal", () => {
+describe("AppModal", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
     // jsdom doesn't implement <dialog>.showModal()/.close().
@@ -58,11 +58,11 @@ describe("AppChooserModal", () => {
   it("is a full-screen sheet on phones unless sheet is false", async () => {
     const sheet = renderModal();
     await fireEvent.click(sheet.getByText("open"));
-    expect(dialog()!.querySelector(".modal-box")!.classList.contains("app-chooser-modal__box--sheet")).toBe(true);
+    expect(dialog()!.querySelector(".modal-box")!.classList.contains("app-modal__box--sheet")).toBe(true);
 
     document.body.innerHTML = "";
     const card = renderModal({ sheet: false });
     await fireEvent.click(card.getByText("open"));
-    expect(dialog()!.querySelector(".modal-box")!.classList.contains("app-chooser-modal__box--sheet")).toBe(false);
+    expect(dialog()!.querySelector(".modal-box")!.classList.contains("app-modal__box--sheet")).toBe(false);
   });
 });

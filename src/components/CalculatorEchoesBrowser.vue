@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalElementRef"
     title="Browse inventory"
     max-width-class="max-w-5xl min-h-[37.5rem]">
@@ -180,7 +180,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -209,7 +209,7 @@ import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 import { echoMatchesNameSearch } from "../utils/echoNameSearch";
 import { useToast } from "../composables/useToast";
@@ -256,7 +256,7 @@ const RATING_PERCENT_MIN = ECHO_RATING_PERCENT_MIN;
 const RATING_PERCENT_MAX = ECHO_RATING_PERCENT_MAX;
 const page = ref(1);
 const perPage = 20;
-const modalElementRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const activeFilterCount = computed(() => {
   let count = 0;

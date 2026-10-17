@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal ref="modalRef" title="Optimizer Guide" max-width-class="max-w-5xl" :lazy="false" :close-on-backdrop="false">
+  <AppModal ref="modalRef" title="Optimizer Guide" max-width-class="max-w-5xl" :lazy="false" :close-on-backdrop="false">
     <p class="mt-2">
       This is a quick guide to help you understand how the optimizer works
       and to get the most out of it!
@@ -85,21 +85,21 @@
         Read the full guide with current pictures
       </RouterLink>
     </p>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "CalculatorOptimizerGuide" });
 
 const settingsStore = useSettingsStore() as any;
 const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal() {
   modalRef.value?.triggerOpenModal();

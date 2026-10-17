@@ -2,10 +2,10 @@
 status: accepted
 date: 2026-10-18
 tags: [components, ui]
-supersedes: [26]
+supersedes: [26, 27]
 ---
 
-# 43. Dialogs with a close button use the `AppChooserModal` shell
+# 43. Dialogs with a close button use the `AppModal` shell
 
 ## Context
 
@@ -13,7 +13,7 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 
 ## Decision
 
-- Every dialog that can be closed is an `<AppChooserModal>`: title, optional `header-actions`, ✕, in one row that stays put while the body scrolls. Actions that sat next to a dialog's title (Reset to Default, Save current echoes, How to scan) go in `header-actions`.
+- Every dialog that can be closed is an `<AppModal>`: title, optional `header-actions`, ✕, in one row that stays put while the body scrolls. Actions that sat next to a dialog's title (Reset to Default, the scanner's How to scan and its guide's Got it) go in `header-actions`.
 - Three props cover what plain dialogs did differently. Their defaults are what the choosers already did, so the choosers don't change:
   - `lazy`: `false` keeps the body mounted while closed, for dialogs whose parent reaches into it before opening or that keep state between opens.
   - `closeOnBackdrop`: `false` for dialogs that only closed from the ✕ or Esc.
@@ -22,7 +22,7 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 - Dialogs without a title got one, reusing the v3 choosers' wording where they match ("Choose character", "Browse weapons", "Choose enemy").
 - Dialogs that closed from a Close/Cancel button at the bottom (the rotation and team import dialogs, Rotation presets) get the ✕ instead; the button's `data-test-*` moves to the ✕. The scanner's capture preview, which had no close button, gets one too.
 - Left as it is: `ConfirmDialog.vue`, a question with its own answer buttons, where a ✕ would be a third answer.
-- The component keeps its name. Renaming it would touch every chooser for no change in behaviour.
+- `AppChooserModal.vue` is renamed `AppModal.vue`, and its classes `app-chooser-modal*` become `app-modal*`: it is no longer only for choosers.
 
 ## Consequences
 
@@ -31,12 +31,12 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 
 ## Guidance
 
-- **Do** build new dialogs that have a ✕ on `AppChooserModal`. **Don't** hand-roll `<dialog class="modal">` with an absolute ✕.
+- **Do** build new dialogs that have a ✕ on `AppModal`. **Don't** hand-roll `<dialog class="modal">` with an absolute ✕.
 - **Do** open and close through the ref's `triggerOpenModal()`/`triggerCloseModal()`. `close` is emitted only when the user closes the dialog (✕, backdrop, Esc, a `method="dialog"` form); cleanup that must also follow a programmatic close belongs in the function that closes it.
 - **Don't** scope Cypress queries to a dialog through its page; use the dialog's own `data-test-*`.
 
 ## Related
 
-- `src/components/AppChooserModal.vue`, `tests/components/AppChooserModal.test.ts`
+- `src/components/AppModal.vue`, `tests/components/AppModal.test.ts`
 - `cypress/e2e/dialogHeader.cy.ts`
 - [ADR 0026](./0026-chooser-modals-redesign.md); issue #632

@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="pickerRef"
     title="Choose echo"
     max-width-class="max-w-5xl"
@@ -67,8 +67,8 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
-  <AppChooserModal
+  </AppModal>
+  <AppModal
     v-if="isLiveResultBarEnabled"
     ref="mainEchoSettingsRef"
     title="Main Echo Settings"
@@ -118,7 +118,7 @@
           data-test-rotation-main-echo-rank-modal="CritRate" />
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     :data-test-rotation-item="id"
@@ -511,7 +511,7 @@ import RotationTimelineChart from "./RotationTimelineChart.vue";
 import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useRotationTiming } from "../composables/useRotationTiming";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
@@ -637,8 +637,8 @@ const durationValue = ref<string | number | null>(null);
 const echoValue = ref<string | null>(null);
 const mainEchoRank = ref<string | number>(5);
 const actionsList = ref<RotationActionRow[]>([]);
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
-const mainEchoSettingsRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
+const mainEchoSettingsRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 
 const actionRefs = new Map<string, { toggleEdit: () => void }>();

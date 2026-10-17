@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4" v-if="!isLoading">
-    <AppChooserModal
+    <AppModal
       ref="pickerRef"
       title="Choose echo"
       max-width-class="max-w-5xl"
@@ -53,7 +53,7 @@
           </div>
         </template>
       </div>
-    </AppChooserModal>
+    </AppModal>
 
     <div v-if="!embedded" class="run-bar-sticky">
       <OptimizerWorkspaceRunBar
@@ -289,7 +289,7 @@ import type { OptimizerMinStatRow } from "../CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "../CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "../CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerSettings from "../CalculatorOptimizerSettings.vue";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 import OptimizerWorkspaceEchoSets from "./OptimizerWorkspaceEchoSets.vue";
 import OptimizerWorkspaceTarget from "./OptimizerWorkspaceTarget.vue";
 import OptimizerWorkspaceRunBar, {
@@ -340,7 +340,7 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
