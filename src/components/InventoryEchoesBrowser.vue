@@ -255,22 +255,7 @@
       <!-- Sets last -->
       <div class="echoes__filters__row flex flex-wrap items-center gap-2">
         <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-        <div
-          class="echoes__filters__sets echo-filters__sets flex flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSet !== null }">
-          <button
-            v-for="setKey in echoSetsList"
-            :key="setKey"
-            type="button"
-            @click="toggleEchoSetFilter(setKey)"
-            class="rounded mr-1 p-[.3rem]"
-            :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
-            <img
-              :src="getEchoSetImage(setKey)"
-              class="size-7"
-              :class="setKey" />
-          </button>
-        </div>
+        <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" />
       </div>
     </AppFilterPanel>
     <AppBulkActionBar
@@ -653,7 +638,6 @@ import {
   echoSetLabelMap,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getEchoSubStatEntries,
   getReadableSubStatLabel,
   statsTable,
@@ -677,6 +661,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
+import EchoSetToggles from "./EchoSetToggles.vue";
 import AppBulkActionBar from "./AppBulkActionBar.vue";
 import {
   buildEchoSelectOptions,
@@ -722,7 +707,8 @@ const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
 );
 const echoScanner = ref<InstanceType<typeof EchoScannerModal> | null>(null);
 
-const echoSet = ref<string | null>(null);
+/** Selected sets; an echo matches when it is in any of them. */
+const echoSetFilter = ref<string[]>([]);
 const echo = ref<string | null>(null);
 const costFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);
@@ -742,7 +728,7 @@ const selectedEchoIds = ref<string[]>([]);
 const hasSelection = computed(() => selectedEchoIds.value.length > 0);
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (echoSet.value) count += 1;
+  if (echoSetFilter.value.length) count += 1;
   if (echo.value) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -821,7 +807,7 @@ const incompleteEchoCount = computed(() => {
 watch(
   [
     mainStatFilter,
-    echoSet,
+    echoSetFilter,
     echo,
     costFilter,
     lockedFilter,
@@ -849,8 +835,8 @@ const echoesList = computed(() => {
   if (allEchoes.length <= 0) {
     return allEchoes;
   }
-  if (echoSet.value) {
-    allEchoes = allEchoes.filter((e) => e.echoSet === echoSet.value);
+  if (echoSetFilter.value.length) {
+    allEchoes = allEchoes.filter((e) => echoSetFilter.value.includes(e.echoSet ?? ""));
   }
   if (echo.value) {
     allEchoes = allEchoes.filter((e) => e.echo === echo.value);
@@ -973,17 +959,6 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
   getReadableSubStatLabel(String(stat)),
 );
 
-function getEchoSetImage(set: string) {
-  return getEchoSetIconByType(set);
-}
-
-function toggleEchoSetFilter(set: string) {
-  echoSet.value = echoSet.value === set ? null : set;
-}
-
-function isEchoSetFilterActive(set: string) {
-  return echoSet.value === set;
-}
 
 function echoCardBinder(e: InventoryEchoRow) {
   const str = (v: unknown) => (v == null ? "" : String(v));
@@ -1023,7 +998,7 @@ function toggleIncompleteFilter() {
 }
 
 function resetFilters() {
-  echoSet.value = null;
+  echoSetFilter.value = [];
   echo.value = null;
   mainStatFilter.value = null;
   costFilter.value = null;

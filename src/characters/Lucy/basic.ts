@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "SolarFlame", label: "BP" },
       { key: "RelativisticJet", label: "4*" },
     ],
+    suggestedEchoSets: ["ShadowofShatteredDreams"],
   };
 }

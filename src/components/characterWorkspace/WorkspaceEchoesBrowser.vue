@@ -101,19 +101,17 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-          <div
-            class="echo-filters__sets flex flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSet !== null }">
-            <button
-              v-for="setKey in echoSetsList"
-              :key="setKey"
-              type="button"
-              @click="toggleEchoSetFilter(setKey)"
-              class="rounded mr-1 p-[.3rem]"
-              :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
-              <img :src="getEchoSetImage(setKey)" class="size-7" :class="setKey" />
-            </button>
-          </div>
+          <button
+            v-if="recommendedSets.length"
+            type="button"
+            class="btn btn-sm btn-ghost rounded px-2"
+            :class="{ 'btn-active': isRecommendedSetFilter }"
+            v-tooltip="recommendedSetsTooltip"
+            data-test-workspace-echoes-browser-recommended-sets
+            @click="toggleRecommendedSets">
+            Recommended
+          </button>
+          <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" />
         </div>
       </AppFilterPanel>
 
@@ -213,7 +211,6 @@ import {
   ECHO_RV_MAX,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getEchoSubStatEntries,
   getReadableSubStatLabel,
   echoSetLabelMap,
@@ -237,6 +234,7 @@ import EchoRatingRangeFilters from "../EchoRatingRangeFilters.vue";
 import PaginationControls from "../PaginationControls.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
+import EchoSetToggles from "../EchoSetToggles.vue";
 import AppChooserModal from "../AppChooserModal.vue";
 import {
   buildEchoSelectOptions,
@@ -248,7 +246,7 @@ import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
-const props = defineProps<{ character: string }>();
+const props = defineProps<{ character: string; suggestedEchoSets?: string[] }>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
@@ -262,7 +260,8 @@ const { getEchoEquippedChars } = inventoryStore;
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const echoIndex = ref<number | null>(null);
 const costFilter = ref<number | null>(null);
-const echoSet = ref<string | null>(null);
+/** Selected sets; an echo matches when it is in any of them. */
+const echoSetFilter = ref<string[]>([]);
 const echo = ref<string | null>(null);
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
@@ -296,7 +295,7 @@ const equippedEchoIdInSlot = computed(() => {
 
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (echoSet.value) count += 1;
+  if (echoSetFilter.value.length) count += 1;
   if (echo.value) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -310,20 +309,32 @@ const activeFilterCount = computed(() => {
 });
 
 watch(
-  [mainStatFilter, echoSet, echo, favoriteFilter, equippedFilter, costFilter,
+  [mainStatFilter, echoSetFilter, echo, favoriteFilter, equippedFilter, costFilter,
    substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
   },
 );
 
-const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+// The set filter starts on the character's recommended sets; the row keeps one
+// fixed order for every character.
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+watch(recommendedSets, (sets) => (echoSetFilter.value = [...sets]), { immediate: true });
+const echoSetsList = Object.keys(echoSetLabelMap);
+const isRecommendedSetFilter = computed(
+  () =>
+    echoSetFilter.value.length === recommendedSets.value.length &&
+    recommendedSets.value.every((set) => echoSetFilter.value.includes(set)),
+);
+const recommendedSetsTooltip = computed(
+  () => `Recommended sets: ${recommendedSets.value.map((set) => echoSetLabelMap[set]).join(", ")}`,
+);
 
 const echoesFiltered = computed(() => {
   let allEchoes = echoes.value ?? [];
   if (allEchoes.length <= 0) return allEchoes;
-  if (echoSet.value) {
-    allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
+  if (echoSetFilter.value.length) {
+    allEchoes = allEchoes.filter((item: any) => echoSetFilter.value.includes(item.echoSet));
   }
   if (echo.value) {
     allEchoes = allEchoes.filter((item: any) => item.echo === echo.value);
@@ -558,7 +569,7 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 );
 
 function resetFilters() {
-  echoSet.value = null;
+  echoSetFilter.value = [];
   echo.value = null;
   costFilter.value = null;
   mainStatFilter.value = null;
@@ -573,14 +584,8 @@ function resetFilters() {
   ratingMax.value = RATING_PERCENT_MAX;
 }
 
-function getEchoSetImage(set: string) {
-  return getEchoSetIconByType(set);
-}
-function toggleEchoSetFilter(set: string) {
-  echoSet.value = echoSet.value === set ? null : set;
-}
-function isEchoSetFilterActive(set: string) {
-  return echoSet.value === set;
+function toggleRecommendedSets() {
+  echoSetFilter.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];
 }
 function getCharsEquipped(item: any) {
   return getEchoEquippedChars(item.echoId);

@@ -26,5 +26,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "SomnoireAnchor", label: "Event" },
       { key: "EndlessCollapse", label: "4*" },
     ],
+    suggestedEchoSets: ["TrailblazingStar"],
   };
 }

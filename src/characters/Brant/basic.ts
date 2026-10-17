@@ -24,5 +24,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "RedSpring", label: "Alternate" },
       { key: "EmeraldOfGenesis", label: "Stanrdard" },
     ],
+    suggestedEchoSets: ["MoltenRift"],
   };
 }

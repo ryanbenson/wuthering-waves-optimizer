@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "WaningRedshift", label: "4*" },
       { key: "AureateZenith", label: "BP" },
     ],
+    suggestedEchoSets: ["FlamingClawprint"],
   };
 }

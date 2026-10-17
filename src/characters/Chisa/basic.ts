@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Autumntrace", label: "BP" },
       { key: "MeditationsonMercy", label: "4*" },
     ],
+    suggestedEchoSets: ["RejuvenatingGlow", "MoonlitClouds", "ThreadofSeveredFate"],
   };
 }
