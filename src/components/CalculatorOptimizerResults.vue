@@ -4,6 +4,7 @@
     :key="result.id"
     :id="result.id"
     :index="i"
+    :is-current="result.isCurrent"
     :character="character"
     :loadout="result.loadout"
     :context="result.context"
@@ -15,6 +16,7 @@
     :total-crit-rate="totalCritRate"
     :total-crit-dmg="totalCritDmg"
     :energy-regen="energyRegen"
+    :current-stats="currentStats"
     :target-type="targetType"
     :target-value="targetValue" />
 </template>
@@ -39,6 +41,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStats: Record<string, number>;
   }>(),
   {
     results: () => [],
@@ -49,6 +52,7 @@ type OptimizerResultRow = {
   id: string;
   loadout: unknown[];
   context: Record<string, unknown>;
+  isCurrent?: boolean;
 };
 
 const resultList = computed(

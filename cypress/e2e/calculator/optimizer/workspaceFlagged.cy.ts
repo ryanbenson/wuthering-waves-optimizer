@@ -42,7 +42,11 @@ describe("Optimizer Workspace (liveResultBar flag): Augusta golden path", () => 
     cy.get("[data-test-optimizer-workspace-optimize-btn]").click();
 
     cy.get('[data-test-optimizer-workspace-leaderboard-row="0"]').should("exist");
-    cy.get("[data-test-optimizer-workspace-spotlight]").should("be.visible");
+    // The set equipped when the run started is listed after the top results.
+    cy.get("[data-test-optimizer-workspace-leaderboard-row]").last().should("contain.text", "Current");
+    // The trade-off chart sits between the list and the spotlight.
+    cy.get("[data-test-optimizer-workspace-tradeoff] canvas").should("be.visible");
+    cy.get("[data-test-optimizer-workspace-spotlight]").scrollIntoView().should("be.visible");
 
     cy.get(
       "[data-test-optimizer-workspace-spotlight] [data-test-optimizer-rotation-damage-total]",

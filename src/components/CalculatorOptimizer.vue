@@ -365,6 +365,7 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDMG"
       :energy-regen="energyRegen"
+      :current-stats="currentStats"
       :target-type="optimizationTargetType"
       :target-value="optimizationTargetObject" />
   </div>
@@ -415,6 +416,7 @@ const props = defineProps<{
   totalCritRate: number;
   totalCritDMG: number;
   energyRegen: number;
+  currentStats: Record<string, number>;
   optimizationTargetType: string;
   optimizationTargetObject: string;
 }>();

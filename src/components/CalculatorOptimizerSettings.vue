@@ -65,6 +65,25 @@
         </button>
       </div>
     </div>
+    <div class="form-control mt-2">
+      <label class="label flex-col items-start gap-1" for="optimizer-result-count">
+        <h3>Loadouts shown</h3>
+        <span class="text-sm text-neutral-content">
+          How many top loadouts to list ({{ OPTIMIZER_RESULT_COUNT_MIN }}–{{
+            OPTIMIZER_RESULT_COUNT_MAX
+          }}). Your current loadout is listed after them.
+        </span>
+      </label>
+      <input
+        id="optimizer-result-count"
+        type="number"
+        class="input input-sm input-bordered w-24"
+        :min="OPTIMIZER_RESULT_COUNT_MIN"
+        :max="OPTIMIZER_RESULT_COUNT_MAX"
+        :value="optimizerResultCount"
+        data-test-optimizer-result-count
+        @change="handleResultCountChange" />
+    </div>
   </div>
 </template>
 
@@ -78,7 +97,10 @@ import {
 import { useSettingsStore } from "../stores/settings";
 import {
   OPTIMIZER_WORKER_COUNT_OPTIONS,
+  OPTIMIZER_RESULT_COUNT_MIN,
+  OPTIMIZER_RESULT_COUNT_MAX,
   resolveOptimizerWorkerCount,
+  resolveOptimizerResultCount,
   type OptimizerWorkerCount,
 } from "../utils/optimizerPreferences";
 
@@ -118,6 +140,23 @@ const optimizerWorkerCount = computed({
     void settingsStore.addToConfig({ optimizerWorkerCount: value });
   },
 });
+
+// Same global-preference pattern as worker count. Saved on change (not on
+// every keystroke) so clearing the box to type a new number doesn't snap it.
+const optimizerResultCount = computed(() =>
+  resolveOptimizerResultCount(
+    (config.value as { optimizerResultCount?: unknown })?.optimizerResultCount,
+  ),
+);
+
+function handleResultCountChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const value = resolveOptimizerResultCount(
+    input.value === "" ? undefined : Number(input.value),
+  );
+  input.value = String(value);
+  void settingsStore.addToConfig({ optimizerResultCount: value });
+}
 
 function updatedSettings() {
   emit("optimizer:settings-updated", {

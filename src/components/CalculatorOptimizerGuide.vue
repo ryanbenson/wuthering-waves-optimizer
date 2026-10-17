@@ -76,7 +76,7 @@
               figure out the best loadouts given your target.
             </li>
             <li>
-              It will give you the top 5 loadouts, and you can review them, and
+              It will give you the top loadouts (5 by default, change it under Advanced settings), and you can review them, and
               equip one you may want.
             </li>
           </ul>

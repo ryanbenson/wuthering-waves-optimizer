@@ -1,7 +1,10 @@
 <template>
   <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-4" data-test-optimizer-workspace-spotlight>
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <span class="badge" :class="rank === 0 ? 'badge-primary' : ''">
+      <span v-if="isCurrent" class="badge">
+        Current loadout (equipped when you ran the optimizer)
+      </span>
+      <span v-else class="badge" :class="rank === 0 ? 'badge-primary' : ''">
         Loadout #{{ rank + 1 }}{{ rank === 0 ? " · Best overall" : "" }}
       </span>
       <button
@@ -97,12 +100,7 @@
           v-if="showFullStats"
           :character-element="characterElement"
           :final-stats="finalStats"
-          :total-atk="totalAtk"
-          :total-hp="totalHp"
-          :total-def="totalDef"
-          :total-crit-rate="totalCritRate"
-          :total-crit-dmg="totalCritDmg"
-          :energy-regen="energyRegen"
+          :current-stats="currentStats"
           :target-value="targetValue"></CalculatorOptimizerResultStats>
       </div>
     </div>
@@ -110,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import CalculatorOptimizerResultLoadoutEcho from "../CalculatorOptimizerResultLoadoutEcho.vue";
 import CalculatorOptimizerResultDamage from "../CalculatorOptimizerResultDamage.vue";
 import CalculatorOptimizerResultRotationDamage, {
@@ -129,6 +127,7 @@ const props = withDefaults(
   defineProps<{
     character: string;
     rank: number;
+    isCurrent?: boolean;
     targetType: string;
     targetValue: string;
     loadout?: unknown[];
@@ -141,6 +140,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStats: Record<string, number>;
   }>(),
   {
     loadout: () => [],
@@ -151,8 +151,10 @@ const props = withDefaults(
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
-const showFullStats = ref(false);
-const showRotationDetails = ref(false);
+// Owned by the results list, so the Show/Hide Details state survives switching
+// loadouts (this component is re-created for each selected loadout).
+const showFullStats = defineModel<boolean>("showFullStats", { default: false });
+const showRotationDetails = defineModel<boolean>("showRotationDetails", { default: false });
 
 const sortedLoadout = computed(() => sortLoadoutForDisplay(props.loadout as any[]));
 

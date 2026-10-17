@@ -32,7 +32,10 @@
             <div class="flex items-center gap-0.5">
               <EchoFavoriteButton :echo-id="echoId || null" />
               <EchoStatusBadge :echo-id="echoId || null" />
-              <EchoEquippedIndicator :echo-id="echoId || null" />
+              <!-- Fixed slot: the card keeps its size whether or not the check shows. -->
+              <span class="inline-flex size-5 shrink-0">
+                <EchoEquippedIndicator :echo-id="echoId || null" />
+              </span>
             </div>
           </div>
           <div class="flex-1 min-w-0">

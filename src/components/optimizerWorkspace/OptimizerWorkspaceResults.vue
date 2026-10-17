@@ -3,7 +3,7 @@
     <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="text-xs font-bold uppercase tracking-wider opacity-50">
-          Top {{ resultList.length }} loadout{{ resultList.length === 1 ? "" : "s" }}
+          Top {{ rankedCount }} loadout{{ rankedCount === 1 ? "" : "s" }}
         </div>
         <div class="flex items-center gap-3">
           <div class="text-xs opacity-60">
@@ -31,8 +31,8 @@
           @click="selectedIndex = i">
           <span
             class="badge shrink-0"
-            :class="i === 0 ? 'badge-primary' : ''">
-            {{ i + 1 }}
+            :class="!row.isCurrent && i === 0 ? 'badge-primary' : ''">
+            {{ row.isCurrent ? "Current" : i + 1 }}
           </span>
           <OptimizerWorkspaceEchoAvatarStack
             class="shrink-0"
@@ -51,11 +51,22 @@
       </div>
     </div>
 
+    <OptimizerWorkspaceTradeoffChart
+      :character="character"
+      :rows="resultList"
+      :character-element="characterElement"
+      :selected-index="selectedIndex"
+      :format-value="formatValue"
+      @select="selectedIndex = $event"></OptimizerWorkspaceTradeoffChart>
+
     <OptimizerWorkspaceSpotlight
       v-if="selectedResult"
       :key="selectedResult.id"
       :character="character"
       :rank="selectedIndex"
+      :is-current="selectedResult.isCurrent"
+      v-model:show-full-stats="showFullStats"
+      v-model:show-rotation-details="showRotationDetails"
       :loadout="selectedResult.loadout"
       :context="selectedResult.context"
       :character-element="characterElement"
@@ -66,6 +77,7 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDmg"
       :energy-regen="energyRegen"
+      :current-stats="currentStats"
       :target-type="targetType"
       :target-value="targetValue"></OptimizerWorkspaceSpotlight>
   </div>
@@ -74,6 +86,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import OptimizerWorkspaceSpotlight from "./OptimizerWorkspaceSpotlight.vue";
+import OptimizerWorkspaceTradeoffChart from "./OptimizerWorkspaceTradeoffChart.vue";
 import OptimizerWorkspaceEchoAvatarStack from "./OptimizerWorkspaceEchoAvatarStack.vue";
 import { formatOptimizerElapsed } from "./formatElapsed";
 import { displayInt, displayPercentage } from "../../utils/numbers";
@@ -96,6 +109,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStats: Record<string, number>;
     totalCombos: number;
     optimizerElapsedMs: number;
   }>(),
@@ -109,9 +123,12 @@ type OptimizerResultRow = {
   targetValue: number;
   loadout: unknown[];
   context: Record<string, unknown>;
+  isCurrent?: boolean;
 };
 
 const selectedIndex = ref(0);
+const showFullStats = ref(false);
+const showRotationDetails = ref(false);
 
 const resultList = computed(
   () => JSON.parse(JSON.stringify(props.results)) as OptimizerResultRow[],
@@ -123,6 +140,7 @@ watch(resultList, (list) => {
 });
 
 const selectedResult = computed(() => resultList.value[selectedIndex.value]);
+const rankedCount = computed(() => resultList.value.filter((row) => !row.isCurrent).length);
 
 const formattedElapsed = computed(() => formatOptimizerElapsed(props.optimizerElapsedMs));
 
