@@ -382,6 +382,13 @@
           echo{{ summary.unknownCount === 1 ? "" : "es" }} (saved without a name)
         </li>
       </ul>
+      <label v-if="wearerCount" class="label cursor-pointer justify-end gap-2">
+        <input v-model="equipWearers" type="checkbox" class="checkbox checkbox-sm" data-test-scanner-equip-wearers />
+        <span class="label-text">
+          Equip on the {{ wearerCount }} character{{ wearerCount === 1 ? "" : "s" }} wearing them in game
+          (as a new build for characters you already have)
+        </span>
+      </label>
       <div class="flex gap-2 justify-end">
         <button class="btn" :disabled="status === 'stopping'" @click="handleRetry">Scan again</button>
         <button
@@ -439,7 +446,7 @@ const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
 });
 
 const emit = defineEmits<{
-  "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean];
+  "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean, equipWearers: boolean];
 }>();
 
 const scanner = useEchoScanner();
@@ -804,8 +811,12 @@ const continueLabel = computed(() => {
   return `Save ${total} echo${total === 1 ? "" : "es"}`;
 });
 
+/** Characters the scanned echoes said they're "Equipped by". */
+const wearerCount = computed(() => new Set(candidates.value.map((c) => c.slot.equippedBy).filter(Boolean)).size);
+const equipWearers = ref(true);
+
 function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);
-  emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value);
+  emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value, equipWearers.value && wearerCount.value > 0);
 }
 </script>

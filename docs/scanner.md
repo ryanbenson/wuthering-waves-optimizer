@@ -948,6 +948,12 @@ A summary line above the button shows the new / already-in-inventory /
 still-flagged / unknown counts. After saving, `onFinalized(savedCount)`
 drives a "Saved N echoes to your inventory" toast.
 
+## Equipped by: equipping scanned echoes on their characters
+
+The panel's "Equipped by <name>" line (`EQUIPPED_BY_LINE` in layout.ts, measured off a 1920x1080 capture, blank when the echo isn't equipped) is OCR'd with the other primary crops and matched by `matchEquippedBy` (scanner-core/equippedBy.ts) against `allCharactersList`. A match sets `slot.equippedBy` to the character key; a name that doesn't match is kept as `candidate.equippedByName` and shown with a "?" on the result card. The main character is shown by the player's name, which the scanner doesn't ask for yet, so Rover's echoes land there and aren't equipped.
+
+The review step's "Equip on the N characters wearing them in game" checkbox (on by default, shown only when some echo has a wearer) is passed with `echoes-parsed`. After the save, `EchoScannerModal` runs `planScannedLoadouts` (src/scanner/scannedLoadouts.ts): each slot's echo is found in the inventory by identity, so one the player already owned counts too, grouped by `groupWavescanLoadouts` (highest cost first; more than 5 echoes or 12 cost is blocked), then written with `useWavescanLoadouts`' `applyLoadoutWrites` in "new build" mode: a character that already exists gets a new "Scan <date>" build, a new one is created with its default build. The toast says who was equipped and who was blocked.
+
 ## Debug view
 
 `EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen

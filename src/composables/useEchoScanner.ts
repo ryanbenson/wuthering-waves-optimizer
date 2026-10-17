@@ -40,6 +40,7 @@ import {
   PANEL_BOX,
   STATS_BLOCK,
   NAME_BLOCK,
+  EQUIPPED_BY_LINE,
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
@@ -57,6 +58,8 @@ import { mainEchoesData } from "../echoes/index";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
+import { matchEquippedBy } from "@wutheringtools/scanner-core/equippedBy";
+import { allCharactersList } from "../characters/characters";
 import type { FrameSize, OcrLine, RegionFrac, ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
@@ -144,8 +147,11 @@ const LAYOUT_CHECK_CANDIDATES = 3;
  * are only sometimes used, but grabbing them later would read whatever
  * echo the user has clicked to since.
  */
+/** Who an "Equipped by <name>" line can name (Rover is matched by player name, which we don't ask for yet). */
+const EQUIP_CHARACTERS = allCharactersList.map(({ key, name }) => ({ key, name }));
+
 type FrameSnapshot = {
-  primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues", ImageBitmap>;
+  primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues" | "equippedBy", ImageBitmap>;
   setIcon: ImageBitmap;
   /** substatBlock + sub0..sub4 — the per-row/block fallback passes. */
   fallback: Record<string, ImageBitmap>;
@@ -282,6 +288,7 @@ function snapshotFrame(
     grabRegionBitmap(videoEl, SECONDARY_STAT_ROW, content),
     grabRegionBitmap(videoEl, SUBSTAT_LABEL_COLUMN, content),
     grabRegionBitmap(videoEl, SUBSTAT_VALUE_COLUMN, content),
+    grabRegionBitmap(videoEl, EQUIPPED_BY_LINE, content),
   ]);
   const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX, content);
   const fallback = Promise.all([
@@ -298,13 +305,13 @@ function snapshotFrame(
   );
 
   return Promise.all([primary, setIcon, fallback, debug, alternateCrops]).then(
-    ([[name, main, secondary, substatLabels, substatValues], setIconBitmap, [block, ...rows], debugCrops, altCrops]) => {
+    ([[name, main, secondary, substatLabels, substatValues, equippedBy], setIconBitmap, [block, ...rows], debugCrops, altCrops]) => {
       const fallbackBitmaps: Record<string, ImageBitmap> = { substatBlock: block };
       rows.forEach((bitmap, i) => {
         fallbackBitmaps[`sub${i}`] = bitmap;
       });
       return {
-        primary: { name, main, secondary, substatLabels, substatValues },
+        primary: { name, main, secondary, substatLabels, substatValues, equippedBy },
         setIcon: setIconBitmap,
         fallback: fallbackBitmaps,
         panelPreview,
@@ -885,6 +892,9 @@ export function useEchoScanner() {
         return;
       }
 
+      const wearer = matchEquippedBy((texts.equippedBy ?? "").split("\n"), EQUIP_CHARACTERS, null);
+      if (wearer.kind === "character") parsed.slot.equippedBy = wearer.key;
+
       const signature = computeSignature(parsed.slot);
       if (dedupe.has(signature)) {
         duplicateCount.value++;
@@ -903,6 +913,7 @@ export function useEchoScanner() {
         signature,
         rawHeaderText: parsed.rawHeaderText,
         rawStatsText: parsed.rawStatsText,
+        equippedByName: wearer.kind === "unknown" ? wearer.name : undefined,
         debugCrops: debug?.crops.map((crop) => ({
           ...crop,
           text: crop.key === "setIcon" ? identity.debugLabel : (texts[crop.key] ?? crop.text),

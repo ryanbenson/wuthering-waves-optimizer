@@ -13,7 +13,7 @@
         <EchoScannerCapture
           v-if="!isReviewingDuplicates"
           inventory-only
-          @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
+          @echoes-parsed="handleScanSaved"></EchoScannerCapture>
         <EchoDuplicateReviewList
           v-else
           :items="duplicateReviewItems"
@@ -48,6 +48,11 @@ import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
+import { useWavescanLoadouts } from "../composables/useWavescanLoadouts";
+import { useInventoryStore } from "../stores/inventory";
+import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters";
+import { planScannedLoadouts } from "../scanner/scannedLoadouts";
+import type { ParsedEchoSlot } from "../scanner/types";
 
 const modalId = "modal-echo-scanner-inventory";
 
@@ -102,13 +107,41 @@ const {
 
 const { showToast } = useToast();
 
+const inventoryStore = useInventoryStore();
+// Only applyLoadoutWrites is used: equip into a new "Scan <date>" build for characters that already exist.
+const loadouts = useWavescanLoadouts({ mapped: ref(null), meta: ref(null), mode: ref("append"), buildNamePrefix: "Scan" });
+loadouts.buildTarget.value = "new";
+let lastScan: { slots: ParsedEchoSlot[]; equipWearers: boolean } | null = null;
+
+function handleScanSaved(slots: ParsedEchoSlot[], saveToInventory: boolean, equipWearers: boolean) {
+  lastScan = { slots, equipWearers };
+  return handleEchoesParsed(slots, saveToInventory);
+}
+
+/** Equips each character's scanned echoes; returns a sentence for the toast, or "". */
+function equipScannedWearers(): string {
+  if (!lastScan?.equipWearers) return "";
+  const { writes, blocked } = planScannedLoadouts(
+    lastScan.slots,
+    inventoryStore.echoes,
+    allCharactersList.map((c) => c.key),
+  );
+  loadouts.applyLoadoutWrites(writes);
+  const names = (list: { characterKey: string }[]) => list.map((w) => getCharacterRosterDisplayName(w.characterKey)).join(", ");
+  return [
+    writes.length ? ` Equipped on ${names(writes)}.` : "",
+    blocked.length ? ` Not equipped (over the 5-echo / 12-cost limit): ${names(blocked)}.` : "",
+  ].join("");
+}
+
 function handleFinalized(savedCount: number) {
   triggerCloseModal();
+  const equipped = equipScannedWearers();
   showToast(
-    savedCount
+    (savedCount
       ? `Saved ${savedCount} echo${savedCount === 1 ? "" : "es"} to your inventory.`
-      : "No echoes were saved.",
-    savedCount ? "success" : "info",
+      : "No echoes were saved.") + equipped,
+    savedCount || equipped ? "success" : "info",
   );
 }
 

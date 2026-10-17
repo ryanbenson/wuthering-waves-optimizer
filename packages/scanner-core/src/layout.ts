@@ -241,6 +241,21 @@ export const STATS_BLOCK: RegionFrac = {
 };
 
 /**
+ * The "Equipped by <name>" line under the Echo Skill section (blank when the echo
+ * isn't equipped), read by equippedBy.ts. Measured off a real 1920x1080 (16:9)
+ * capture: text band y 879-899px, x 1370-1581px for "Equipped by Hsin", with the
+ * character's avatar at x 1325-1354. Left edge starts after the avatar (same reason
+ * stat rows skip their icon), right edge runs to the panel edge for long names; y is
+ * mapped back to the 16:10 reference (x 9/10, see this file's top comment).
+ */
+export const EQUIPPED_BY_LINE: RegionFrac = {
+  x: 0.7094,
+  y: 0.7267,
+  width: 0.2594,
+  height: 0.0283,
+};
+
+/**
  * Every named ROI in one list, for the debug view (EchoScannerCapture.vue):
  * dashed boxes drawn over the live preview, and — per captured candidate —
  * a labeled crop thumbnail + its raw OCR text, so a mismatch like the
@@ -257,6 +272,7 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
   { key: "substatValues", label: "Substat values", region: SUBSTAT_VALUE_COLUMN },
   ...SUBSTAT_ROWS.map((region, i) => ({ key: `sub${i}`, label: `Substat ${i + 1}`, region })),
   { key: "substatBlock", label: "Substat fallback block", region: SUBSTAT_BLOCK },
+  { key: "equippedBy", label: "Equipped by", region: EQUIPPED_BY_LINE },
 ];
 
 /** The aspect every RegionFrac in this file was measured at — see this file's top doc comment. */

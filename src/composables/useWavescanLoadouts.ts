@@ -101,8 +101,10 @@ export function useWavescanLoadouts(options: {
   mapped: Ref<WavescanEchoMapResult | null>;
   meta: Ref<WavescanMeta | null>;
   mode: Ref<WavescanImportMode>;
+  /** Start of the "new build" name, before the date. */
+  buildNamePrefix?: string;
 }) {
-  const { mapped, meta, mode } = options;
+  const { mapped, meta, mode, buildNamePrefix = "Wavescan" } = options;
   const characterStore = useCharacterStore();
   const inventoryStore = useInventoryStore();
 
@@ -165,7 +167,7 @@ export function useWavescanLoadouts(options: {
   const newBuildBaseName = computed(() => {
     const scannedAt = meta.value?.scannedAt ? new Date(meta.value.scannedAt) : null;
     const date = scannedAt && !Number.isNaN(scannedAt.getTime()) ? scannedAt : new Date();
-    return `Wavescan ${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+    return `${buildNamePrefix} ${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
   });
 
   function characterSlotIds(characterKey: string): (string | null)[] {
