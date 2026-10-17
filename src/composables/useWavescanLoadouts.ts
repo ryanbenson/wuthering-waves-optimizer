@@ -370,12 +370,6 @@ export function useWavescanLoadouts(options: {
     }));
   }
 
-  /**
-   * Equips each loadout the way the app's own equip paths do:
-   * `applyEchoLoadout` for the slots and the `equipped` map, and `mainEcho`
-   * from slot 1, the same field the echoes panel writes. Run after the
-   * scanned echoes are in the inventory.
-   */
   /** Switches to the character's Scanned build, making it first if needed (see SCANNED_BUILD_NAME). */
   function equipScannedBuild(characterKey: string, existed: boolean) {
     const scanned = characterStore
@@ -393,6 +387,12 @@ export function useWavescanLoadouts(options: {
     }
   }
 
+  /**
+   * Equips each loadout the way the app's own equip paths do:
+   * `applyEchoLoadout` for the slots and the `equipped` map, and `mainEcho`
+   * from slot 1, the same field the echoes panel writes. Run after the
+   * scanned echoes are in the inventory.
+   */
   function applyLoadoutWrites(writes: WavescanLoadoutWrite[]) {
     for (const write of writes) {
       const { characterKey } = write;
