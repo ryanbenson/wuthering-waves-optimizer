@@ -644,17 +644,11 @@ defineExpose({
 // Unsaved results live only in this tab: let the browser ask before a reload or
 // closing the tab drops them.
 function warnBeforeUnload(event: BeforeUnloadEvent) {
+  if (!candidates.value.length) return;
   event.preventDefault();
   event.returnValue = "";
 }
-watch(
-  () => candidates.value.length > 0,
-  (hasUnsaved) => {
-    if (hasUnsaved) window.addEventListener("beforeunload", warnBeforeUnload);
-    else window.removeEventListener("beforeunload", warnBeforeUnload);
-  },
-  { immediate: true },
-);
+window.addEventListener("beforeunload", warnBeforeUnload);
 onBeforeUnmount(() => window.removeEventListener("beforeunload", warnBeforeUnload));
 
 // --- Guide ---------------------------------------------------------------
