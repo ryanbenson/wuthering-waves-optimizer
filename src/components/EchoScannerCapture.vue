@@ -647,11 +647,12 @@ function handleRetry() {
 const GUIDE_SEEN_KEY = "echoScanner.guideSeen";
 const CAPTURE_CUE_KEY = "echoScanner.captureCue";
 
-function readFlag(key: string): boolean {
+function readFlag(key: string, fallback = false): boolean {
   try {
-    return localStorage.getItem(key) === "1";
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value === "1";
   } catch {
-    return false;
+    return fallback;
   }
 }
 
@@ -813,7 +814,10 @@ const continueLabel = computed(() => {
 
 /** Characters the scanned echoes said they're "Equipped by". */
 const wearerCount = computed(() => new Set(candidates.value.map((c) => c.slot.equippedBy).filter(Boolean)).size);
-const equipWearers = ref(true);
+// Remembered per browser like the capture beep; on unless the player turned it off.
+const EQUIP_WEARERS_KEY = "echoScanner.equipWearers";
+const equipWearers = ref(readFlag(EQUIP_WEARERS_KEY, true));
+watch(equipWearers, (enabled) => writeFlag(EQUIP_WEARERS_KEY, enabled));
 
 function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);

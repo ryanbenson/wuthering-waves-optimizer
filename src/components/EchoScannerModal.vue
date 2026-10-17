@@ -19,8 +19,10 @@
           :items="duplicateReviewItems"
           inventory-only
           :has-selected-echoes="hasSelectedEchoes"
+          apply-without-saving
           @cancel="handleCancelDuplicateReview"
-          @confirm="handleConfirmDuplicateReview"></EchoDuplicateReviewList>
+          @confirm="handleConfirmDuplicateReview"
+          @apply-to-character-only="handleApplyToCharacterOnly"></EchoDuplicateReviewList>
       </div>
     </div>
   </dialog>
@@ -48,7 +50,7 @@ import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
-import { useWavescanLoadouts } from "../composables/useWavescanLoadouts";
+import { useWavescanLoadouts, SCANNED_BUILD_NAME } from "../composables/useWavescanLoadouts";
 import { useInventoryStore } from "../stores/inventory";
 import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters";
 import { planScannedLoadouts, planScannedMarks } from "../scanner/scannedLoadouts";
@@ -100,6 +102,7 @@ const {
   resetDuplicateReview,
   handleEchoesParsed,
   handleConfirmDuplicateReview,
+  handleApplyToCharacterOnly,
 } = useEchoDuplicateReview({
   inventoryOnly: () => true,
   character: () => "",
@@ -109,9 +112,9 @@ const {
 const { showToast } = useToast();
 
 const inventoryStore = useInventoryStore();
-// Only applyLoadoutWrites is used: equip into a new "Scan <date>" build for characters that already exist.
-const loadouts = useWavescanLoadouts({ mapped: ref(null), meta: ref(null), mode: ref("append"), buildNamePrefix: "Scan" });
-loadouts.buildTarget.value = "new";
+// Only applyLoadoutWrites is used: each wearer's echoes go into its "Scanned" build (SCANNED_BUILD_NAME).
+const loadouts = useWavescanLoadouts({ mapped: ref(null), meta: ref(null), mode: ref("append") });
+loadouts.buildTarget.value = "scanned";
 let lastScan: { slots: ParsedEchoSlot[]; equipWearers: boolean } | null = null;
 
 function handleScanSaved(slots: ParsedEchoSlot[], saveToInventory: boolean, equipWearers: boolean) {
@@ -130,7 +133,7 @@ function equipScannedWearers(): string {
   loadouts.applyLoadoutWrites(writes);
   const names = (list: { characterKey: string }[]) => list.map((w) => getCharacterRosterDisplayName(w.characterKey)).join(", ");
   return [
-    writes.length ? ` Equipped on ${names(writes)}.` : "",
+    writes.length ? ` Equipped on ${names(writes)}, each in its "${SCANNED_BUILD_NAME}" build; other builds are unchanged.` : "",
     blocked.length ? ` Not equipped (over the 5-echo / 12-cost limit): ${names(blocked)}.` : "",
   ].join("");
 }

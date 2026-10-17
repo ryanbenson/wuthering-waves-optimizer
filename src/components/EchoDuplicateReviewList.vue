@@ -76,6 +76,15 @@
     <button type="button" class="btn" @click="emit('cancel')">Cancel</button>
     <template v-if="inventoryOnly">
       <button
+        v-if="applyWithoutSaving && !hasSelectedEchoes"
+        type="button"
+        class="btn btn-primary"
+        data-test-duplicate-review-apply
+        @click="emit('applyToCharacterOnly')">
+        Apply without saving
+      </button>
+      <button
+        v-else
         type="button"
         class="btn btn-primary"
         :disabled="!hasSelectedEchoes"
@@ -117,6 +126,11 @@ const props = defineProps<{
   items: DuplicateReviewItem[];
   inventoryOnly: boolean;
   hasSelectedEchoes: boolean;
+  /**
+   * The echo scanner: with nothing ticked (every echo already saved), continue without
+   * saving, so the scan still equips its wearers and copies the game's marks.
+   */
+  applyWithoutSaving?: boolean;
 }>();
 
 const selectedCount = computed(() => props.items.filter((item) => item.selected).length);

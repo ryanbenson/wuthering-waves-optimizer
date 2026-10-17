@@ -39,7 +39,18 @@ import type {
   WavescanLoadoutTile,
 } from "../components/SettingsWavescanLoadout.vue";
 
-export type WavescanBuildTarget = "active" | "new";
+/**
+ * Where an import writes each character's loadout: the build that's active, a new
+ * dated build, or (the echo scanner) the character's reserved "Scanned" build.
+ */
+export type WavescanBuildTarget = "active" | "new" | "scanned";
+
+/**
+ * The echo scanner keeps one build of this name per character in step with the game,
+ * updated in place on every scan. Renaming it makes it the player's own; the next scan
+ * then starts a new one.
+ */
+export const SCANNED_BUILD_NAME = "Scanned";
 
 type LoadoutState = {
   /** Mapped echo ids in the order the user wants them, slot 1 first. */
@@ -101,10 +112,8 @@ export function useWavescanLoadouts(options: {
   mapped: Ref<WavescanEchoMapResult | null>;
   meta: Ref<WavescanMeta | null>;
   mode: Ref<WavescanImportMode>;
-  /** Start of the "new build" name, before the date. */
-  buildNamePrefix?: string;
 }) {
-  const { mapped, meta, mode, buildNamePrefix = "Wavescan" } = options;
+  const { mapped, meta, mode } = options;
   const characterStore = useCharacterStore();
   const inventoryStore = useInventoryStore();
 
@@ -167,7 +176,7 @@ export function useWavescanLoadouts(options: {
   const newBuildBaseName = computed(() => {
     const scannedAt = meta.value?.scannedAt ? new Date(meta.value.scannedAt) : null;
     const date = scannedAt && !Number.isNaN(scannedAt.getTime()) ? scannedAt : new Date();
-    return `${buildNamePrefix} ${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+    return `Wavescan ${date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
   });
 
   function characterSlotIds(characterKey: string): (string | null)[] {
@@ -367,6 +376,23 @@ export function useWavescanLoadouts(options: {
    * from slot 1, the same field the echoes panel writes. Run after the
    * scanned echoes are in the inventory.
    */
+  /** Switches to the character's Scanned build, making it first if needed (see SCANNED_BUILD_NAME). */
+  function equipScannedBuild(characterKey: string, existed: boolean) {
+    const scanned = characterStore
+      .getBuilds(characterKey)
+      .find((build: { name: string }) => build.name === SCANNED_BUILD_NAME);
+    if (scanned) {
+      if (characterStore.getActiveBuildId(characterKey) !== scanned.id) {
+        characterStore.equipBuild(characterKey, scanned.id);
+      }
+    } else if (existed) {
+      characterStore.createBuild(characterKey, SCANNED_BUILD_NAME, { from: "active" });
+    } else {
+      // A character the app didn't have yet: its only build is the scan.
+      characterStore.renameBuild(characterKey, characterStore.getActiveBuildId(characterKey), SCANNED_BUILD_NAME);
+    }
+  }
+
   function applyLoadoutWrites(writes: WavescanLoadoutWrite[]) {
     for (const write of writes) {
       const { characterKey } = write;
@@ -380,6 +406,7 @@ export function useWavescanLoadouts(options: {
           from: "active",
         });
       }
+      if (buildTarget.value === "scanned") equipScannedBuild(characterKey, existed);
 
       // Take each echo off whoever wears it now, as the game did.
       for (const move of findEquippedElsewhere(inventoryStore.equipped, characterKey, write.echoIds)) {
