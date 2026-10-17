@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div v-if="isOpen" class="modal-box max-w-6xl">
+    <div v-if="hasOpened" class="modal-box max-w-6xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -11,11 +11,12 @@
       </form>
       <div class="py-4">
         <EchoScannerCapture
-          v-if="!isReviewingDuplicates"
+          v-show="!isReviewingDuplicates"
+          ref="captureRef"
           inventory-only
           @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
         <EchoDuplicateReviewList
-          v-else
+          v-if="isReviewingDuplicates"
           :items="duplicateReviewItems"
           inventory-only
           :has-selected-echoes="hasSelectedEchoes"
@@ -52,10 +53,18 @@ import { useToast } from "../composables/useToast";
 const modalId = "modal-echo-scanner-inventory";
 
 const isOpen = ref(false);
+/**
+ * Mounted on first open and then kept, closed or not, so a scan being reviewed
+ * survives closing the window by mistake: reopening continues it. Memory only,
+ * like the rest of the scan; a save or "Scan again" clears it.
+ */
+const hasOpened = ref(false);
+const captureRef = ref<InstanceType<typeof EchoScannerCapture> | null>(null);
 
 async function triggerOpenModal() {
   trackEvent("scanner-opened");
   isOpen.value = true;
+  hasOpened.value = true;
   await nextTick();
   const modalEl = document.getElementById(modalId);
   (modalEl as HTMLDialogElement | null)?.showModal();
@@ -65,26 +74,36 @@ async function triggerOpenModal() {
  * Also wired to the <dialog>'s own native `close` event (see the
  * template), not just the backdrop/✕ button clicks — a native <dialog>
  * shown via showModal() closes on its own when the user presses Escape,
- * bypassing both of those click handlers entirely. Without this, Escape
- * would leave `isOpen` stuck true (the dialog visually gone but
- * EchoScannerCapture still mounted underneath, so its cleanup effect
- * never runs) — for a feature whose whole pitch is "nothing keeps running
- * once you're done," Escape silently leaving a live screen-share stream
- * active in the background would be exactly the wrong failure mode. Safe
- * to call more than once (a click handler's own modalEl.close() also
- * triggers this same native event) — closing an already-closed dialog,
- * setting isOpen false twice, and resetting an empty review list are all
- * no-ops.
+ * bypassing both of those click handlers entirely. EchoScannerCapture stays
+ * mounted while closed (see hasOpened), so closing has to stop a capture
+ * that's still going itself — for a feature whose whole pitch is "nothing
+ * keeps running once you're done," Escape silently leaving a live
+ * screen-share stream active in the background would be exactly the wrong
+ * failure mode. Safe to call more than once (a click handler's own
+ * modalEl.close() also triggers this same native event) — closing an
+ * already-closed dialog, setting isOpen false twice, stopping an idle
+ * capture and resetting an empty review list are all no-ops.
  */
 function triggerCloseModal() {
+  // Cleared first: close() fires the native "close" event, which calls handleClose again.
+  isOpen.value = false;
   const modalEl = document.getElementById(modalId);
   (modalEl as HTMLDialogElement | null)?.close();
-  isOpen.value = false;
+  captureRef.value?.stopCapture();
   resetDuplicateReview();
 }
 
+/** The user closed the window (✕, backdrop, Escape, or Cancel on the duplicate review). */
 function handleClose() {
+  if (!isOpen.value) return;
   triggerCloseModal();
+  const unsaved = captureRef.value?.unsavedCount() ?? 0;
+  if (unsaved) {
+    showToast(
+      `Scan kept: ${unsaved} echo${unsaved === 1 ? "" : "es"} not saved yet. Open Scan echoes again to continue. Reloading or closing this tab loses them.`,
+      "info",
+    );
+  }
 }
 
 const {
@@ -103,6 +122,7 @@ const {
 const { showToast } = useToast();
 
 function handleFinalized(savedCount: number) {
+  captureRef.value?.discardScan();
   triggerCloseModal();
   showToast(
     savedCount
@@ -113,7 +133,7 @@ function handleFinalized(savedCount: number) {
 }
 
 function handleCancelDuplicateReview() {
-  triggerCloseModal();
+  handleClose();
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
