@@ -3,6 +3,7 @@ status: accepted
 date: 2026-09-04
 tags: [calculator, components, echoes, weapons, enemies]
 supersedes: [0016, 0017, 0020]
+superseded_by: [43]
 ---
 
 # 26. Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -57,6 +58,10 @@ re-litigating them. Ships behind the existing `liveResultBar` Labs flag
    the legacy character browser. `CalculatorEchoEditPanel.vue`'s Find picker
    is edited **in place** instead, because that component is already only
    ever mounted under the flag.
+
+   **Superseded 2026-10-18 (ADR [0043](0043-dialogs-use-the-chooser-shell.md)):** the legacy
+   `Calculator*Browser.vue` choosers still serve the classic UI with their own contents, but their
+   dialog chrome is now `AppChooserModal` too, like every other dialog with a ✕.
 
 3. **New siblings preserve the legacy `data-test-*` selectors** for the
    row action and close button (`data-test-character-browse-select`,

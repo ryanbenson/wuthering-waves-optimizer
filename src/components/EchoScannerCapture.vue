@@ -5,23 +5,6 @@
     </template>
 
     <template v-else-if="status === 'idle' || status === 'error'">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-xl font-bold">Scan echoes from the game</h2>
-        <button type="button" class="btn btn-ghost btn-sm" @click="showGuide = true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="h-4 w-4 stroke-current">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
-          </svg>
-          How to scan
-        </button>
-      </div>
       <p class="mb-2">
         Share your WuWa window (Backpack → Echoes) and click through your
         echoes one at a time, or upload a video you already recorded doing
@@ -663,6 +646,15 @@ function closeGuide() {
   writeFlag(GUIDE_SEEN_KEY, true);
 }
 
+function openGuide() {
+  showGuide.value = true;
+}
+
+/** The modal's "How to scan" header button shows only on the idle/error screen, while the guide is closed. */
+const canOpenGuide = computed(
+  () => (status.value === "idle" || status.value === "error") && !showGuide.value,
+);
+
 const captureCueEnabled = scanner.captureCueEnabled;
 captureCueEnabled.value = readFlag(CAPTURE_CUE_KEY);
 watch(captureCueEnabled, (enabled) => writeFlag(CAPTURE_CUE_KEY, enabled));
@@ -808,4 +800,6 @@ function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);
   emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value);
 }
+
+defineExpose({ openGuide, canOpenGuide });
 </script>
