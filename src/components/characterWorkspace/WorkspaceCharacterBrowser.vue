@@ -315,7 +315,13 @@ const charactersList = computed((): ListedCharacter[] => {
   if (props.excludeKeys.length) {
     characterList = characterList.filter((c) => !props.excludeKeys.includes(c.key));
   }
-  return characterList;
+  // Favorites first, then characters with echoes equipped (the ones the player has
+  // built, so owns), then A-Z.
+  const isBuilt = (key: string) =>
+    Object.values(characters.value[key]?.echoes ?? {}).some((slot: any) => slot?.echoId || slot?.echo);
+  const rank = (c: ListedCharacter) =>
+    (favoriteCharacters.value.includes(c.key) ? 0 : 2) + (isBuilt(c.key) ? 0 : 1);
+  return characterList.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 });
 
 function triggerOpenModal() {

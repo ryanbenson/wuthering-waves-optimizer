@@ -101,6 +101,32 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-workspace-avatar]").should("be.visible");
   });
 
+  it("lists favorites first, then characters with echoes equipped, then A-Z", () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem(
+          "settings",
+          JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+        );
+        win.localStorage.setItem(
+          "character",
+          JSON.stringify({
+            favoriteCharacters: ["Zani"],
+            characters: { Jinhsi: { echoes: { 0: { ...seedEcho("built", 30), echoId: null } } } },
+          }),
+        );
+      },
+    });
+    cy.selectWorkspaceCharacter("Carlotta");
+    cy.get("[data-test-workspace-avatar]").first().click();
+    cy.get("[data-test-character-browser-view='list']").click();
+    cy.get("[data-test-character-browse-select]").then(($buttons) => {
+      const keys = $buttons.toArray().map((el) => el.getAttribute("data-test-character-browse-select"));
+      expect(keys.slice(0, 3)).to.deep.equal(["Zani", "Jinhsi", "Aalto"]);
+    });
+    cy.get("[data-test-character-browser-close]").click({ force: true });
+  });
+
   it("filters the character browser and switches between list and grid views", () => {
     visitWithFlagEnabled();
     cy.selectWorkspaceCharacter("Carlotta");
