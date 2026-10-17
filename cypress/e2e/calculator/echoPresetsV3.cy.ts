@@ -33,21 +33,27 @@ describe("Echo presets (v3)", () => {
     cy.get("[data-test-echoes-empty-state]").should("not.exist");
   });
 
-  it("opens the modal on theorycrafter builds when nothing is saved", () => {
+  it("opens the modal on my presets even when nothing is saved", () => {
     openChangliEchoesTab();
 
     cy.get("[data-test-echoes-presets-open]").click();
-    cy.get('[data-test-echo-presets-tab="community"]').should("be.checked");
-    cy.get('[data-test-echo-presets-tab="mine"]').click({ force: true });
+    cy.get('[data-test-echo-presets-tab="mine"]').should("be.checked");
     cy.get("[data-test-echo-presets-mine-empty]").should("be.visible");
   });
 
-  it("lists theorycrafter builds and save in the presets menu", () => {
+  it("saves the current echoes from the presets window", () => {
     openChangliEchoesTab();
 
-    cy.get('[data-test="calculator-echoes-presets-menu"]').click();
-    cy.get("[data-test-echoes-presets-save]").should("be.visible");
-    cy.get("[data-test-echoes-presets-community]").click();
-    cy.get('[data-test-echo-presets-tab="community"]').should("be.checked");
+    cy.get("[data-test-echoes-presets-open]").click();
+    cy.get("[data-test-echo-presets-save-current]").should("be.visible").click();
+    cy.get("#modal-save-echo-preset").should("have.attr", "open");
+  });
+
+  it("puts the Rating and Presets guides in the Guide menu", () => {
+    openChangliEchoesTab();
+
+    cy.get('[data-test="calculator-echoes-guides-menu"]').click();
+    cy.contains("button", "Rating Guide").should("be.visible");
+    cy.contains("button", "Presets Guide").should("be.visible");
   });
 });

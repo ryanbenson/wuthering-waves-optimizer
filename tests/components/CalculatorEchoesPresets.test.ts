@@ -5,6 +5,7 @@ import { flushPromises } from "@vue/test-utils";
 import CalculatorEchoesPresets from "../../src/components/CalculatorEchoesPresets.vue";
 import { useInventoryStore } from "../../src/stores/inventory";
 import { useSettingsStore } from "../../src/stores/settings";
+import { useConfirm } from "../../src/composables/useConfirm";
 
 const communityPresets = vi.hoisted(() => ({ list: [] as any[] }));
 
@@ -69,13 +70,14 @@ describe("CalculatorEchoesPresets", () => {
     };
   });
 
-  it("v3 opens on theorycrafter builds when there are no saved presets", async () => {
+  it("v3 opens on my presets even when there are none, with save and browse offered", async () => {
     const { getByText, container } = renderWithHost();
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("community");
-    expect(container.querySelector("[data-test-echo-presets-community-intro]")).not.toBeNull();
+    expect(activeTab(container)).toBe("mine");
+    expect(container.querySelector("[data-test-echo-presets-mine-empty-save]")).not.toBeNull();
+    expect(container.querySelector("[data-test-echo-presets-browse-community]")).not.toBeNull();
   });
 
   it("v3 opens on my presets when the player has saved presets", async () => {
@@ -120,5 +122,62 @@ describe("CalculatorEchoesPresets", () => {
     expect(activeTab(container)).toBe("mine");
     expect(container.querySelector('[aria-label="Other Presets"]')).not.toBeNull();
     getByText("No echo presets available");
+  });
+
+  it("v3 asks before deleting a saved preset and keeps it on cancel", async () => {
+    const inventory = useInventoryStore();
+    inventory.echoPresets = [SAVED_PRESET] as any;
+    const { getByText } = render(
+      {
+        components: { CalculatorEchoesPresets },
+        template: `
+          <button @click="$refs.presets.triggerOpenModal({ tab: 'mine' })">open</button>
+          <CalculatorEchoesPresets ref="presets" character="TestChar" />
+        `,
+      },
+      {
+        global: {
+          stubs: {
+            EchoPresetV3Card: { template: `<button @click="$emit('delete')">delete card</button>`, emits: ["delete"] },
+            EchoCustomPreset: true,
+          },
+        },
+      },
+    );
+    await flushPromises();
+    await fireEvent.click(getByText("open"));
+    const { confirmRequest, settle } = useConfirm();
+
+    await fireEvent.click(getByText("delete card"));
+    expect(confirmRequest.value?.message).toContain('"My build"');
+    settle(false);
+    await flushPromises();
+    expect(inventory.echoPresets).toHaveLength(1);
+
+    await fireEvent.click(getByText("delete card"));
+    settle(true);
+    await flushPromises();
+    expect(inventory.echoPresets).toHaveLength(0);
+  });
+
+  it("asks the Echoes screen to save the current echoes, from the header and the empty state", async () => {
+    const saves: number[] = [];
+    const { getByText, container } = render(
+      {
+        components: { CalculatorEchoesPresets },
+        methods: { onSave: () => saves.push(1) },
+        template: `
+          <button @click="$refs.presets.triggerOpenModal({ tab: 'mine' })">open</button>
+          <CalculatorEchoesPresets ref="presets" character="TestChar" @save-current="onSave" />
+        `,
+      },
+      { global: { stubs } },
+    );
+    await flushPromises();
+    await fireEvent.click(getByText("open"));
+
+    await fireEvent.click(container.querySelector("[data-test-echo-presets-save-current]")!);
+    await fireEvent.click(container.querySelector("[data-test-echo-presets-mine-empty-save]")!);
+    expect(saves).toHaveLength(2);
   });
 });

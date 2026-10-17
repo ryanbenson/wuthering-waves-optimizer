@@ -33,7 +33,7 @@
         {{ isApplying ? "Applying..." : "Apply preset" }}
       </button>
       <button
-        @click.stop="deletePreset"
+        @click.stop="emit('delete')"
         class="btn btn-xs btn-error"
         :disabled="isApplying">
         Delete preset
@@ -79,7 +79,7 @@
           {{ isApplying ? "Applying..." : "Apply preset" }}
         </button>
         <button
-          @click.stop="deletePreset"
+          @click.stop="emit('delete')"
           class="btn btn-sm btn-error max-w-40 mt-2"
           :disabled="isApplying">
           Delete preset
@@ -95,13 +95,13 @@ import { computed } from "vue";
 import EchoCustomPresetEcho from "./EchoCustomPresetEcho.vue";
 import { getEchoCritValue, type EchoSubStatsSource } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
-import { useCharacterStore } from "../stores/character";
 import { getBadgeClass } from "../composables/useEchoCardStats";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { usePresetBuildScore } from "../composables/usePresetBuildScore";
 
 const emit = defineEmits<{
   apply: [];
+  delete: [];
 }>();
 
 const props = withDefaults(
@@ -127,7 +127,6 @@ const props = withDefaults(
 );
 
 const inventoryStore = useInventoryStore();
-const characterStore = useCharacterStore();
 
 function slotEcho(id: string | undefined) {
   if (!id) {
@@ -192,16 +191,4 @@ const buildScoreBadgeClass = computed(() => {
   return getRatingBadgeClasses(rollup.color);
 });
 
-function getEquippedCharactersForPreset() {
-  return inventoryStore.getEchoPresetCharacters(props.presetId);
-}
-
-async function deletePreset() {
-  const allCharacters = getEquippedCharactersForPreset();
-  for (const character of allCharacters) {
-    await inventoryStore.deleteEquippedPreset(character);
-    await characterStore.setCharacterData(character, { echoPresetId: null });
-  }
-  await inventoryStore.deleteEchoPreset(props.presetId);
-}
 </script>

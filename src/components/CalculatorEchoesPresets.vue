@@ -20,7 +20,25 @@
         opening the modal doesn't run previews for a tab nobody is looking at.
       -->
       <div v-if="isOpen" class="py-4">
-        <h3 class="text-xl mb-4">{{ isV3 ? "Echo presets" : "Choose a preset to apply to your build" }}</h3>
+        <!-- Save lives here with list/apply/delete (issue #619), placed like the scanner's "How to scan". -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pr-8">
+          <h3 class="text-xl">{{ isV3 ? "Echo presets" : "Choose a preset to apply to your build" }}</h3>
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm"
+            data-test-echo-presets-save-current
+            @click="emit('save-current')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              class="h-4 w-4 stroke-current"
+              aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"></path>
+            </svg>
+            Save current echoes
+          </button>
+        </div>
         <div role="tablist" class="tabs tabs-bordered">
           <input
             type="radio"
@@ -37,11 +55,16 @@
                 v-if="!hasEchoPresets && isV3"
                 class="flex flex-col items-start gap-3 rounded-lg bg-base-200 p-4"
                 data-test-echo-presets-mine-empty>
-                <p>
-                  You haven't saved any presets yet. Set up your echoes, then use
-                  <strong>Presets → Save current echoes</strong> to keep them.
-                </p>
-                <button
+                <p>You haven't saved any presets yet.</p>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    data-test-echo-presets-mine-empty-save
+                    @click="emit('save-current')">
+                    Save current echoes as preset
+                  </button>
+                  <button
                   v-if="hasDefaultEchoPresets"
                   type="button"
                   class="btn btn-sm btn-outline btn-primary"
@@ -50,6 +73,7 @@
                   Browse {{ defaultEchoPresets.length }} theorycrafter
                   {{ defaultEchoPresets.length === 1 ? "build" : "builds" }}
                 </button>
+                </div>
               </div>
               <p v-else-if="!hasEchoPresets">No echo presets available</p>
               <div v-else class="echoes-presets-list">
@@ -78,7 +102,8 @@
                   :echo-4-id="echoPreset.echo4Id"
                   :echo-5-id="echoPreset.echo5Id"
                   :is-applying="applyingPresetId === echoPreset.presetId"
-                  @apply="applyCustomPreset(echoPreset)" />
+                  @apply="applyCustomPreset(echoPreset)"
+                  @delete="deleteCustomPreset(echoPreset.presetId)" />
               </div>
             </template>
           </div>
@@ -144,6 +169,7 @@ import { computed, nextTick, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useConfirm } from "../composables/useConfirm";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
 import EchoPresetV3Card from "./EchoPresetV3Card.vue";
 import { useSettingsStore } from "../stores/settings";
@@ -190,8 +216,22 @@ function presetSlots(preset: any): Record<number, any> {
   return slots;
 }
 
-// Mirrors EchoCustomPreset's delete: unequip from any character using it first.
+// Both preset cards emit delete; unequip from any character using it first.
+const emit = defineEmits<{ "save-current": [] }>();
+const { confirm } = useConfirm();
+
 async function deleteCustomPreset(presetId: string) {
+  const name = inventoryStore.getEchoPresetData(presetId)?.name ?? "this preset";
+  const wearers = inventoryStore.getEchoPresetCharacters(presetId);
+  const unequip = wearers.length ? ` It will be unequipped from ${wearers.join(", ")}.` : "";
+  const confirmed = await confirm(`Do you really want to delete the preset "${name}"?${unequip}`, {
+    title: "Delete preset",
+    confirmLabel: "Delete",
+    variant: "error",
+  });
+  if (!confirmed) {
+    return;
+  }
   for (const char of inventoryStore.getEchoPresetCharacters(presetId)) {
     await inventoryStore.deleteEquippedPreset(char);
     await characterStore.setCharacterData(char, { echoPresetId: null });
@@ -217,13 +257,11 @@ const hasDefaultEchoPresets = computed(() => defaultEchoPresets.value.length > 0
 const hasEchoPresets = computed(() => (echoPresets.value?.length ?? 0) > 0);
 
 /**
- * v3 opens on "My presets" unless it would be empty and there are
- * theorycrafter builds to show instead. Classic always opens on its first tab.
+ * Opens on "My presets" (where Save is), unless a button asks for a tab, e.g. the
+ * empty state's "Browse theorycrafter builds".
  */
 function resolveInitialTab(requested?: EchoPresetsTab): EchoPresetsTab {
-  if (requested) return requested;
-  if (isV3.value && !hasEchoPresets.value && hasDefaultEchoPresets.value) return "community";
-  return "mine";
+  return requested ?? "mine";
 }
 
 function triggerOpenModal(options: EchoPresetsOpenOptions = {}) {

@@ -20,7 +20,8 @@
       "></CalculatorEchoesBrowser>
     <CalculatorEchoesPresets
       ref="echoesPresets"
-      :character="character"></CalculatorEchoesPresets>
+      :character="character"
+      @save-current="handleOpenSaveEchoPreset"></CalculatorEchoesPresets>
     <CalculatorSaveEchoesPreset
       ref="echoesSavePreset"
       @on-save-echo-preset="
@@ -41,27 +42,27 @@
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
       <!--
-        v3: one Presets split button (issue #619). The main part opens the
-        presets modal; the caret holds Save, the theorycrafter builds and the
-        guide, so those builds are one click away without leading the header.
+        v3: flat bar (issue #619). Presets opens the presets window, which holds
+        Save, apply/delete and the theorycrafter builds; the two guides share a menu.
       -->
       <div v-if="isLiveResultBarEnabled" class="flex flex-wrap items-center gap-2">
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import Echoes
         </button>
-        <div class="join echoes-presets-split">
-          <button
-            type="button"
-            class="btn btn-sm join-item"
-            data-test-echoes-presets-open
-            @click="handleOpenEchoesPreset()">
-            Presets
-          </button>
-          <AppOverflowMenu
-            class="join-item"
-            aria-label="More preset actions"
-            data-test="calculator-echoes-presets-menu">
-            <template #trigger>
+        <button
+          type="button"
+          class="btn btn-sm"
+          data-test-echoes-presets-open
+          @click="handleOpenEchoesPreset()">
+          Presets
+        </button>
+        <button type="button" class="btn btn-sm" data-test-echoes-weights-open @click="handleOpenWeightsEditor">
+          Customize Weights
+        </button>
+        <AppOverflowMenu aria-label="Guides" data-test="calculator-echoes-guides-menu">
+          <template #trigger>
+            <span class="flex items-center gap-1">
+              Guide
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -69,41 +70,13 @@
                 aria-hidden="true">
                 <path d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z" />
               </svg>
-            </template>
-            <li>
-              <button type="button" data-test-echoes-presets-save @click="handleOpenSaveEchoPreset">
-                Save current echoes as preset
-              </button>
-            </li>
-            <li v-if="communityEchoPresets.length > 0">
-              <button
-                type="button"
-                class="flex items-center justify-between"
-                data-test-echoes-presets-community
-                @click="handleOpenEchoesPreset({ tab: 'community', source: 'menu' })">
-                Theorycrafter builds
-                <span class="badge badge-sm">{{ communityEchoPresets.length }}</span>
-              </button>
-            </li>
-            <li>
-              <button type="button" @click="handleOpenPresetsGuide">
-                <span class="text-primary">Presets Guide</span>
-              </button>
-            </li>
-          </AppOverflowMenu>
-        </div>
-        <AppOverflowMenu
-          aria-label="More echo actions"
-          data-test="calculator-echoes-overflow-menu">
+            </span>
+          </template>
           <li>
-            <button type="button" @click="handleOpenWeightsEditor">
-              Customize Weights
-            </button>
+            <button type="button" @click="handleOpenRatingGuide">Rating Guide</button>
           </li>
           <li>
-            <button type="button" @click="handleOpenRatingGuide">
-              <span class="text-primary">Rating Guide</span>
-            </button>
+            <button type="button" @click="handleOpenPresetsGuide">Presets Guide</button>
           </li>
         </AppOverflowMenu>
       </div>
@@ -658,21 +631,6 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
 <style scoped>
-/*
- * Presets split button: AppOverflowMenu's trigger is a ghost button with its
- * own radius, so restyle it here to read as the right half of the join.
- */
-.echoes-presets-split :deep(.app-overflow-menu__trigger) {
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-  padding-inline: 0.5rem;
-  background-color: var(--fallback-b2, oklch(var(--b2) / 1));
-  border-left: 1px solid var(--fallback-bc, oklch(var(--bc) / 0.15));
-}
-.echoes-presets-split :deep(.app-overflow-menu__trigger:hover) {
-  background-color: var(--fallback-b3, oklch(var(--b3) / 1));
-}
-
 /*
  * Bounded-width column for the Labs-flagged layout — see
  * docs/adr/0014-echo-editor-redesign.md decision #10 and
