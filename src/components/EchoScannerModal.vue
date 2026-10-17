@@ -106,22 +106,24 @@ function handleEscape(event: Event) {
   void handleCloseRequest();
 }
 
-const { confirm } = useConfirm();
+const { ask } = useConfirm();
 
 /**
  * The player asked to close (✕, backdrop, Escape, or Cancel on the duplicate review).
- * With unsaved results, ask first: Discard drops them; Keep and close (or dismissing
- * the question) keeps them, so opening the scanner again carries on the review.
+ * With unsaved results, ask first: Discard drops them, Keep and close keeps them so
+ * opening the scanner again carries on the review, and Cancel (or clicking away from
+ * the question) stays in the scan.
  */
 async function handleCloseRequest() {
   const unsaved = captureRef.value?.unsavedCount() ?? 0;
   if (unsaved) {
     const echoes = unsaved === 1 ? "1 echo isn't" : `${unsaved} echoes aren't`;
-    const discard = await confirm(
+    const choice = await ask(
       `${echoes} saved yet. Keep and close keeps them here: open Scan echoes again to carry on reviewing. They're lost if you reload or close this tab.`,
-      { title: "Leave this scan?", confirmLabel: "Discard", cancelLabel: "Keep and close", variant: "error" },
+      { title: "Leave this scan?", discardLabel: "Discard", cancelLabel: "Cancel", confirmLabel: "Keep and close" },
     );
-    if (discard) captureRef.value?.discardScan();
+    if (choice === "cancel") return;
+    if (choice === "discard") captureRef.value?.discardScan();
   }
   triggerCloseModal();
 }

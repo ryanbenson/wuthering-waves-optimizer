@@ -10,11 +10,14 @@ vi.mock("../../src/composables/useToast", () => ({
   useToast: () => ({ showToast: (message: string) => toasts.list.push(message) }),
 }));
 
-// The leave-the-scan question; `answer` is what the player picks (true = Discard).
-const confirmCalls = vi.hoisted(() => ({ list: [] as { message: string; options: Record<string, string> }[], answer: false }));
+// The leave-the-scan question; `answer` is what the player picks.
+const confirmCalls = vi.hoisted(() => ({
+  list: [] as { message: string; options: Record<string, string> }[],
+  answer: "confirm" as "confirm" | "cancel" | "discard",
+}));
 vi.mock("../../src/composables/useConfirm", () => ({
   useConfirm: () => ({
-    confirm: async (message: string, options: Record<string, string>) => {
+    ask: async (message: string, options: Record<string, string>) => {
       confirmCalls.list.push({ message, options });
       return confirmCalls.answer;
     },
@@ -52,7 +55,7 @@ function renderModal() {
 
 const dialog = (container: Element) => container.querySelector("dialog") as HTMLDialogElement;
 
-async function open(getByText: (text: string) => HTMLElement) {
+async function open(getByText: ReturnType<typeof renderModal>["getByText"]) {
   await fireEvent.click(getByText("open"));
   await flushPromises();
 }
@@ -79,7 +82,7 @@ describe("EchoScannerModal", () => {
     setActivePinia(createPinia());
     Object.assign(capture, { mounts: 0, stopCapture: 0, discardScan: 0, unsaved: 0 });
     confirmCalls.list = [];
-    confirmCalls.answer = false;
+    confirmCalls.answer = "confirm";
     toasts.list = [];
   });
 
@@ -102,7 +105,7 @@ describe("EchoScannerModal", () => {
     const [{ message, options }] = confirmCalls.list;
     expect(message).toContain("3 echoes aren't saved yet");
     expect(message).toContain("Scan echoes");
-    expect(options).toMatchObject({ confirmLabel: "Discard", cancelLabel: "Keep and close" });
+    expect(options).toMatchObject({ discardLabel: "Discard", cancelLabel: "Cancel", confirmLabel: "Keep and close" });
     expect(dialog(container).open).toBe(false);
     expect(capture.stopCapture).toBeGreaterThan(0);
     expect(capture.discardScan).toBe(0);
@@ -115,11 +118,23 @@ describe("EchoScannerModal", () => {
     const { container, getByText } = renderModal();
     await open(getByText);
     capture.unsaved = 2;
-    confirmCalls.answer = true;
+    confirmCalls.answer = "discard";
 
     await closeWithX(container);
     expect(capture.discardScan).toBe(1);
     expect(dialog(container).open).toBe(false);
+  });
+
+  it("stays open when the player picks Cancel or clicks away from the question", async () => {
+    const { container, getByText } = renderModal();
+    await open(getByText);
+    capture.unsaved = 2;
+    confirmCalls.answer = "cancel";
+
+    await closeWithX(container);
+    expect(dialog(container).open).toBe(true);
+    expect(capture.stopCapture).toBe(0);
+    expect(capture.discardScan).toBe(0);
   });
 
   it("asks on Escape too, instead of letting the dialog close on its own", async () => {

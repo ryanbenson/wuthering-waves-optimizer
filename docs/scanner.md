@@ -904,8 +904,9 @@ Every candidate now carries:
 (✕, backdrop, Escape, or Cancel on the duplicate review) keeps the results,
 Reviewed marks, saved edits and filter, and reopening continues where it
 was. A capture that's still going is stopped on close, keeping what it read.
-Closing with unsaved results asks first (`useConfirm`): Discard drops the
-review, Keep and close (or dismissing the question) keeps it. Escape is
+Closing with unsaved results asks first (`useConfirm().ask`): Discard drops
+the review, Keep and close keeps it, and Cancel (or clicking away from the
+question) stays in the scan. Escape is
 intercepted on the dialog's `cancel` event so it asks too (browsers only let a
 page cancel Escape after the player has clicked in it; otherwise Escape closes
 and keeps the review). While there are
