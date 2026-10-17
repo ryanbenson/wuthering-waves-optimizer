@@ -85,6 +85,7 @@
         <span class="truncate text-sm font-semibold">{{ statusTitle }}</span>
       </span>
       <span
+        v-if="statusDetail"
         class="text-xs"
         :class="status.kind === 'edited' ? 'text-warning' : 'opacity-70'">
         {{ statusDetail }}
@@ -341,8 +342,6 @@ const statusDetail = computed(() => {
       return "Matches your current echoes.";
     case "edited":
       return `${status.changedSlots} ${status.changedSlots === 1 ? "echo" : "echoes"} changed since you applied it.`;
-    case "theorycrafter":
-      return `${status.author ? `by ${status.author}. ` : ""}Reference echoes, not from your inventory.`;
     default:
       return "";
   }

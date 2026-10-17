@@ -52,11 +52,11 @@ describe("CalculatorEchoesPresetsMenu", () => {
     expect(document.querySelector("[data-test-echoes-presets-revert]")).toBeNull();
   });
 
-  it("credits the theorycrafter build the echoes came from", async () => {
+  it("names the theorycrafter build the echoes came from", async () => {
     renderMenu({ kind: "theorycrafter", name: "Standard DPS", author: "Someone" });
     await openMenu();
     screen.getByText("Theorycrafter");
-    screen.getByText("by Someone. Reference echoes, not from your inventory.");
+    expect(screen.queryByText(/Reference echoes/)).toBeNull();
     screen.getByText("Save to my presets");
   });
 
