@@ -30,6 +30,7 @@ describe("readEchoMarks on real captures", () => {
     ["locked-1920x1200", { locked: true, trash: false }],
     ["equipped-locked-1280x720", { locked: true, trash: false }],
     ["equipped-unlocked-1280x720", { locked: false, trash: false }],
+    ["equipped-discarded-1280x720", { locked: false, trash: true }],
     ["locked-1280x720", { locked: true, trash: false }],
   ])("%s", async (name, expected) => {
     const file = fixture(name);
