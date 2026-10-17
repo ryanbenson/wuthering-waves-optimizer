@@ -4,6 +4,8 @@ import { render, fireEvent } from "@testing-library/vue";
 import EchoRatingWeightsEditor from "../../src/components/EchoRatingWeightsEditor.vue";
 import { useSettingsStore } from "../../src/stores/settings";
 import { useCharacterStore } from "../../src/stores/character";
+import { useConfirm } from "../../src/composables/useConfirm";
+import { flushPromises } from "@vue/test-utils";
 
 function critRateInput(container: HTMLElement) {
   return container.querySelector<HTMLInputElement>("#echo-rating-weight-CritRate");
@@ -38,8 +40,16 @@ describe("EchoRatingWeightsEditor", () => {
     settingsStore.setEchoRatingWeights({ CritRate: 4 });
     const { getByText } = render(EchoRatingWeightsEditor);
 
-    await fireEvent.click(getByText("Reset to Default"));
+    const { settle } = useConfirm();
 
+    await fireEvent.click(getByText("Reset to Default"));
+    settle(false);
+    await flushPromises();
+    expect(settingsStore.echoRatingWeights.CritRate).toBe(4);
+
+    await fireEvent.click(getByText("Reset to Default"));
+    settle(true);
+    await flushPromises();
     expect(settingsStore.echoRatingWeights.CritRate).toBe(1);
   });
 

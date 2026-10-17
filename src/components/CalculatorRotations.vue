@@ -219,6 +219,7 @@ import CalculatorRotationsImportModal from "./CalculatorRotationsImportModal.vue
 import CalculatorRotationsPresetsModal from "./CalculatorRotationsPresetsModal.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import { useToast } from "../composables/useToast";
+import { useConfirm } from "../composables/useConfirm";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
@@ -618,7 +619,18 @@ async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
   await persistRotations(next);
 }
 
+const { confirm } = useConfirm();
+
 async function handleDeleteRotation(rotationId: string) {
+  const name = rotations.value.find((rotation) => rotation.id === rotationId)?.name;
+  const confirmed = await confirm(`Do you really want to delete "${name ?? "this rotation"}"?`, {
+    title: "Delete rotation",
+    confirmLabel: "Delete",
+    variant: "error",
+  });
+  if (!confirmed) {
+    return;
+  }
   const next = rotations.value.filter((rotation) => rotation.id !== rotationId);
   await persistRotations(next);
   if (openRotationId.value === rotationId) {

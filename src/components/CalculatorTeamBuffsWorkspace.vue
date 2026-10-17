@@ -9,7 +9,7 @@
         class="btn btn-sm"
         @click="handleResetAll"
         data-test-team-buffs-workspace-reset>
-        Reset all
+        Reset All
       </button>
     </div>
 
@@ -381,6 +381,7 @@ import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import BuffRow from "./teamBuffsWorkspace/TeamBuffsWorkspaceRow.vue";
 import { useCharacterStore } from "../stores/character";
+import { useConfirm } from "../composables/useConfirm";
 import {
   resolveTeamBuffInstance,
   getExclusiveTeamBuffKeys,
@@ -724,7 +725,17 @@ const openTeam2 = useFilterPanelOpen("team-buffs-team2");
 const openEcho = useFilterPanelOpen("team-buffs-echo");
 const openWeapon = useFilterPanelOpen("team-buffs-weapon");
 
-function handleResetAll() {
+const { confirm } = useConfirm();
+
+async function handleResetAll() {
+  const confirmed = await confirm(`Reset all team buffs for ${props.character}?`, {
+    title: "Reset team buffs",
+    confirmLabel: "Reset All",
+    variant: "warning",
+  });
+  if (!confirmed) {
+    return;
+  }
   characterStore.clearAllTeamBuffs(props.character);
 }
 
