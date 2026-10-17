@@ -20,3 +20,18 @@ export function resolveOptimizerWorkerCount(value: unknown): OptimizerWorkerCoun
   }
   return 8;
 }
+
+export const OPTIMIZER_RESULT_COUNT_DEFAULT = 5;
+export const OPTIMIZER_RESULT_COUNT_MIN = 1;
+export const OPTIMIZER_RESULT_COUNT_MAX = 50;
+
+/** How many top loadouts the optimizer keeps: a whole number from 1 to 50, default 5. */
+export function resolveOptimizerResultCount(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return OPTIMIZER_RESULT_COUNT_DEFAULT;
+  }
+  return Math.min(
+    OPTIMIZER_RESULT_COUNT_MAX,
+    Math.max(OPTIMIZER_RESULT_COUNT_MIN, Math.floor(value)),
+  );
+}
