@@ -22,7 +22,8 @@ describe("CalculatorEchoesEmptyState", () => {
     const saved = container.querySelector("[data-test-echoes-empty-saved-presets]") as HTMLElement;
     const community = container.querySelector("[data-test-echoes-empty-community]") as HTMLElement;
     expect(saved.textContent).toContain("4");
-    expect(community.textContent).toContain("Browse 2 theorycrafter builds");
+    expect(community.textContent).toContain("Use a theorycrafter build");
+    expect(community.textContent).toContain("2");
 
     await fireEvent.click(container.querySelector("[data-test-echoes-empty-import]") as HTMLElement);
     await fireEvent.click(container.querySelector("[data-test-echoes-empty-inventory]") as HTMLElement);

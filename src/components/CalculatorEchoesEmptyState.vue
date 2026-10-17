@@ -5,7 +5,7 @@
     <div class="flex flex-col gap-1">
       <h4 class="text-sm font-semibold">Set up your echoes</h4>
       <p class="text-xs opacity-70">
-        Add echoes from your account, or apply a preset you saved earlier.
+        Add echoes from your account, or apply a preset.
       </p>
     </div>
     <div class="flex flex-wrap gap-2">
@@ -32,21 +32,14 @@
         Apply a saved preset
         <span class="badge badge-sm">{{ savedPresetCount }}</span>
       </button>
-    </div>
-    <div
-      v-if="communityPresetCount > 0"
-      class="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-base-content/10 pt-3 text-xs">
-      <span class="opacity-70">
-        Or start from a baseline theorycrafter build, useful as a reference or
-        for supports and healers.
-      </span>
       <button
+        v-if="communityPresetCount > 0"
         type="button"
-        class="btn btn-xs btn-ghost"
+        class="btn btn-sm"
         data-test-echoes-empty-community
         @click="emit('open-community-builds')">
-        Browse {{ communityPresetCount }} theorycrafter
-        {{ communityPresetCount === 1 ? "build" : "builds" }}
+        Use a theorycrafter build
+        <span class="badge badge-sm">{{ communityPresetCount }}</span>
       </button>
     </div>
   </div>
