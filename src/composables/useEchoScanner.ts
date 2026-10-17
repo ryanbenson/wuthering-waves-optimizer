@@ -41,6 +41,8 @@ import {
   STATS_BLOCK,
   NAME_BLOCK,
   EQUIPPED_BY_LINE,
+  DISCARD_ICON_BOX,
+  LOCK_ICON_BOX,
   MAIN_STAT_ROW,
   SECONDARY_STAT_ROW,
   SUBSTAT_ROWS,
@@ -59,6 +61,7 @@ import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
 import { matchEquippedBy } from "@wutheringtools/scanner-core/equippedBy";
+import { readEchoMarks } from "@wutheringtools/scanner-core/echoMarks";
 import { allCharactersList } from "../characters/characters";
 import type { FrameSize, OcrLine, RegionFrac, ScanCandidate } from "../scanner/types";
 import EchoScannerWorker from "../workers/echoScanner.worker?worker";
@@ -153,6 +156,8 @@ const EQUIP_CHARACTERS = allCharactersList.map(({ key, name }) => ({ key, name }
 type FrameSnapshot = {
   primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues" | "equippedBy", ImageBitmap>;
   setIcon: ImageBitmap;
+  /** The game's lock / discard marks, read synchronously from this same frame. */
+  marks: { locked: boolean; trash: boolean };
   /** substatBlock + sub0..sub4 — the per-row/block fallback passes. */
   fallback: Record<string, ImageBitmap>;
   /** The review list's "in-game capture" — see capture.ts's grabRegionPreviewJpeg. */
@@ -291,6 +296,10 @@ function snapshotFrame(
     grabRegionBitmap(videoEl, EQUIPPED_BY_LINE, content),
   ]);
   const setIcon = grabCircularMaskedBitmap(videoEl, SET_ICON_BOX, content);
+  const marks = readEchoMarks(
+    grabRegionImageData(videoEl, DISCARD_ICON_BOX, content),
+    grabRegionImageData(videoEl, LOCK_ICON_BOX, content),
+  );
   const fallback = Promise.all([
     grabRegionBitmap(videoEl, SUBSTAT_BLOCK, content),
     ...SUBSTAT_ROWS.map((region) => grabRegionBitmap(videoEl, region, content)),
@@ -313,6 +322,7 @@ function snapshotFrame(
       return {
         primary: { name, main, secondary, substatLabels, substatValues, equippedBy },
         setIcon: setIconBitmap,
+        marks,
         fallback: fallbackBitmaps,
         panelPreview,
         debug: debugCrops,
@@ -894,6 +904,7 @@ export function useEchoScanner() {
 
       const wearer = matchEquippedBy((texts.equippedBy ?? "").split("\n"), EQUIP_CHARACTERS, null);
       if (wearer.kind === "character") parsed.slot.equippedBy = wearer.key;
+      Object.assign(parsed.slot, snapshot.marks);
 
       const signature = computeSignature(parsed.slot);
       if (dedupe.has(signature)) {

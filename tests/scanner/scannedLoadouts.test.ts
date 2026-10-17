@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { planScannedLoadouts } from "../../src/scanner/scannedLoadouts";
+import { planScannedLoadouts, planScannedMarks } from "../../src/scanner/scannedLoadouts";
 import { mapParsedEchoes } from "../../src/echoes/parsedEchoMapping";
 import type { ParsedEchoSlot } from "../../src/scanner/types";
 
@@ -60,5 +60,23 @@ describe("planScannedLoadouts", () => {
 
     expect(writes).toEqual([]);
     expect(blocked).toEqual([{ characterKey: "Hsin", reason: expect.stringContaining("over the limit of 12") }]);
+  });
+});
+
+describe("planScannedMarks", () => {
+  it("copies the game's lock / discard marks onto inventory echoes that differ, keeping them exclusive", () => {
+    const lockedInGame = { ...slot("IceglintDancer", 1, "ATK", "6.3%"), locked: true, trash: false };
+    const discardedInGame = { ...slot("ShadowStepper", 1, "ATK", "6.9%"), locked: false, trash: true };
+    const unmarkedInGame = { ...slot("WindlashColeoid", 3, "Glacio DMG Bonus", "7.5%"), locked: false, trash: false };
+    const alreadyMatches = { ...slot("WindlashColeoid", 3, "ATK", "6.3%"), locked: true, trash: false };
+    const slots = [lockedInGame, discardedInGame, unmarkedInGame, alreadyMatches];
+    // Inventory: the third is locked in the app but not in game; the fourth already matches.
+    const inventory = mapParsedEchoes(slots, true).map((echo, i) => (i >= 2 ? { ...echo, locked: true } : echo));
+
+    expect(planScannedMarks(slots, inventory)).toEqual([
+      { echoId: inventory[0].echoId, locked: true, trash: false },
+      { echoId: inventory[1].echoId, locked: false, trash: true },
+      { echoId: inventory[2].echoId, locked: false, trash: false },
+    ]);
   });
 });

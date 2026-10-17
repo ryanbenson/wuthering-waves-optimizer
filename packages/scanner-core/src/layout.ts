@@ -256,6 +256,26 @@ export const EQUIPPED_BY_LINE: RegionFrac = {
 };
 
 /**
+ * The discard (heart, "Z") and lock (padlock, "C") toggles over the echo art, read by
+ * echoMarks.ts. Measured off real 1920x1080 captures (locked, unlocked, discarded):
+ * heart glyph x 1342-1369, y 360-383px; padlock glyph x 1467-1485, y 358-383px, same
+ * position for every echo. LOCK_ICON_BOX is centred on the padlock (x 1464-1488) so
+ * isLockClosed can split it into left and right halves. y mapped to 16:10 (x 9/10).
+ */
+export const DISCARD_ICON_BOX: RegionFrac = {
+  x: 0.6979,
+  y: 0.2975,
+  width: 0.0167,
+  height: 0.0242,
+};
+export const LOCK_ICON_BOX: RegionFrac = {
+  x: 0.7625,
+  y: 0.2967,
+  width: 0.0125,
+  height: 0.025,
+};
+
+/**
  * Every named ROI in one list, for the debug view (EchoScannerCapture.vue):
  * dashed boxes drawn over the live preview, and — per captured candidate —
  * a labeled crop thumbnail + its raw OCR text, so a mismatch like the
@@ -273,6 +293,8 @@ export const DEBUG_REGIONS: { key: string; label: string; region: RegionFrac }[]
   ...SUBSTAT_ROWS.map((region, i) => ({ key: `sub${i}`, label: `Substat ${i + 1}`, region })),
   { key: "substatBlock", label: "Substat fallback block", region: SUBSTAT_BLOCK },
   { key: "equippedBy", label: "Equipped by", region: EQUIPPED_BY_LINE },
+  { key: "discardIcon", label: "Discard icon", region: DISCARD_ICON_BOX },
+  { key: "lockIcon", label: "Lock icon", region: LOCK_ICON_BOX },
 ];
 
 /** The aspect every RegionFrac in this file was measured at — see this file's top doc comment. */

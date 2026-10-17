@@ -51,7 +51,8 @@ import { useToast } from "../composables/useToast";
 import { useWavescanLoadouts } from "../composables/useWavescanLoadouts";
 import { useInventoryStore } from "../stores/inventory";
 import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters";
-import { planScannedLoadouts } from "../scanner/scannedLoadouts";
+import { planScannedLoadouts, planScannedMarks } from "../scanner/scannedLoadouts";
+import { useEchoInventory } from "../composables/useEchoInventory";
 import type { ParsedEchoSlot } from "../scanner/types";
 
 const modalId = "modal-echo-scanner-inventory";
@@ -134,14 +135,34 @@ function equipScannedWearers(): string {
   ].join("");
 }
 
+const { setEchoLocked, setEchoTrash } = useEchoInventory();
+
+/** Copies the game's lock / discard marks onto the scanned echoes; returns a sentence for the toast, or "". */
+function copyScannedMarks(): string {
+  if (!lastScan) return "";
+  const changes = planScannedMarks(lastScan.slots, inventoryStore.echoes);
+  for (const { echoId, locked, trash } of changes) {
+    if (locked) setEchoLocked(echoId, true);
+    else if (trash) setEchoTrash(echoId, true);
+    else {
+      setEchoLocked(echoId, false);
+      setEchoTrash(echoId, false);
+    }
+  }
+  return changes.length
+    ? ` Updated the lock / discard mark on ${changes.length} echo${changes.length === 1 ? "" : "es"} to match the game.`
+    : "";
+}
+
 function handleFinalized(savedCount: number) {
   triggerCloseModal();
+  const marks = copyScannedMarks();
   const equipped = equipScannedWearers();
   showToast(
     (savedCount
       ? `Saved ${savedCount} echo${savedCount === 1 ? "" : "es"} to your inventory.`
-      : "No echoes were saved.") + equipped,
-    savedCount || equipped ? "success" : "info",
+      : "No echoes were saved.") + marks + equipped,
+    savedCount || marks || equipped ? "success" : "info",
   );
 }
 

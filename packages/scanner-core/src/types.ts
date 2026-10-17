@@ -39,6 +39,9 @@ export type ParsedEchoSlot = {
   set: string | null;
   /** Character key of who wears it in game ("Equipped by ..."), when that matched a character. */
   equippedBy?: string;
+  /** The game's lock / discard marks (see echoMarks.ts). Never both true. */
+  locked?: boolean;
+  trash?: boolean;
 };
 
 /** Per-field confidence, surfaced in the review UI so nothing low-confidence auto-saves silently. */

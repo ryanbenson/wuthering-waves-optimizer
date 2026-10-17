@@ -954,6 +954,14 @@ The panel's "Equipped by <name>" line (`EQUIPPED_BY_LINE` in layout.ts, measured
 
 The review step's "Equip on the N characters wearing them in game" checkbox (on by default, shown only when some echo has a wearer) is passed with `echoes-parsed`. After the save, `EchoScannerModal` runs `planScannedLoadouts` (src/scanner/scannedLoadouts.ts): each slot's echo is found in the inventory by identity, so one the player already owned counts too, grouped by `groupWavescanLoadouts` (highest cost first; more than 5 echoes or 12 cost is blocked), then written with `useWavescanLoadouts`' `applyLoadoutWrites` in "new build" mode: a character that already exists gets a new "Scan <date>" build, a new one is created with its default build. The toast says who was equipped and who was blocked.
 
+## Lock and discard marks
+
+The detail panel's discard (heart, "Z") and lock (padlock, "C") toggles sit over the echo art at a fixed spot (`DISCARD_ICON_BOX` / `LOCK_ICON_BOX` in layout.ts, measured off 1920x1080 captures). `readEchoMarks` (scanner-core/echoMarks.ts) reads them from the same frame as the other crops, synchronously in `snapshotFrame`:
+- **Discarded:** the heart is drawn red instead of white (more red than white pixels).
+- **Locked:** the closed padlock's shackle reaches the body on both sides; the open one lifts its right leg. In the band just above the body (27-36% of the box height) the right half has at least half as many light pixels as the left when closed, and none when open.
+
+In game the two exclude each other (locking un-discards, discarding unlocks), so if both ever read true, locked wins. The result card shows a Locked / Discard badge. After a save, `planScannedMarks` finds every scanned echo in the inventory by identity (already-owned ones too) and lists those whose marks differ from the game's; `EchoScannerModal` applies them with `setEchoLocked` / `setEchoTrash`, which keep the app's flags exclusive the same way. Tests: `tests/scanner/echoMarks.test.ts` runs the regions over real locked / unlocked / discarded / equipped captures in `tests/scanner/fixtures/`.
+
 ## Debug view
 
 `EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen
