@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Browse weapons"
     close-test-attr="data-test-workspace-weapon-browser-close"
@@ -141,7 +141,7 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -157,7 +157,7 @@ import {
 } from "../../weapons/weaponImpact";
 import { getWeaponMainStatLabel } from "../../weapons/weapons";
 import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 
@@ -192,7 +192,7 @@ const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 const settingsStore = useSettingsStore();
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const search = ref("");
 const rarityFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);

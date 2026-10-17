@@ -1,11 +1,5 @@
 <template>
   <div class="echo-scanner-guide" data-test-scanner-guide>
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <h2 class="text-xl font-bold">How to scan your echoes</h2>
-      <button type="button" class="btn btn-sm" @click="emit('close')">
-        {{ closeLabel }}
-      </button>
-    </div>
     <p class="text-sm opacity-80 mb-4">
       The scanner watches your game window while you click through your
       echoes, reads each one, and gives you a list to check before
@@ -56,9 +50,7 @@
  * go stale with every game UI update. Keep in step with docs/scanner.md's
  * "Using the scanner" section.
  */
-withDefaults(defineProps<{ closeLabel?: string }>(), { closeLabel: "Got it" });
 
-const emit = defineEmits<{ close: [] }>();
 
 // Static, trusted copy — v-html only for the <strong> emphasis.
 const steps: { title: string; lines: string[] }[] = [

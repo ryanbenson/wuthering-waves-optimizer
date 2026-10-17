@@ -91,12 +91,9 @@
     </template>
   </div>
   <div v-else class="echo-parser flex flex-col gap-4">
-    <div>
-      <h2 class="text-xl font-bold">Import echoes from a screenshot</h2>
-      <p class="text-sm opacity-70">
-        Upload or paste a 1920×1080 image from the WuWa Discord bot.
-      </p>
-    </div>
+    <p class="text-sm opacity-70">
+      Upload or paste a 1920×1080 image from the WuWa Discord bot.
+    </p>
     <div
       class="flex flex-col items-center justify-center gap-2 p-8 border-2 border-primary/60 border-dashed rounded-lg transition-colors"
       :class="isDragging ? 'bg-primary/10' : 'bg-base-200/40'"

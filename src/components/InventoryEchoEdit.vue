@@ -1,586 +1,573 @@
 <template>
-  <dialog :id="modalId" class="modal">
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-2xl">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
+  <AppModal
+    :id="modalId"
+    ref="editModalRef"
+    title="Edit echo"
+    max-width-class="max-w-2xl"
+    :lazy="false">
+    <div
+      class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
+      <div class="echo__item__img-actions flex flex-col gap-2 items-center shrink-0">
+        <div class="echo__item__image-wrap relative">
+          <EchoFavoriteButton overlay :echo-id="echoId" />
+          <div
+            class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
+            :class="{
+              'border-amber-300': rank === '5' || rank === 5,
+              'border-violet-600': rank === '4' || rank === 4,
+              'border-blue-500': rank === '3' || rank === 3,
+              'border-green-500': rank === '2' || rank === 2,
+              'echo__item__image--empty': !echo,
+            }"
+            :style="{
+              backgroundImage: `url(${echoImage})`,
+            }"></div>
+        </div>
+        <button
+          @click="openEchoPicker"
+          :disabled="isEchoLocked"
+          class="btn btn-sm btn--echo--find">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            class="size-4">
+            <path
+              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+              fill="#FFFFFF" />
+          </svg>
+          Find
         </button>
-      </form>
-      <div class="py-4">
+      </div>
+      <div class="echo__item__main-selection flex flex-col gap-4 w-full min-w-0 flex-1">
+        <AppRichSelect
+          v-model="echo"
+          :options="mainEchoSelectOptions"
+          :disabled="isEchoLocked"
+          searchable
+          placeholder="Select echo"
+          aria-label="Main echo" />
+
+        <AppRichSelect
+          v-model="stat"
+          :options="mainStatSelectOptions"
+          :disabled="!type || isEchoLocked"
+          placeholder="Select Stat"
+          aria-label="Main stat" />
+      </div>
+      <div class="echo__item__set relative w-full sm:w-24 shrink-0">
+        <span
+          class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">
+          Echo Set
+        </span>
         <div
-          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
-          <div class="echo__item__img-actions flex flex-col gap-2 items-center shrink-0">
-            <div class="echo__item__image-wrap relative">
-              <EchoFavoriteButton overlay :echo-id="echoId" />
+          class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap"
+          :class="{ 'opacity-50 pointer-events-none': isEchoLocked }">
+          <div
+            v-for="echo in echoSets"
+            :key="echo"
+            @click="handleChooseEchoSet(echo)"
+            class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
+            :class="{ 'border border-white': isSetSelected(echo) }">
+            <img :src="getEchoSetIcon(echo)" :class="echo" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="echoPresetsFoundWithEcho.length"
+      class="echo__in-preset alert alert-info my-2 flex items-center p-2">
+      This echo is found in {{ echoPresetsFoundWithEcho.length }} presets.
+      Any changes will affect those too.
+    </div>
+    <div
+      v-if="isEchoLocked"
+      class="echo__locked-notice alert alert-warning my-2 flex items-center p-2"
+      data-test-echo-locked-notice>
+      This echo is locked — unlock it to change its stats.
+    </div>
+    <div class="echo__selection__input w-full mt-8">
+      <div class="echo__selection__rank flex flex-col pb-7 relative">
+        <label for="rank" class="rank__label">
+          Rank
+          <span class="text-primary">{{ rank }}</span>
+        </label>
+        <input
+          type="range"
+          id="rank"
+          min="2"
+          max="5"
+          v-model="rank"
+          step="1"
+          :disabled="isEchoLocked"
+          :class="rangeClasses"
+          class="echo__selection__rank__input range range-xs" />
+      </div>
+    </div>
+    <div class="echo__selection_substats w-full">
+      <span class="font-bold text-2xl mb-6 inline-flex">Substats</span>
+      <div class="echo__selection_substats__list">
+        <div class="echo__selection_substat relative">
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isCritRateChecked"
+              @change="toggleSubStat"
+              value="CritRate"
+              :disabled="isCritRateDisabled" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isCritRateChecked }">
+              Crit Rate
+              <span v-if="isCritRateChecked" class="text-primary">
+                {{ critRateValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isCritRateChecked"
+              id="CritRate"
+              :values="getSubStatRange('CritRate')"
+              :default-value="getDefaultValue('CritRate')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('CritRate', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isCritDMGChecked"
+              @change="toggleSubStat"
+              value="CritDMG"
+              :disabled="isCritDMGDisabled" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isCritDMGChecked }">
+              Crit DMG
+              <span v-if="isCritDMGChecked" class="text-primary">
+                {{ critDmgValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isCritDMGChecked"
+              id="CritDMG"
+              :values="getSubStatRange('CritDMG')"
+              :default-value="getDefaultValue('CritDMG')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('CritDMG', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isAtkChecked"
+              @change="toggleSubStat"
+              :disabled="isAtkDisabled"
+              value="ATK" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isAtkChecked }">
+              ATK%
+              <span v-if="isAtkChecked" class="text-primary">
+                {{ atkValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isAtkChecked"
+              id="ATK"
+              :values="getSubStatRange('ATK')"
+              :default-value="getDefaultValue('ATK')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('ATK', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isFlatAtkChecked"
+              @change="toggleSubStat"
+              :disabled="isFlatAtkDisabled"
+              value="ATK_FLAT" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isFlatAtkChecked }">
+              ATK
+              <span v-if="isFlatAtkChecked" class="text-primary">
+                {{ atkFlatValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isFlatAtkChecked"
+              id="ATK_FLAT"
+              :values="getSubStatRange('ATK_FLAT')"
+              :default-value="getDefaultValue('ATK_FLAT')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('ATK_FLAT', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isHpChecked"
+              @change="toggleSubStat"
+              :disabled="isHpDisabled"
+              value="HP" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isHpChecked }">
+              HP%
+              <span v-if="isHpChecked" class="text-primary">
+                {{ hpValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isHpChecked"
+              id="CritRate"
+              :values="getSubStatRange('HP')"
+              :default-value="getDefaultValue('HP')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('HP', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isFlatHpChecked"
+              @change="toggleSubStat"
+              :disabled="isFlatHpDisabled"
+              value="HP_FLAT" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isFlatHpChecked }">
+              HP
+              <span v-if="isFlatHpChecked" class="text-primary">
+                {{ hpFlatValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isFlatHpChecked"
+              id="HP_FLAT"
+              :values="getSubStatRange('HP_FLAT')"
+              :default-value="getDefaultValue('HP_FLAT')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('HP_FLAT', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isDefChecked"
+              @change="toggleSubStat"
+              :disabled="isDefDisabled"
+              value="DEF" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isDefChecked }">
+              DEF%
+              <span v-if="isDefChecked" class="text-primary">
+                {{ defValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isDefChecked"
+              id="DEF"
+              :values="getSubStatRange('DEF')"
+              :default-value="getDefaultValue('DEF')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('DEF', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isFlatDefChecked"
+              @change="toggleSubStat"
+              :disabled="isFlatDefDisabled"
+              value="DEF_FLAT" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isFlatDefChecked }">
+              DEF
+              <span v-if="isFlatDefChecked" class="text-primary">
+                {{ defFlatValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isFlatDefChecked"
+              id="DEF_FLAT"
+              :values="getSubStatRange('DEF_FLAT')"
+              :default-value="getDefaultValue('DEF_FLAT')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('DEF_FLAT', val)" />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isBasicChecked"
+              @change="toggleSubStat"
+              :disabled="isBasicDisabled"
+              value="BasicAttackDMGBonus" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isBasicChecked }">
+              Basic Attack DMG Bonus
+              <span v-if="isBasicChecked" class="text-primary">
+                {{ basicValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isBasicChecked"
+              id="BasicAttackDMGBonus"
+              :values="getSubStatRange('BasicAttackDMGBonus')"
+              :default-value="getDefaultValue('BasicAttackDMGBonus')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="
+                (val: number) => subStatUpdated('BasicAttackDMGBonus', val)
+              " />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isHeavyChecked"
+              @change="toggleSubStat"
+              :disabled="isHeavyDisabled"
+              value="HeavyAttackDMGBonus" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isHeavyChecked }">
+              Heavy Attack DMG Bonus
+              <span v-if="isHeavyChecked" class="text-primary">
+                {{ heavyValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isHeavyChecked"
+              id="HeavyAttackDMGBonus"
+              :values="getSubStatRange('HeavyAttackDMGBonus')"
+              :default-value="getDefaultValue('HeavyAttackDMGBonus')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="
+                (val: number) => subStatUpdated('HeavyAttackDMGBonus', val)
+              " />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isSkillChecked"
+              @change="toggleSubStat"
+              :disabled="isSkillDisabled"
+              value="ResonanceSkillDMGBonus" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isSkillChecked }">
+              Skill DMG Bonus
+              <span v-if="isSkillChecked" class="text-primary">
+                {{ skillValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isSkillChecked"
+              id="ResonanceSkillDMGBonus"
+              :values="getSubStatRange('ResonanceSkillDMGBonus')"
+              :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="
+                (val: number) => subStatUpdated('ResonanceSkillDMGBonus', val)
+              " />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isLiberationChecked"
+              @change="toggleSubStat"
+              :disabled="isLiberationDisabled"
+              value="ResonanceLiberationDMGBonus" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isLiberationChecked }">
+              Liberation DMG Bonus
+              <span v-if="isLiberationChecked" class="text-primary">
+                {{ liberationValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isLiberationChecked"
+              id="ResonanceLiberationDMGBonus"
+              :values="getSubStatRange('ResonanceLiberationDMGBonus')"
+              :default-value="
+                getDefaultValue('ResonanceLiberationDMGBonus')
+              "
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="
+                (val: number) => subStatUpdated('ResonanceLiberationDMGBonus', val)
+              " />
+          </div>
+
+          <div
+            class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+            <input
+              type="checkbox"
+              class="toggle toggle-sm toggle-accent"
+              :checked="isEnergyRechargeChecked"
+              @change="toggleSubStat"
+              :disabled="isEnergyRechargeDisabled"
+              value="EnergyRegen" />
+            <span
+              class="label-text"
+              :class="{ substat__label: isEnergyRechargeChecked }">
+              Energy Regen
+              <span v-if="isEnergyRechargeChecked" class="text-primary">
+                {{ energyRegenValue }}
+              </span>
+            </span>
+            <Range
+              v-if="isEnergyRechargeChecked"
+              id="EnergyRegen"
+              :values="getSubStatRange('EnergyRegen')"
+              :default-value="getDefaultValue('EnergyRegen')"
+              size="xs"
+              show-ticks
+              :disabled="isEchoLocked"
+              class="echo__selection__rank__input w-full"
+              @update-value="(val: number) => subStatUpdated('EnergyRegen', val)" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </AppModal>
+
+  <AppModal
+    :id="modalIdPicker"
+    ref="pickerRef"
+    title="Choose echo"
+    max-width-class="max-w-5xl"
+    :lazy="false"
+    @close="closeEchoChooser">
+    <div
+      class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+      :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+      <span class="mr-2">Filter</span>
+      <button
+        v-for="echoSet in echoSetsList"
+        :key="echoSet"
+        @click="toggleEchoSetFilter(echoSet)"
+        class="rounded p-[.3rem]"
+        :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+        <img
+          :src="getEchoSetImage(echoSet)"
+          class="size-7 m-width-7"
+          :class="echoSet" />
+      </button>
+      <button @click="resetFilters" class="btn btn-sm btn-ghost">
+        Clear
+      </button>
+    </div>
+    <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
+      <template v-if="!allEchoesListFiltered.length">
+        <div class="echoes__list--empty py-12 text-center w-full col-span-2">
+          No echoes found
+        </div>
+      </template>
+      <template v-else>
+        <div
+          v-for="echoesToChoose in allEchoesListFiltered"
+          :key="echoesToChoose.key"
+          class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+          @click="chooseMainEcho(echoesToChoose.key)">
+          <div class="card-body items-center">
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
+              :style="{
+                backgroundImage: `url(${echoesToChoose.image})`,
+              }"
+              @click="handleOpenModal"></div>
+            <h2 class="card-title text-center text-lg">
+              {{ echoesToChoose.name }}
+            </h2>
+            <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
+            <div
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
               <div
-                class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
-                :class="{
-                  'border-amber-300': rank === '5' || rank === 5,
-                  'border-violet-600': rank === '4' || rank === 4,
-                  'border-blue-500': rank === '3' || rank === 3,
-                  'border-green-500': rank === '2' || rank === 2,
-                  'echo__item__image--empty': !echo,
-                }"
-                :style="{
-                  backgroundImage: `url(${echoImage})`,
-                }"></div>
+                v-for="echoSetItem in echoesToChoose.sets"
+                :key="echoSetItem"
+                class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
+                <img
+                  :src="getEchoSetIcon(echoSetItem)"
+                  :class="echoSetItem" />
+              </div>
             </div>
             <button
-              @click="openEchoPicker"
-              :disabled="isEchoLocked"
-              class="btn btn-sm btn--echo--find">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="size-4">
-                <path
-                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-                  fill="#FFFFFF" />
-              </svg>
-              Find
+              @click="chooseMainEcho(echoesToChoose.key)"
+              class="btn btn-sm btn-primary">
+              Use echo
             </button>
           </div>
-          <div class="echo__item__main-selection flex flex-col gap-4 w-full min-w-0 flex-1">
-            <AppRichSelect
-              v-model="echo"
-              :options="mainEchoSelectOptions"
-              :disabled="isEchoLocked"
-              searchable
-              placeholder="Select echo"
-              aria-label="Main echo" />
-
-            <AppRichSelect
-              v-model="stat"
-              :options="mainStatSelectOptions"
-              :disabled="!type || isEchoLocked"
-              placeholder="Select Stat"
-              aria-label="Main stat" />
-          </div>
-          <div class="echo__item__set relative w-full sm:w-24 shrink-0">
-            <span
-              class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">
-              Echo Set
-            </span>
-            <div
-              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap"
-              :class="{ 'opacity-50 pointer-events-none': isEchoLocked }">
-              <div
-                v-for="echo in echoSets"
-                :key="echo"
-                @click="handleChooseEchoSet(echo)"
-                class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
-                :class="{ 'border border-white': isSetSelected(echo) }">
-                <img :src="getEchoSetIcon(echo)" :class="echo" />
-              </div>
-            </div>
-          </div>
         </div>
-        <div
-          v-if="echoPresetsFoundWithEcho.length"
-          class="echo__in-preset alert alert-info my-2 flex items-center p-2">
-          This echo is found in {{ echoPresetsFoundWithEcho.length }} presets.
-          Any changes will affect those too.
-        </div>
-        <div
-          v-if="isEchoLocked"
-          class="echo__locked-notice alert alert-warning my-2 flex items-center p-2"
-          data-test-echo-locked-notice>
-          This echo is locked — unlock it to change its stats.
-        </div>
-        <div class="echo__selection__input w-full mt-8">
-          <div class="echo__selection__rank flex flex-col pb-7 relative">
-            <label for="rank" class="rank__label">
-              Rank
-              <span class="text-primary">{{ rank }}</span>
-            </label>
-            <input
-              type="range"
-              id="rank"
-              min="2"
-              max="5"
-              v-model="rank"
-              step="1"
-              :disabled="isEchoLocked"
-              :class="rangeClasses"
-              class="echo__selection__rank__input range range-xs" />
-          </div>
-        </div>
-        <div class="echo__selection_substats w-full">
-          <span class="font-bold text-2xl mb-6 inline-flex">Substats</span>
-          <div class="echo__selection_substats__list">
-            <div class="echo__selection_substat relative">
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isCritRateChecked"
-                  @change="toggleSubStat"
-                  value="CritRate"
-                  :disabled="isCritRateDisabled" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isCritRateChecked }">
-                  Crit Rate
-                  <span v-if="isCritRateChecked" class="text-primary">
-                    {{ critRateValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isCritRateChecked"
-                  id="CritRate"
-                  :values="getSubStatRange('CritRate')"
-                  :default-value="getDefaultValue('CritRate')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('CritRate', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isCritDMGChecked"
-                  @change="toggleSubStat"
-                  value="CritDMG"
-                  :disabled="isCritDMGDisabled" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isCritDMGChecked }">
-                  Crit DMG
-                  <span v-if="isCritDMGChecked" class="text-primary">
-                    {{ critDmgValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isCritDMGChecked"
-                  id="CritDMG"
-                  :values="getSubStatRange('CritDMG')"
-                  :default-value="getDefaultValue('CritDMG')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('CritDMG', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isAtkChecked"
-                  @change="toggleSubStat"
-                  :disabled="isAtkDisabled"
-                  value="ATK" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isAtkChecked }">
-                  ATK%
-                  <span v-if="isAtkChecked" class="text-primary">
-                    {{ atkValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isAtkChecked"
-                  id="ATK"
-                  :values="getSubStatRange('ATK')"
-                  :default-value="getDefaultValue('ATK')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('ATK', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isFlatAtkChecked"
-                  @change="toggleSubStat"
-                  :disabled="isFlatAtkDisabled"
-                  value="ATK_FLAT" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isFlatAtkChecked }">
-                  ATK
-                  <span v-if="isFlatAtkChecked" class="text-primary">
-                    {{ atkFlatValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isFlatAtkChecked"
-                  id="ATK_FLAT"
-                  :values="getSubStatRange('ATK_FLAT')"
-                  :default-value="getDefaultValue('ATK_FLAT')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('ATK_FLAT', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isHpChecked"
-                  @change="toggleSubStat"
-                  :disabled="isHpDisabled"
-                  value="HP" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isHpChecked }">
-                  HP%
-                  <span v-if="isHpChecked" class="text-primary">
-                    {{ hpValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isHpChecked"
-                  id="CritRate"
-                  :values="getSubStatRange('HP')"
-                  :default-value="getDefaultValue('HP')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('HP', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isFlatHpChecked"
-                  @change="toggleSubStat"
-                  :disabled="isFlatHpDisabled"
-                  value="HP_FLAT" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isFlatHpChecked }">
-                  HP
-                  <span v-if="isFlatHpChecked" class="text-primary">
-                    {{ hpFlatValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isFlatHpChecked"
-                  id="HP_FLAT"
-                  :values="getSubStatRange('HP_FLAT')"
-                  :default-value="getDefaultValue('HP_FLAT')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('HP_FLAT', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isDefChecked"
-                  @change="toggleSubStat"
-                  :disabled="isDefDisabled"
-                  value="DEF" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isDefChecked }">
-                  DEF%
-                  <span v-if="isDefChecked" class="text-primary">
-                    {{ defValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isDefChecked"
-                  id="DEF"
-                  :values="getSubStatRange('DEF')"
-                  :default-value="getDefaultValue('DEF')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('DEF', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isFlatDefChecked"
-                  @change="toggleSubStat"
-                  :disabled="isFlatDefDisabled"
-                  value="DEF_FLAT" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isFlatDefChecked }">
-                  DEF
-                  <span v-if="isFlatDefChecked" class="text-primary">
-                    {{ defFlatValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isFlatDefChecked"
-                  id="DEF_FLAT"
-                  :values="getSubStatRange('DEF_FLAT')"
-                  :default-value="getDefaultValue('DEF_FLAT')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('DEF_FLAT', val)" />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isBasicChecked"
-                  @change="toggleSubStat"
-                  :disabled="isBasicDisabled"
-                  value="BasicAttackDMGBonus" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isBasicChecked }">
-                  Basic Attack DMG Bonus
-                  <span v-if="isBasicChecked" class="text-primary">
-                    {{ basicValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isBasicChecked"
-                  id="BasicAttackDMGBonus"
-                  :values="getSubStatRange('BasicAttackDMGBonus')"
-                  :default-value="getDefaultValue('BasicAttackDMGBonus')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val: number) => subStatUpdated('BasicAttackDMGBonus', val)
-                  " />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isHeavyChecked"
-                  @change="toggleSubStat"
-                  :disabled="isHeavyDisabled"
-                  value="HeavyAttackDMGBonus" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isHeavyChecked }">
-                  Heavy Attack DMG Bonus
-                  <span v-if="isHeavyChecked" class="text-primary">
-                    {{ heavyValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isHeavyChecked"
-                  id="HeavyAttackDMGBonus"
-                  :values="getSubStatRange('HeavyAttackDMGBonus')"
-                  :default-value="getDefaultValue('HeavyAttackDMGBonus')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val: number) => subStatUpdated('HeavyAttackDMGBonus', val)
-                  " />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isSkillChecked"
-                  @change="toggleSubStat"
-                  :disabled="isSkillDisabled"
-                  value="ResonanceSkillDMGBonus" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isSkillChecked }">
-                  Skill DMG Bonus
-                  <span v-if="isSkillChecked" class="text-primary">
-                    {{ skillValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isSkillChecked"
-                  id="ResonanceSkillDMGBonus"
-                  :values="getSubStatRange('ResonanceSkillDMGBonus')"
-                  :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val: number) => subStatUpdated('ResonanceSkillDMGBonus', val)
-                  " />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isLiberationChecked"
-                  @change="toggleSubStat"
-                  :disabled="isLiberationDisabled"
-                  value="ResonanceLiberationDMGBonus" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isLiberationChecked }">
-                  Liberation DMG Bonus
-                  <span v-if="isLiberationChecked" class="text-primary">
-                    {{ liberationValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isLiberationChecked"
-                  id="ResonanceLiberationDMGBonus"
-                  :values="getSubStatRange('ResonanceLiberationDMGBonus')"
-                  :default-value="
-                    getDefaultValue('ResonanceLiberationDMGBonus')
-                  "
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val: number) => subStatUpdated('ResonanceLiberationDMGBonus', val)
-                  " />
-              </div>
-
-              <div
-                class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-sm toggle-accent"
-                  :checked="isEnergyRechargeChecked"
-                  @change="toggleSubStat"
-                  :disabled="isEnergyRechargeDisabled"
-                  value="EnergyRegen" />
-                <span
-                  class="label-text"
-                  :class="{ substat__label: isEnergyRechargeChecked }">
-                  Energy Regen
-                  <span v-if="isEnergyRechargeChecked" class="text-primary">
-                    {{ energyRegenValue }}
-                  </span>
-                </span>
-                <Range
-                  v-if="isEnergyRechargeChecked"
-                  id="EnergyRegen"
-                  :values="getSubStatRange('EnergyRegen')"
-                  :default-value="getDefaultValue('EnergyRegen')"
-                  size="xs"
-                  show-ticks
-                  :disabled="isEchoLocked"
-                  class="echo__selection__rank__input w-full"
-                  @update-value="(val: number) => subStatUpdated('EnergyRegen', val)" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </template>
     </div>
-  </dialog>
-
-  <dialog :id="modalIdPicker" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-5xl">
-      <form method="dialog" @click="closeEchoChooser">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
-        <div
-          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-          <span class="mr-2">Filter</span>
-          <button
-            v-for="echoSet in echoSetsList"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-            <img
-              :src="getEchoSetImage(echoSet)"
-              class="size-7 m-width-7"
-              :class="echoSet" />
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
-        </div>
-      </div>
-      <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
-        <template v-if="!allEchoesListFiltered.length">
-          <div class="echoes__list--empty py-12 text-center w-full col-span-2">
-            No echoes found
-          </div>
-        </template>
-        <template v-else>
-          <div
-            v-for="echoesToChoose in allEchoesListFiltered"
-            :key="echoesToChoose.key"
-            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-            @click="chooseMainEcho(echoesToChoose.key)">
-            <div class="card-body items-center">
-              <div
-                class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-                :style="{
-                  backgroundImage: `url(${echoesToChoose.image})`,
-                }"
-                @click="handleOpenModal"></div>
-              <h2 class="card-title text-center text-lg">
-                {{ echoesToChoose.name }}
-              </h2>
-              <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
-              <div
-                class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
-                <div
-                  v-for="echoSetItem in echoesToChoose.sets"
-                  :key="echoSetItem"
-                  class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
-                  <img
-                    :src="getEchoSetIcon(echoSetItem)"
-                    :class="echoSetItem" />
-                </div>
-              </div>
-              <button
-                @click="chooseMainEcho(echoesToChoose.key)"
-                class="btn btn-sm btn-primary">
-                Use echo
-              </button>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
-  </dialog>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -602,6 +589,7 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import AppModal from "./AppModal.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -927,17 +915,11 @@ function deleteSubStatData(mainStat: string) {
 }
 
 function handleOpenModal() {
-  const modalEl = document.getElementById(
-    modalId.value,
-  ) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  editModalRef.value?.triggerOpenModal();
 }
 
 function openEchoPicker() {
-  const modalEl = document.getElementById(
-    modalIdPicker.value,
-  ) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  pickerRef.value?.triggerOpenModal();
 }
 
 function subStatUpdated(mainStat: string, val: unknown) {
@@ -1031,12 +1013,10 @@ function chooseMainEcho(echoKey: string) {
 
 function closeEchoChooser() {
   echoSetFilter.value = null;
-  const modalEl = document.getElementById(
-    modalIdPicker.value,
-  ) as HTMLDialogElement | null;
-  const box = document.querySelector(`#${modalIdPicker.value} .modal-box`);
+  // The scrolling element is AppModal's body (the body stays mounted, lazy=false).
+  const box = document.querySelector(`#${modalIdPicker.value} .app-modal__body`);
   if (box) (box as HTMLElement).scrollTop = 0;
-  modalEl?.close();
+  pickerRef.value?.triggerCloseModal();
 }
 
 const echoPresetsFoundWithEcho = computed(() =>
@@ -1087,6 +1067,8 @@ const mainStatSelectOptions = computed((): AppRichSelectOption[] => [
 
 const modalId = computed(() => `echoModal`);
 const modalIdPicker = computed(() => `echoModalPicker`);
+const editModalRef = ref<InstanceType<typeof AppModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const totalSubStatsEnabled = computed(() => {
   const allValues = Object.values(allSubStatsEnabled.value);
@@ -1367,9 +1349,6 @@ html[data-theme-style="light"] {
     svg {
       filter: invert(100%);
     }
-  }
-  .modal-backdrop {
-    opacity: 0.5;
   }
 }
 .echo__item__sub-stats {

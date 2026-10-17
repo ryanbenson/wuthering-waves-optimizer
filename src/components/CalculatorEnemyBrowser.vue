@@ -1,94 +1,86 @@
 <template>
-  <dialog ref="modalElementRef" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
-      <form method="dialog" @click="handleClose">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
+  <AppModal
+    ref="modalElementRef"
+    title="Choose enemy"
+    max-width-class="max-w-5xl"
+    @close="resetFilters">
+    <p
+      v-if="!characterElement"
+      class="text-sm opacity-80 mb-4"
+      data-test-enemy-browser-no-element>
+      No character element is set yet. Enemy resistance will default to 10%
+      until your character has an element.
+    </p>
+    <AppFilterPanel
+      panel-key="calculator-enemies"
+      class="mb-6"
+      :active-count="activeFilterCount"
+      :clear-disabled="!activeFilterCount"
+      @clear="resetFilters">
+      <template #bar>
+        <input
+          v-model="filterName"
+          type="search"
+          placeholder="Search by name"
+          class="input input-bordered input-sm w-full max-w-xs"
+          data-test-enemy-browser-search />
+      </template>
+      <div class="flex flex-wrap gap-1 items-center">
+        <span class="text-sm opacity-70 mr-1">Type:</span>
+        <button
+          v-for="t in ENEMY_BROWSER_UI_TYPES"
+          :key="t"
+          type="button"
+          class="btn btn-sm rounded"
+          :class="{ 'btn-active': filterType === t }"
+          @click="toggleTypeFilter(t)">
+          {{ t }}
         </button>
-      </form>
-      <div class="py-4">
-        <p
-          v-if="!characterElement"
-          class="text-sm opacity-80 mb-4"
-          data-test-enemy-browser-no-element>
-          No character element is set yet. Enemy resistance will default to 10%
-          until your character has an element.
-        </p>
-        <AppFilterPanel
-          panel-key="calculator-enemies"
-          class="mb-6"
-          :active-count="activeFilterCount"
-          :clear-disabled="!activeFilterCount"
-          @clear="resetFilters">
-          <template #bar>
-            <input
-              v-model="filterName"
-              type="search"
-              placeholder="Search by name"
-              class="input input-bordered input-sm w-full max-w-xs"
-              data-test-enemy-browser-search />
-          </template>
-          <div class="flex flex-wrap gap-1 items-center">
-            <span class="text-sm opacity-70 mr-1">Type:</span>
-            <button
-              v-for="t in ENEMY_BROWSER_UI_TYPES"
-              :key="t"
-              type="button"
-              class="btn btn-sm rounded"
-              :class="{ 'btn-active': filterType === t }"
-              @click="toggleTypeFilter(t)">
-              {{ t }}
-            </button>
-          </div>
-        </AppFilterPanel>
-
-        <div class="enemies__list">
-          <template v-if="!enemiesFilteredSorted.length">
-            <div class="enemies__list--empty py-12 text-center w-full">
-              No enemies found
-            </div>
-          </template>
-          <template v-else>
-            <div
-              class="enemies__list__items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div
-                v-for="enemy in enemiesFilteredSorted"
-                :key="enemy.key"
-                class="card card-bordered bg-base-200 shadow-sm overflow-hidden flex flex-row">
-                <figure class="w-24 shrink-0 bg-base-300 m-0 self-stretch">
-                  <img
-                    :src="enemy.imageUrl"
-                    :alt="enemy.name"
-                    class="h-full w-full object-cover min-h-[5.5rem]"
-                    loading="lazy" />
-                </figure>
-                <div class="card-body p-3 gap-2 flex-1 min-w-0">
-                  <h3 class="card-title text-base leading-tight line-clamp-2">
-                    {{ enemy.name }}
-                  </h3>
-                  <p class="text-xs opacity-70">{{ enemy.browserType }}</p>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-primary self-start"
-                    :data-test-enemy-browser-choose="enemy.key"
-                    @click="chooseEnemy(enemy)">
-                    Choose
-                  </button>
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
       </div>
+    </AppFilterPanel>
+
+    <div class="enemies__list">
+      <template v-if="!enemiesFilteredSorted.length">
+        <div class="enemies__list--empty py-12 text-center w-full">
+          No enemies found
+        </div>
+      </template>
+      <template v-else>
+        <div
+          class="enemies__list__items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="enemy in enemiesFilteredSorted"
+            :key="enemy.key"
+            class="card card-bordered bg-base-200 shadow-sm overflow-hidden flex flex-row">
+            <figure class="w-24 shrink-0 bg-base-300 m-0 self-stretch">
+              <img
+                :src="enemy.imageUrl"
+                :alt="enemy.name"
+                class="h-full w-full object-cover min-h-[5.5rem]"
+                loading="lazy" />
+            </figure>
+            <div class="card-body p-3 gap-2 flex-1 min-w-0">
+              <h3 class="card-title text-base leading-tight line-clamp-2">
+                {{ enemy.name }}
+              </h3>
+              <p class="text-xs opacity-70">{{ enemy.browserType }}</p>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary self-start"
+                :data-test-enemy-browser-choose="enemy.key"
+                @click="chooseEnemy(enemy)">
+                Choose
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
-  </dialog>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import {
   ENEMY_BROWSER_UI_TYPES,
   allEnemiesList,
@@ -96,6 +88,7 @@ import {
   type ListedEnemy,
 } from "../enemies/index";
 import AppFilterPanel from "./AppFilterPanel.vue";
+import AppModal from "./AppModal.vue";
 
 interface Props {
   characterElement?: string;
@@ -111,7 +104,6 @@ const emit = defineEmits<{
 
 const filterName = ref("");
 const filterType = ref<EnemyBrowserUiType | null>(null);
-const isOpen = ref(false);
 
 const TYPE_SORT = {
   Calamity: 0,
@@ -145,17 +137,14 @@ const enemiesFilteredSorted = computed((): ListedEnemy[] => {
   return list;
 });
 
-const modalElementRef = ref<HTMLDialogElement | null>(null);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
-  isOpen.value = true;
-  await nextTick();
-  modalElementRef.value?.showModal();
+  await modalElementRef.value?.triggerOpenModal();
 }
 
 function triggerCloseModal() {
-  modalElementRef.value?.close();
-  isOpen.value = false;
+  modalElementRef.value?.triggerCloseModal();
 }
 
 function resetFilters() {
@@ -165,8 +154,6 @@ function resetFilters() {
 
 function handleClose() {
   resetFilters();
-  // Must close the <dialog> itself — only clearing isOpen removes the
-  // modal-box (and its method="dialog" form) while leaving the backdrop open.
   triggerCloseModal();
 }
 
@@ -185,11 +172,3 @@ defineExpose({
   triggerCloseModal,
 });
 </script>
-
-<style lang="scss" scoped>
-html[data-theme-style="light"] {
-  .modal-backdrop {
-    opacity: 0.5;
-  }
-}
-</style>

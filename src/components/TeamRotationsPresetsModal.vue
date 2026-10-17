@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Team presets"
     close-test-attr="data-test-team-rotations-presets-cancel"
@@ -146,13 +146,13 @@
         </div>
       </article>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
@@ -174,7 +174,7 @@ const emit = defineEmits<{
 }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const teamRotationsStore = useTeamRotationsStore();
 const { favoritePresetNames } = storeToRefs(teamRotationsStore);

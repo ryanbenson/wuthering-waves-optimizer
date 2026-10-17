@@ -53,11 +53,12 @@ describe("CalculatorEchoEditPanel wiring", () => {
   it("clicking Find opens the extracted EchoPickerDialog", async () => {
     const characterStore = useCharacterStore() as any;
     characterStore.setCharacterData(CHARACTER, { echoes: { 0: {} } });
-    const { container, getByText } = renderPanel({ context: "build", character: CHARACTER, index: 0 });
+    const { baseElement, getByText } = renderPanel({ context: "build", character: CHARACTER, index: 0 });
 
     await fireEvent.click(getByText("Find"));
 
-    expect(container.querySelector(".modal-box")).not.toBeNull();
+    // The picker is teleported to <body>.
+    expect(baseElement.querySelector(".modal-box")).not.toBeNull();
   });
 
   it("renders nothing when isOpen is false", () => {

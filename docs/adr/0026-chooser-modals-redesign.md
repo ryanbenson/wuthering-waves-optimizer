@@ -3,6 +3,7 @@ status: accepted
 date: 2026-09-04
 tags: [calculator, components, echoes, weapons, enemies]
 supersedes: [0016, 0017, 0020]
+superseded_by: [44]
 ---
 
 # 26. Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -45,6 +46,9 @@ re-litigating them. Ships behind the existing `liveResultBar` Labs flag
    (weapon, enemy) never inherits that panel's clipping or stacking context.
    On phone widths it becomes a full-bleed sheet rather than a floating box.
 
+   **Superseded 2026-10-18 (ADR [0044](0044-dialogs-use-the-app-modal-shell.md)):** the shell is now
+   `src/components/AppModal.vue` (classes `app-modal*`), and every dialog with a ✕ uses it.
+
 2. **New v3-only siblings, legacy files untouched.** Character, echo-Browse
    and enemy each get a new component
    (`characterWorkspace/WorkspaceCharacterBrowser.vue`,
@@ -57,6 +61,10 @@ re-litigating them. Ships behind the existing `liveResultBar` Labs flag
    the legacy character browser. `CalculatorEchoEditPanel.vue`'s Find picker
    is edited **in place** instead, because that component is already only
    ever mounted under the flag.
+
+   **Superseded 2026-10-18 (ADR [0044](0044-dialogs-use-the-app-modal-shell.md)):** the legacy
+   `Calculator*Browser.vue` choosers still serve the classic UI with their own contents, but their
+   dialog chrome is now the same shell (renamed `AppModal`), like every other dialog with a ✕.
 
 3. **New siblings preserve the legacy `data-test-*` selectors** for the
    row action and close button (`data-test-character-browse-select`,

@@ -1,66 +1,59 @@
 <template>
   <div class="flex flex-col gap-4" v-if="!isLoading">
-    <dialog :id="modalIdPicker" class="modal">
-      <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
-        <button>close</button>
-      </form>
-      <div class="modal-box max-w-5xl">
-        <form method="dialog" @click="closeEchoChooser">
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-        </form>
-        <div class="py-4">
-          <div
-            class="flex align-center gap-1 mb-6 items-center flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-            <span class="mr-2">Filter</span>
-            <button
-              v-for="echoSet in echoSets"
-              :key="echoSet"
-              @click="toggleEchoSetFilter(echoSet)"
-              class="rounded p-[.3rem]"
-              :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-              <img :src="getEchoSetImage(echoSet)" class="size-7" :class="echoSet" />
-            </button>
-            <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <template v-if="!allEchoesListFiltered.length">
-            <div class="py-12 text-center w-full col-span-2">No echoes found</div>
-          </template>
-          <template v-else>
-            <div
-              v-for="echoesToChoose in allEchoesListFiltered"
-              :key="echoesToChoose.key"
-              class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-              <div class="card-body items-center">
-                <div
-                  class="rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-                  :style="{ backgroundImage: `url(${echoesToChoose.image})` }"></div>
-                <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
-                <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
-                <div class="flex gap-3 justify-center sm:justify-start flex-wrap">
-                  <div
-                    v-for="echoSetItem in echoesToChoose.sets"
-                    :key="echoSetItem"
-                    class="size-8 rounded-full cursor-pointer">
-                    <img :src="getEchoSetIcon(echoSetItem)" :class="echoSetItem" />
-                  </div>
-                </div>
-                <button
-                  @click="chooseMainEcho(echoesToChoose.key)"
-                  class="btn btn-sm btn-primary"
-                  :data-test-optimizer-workspace-pick-echo="echoesToChoose.key">
-                  Use echo
-                </button>
-              </div>
-            </div>
-          </template>
-        </div>
+    <AppModal
+      ref="pickerRef"
+      title="Choose echo"
+      max-width-class="max-w-5xl"
+      :lazy="false"
+      @close="resetFilters">
+      <div
+        class="flex align-center gap-1 mb-6 items-center flex-wrap"
+        :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+        <span class="mr-2">Filter</span>
+        <button
+          v-for="echoSet in echoSets"
+          :key="echoSet"
+          @click="toggleEchoSetFilter(echoSet)"
+          class="rounded p-[.3rem]"
+          :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+          <img :src="getEchoSetImage(echoSet)" class="size-7" :class="echoSet" />
+        </button>
+        <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
       </div>
-    </dialog>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <template v-if="!allEchoesListFiltered.length">
+          <div class="py-12 text-center w-full col-span-2">No echoes found</div>
+        </template>
+        <template v-else>
+          <div
+            v-for="echoesToChoose in allEchoesListFiltered"
+            :key="echoesToChoose.key"
+            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+            <div class="card-body items-center">
+              <div
+                class="rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
+                :style="{ backgroundImage: `url(${echoesToChoose.image})` }"></div>
+              <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
+              <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
+              <div class="flex gap-3 justify-center sm:justify-start flex-wrap">
+                <div
+                  v-for="echoSetItem in echoesToChoose.sets"
+                  :key="echoSetItem"
+                  class="size-8 rounded-full cursor-pointer">
+                  <img :src="getEchoSetIcon(echoSetItem)" :class="echoSetItem" />
+                </div>
+              </div>
+              <button
+                @click="chooseMainEcho(echoesToChoose.key)"
+                class="btn btn-sm btn-primary"
+                :data-test-optimizer-workspace-pick-echo="echoesToChoose.key">
+                Use echo
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </AppModal>
 
     <div class="run-bar-sticky">
       <OptimizerWorkspaceRunBar
@@ -296,6 +289,7 @@ import type { OptimizerMinStatRow } from "../CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "../CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "../CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerSettings from "../CalculatorOptimizerSettings.vue";
+import AppModal from "../AppModal.vue";
 import OptimizerWorkspaceEchoSets from "./OptimizerWorkspaceEchoSets.vue";
 import OptimizerWorkspaceTarget from "./OptimizerWorkspaceTarget.vue";
 import OptimizerWorkspaceRunBar, {
@@ -327,7 +321,7 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 
-const modalIdPicker = "optimizerWorkspaceEchoPicker";
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
@@ -514,14 +508,12 @@ function getEchoSetIcon(type: string) {
 }
 
 function openEchoChooser() {
-  const modalEl = document.getElementById(modalIdPicker);
-  (modalEl as HTMLDialogElement | null)?.showModal();
+  pickerRef.value?.triggerOpenModal();
 }
 
 function closeEchoChooser() {
   echoSetFilter.value = null;
-  const modalEl = document.getElementById(modalIdPicker);
-  (modalEl as HTMLDialogElement | null)?.close();
+  pickerRef.value?.triggerCloseModal();
 }
 
 function toggleEchoSetFilter(echoSet: string) {

@@ -1,37 +1,29 @@
 <template>
-  <dialog id="inventoryPresetEditName" class="modal">
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-2xl">
-      <form method="dialog">
-        <button
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          data-test-echo-modal-close>
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
-        <label class="form-control w-full">
-          <div class="label">
-            <span class="label-text">Update your preset name</span>
-          </div>
-          <input type="text" v-model.trim="echoPresetName" class="input input-bordered w-full" />
-          <template v-if="isV3">
-            <div class="label mt-2">
-              <span class="label-text">Description (optional)</span>
-            </div>
-            <textarea
-              v-model.trim="echoPresetDescription"
-              rows="3"
-              maxlength="500"
-              class="textarea textarea-bordered w-full"></textarea>
-          </template>
-        </label>
-        <button class="btn btn-primary btn-sm mt-4" @click="handleSavePreset">Update</button>
+  <AppModal
+    ref="editModalRef"
+    title="Edit preset"
+    max-width-class="max-w-2xl"
+    close-test-attr="data-test-echo-modal-close"
+    :lazy="false"
+    :sheet="false">
+    <label class="form-control w-full">
+      <div class="label">
+        <span class="label-text">Update your preset name</span>
       </div>
-    </div>
-  </dialog>
+      <input type="text" v-model.trim="echoPresetName" class="input input-bordered w-full" />
+      <template v-if="isV3">
+        <div class="label mt-2">
+          <span class="label-text">Description (optional)</span>
+        </div>
+        <textarea
+          v-model.trim="echoPresetDescription"
+          rows="3"
+          maxlength="500"
+          class="textarea textarea-bordered w-full"></textarea>
+      </template>
+    </label>
+    <button class="btn btn-primary btn-sm mt-4" @click="handleSavePreset">Update</button>
+  </AppModal>
 
   <div class="py-4">
     <div
@@ -256,6 +248,7 @@ import EchoCustomPreset from "./EchoCustomPreset.vue";
 import EchoPresetV3Card from "./EchoPresetV3Card.vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import AppModal from "./AppModal.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import RangeMinMax from "./input/RangeMinMax.vue";
@@ -283,7 +276,7 @@ const { viewMode, setViewMode } = usePresetsViewMode();
 
 const page = ref(1);
 const perPage = 10;
-const modalId = "inventoryPresetEditName";
+const editModalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoPresetName = ref<string | null>(null);
 const echoPresetId = ref<string | null>(null);
 
@@ -438,13 +431,11 @@ function editEchoPresetName(presetId: string, presetName: string) {
 }
 
 function handleOpenModal() {
-  const modalEl = document.getElementById(modalId) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  editModalRef.value?.triggerOpenModal();
 }
 
 function handleCloseModal() {
-  const modalEl = document.getElementById(modalId) as HTMLDialogElement | null;
-  modalEl?.close();
+  editModalRef.value?.triggerCloseModal();
 }
 
 async function handleSavePreset() {

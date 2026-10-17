@@ -5,8 +5,9 @@ import EchoRatingWeightsEditor from "../../src/components/EchoRatingWeightsEdito
 import { useSettingsStore } from "../../src/stores/settings";
 import { useCharacterStore } from "../../src/stores/character";
 
-function critRateInput(container: HTMLElement) {
-  return container.querySelector<HTMLInputElement>("#echo-rating-weight-CritRate");
+// The modal is teleported to <body>, so tests pass baseElement rather than container.
+function critRateInput(root: HTMLElement) {
+  return root.querySelector<HTMLInputElement>("#echo-rating-weight-CritRate");
 }
 
 describe("EchoRatingWeightsEditor", () => {
@@ -23,9 +24,9 @@ describe("EchoRatingWeightsEditor", () => {
 
   it("defaults to global mode, editing the settings store's echoRatingWeights", async () => {
     const settingsStore = useSettingsStore();
-    const { container } = render(EchoRatingWeightsEditor);
+    const { baseElement } = render(EchoRatingWeightsEditor);
 
-    const input = critRateInput(container);
+    const input = critRateInput(baseElement);
     expect(input).not.toBeNull();
     input!.value = "8"; // WEIGHT_VALUES[8] === 4
     await fireEvent.input(input!);
@@ -50,7 +51,7 @@ describe("EchoRatingWeightsEditor", () => {
     // Mirrors how real parent components (CalculatorEchoes.vue,
     // InventoryEchoesBrowser.vue) drive this modal: a template ref calling
     // the exposed triggerOpenModal.
-    const { getByText, container } = render({
+    const { getByText, baseElement } = render({
       components: { EchoRatingWeightsEditor },
       template: `
         <button @click="$refs.editor.triggerOpenModal({ mode: 'character', characterId: 'Carlotta' })">
@@ -62,7 +63,7 @@ describe("EchoRatingWeightsEditor", () => {
 
     await fireEvent.click(getByText("open"));
 
-    const input = critRateInput(container);
+    const input = critRateInput(baseElement);
     expect(input).not.toBeNull();
     input!.value = "8";
     await fireEvent.input(input!);

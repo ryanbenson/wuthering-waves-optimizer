@@ -1,29 +1,45 @@
 <template>
-  <dialog :id="modalId" class="modal" @close="handleClose">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-6xl">
-      <form method="dialog" @click="handleClose">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
-        <EchoScannerCapture
-          v-if="!isReviewingDuplicates"
-          inventory-only
-          @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
-        <EchoDuplicateReviewList
-          v-else
-          :items="duplicateReviewItems"
-          inventory-only
-          :has-selected-echoes="hasSelectedEchoes"
-          @cancel="handleCancelDuplicateReview"
-          @confirm="handleConfirmDuplicateReview"></EchoDuplicateReviewList>
-      </div>
-    </div>
-  </dialog>
+  <AppModal
+    ref="modalRef"
+    :title="captureRef?.isShowingGuide ? 'How to scan your echoes' : 'Scan echoes from the game'"
+    max-width-class="max-w-6xl"
+    @close="resetDuplicateReview">
+    <template #header-actions>
+      <button v-if="captureRef?.isShowingGuide" type="button" class="btn btn-sm" @click="captureRef?.closeGuide()">
+        Got it
+      </button>
+      <button
+        v-if="captureRef?.canOpenGuide"
+        type="button"
+        class="btn btn-ghost btn-sm"
+        @click="captureRef?.openGuide()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="h-4 w-4 stroke-current">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
+        </svg>
+        How to scan
+      </button>
+    </template>
+    <EchoScannerCapture
+      v-if="!isReviewingDuplicates"
+      ref="captureRef"
+      inventory-only
+      @echoes-parsed="handleEchoesParsed"></EchoScannerCapture>
+    <EchoDuplicateReviewList
+      v-else
+      :items="duplicateReviewItems"
+      inventory-only
+      :has-selected-echoes="hasSelectedEchoes"
+      @cancel="handleCancelDuplicateReview"
+      @confirm="handleConfirmDuplicateReview"></EchoDuplicateReviewList>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -42,49 +58,33 @@
  * CalculatorEchoImporter.vue via useEchoDuplicateReview +
  * EchoDuplicateReviewList — only the capture UI and entry point differ.
  */
-import { nextTick, ref } from "vue";
+import { ref } from "vue";
+import AppModal from "./AppModal.vue";
 import EchoScannerCapture from "./EchoScannerCapture.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
 import { trackEvent } from "../utils/analytics";
 import { useToast } from "../composables/useToast";
 
-const modalId = "modal-echo-scanner-inventory";
-
-const isOpen = ref(false);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
+const captureRef = ref<InstanceType<typeof EchoScannerCapture> | null>(null);
 
 async function triggerOpenModal() {
   trackEvent("scanner-opened");
-  isOpen.value = true;
-  await nextTick();
-  const modalEl = document.getElementById(modalId);
-  (modalEl as HTMLDialogElement | null)?.showModal();
+  await modalRef.value?.triggerOpenModal();
 }
 
 /**
- * Also wired to the <dialog>'s own native `close` event (see the
- * template), not just the backdrop/✕ button clicks — a native <dialog>
- * shown via showModal() closes on its own when the user presses Escape,
- * bypassing both of those click handlers entirely. Without this, Escape
- * would leave `isOpen` stuck true (the dialog visually gone but
- * EchoScannerCapture still mounted underneath, so its cleanup effect
- * never runs) — for a feature whose whole pitch is "nothing keeps running
- * once you're done," Escape silently leaving a live screen-share stream
- * active in the background would be exactly the wrong failure mode. Safe
- * to call more than once (a click handler's own modalEl.close() also
- * triggers this same native event) — closing an already-closed dialog,
- * setting isOpen false twice, and resetting an empty review list are all
- * no-ops.
+ * Programmatic close (saved or cancelled review). A user close (✕,
+ * backdrop, Escape) is handled by AppModal itself: it closes the
+ * dialog, unmounts the body (lazy) and emits `close` → resetDuplicateReview.
+ * Either way EchoScannerCapture unmounts, so its cleanup runs and a live
+ * screen-share stream never keeps running behind a closed dialog — Escape
+ * included, which is why the body must stay lazy (not `:lazy="false"`).
  */
 function triggerCloseModal() {
-  const modalEl = document.getElementById(modalId);
-  (modalEl as HTMLDialogElement | null)?.close();
-  isOpen.value = false;
+  modalRef.value?.triggerCloseModal();
   resetDuplicateReview();
-}
-
-function handleClose() {
-  triggerCloseModal();
 }
 
 const {
