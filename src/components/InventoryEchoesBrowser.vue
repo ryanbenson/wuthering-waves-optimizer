@@ -88,6 +88,23 @@
             {{ incompleteEchoCount }}
           </span>
         </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-neutral"
+          :class="{ 'btn-active btn-primary': unfinishedFilter }"
+          v-tooltip="
+            'Show echoes with untuned slots, ranked by their chance of reaching your tuning goal'
+          "
+          data-test-find-unfinished
+          @click="unfinishedFilter = !unfinishedFilter">
+          Finish these first
+          <span
+            v-if="unfinishedEchoCount > 0"
+            class="badge badge-sm"
+            :class="unfinishedFilter ? 'badge-neutral' : 'badge-primary'">
+            {{ unfinishedEchoCount }}
+          </span>
+        </button>
       </div>
 
       <!-- Basics: what the echo is -->
@@ -440,6 +457,31 @@
         Delete
       </button>
     </AppBulkActionBar>
+    <div
+      v-if="unfinishedFilter"
+      class="card card-bordered bg-base-100 mb-6"
+      data-test-unfinished-goal>
+      <div class="card-body p-4 gap-3">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide opacity-60">
+            Finish these first
+          </h2>
+          <RouterLink to="/info/tuning-odds" class="link text-xs">How the odds work</RouterLink>
+        </div>
+        <p class="text-sm">
+          A fresh +0 echo meets this goal
+          <span class="font-semibold tabular-nums" data-test-unfinished-fresh-chance>{{
+            formatTuningChance(freshChance)
+          }}</span>
+          of the time. Echoes tagged <strong>Keep</strong> beat that — tune
+          them before you farm more.
+        </p>
+        <TuningGoalEditor
+          class="max-w-md"
+          :model-value="tuningGoal"
+          @update:model-value="setTuningGoal" />
+      </div>
+    </div>
     <div class="echoes__list">
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
@@ -452,6 +494,11 @@
           <template v-if="incompleteFilter">
             <div class="mt-2 text-sm opacity-70">
               No echoes are missing an echo, set, main stat, or a substat.
+            </div>
+          </template>
+          <template v-if="unfinishedFilter">
+            <div class="mt-2 text-sm opacity-70">
+              Every echo has all 5 substats tuned.
             </div>
           </template>
         </div>
@@ -482,6 +529,19 @@
                 :data-test-echo-select="echoRow.echoId"
                 @change="toggleSelect(echoRow.echoId)" />
             </label>
+            <div
+              v-if="unfinishedFilter && unfinishedOdds.get(echoRow.echoId)"
+              class="absolute top-1 right-1 z-10 flex items-center gap-1 rounded-md bg-base-100/90 px-1.5 py-0.5 shadow"
+              :data-test-unfinished-tag="unfinishedOdds.get(echoRow.echoId)!.tag">
+              <span class="text-sm font-semibold tabular-nums">{{
+                formatTuningChance(unfinishedOdds.get(echoRow.echoId)!.chance)
+              }}</span>
+              <span
+                class="badge badge-sm"
+                :class="UNFINISHED_TAG_CLASSES[unfinishedOdds.get(echoRow.echoId)!.tag]">
+                {{ UNFINISHED_TAG_LABELS[unfinishedOdds.get(echoRow.echoId)!.tag] }}
+              </span>
+            </div>
             <InventoryEchoTile
               v-if="isLiveResultBarEnabled && !isCompact"
               v-bind="echoCardBinder(echoRow)"
@@ -688,6 +748,13 @@ import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useToast } from "../composables/useToast";
 import { useUiDensity } from "../composables/useUiDensity";
+import { useTuningGoal } from "../composables/useTuningGoal";
+import {
+  isEchoUnfinished,
+  useUnfinishedEchoRanking,
+} from "../composables/useUnfinishedEchoRanking";
+import { formatTuningChance, type UnfinishedEchoTag } from "../echoes/tuningOdds";
+import TuningGoalEditor from "./TuningGoalEditor.vue";
 
 const { confirm } = useConfirm();
 const { showToast } = useToast();
@@ -733,6 +800,7 @@ const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
 const duplicatesFilter = ref(false);
 const incompleteFilter = ref(false);
+const unfinishedFilter = ref(false);
 const substatFilter = ref<string[]>([]);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
@@ -753,6 +821,7 @@ const activeFilterCount = computed(() => {
   if (favoriteFilter.value) count += 1;
   if (duplicatesFilter.value) count += 1;
   if (incompleteFilter.value) count += 1;
+  if (unfinishedFilter.value) count += 1;
   if (substatFilter.value.length > 0) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
@@ -808,6 +877,34 @@ function isEchoIncomplete(e: InventoryEchoRow) {
   return filledSubStatCount < 5;
 }
 
+const unfinishedEchoCount = computed(
+  () => ((echoes.value ?? []) as InventoryEchoRow[]).filter((e) => isEchoUnfinished(e)).length,
+);
+
+const {
+  goal: tuningGoal,
+  setGoal: setTuningGoal,
+  requestedPanelTab,
+} = useTuningGoal();
+const {
+  freshChance,
+  oddsByEchoId: unfinishedOdds,
+  rankUnfinished,
+} = useUnfinishedEchoRanking(
+  computed(() => (unfinishedFilter.value ? ((echoes.value ?? []) as InventoryEchoRow[]) : [])),
+  tuningGoal,
+);
+const UNFINISHED_TAG_LABELS: Record<UnfinishedEchoTag, string> = {
+  keep: "Keep",
+  baseline: "Baseline",
+  fodder: "Fodder",
+};
+const UNFINISHED_TAG_CLASSES: Record<UnfinishedEchoTag, string> = {
+  keep: "badge-info",
+  baseline: "badge-ghost",
+  fodder: "badge-warning",
+};
+
 const incompleteEchoCount = computed(() => {
   let count = 0;
   for (const inventoryEcho of (echoes.value ?? []) as InventoryEchoRow[]) {
@@ -831,6 +928,7 @@ watch(
     favoriteFilter,
     duplicatesFilter,
     incompleteFilter,
+    unfinishedFilter,
     substatFilter,
     cvMin,
     cvMax,
@@ -891,6 +989,9 @@ const echoesList = computed(() => {
   }
   if (incompleteFilter.value) {
     allEchoes = allEchoes.filter((e) => isEchoIncomplete(e));
+  }
+  if (unfinishedFilter.value) {
+    allEchoes = rankUnfinished(allEchoes);
   }
   if (substatFilter.value.length > 0) {
     allEchoes = allEchoes.filter((e) =>
@@ -1010,6 +1111,8 @@ function echoCardBinder(e: InventoryEchoRow) {
 }
 
 function handleEditEcho(echoId: string) {
+  // From "Finish these first", open straight onto the echo's odds.
+  if (unfinishedFilter.value) requestedPanelTab.value = "odds";
   inventoryEchoEditRef.value?.setEchoId(echoId);
   inventoryEchoEditRef.value?.handleOpenModal();
 }
@@ -1034,6 +1137,7 @@ function resetFilters() {
   favoriteFilter.value = false;
   duplicatesFilter.value = false;
   incompleteFilter.value = false;
+  unfinishedFilter.value = false;
   substatFilter.value = [];
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;

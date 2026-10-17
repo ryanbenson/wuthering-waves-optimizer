@@ -16,6 +16,7 @@ import UpdatesView from "./pages/UpdatesView.vue";
 import InfoView from "./pages/InfoView.vue";
 import InfoOverview from "./components/info/InfoOverview.vue";
 import InfoCvRv from "./components/info/InfoCvRv.vue";
+import InfoTuningOdds from "./components/info/InfoTuningOdds.vue";
 import InfoFormulas from "./components/info/InfoFormulas.vue";
 import InfoCredits from "./components/info/InfoCredits.vue";
 import PrivacyView from "./pages/PrivacyView.vue";
@@ -41,6 +42,7 @@ const routes = [
     children: [
       { path: "", component: InfoOverview, name: "InfoOverview" },
       { path: "cv-echo-rating", component: InfoCvRv, name: "InfoCvRv" },
+      { path: "tuning-odds", component: InfoTuningOdds, name: "InfoTuningOdds" },
       { path: "formulas", component: InfoFormulas, name: "InfoFormulas" },
       { path: "credits", component: InfoCredits, name: "InfoCredits" },
     ],

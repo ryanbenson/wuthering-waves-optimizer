@@ -242,6 +242,14 @@ const navGroups: WorkspaceNavGroup[] = [
         ),
       },
       {
+        id: "tuning-odds",
+        label: "Tuning Planner",
+        to: "/info/tuning-odds",
+        icon: svgIcon(
+          '<path d="M4 17l6-6 4 4 6-8"></path><path d="M14 7h6v6"></path>',
+        ),
+      },
+      {
         id: "formulas",
         label: "Formulas",
         to: "/info/formulas",
