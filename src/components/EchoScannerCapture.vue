@@ -377,20 +377,18 @@
       </div>
     </template>
 
-    <dialog ref="captureDialog" class="modal" @close="openCaptureCandidate = null">
-      <div v-if="openCaptureCandidate" class="modal-box max-w-xl p-3">
-        <p class="text-sm font-semibold mb-2">
-          In-game capture #{{ openCaptureCandidate.captureIndex }}
-        </p>
-        <img
-          :src="openCaptureCandidate.panelPreviewUrl"
-          class="w-full h-auto max-h-[80vh] object-contain rounded"
-          :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+    <AppChooserModal
+      ref="captureModal"
+      :title="openCaptureCandidate ? `In-game capture #${openCaptureCandidate.captureIndex}` : ''"
+      max-width-class="max-w-xl"
+      :sheet="false"
+      @close="openCaptureCandidate = null">
+      <img
+        v-if="openCaptureCandidate"
+        :src="openCaptureCandidate.panelPreviewUrl"
+        class="w-full h-auto max-h-[80vh] object-contain rounded"
+        :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
+    </AppChooserModal>
   </div>
 </template>
 
@@ -412,6 +410,7 @@ import EchoScannerTimings from "./EchoScannerTimings.vue";
 import EchoScannerGuide from "./EchoScannerGuide.vue";
 import EchoScannerResultCard from "./EchoScannerResultCard.vue";
 import EchoScannerSavedCard from "./EchoScannerSavedCard.vue";
+import AppChooserModal from "./AppChooserModal.vue";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
@@ -773,13 +772,12 @@ const emptyFilterMessage = computed(() => {
   }
 });
 
-const captureDialog = ref<HTMLDialogElement | null>(null);
+const captureModal = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const openCaptureCandidate = ref<ScanCandidate | null>(null);
 
 async function openCapture(candidate: ScanCandidate) {
   openCaptureCandidate.value = candidate;
-  await nextTick();
-  captureDialog.value?.showModal();
+  await captureModal.value?.triggerOpenModal();
 }
 
 // --- Save ----------------------------------------------------------------
