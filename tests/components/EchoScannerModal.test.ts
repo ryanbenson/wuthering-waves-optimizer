@@ -36,5 +36,10 @@ describe("EchoScannerModal", () => {
     await fireEvent.click(getByText("How to scan"));
     expect(baseElement.querySelector("[data-test-scanner-guide]")).not.toBeNull();
     expect(queryByText("How to scan")).toBeNull();
+    // The guide's title and Got it live in the header too.
+    getByText("How to scan your echoes");
+    await fireEvent.click(getByText("Got it"));
+    expect(baseElement.querySelector("[data-test-scanner-guide]")).toBeNull();
+    getByText("Scan echoes from the game");
   });
 });

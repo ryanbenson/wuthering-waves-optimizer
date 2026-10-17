@@ -1,7 +1,7 @@
 <template>
   <div class="echo-scanner">
     <template v-if="(status === 'idle' || status === 'error') && showGuide">
-      <EchoScannerGuide @close="closeGuide" />
+      <EchoScannerGuide />
     </template>
 
     <template v-else-if="status === 'idle' || status === 'error'">
@@ -649,10 +649,9 @@ function openGuide() {
   showGuide.value = true;
 }
 
-/** The modal's "How to scan" header button shows only on the idle/error screen, while the guide is closed. */
-const canOpenGuide = computed(
-  () => (status.value === "idle" || status.value === "error") && !showGuide.value,
-);
+/** The guide shows on the idle/error screen; the modal's header carries its title and buttons. */
+const isShowingGuide = computed(() => (status.value === "idle" || status.value === "error") && showGuide.value);
+const canOpenGuide = computed(() => (status.value === "idle" || status.value === "error") && !showGuide.value);
 
 const captureCueEnabled = scanner.captureCueEnabled;
 captureCueEnabled.value = readFlag(CAPTURE_CUE_KEY);
@@ -799,5 +798,5 @@ function handleContinue() {
   emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value);
 }
 
-defineExpose({ openGuide, canOpenGuide });
+defineExpose({ openGuide, closeGuide, canOpenGuide, isShowingGuide });
 </script>

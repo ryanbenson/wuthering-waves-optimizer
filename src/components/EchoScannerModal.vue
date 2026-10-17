@@ -1,10 +1,13 @@
 <template>
   <AppChooserModal
     ref="modalRef"
-    title="Scan echoes from the game"
+    :title="captureRef?.isShowingGuide ? 'How to scan your echoes' : 'Scan echoes from the game'"
     max-width-class="max-w-6xl"
     @close="resetDuplicateReview">
     <template #header-actions>
+      <button v-if="captureRef?.isShowingGuide" type="button" class="btn btn-sm" @click="captureRef?.closeGuide()">
+        Got it
+      </button>
       <button
         v-if="captureRef?.canOpenGuide"
         type="button"
