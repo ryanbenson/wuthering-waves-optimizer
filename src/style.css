@@ -67,6 +67,14 @@ h6 {
   width: 100%;
 }
 
+/* daisyUI locks page scroll while a modal is open (overflow: hidden + scrollbar-gutter:
+ * stable). On a page without a scrollbar that reserves an empty gray gutter and shifts
+ * the layout left. Leave page scrolling alone instead, so nothing moves either way. */
+:root:has(:is(.modal-open, .modal:target, .modal-toggle:checked + .modal, .modal[open])) {
+  overflow: revert;
+  scrollbar-gutter: revert;
+}
+
 /**** v3 UI type scale ****/
 /* Larger text in the v3 UI only; classic keeps Tailwind/daisyUI defaults.
  * `data-ui` is set by AppLayout.vue. Body text (text-sm) is 16px. */
