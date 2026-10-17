@@ -4,11 +4,12 @@ import { DISCARD_ICON_BOX, LOCK_ICON_BOX, toPixelRegion } from "../../src/scanne
 import { readEchoMarks } from "@wutheringtools/scanner-core/echoMarks";
 import type { RegionFrac } from "../../src/scanner/types";
 
-// Real 1920x1080 Echo Management captures (User ID blacked out).
-const fixture = (name: string) => `tests/scanner/fixtures/echo-panel-${name}-1920x1080.jpg`;
+// Real Echo Management captures at 16:9 and 16:10 (User ID blacked out).
+const fixture = (name: string) => `tests/scanner/fixtures/echo-panel-${name}.jpg`;
 
 async function iconPixels(file: string, region: RegionFrac) {
-  const r = toPixelRegion(region, { width: 1920, height: 1080 });
+  const { width, height } = await sharp(file).metadata();
+  const r = toPixelRegion(region, { width: width!, height: height! });
   const { data, info } = await sharp(file)
     .extract({ left: r.x, top: r.y, width: r.width, height: r.height })
     .removeAlpha()
@@ -19,11 +20,15 @@ async function iconPixels(file: string, region: RegionFrac) {
 
 describe("readEchoMarks on real captures", () => {
   it.each([
-    ["locked", { locked: true, trash: false }],
-    ["unlocked", { locked: false, trash: false }],
-    ["discarded", { locked: false, trash: true }],
-    ["equipped", { locked: false, trash: false }],
-  ])("%s echo", async (name, expected) => {
+    ["locked-1920x1080", { locked: true, trash: false }],
+    ["unlocked-1920x1080", { locked: false, trash: false }],
+    ["discarded-1920x1080", { locked: false, trash: true }],
+    ["equipped-1920x1080", { locked: false, trash: false }],
+    ["equipped-locked-1920x1200", { locked: true, trash: false }],
+    ["equipped-unlocked-1920x1200", { locked: false, trash: false }],
+    ["equipped-discarded-1920x1200", { locked: false, trash: true }],
+    ["locked-1920x1200", { locked: true, trash: false }],
+  ])("%s", async (name, expected) => {
     const file = fixture(name);
     expect(readEchoMarks(await iconPixels(file, DISCARD_ICON_BOX), await iconPixels(file, LOCK_ICON_BOX))).toEqual(expected);
   });

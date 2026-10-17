@@ -4,9 +4,8 @@ import { EQUIPPED_BY_LINE, toPixelRegion } from "../../src/scanner/layout";
 import { matchEquippedBy } from "@wutheringtools/scanner-core/equippedBy";
 import { allCharactersList } from "../../src/characters/characters";
 
-// A real 1920x1080 (16:9) Echo Management capture of an echo "Equipped by Hsin"
-// (the player's User ID is blacked out).
-const FIXTURE = "tests/scanner/fixtures/echo-panel-equipped-1920x1080.jpg";
+// Real Echo Management captures at 16:9 and 16:10 (User ID blacked out).
+const fixture = (name: string) => `tests/scanner/fixtures/echo-panel-${name}.jpg`;
 
 /** Rows / columns of a greyscale crop whose luma varies like text does. */
 function inkLines(data: Buffer, width: number, height: number, byRow: boolean): number[] {
@@ -26,22 +25,34 @@ function inkLines(data: Buffer, width: number, height: number, byRow: boolean): 
   return ink;
 }
 
-describe("EQUIPPED_BY_LINE", () => {
-  it("frames the whole 'Equipped by <name>' line on a real capture, without clipping it", async () => {
-    const region = toPixelRegion(EQUIPPED_BY_LINE, { width: 1920, height: 1080 });
-    const { data, info } = await sharp(FIXTURE)
-      .extract({ left: region.x, top: region.y, width: region.width, height: region.height })
-      .greyscale()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
+async function equippedLineCrop(file: string) {
+  const { width, height } = await sharp(file).metadata();
+  const region = toPixelRegion(EQUIPPED_BY_LINE, { width: width!, height: height! });
+  return sharp(file)
+    .extract({ left: region.x, top: region.y, width: region.width, height: region.height })
+    .greyscale()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+}
 
-    const rows = inkLines(data, info.width, info.height, true);
-    const cols = inkLines(data, info.width, info.height, false);
-    expect(rows.length, "text rows inside the crop").toBeGreaterThan(10);
-    expect(rows[0], "margin above the text").toBeGreaterThan(0);
-    expect(rows.at(-1)!, "margin below the text").toBeLessThan(info.height - 1);
-    expect(cols[0], "margin left of the text (avatar excluded)").toBeGreaterThan(0);
-    expect(cols.at(-1)!, "room right of 'Hsin' for longer names").toBeLessThan(info.width * 0.6);
+describe("EQUIPPED_BY_LINE", () => {
+  it.each(["equipped-1920x1080", "equipped-locked-1920x1200"])(
+    "frames the whole 'Equipped by <name>' line without clipping it (%s)",
+    async (name) => {
+      const { data, info } = await equippedLineCrop(fixture(name));
+      const rows = inkLines(data, info.width, info.height, true);
+      const cols = inkLines(data, info.width, info.height, false);
+      expect(rows.length, "text rows inside the crop").toBeGreaterThan(10);
+      expect(rows[0], "margin above the text").toBeGreaterThan(0);
+      expect(rows.at(-1)!, "margin below the text").toBeLessThan(info.height - 1);
+      expect(cols[0], "margin left of the text (avatar excluded)").toBeGreaterThan(0);
+      expect(cols.at(-1)!, "room right of 'Hsin' for longer names").toBeLessThan(info.width * 0.6);
+    },
+  );
+
+  it("is empty when nobody wears the echo", async () => {
+    const { data, info } = await equippedLineCrop(fixture("locked-1920x1200"));
+    expect(inkLines(data, info.width, info.height, true)).toEqual([]);
   });
 
   it("reads as Hsin with the app's character list", () => {
