@@ -40,7 +40,8 @@
       <ul
         v-if="isOpen"
         ref="menuRef"
-        class="app-overflow-menu__content menu menu-sm z-50 w-56 rounded-box bg-base-200 p-1 text-base-content shadow fixed"
+        class="app-overflow-menu__content menu menu-sm z-50 rounded-box bg-base-200 p-1 text-base-content shadow fixed"
+        :class="menuClass"
         :style="menuStyle"
         @click="closeMenu">
         <slot />
@@ -58,12 +59,15 @@ const props = withDefaults(
     align?: "start" | "end";
     size?: "sm" | "xs";
     dataTest?: string;
+    /** Width (or other) classes for the menu panel. */
+    menuClass?: string;
   }>(),
   {
     ariaLabel: "More actions",
     align: "end",
     size: "sm",
     dataTest: undefined,
+    menuClass: "w-56",
   },
 );
 
@@ -82,7 +86,7 @@ const teleportTarget = ref<string | HTMLElement>("body");
 const menuStyle = reactive({ top: "0px", left: "0px" });
 
 const MENU_GAP_PX = 4;
-const MENU_WIDTH_FALLBACK_PX = 224; // w-56, before the menu itself has been measured
+const MENU_WIDTH_FALLBACK_PX = 224; // w-56 (the default menuClass), before the menu itself has been measured
 
 function updatePosition() {
   const trigger = triggerRef.value;

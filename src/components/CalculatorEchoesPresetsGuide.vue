@@ -10,7 +10,7 @@
         </button>
       </form>
       <div class="py-4">
-        <h1 class="text-2xl">Presets Guide</h1>
+        <h1 class="text-2xl">{{ isV3 ? "How presets work" : "Presets Guide" }}</h1>
         <p class="mt-2">
           This is a quick guide to help you understand how presets work so you
           can use them well.
@@ -31,7 +31,14 @@
           will not change your character's build.
         </p>
         <h1 class="text-lg mt-4">Managing presets</h1>
-        <p class="mt-2">
+        <p v-if="isV3" class="mt-2">
+          You can import from your WuWa export, grab from your inventory, or
+          manually make new echoes. Then open the Presets menu, choose "Save
+          current echoes as preset", and give it a name. If any echoes are not
+          in your inventory, it will save them there. And now you have a preset
+          that you can use for any character.
+        </p>
+        <p v-else class="mt-2">
           You can import from your WuWa export, grab from your inventory, or
           manually make new echoes. Then click "Save Preset", and give it a
           name. If any echoes are not in your inventory, it will save them
@@ -47,7 +54,12 @@
             copies of one another.
           </strong>
         </p>
-        <p class="mt-2">
+        <p v-if="isV3" class="mt-2">
+          If you remove or replace an echo while a preset is applied, the
+          Presets button shows a dot. Its menu lets you update the preset with
+          your new echoes, save them as a new preset, or revert to the preset.
+        </p>
+        <p v-else class="mt-2">
           If you remove an echo, or replace an echo from your inventory, while
           you have a preset equipped to your character, it will un-equip that
           preset since the echoes have changed. If you save a new preset now, it
@@ -59,21 +71,42 @@
           you can equip a preset.
         </p>
         <h1 class="text-lg mt-4">Using presets</h1>
-        <p class="mt-2">
-          You can click "Use presets" to find your list of echoes, and any Other
-          (app-provided) presets. You can click "Apply preset" on any of them
-          and it will update your character with that build.
-        </p>
-        <p class="mt-2">
-          Note that Other (app-provided) presets aren't using echoes from your
-          inventory, but you can save them if you want.
-        </p>
+        <template v-if="isV3">
+          <p class="mt-2">
+            Open the Presets menu and choose "Browse all presets". "My presets"
+            are the ones you saved, and "Theorycrafter builds" are recommended
+            builds for this character. Click "Apply preset" on any of them and
+            it will update your character with that build.
+          </p>
+          <p class="mt-2">
+            Theorycrafter builds aren't using echoes from your inventory, but you
+            can save them to your presets from the Presets menu.
+          </p>
+        </template>
+        <template v-else>
+          <p class="mt-2">
+            You can click "Use presets" to find your list of echoes, and any Other
+            (app-provided) presets. You can click "Apply preset" on any of them
+            and it will update your character with that build.
+          </p>
+          <p class="mt-2">
+            Note that Other (app-provided) presets aren't using echoes from your
+            inventory, but you can save them if you want.
+          </p>
+        </template>
       </div>
     </div>
   </dialog>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
+
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
+
 const MODAL_ID = "modal-echoes-presets-guide";
 
 function triggerOpenModal() {

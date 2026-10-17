@@ -20,7 +20,9 @@
       "></CalculatorEchoesBrowser>
     <CalculatorEchoesPresets
       ref="echoesPresets"
-      :character="character"></CalculatorEchoesPresets>
+      :character="character"
+      @save="handleOpenSaveEchoPreset('modal')"
+      @guide="handleOpenPresetsGuide"></CalculatorEchoesPresets>
     <CalculatorSaveEchoesPreset
       ref="echoesSavePreset"
       @on-save-echo-preset="
@@ -41,57 +43,24 @@
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
       <!--
-        v3: one Presets split button (issue #619). The main part opens the
-        presets modal; the caret holds Save, the theorycrafter builds and the
-        guide, so those builds are one click away without leading the header.
+        v3: one Presets button (issue #619). Presets are a small share of
+        usage, so they live here rather than above the echo tiles; the button
+        shows the applied preset and its menu holds the actions for that
+        state. See docs/adr/0043-echo-presets-header-button.md.
       -->
       <div v-if="isLiveResultBarEnabled" class="flex flex-wrap items-center gap-2">
+        <CalculatorEchoesPresetsMenu
+          :status="echoPresetStatus"
+          :saved-count="savedEchoPresetCount"
+          :community-count="communityEchoPresets.length"
+          @save="handleOpenSaveEchoPreset('menu')"
+          @update="handleUpdateEchoPreset"
+          @revert="handleRevertEchoPreset"
+          @browse="handleOpenEchoesPreset({ source: 'menu' })"
+          @guide="handleOpenPresetsGuide" />
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import Echoes
         </button>
-        <div class="join echoes-presets-split">
-          <button
-            type="button"
-            class="btn btn-sm join-item"
-            data-test-echoes-presets-open
-            @click="handleOpenEchoesPreset()">
-            Presets
-          </button>
-          <AppOverflowMenu
-            class="join-item"
-            aria-label="More preset actions"
-            data-test="calculator-echoes-presets-menu">
-            <template #trigger>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                class="size-4 fill-current"
-                aria-hidden="true">
-                <path d="M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z" />
-              </svg>
-            </template>
-            <li>
-              <button type="button" data-test-echoes-presets-save @click="handleOpenSaveEchoPreset">
-                Save current echoes as preset
-              </button>
-            </li>
-            <li v-if="communityEchoPresets.length > 0">
-              <button
-                type="button"
-                class="flex items-center justify-between"
-                data-test-echoes-presets-community
-                @click="handleOpenEchoesPreset({ tab: 'community', source: 'menu' })">
-                Theorycrafter builds
-                <span class="badge badge-sm">{{ communityEchoPresets.length }}</span>
-              </button>
-            </li>
-            <li>
-              <button type="button" @click="handleOpenPresetsGuide">
-                <span class="text-primary">Presets Guide</span>
-              </button>
-            </li>
-          </AppOverflowMenu>
-        </div>
         <AppOverflowMenu
           aria-label="More echo actions"
           data-test="calculator-echoes-overflow-menu">
@@ -114,7 +83,7 @@
         <button class="btn btn-sm" @click="handleOpenEchoesPreset()">
           Use Presets
         </button>
-        <button class="btn btn-sm" @click="handleOpenSaveEchoPreset">
+        <button class="btn btn-sm" @click="handleOpenSaveEchoPreset()">
           Save Preset
         </button>
         <AppOverflowMenu
@@ -157,23 +126,12 @@
       v-if="isLiveResultBarEnabled"
       class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
       :character="character"></CalculatorEchoInsightsPanel>
-    <div class="flex flex-wrap items-center gap-2 mb-4">
-      <button
-        v-if="echoPresetName && isLiveResultBarEnabled"
-        type="button"
-        class="badge badge-primary badge-outline gap-1 cursor-pointer hover:bg-primary/10"
-        data-test-echoes-active-preset
-        v-tooltip="'Switch to a different preset'"
-        @click="handleOpenEchoesPreset({ tab: 'mine', source: 'chip' })">
-        Preset: {{ echoPresetName }}
-        <span class="opacity-50">·</span>
-        Change
-      </button>
-      <div v-else-if="echoPresetName" class="badge badge-primary badge-outline">
+    <div v-if="!isLiveResultBarEnabled" class="flex flex-wrap items-center gap-2 mb-4">
+      <div v-if="echoPresetName" class="badge badge-primary badge-outline">
         Preset: {{ echoPresetName }}
       </div>
       <div
-        v-if="teamSubstatScoreRollup && !isLiveResultBarEnabled"
+        v-if="teamSubstatScoreRollup"
         class="badge text-nowrap"
         :class="teamSubstatScoreRollupBadgeClass"
         v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">
@@ -337,6 +295,7 @@ import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import WorkspaceEchoesBrowser from "./characterWorkspace/WorkspaceEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
+import CalculatorEchoesPresetsMenu from "./CalculatorEchoesPresetsMenu.vue";
 import CalculatorEchoesEmptyState from "./CalculatorEchoesEmptyState.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
@@ -353,6 +312,8 @@ import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
 import { useCommunityEchoPresets, type EchoPresetsOpenOptions } from "../composables/useCommunityEchoPresets";
+import { useEchoPresetStatus } from "../composables/useEchoPresetStatus";
+import { trackEvent } from "../utils/analytics";
 
 const MAX_ECHO_COST = 12;
 
@@ -410,12 +371,7 @@ const mainEcho = computed({
   },
 });
 
-const echoPresetId = computed({
-  get: () => currentCharacter.value?.echoPresetId ?? null,
-  set: async (value: string | null) => {
-    await characterStore.setCharacterData(props.character, { echoPresetId: value });
-  },
-});
+const echoPresetId = computed(() => currentCharacter.value?.echoPresetId ?? null);
 
 const setOverride = computed({
   get: () => currentCharacter.value?.setOverride ?? null,
@@ -472,6 +428,7 @@ const isBuildEmpty = computed(() => {
   return [0, 1, 2, 3, 4].every((i) => !echoes?.[i]?.echo && !echoes?.[i]?.echoId);
 });
 const echoPresetName = computed(() => echoPresetData.value?.name ?? null);
+const echoPresetStatus = useEchoPresetStatus(() => props.character);
 
 function setEchoRef(index: number, el: any) {
   if (el) echoRefs.value[index] = el;
@@ -592,35 +549,75 @@ function handleOpenWeightsEditor() {
     characterId: props.character,
   });
 }
-function handleOpenSaveEchoPreset() {
-  if (echoPresetId.value) echoesSavePreset.value?.setPresetId?.(echoPresetId.value);
+// Where the save dialog was opened from; reported with `echo-preset-saved`.
+const saveSource = ref("header");
+
+function handleOpenSaveEchoPreset(source = "header") {
+  saveSource.value = source;
+  // v3 keeps the preset link after echoes change, so only warn about a
+  // duplicate when the echoes still match it exactly.
+  const matchesPreset = isLiveResultBarEnabled.value
+    ? echoPresetStatus.value.kind === "active"
+    : Boolean(echoPresetId.value);
+  if (matchesPreset) echoesSavePreset.value?.setPresetId?.(echoPresetId.value);
   echoesSavePreset.value?.triggerOpenModal?.();
 }
 
-async function handleOnSaveEchoPreset(data: { name: string | null; description?: string }) {
-  const id = randomString();
+/** Saves any echoes typed into a slot but not yet in the inventory, then returns the five slot ids. */
+async function saveSlotEchoIds() {
   for (let i = 0; i < 5; i += 1) {
     await echoRefs.value[i]?.saveEchoItem?.();
   }
-  const presetData = {
-    presetId: id,
-    name: data.name ?? "",
-    // Optional; only written when provided so legacy presets keep their shape.
-    ...(data.description ? { description: data.description } : {}),
+  return {
     echo1Id: currentCharacter.value?.echoes?.[0]?.echoId ?? null,
     echo2Id: currentCharacter.value?.echoes?.[1]?.echoId ?? null,
     echo3Id: currentCharacter.value?.echoes?.[2]?.echoId ?? null,
     echo4Id: currentCharacter.value?.echoes?.[3]?.echoId ?? null,
     echo5Id: currentCharacter.value?.echoes?.[4]?.echoId ?? null,
   };
+}
+
+async function handleOnSaveEchoPreset(data: { name: string | null; description?: string }) {
+  const from = echoPresetStatus.value.kind;
+  const id = randomString();
+  const presetData = {
+    presetId: id,
+    name: data.name ?? "",
+    // Optional; only written when provided so legacy presets keep their shape.
+    ...(data.description ? { description: data.description } : {}),
+    ...(await saveSlotEchoIds()),
+  };
   await inventoryStore.saveEchoPreset(presetData);
-  echoPresetId.value = id;
+  await characterStore.setCharacterData(props.character, { echoPresetId: id, echoPresetSource: null });
   await inventoryStore.setEquippedPresetData(props.character, id);
+  trackEvent("echo-preset-saved", { source: saveSource.value, from });
+}
+
+/** Overwrites the applied preset with the current echoes (v3 "Update preset"). */
+async function handleUpdateEchoPreset() {
+  const status = echoPresetStatus.value;
+  const preset = echoPresetData.value;
+  if (status.kind !== "edited" || !preset) return;
+  inventoryStore.saveEchoPreset({ ...preset, ...(await saveSlotEchoIds()) });
+  await inventoryStore.setEquippedPresetData(props.character, preset.presetId);
+  trackEvent("echo-preset-updated", { changedSlots: status.changedSlots });
+}
+
+/** Re-equips the applied preset's echoes (v3 "Revert to preset"). */
+function handleRevertEchoPreset() {
+  const preset = echoPresetData.value;
+  if (!preset) return;
+  inventoryStore.applyEchoPreset(props.character, preset);
+  trackEvent("echo-preset-applied", { kind: "custom", source: "revert" });
 }
 
 async function handleEchoRemoved() {
+  // v3 keeps the link while any echo is left, so the Presets button can
+  // offer Update/Revert. Classic shows only a name badge, which would go
+  // stale, so it drops the link on every change as before.
+  if (isLiveResultBarEnabled.value && !isBuildEmpty.value) return;
   await inventoryStore.deleteEquippedPreset(props.character);
-  echoPresetId.value = null;
+  await characterStore.setCharacterData(props.character, { echoPresetId: null, echoPresetSource: null });
 }
 
 async function handleChosenEchoInventory() {
@@ -658,21 +655,6 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
 <style scoped>
-/*
- * Presets split button: AppOverflowMenu's trigger is a ghost button with its
- * own radius, so restyle it here to read as the right half of the join.
- */
-.echoes-presets-split :deep(.app-overflow-menu__trigger) {
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-  padding-inline: 0.5rem;
-  background-color: var(--fallback-b2, oklch(var(--b2) / 1));
-  border-left: 1px solid var(--fallback-bc, oklch(var(--bc) / 0.15));
-}
-.echoes-presets-split :deep(.app-overflow-menu__trigger:hover) {
-  background-color: var(--fallback-b3, oklch(var(--b3) / 1));
-}
-
 /*
  * Bounded-width column for the Labs-flagged layout — see
  * docs/adr/0014-echo-editor-redesign.md decision #10 and

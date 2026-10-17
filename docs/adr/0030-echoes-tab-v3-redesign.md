@@ -3,6 +3,7 @@ status: accepted
 date: 2026-09-12
 tags: [calculator, components, composables, echoes]
 supersedes: [0014]
+superseded_by: [43]
 ---
 
 # 30. Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -121,6 +122,8 @@ is for building that, not the review itself.
    to expand into yet would have been dead weight. The tab-header overflow
    menu (Customize Weights / Presets Guide / Rating Guide) is a separate
    `AppOverflowMenu` usage and is untouched.
+   **Superseded 2026-10-17:** the Presets Guide is now "How presets work" in
+   the Presets button's menu (ADR [0043](0043-echo-presets-header-button.md)).
 
 5. **"Saved" means "promoted to a standalone inventory record," not
    field-level dirty state — this app has no staging-buffer concept to
