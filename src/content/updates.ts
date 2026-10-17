@@ -38,6 +38,17 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-10-16",
     dateLabel: "October 16, 2026",
     items: [
+      "The character picker modal got updated, the filters are better aligned",
+      "The character browser now puts your favorites at the top",
+      "Fixes the \"swap to classic UI\" that wasn't working and makes the settings UI consistent with the theme chooser",
+      "Fixes Frosty Resolve typo.",
+      "Reworked the presets UI some more to clear up some confusion",
+    ],
+  },
+  {
+    date: "2026-10-16",
+    dateLabel: "October 16, 2026",
+    items: [
       "Import with Wavescan is out of Labs: the Wavescan section is now always in Settings, no flag needed",
     ],
   },
