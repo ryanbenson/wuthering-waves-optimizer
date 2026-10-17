@@ -212,9 +212,11 @@ done. Every capture path releases the same way:
 - **Component unmount**: `useEchoScanner.ts` registers an `onBeforeUnmount`
   that calls `abort()` whenever the composable's owning component
   (`EchoScannerCapture.vue`) disappears while a session was still
-  `starting`/`running`/`trimming`/`stopping`. That's the safety net for
-  "the modal closed out from under an active session," not just the
-  explicit Stop/Cancel buttons. Unlike Stop, it doesn't let the capture
+  `starting`/`running`/`trimming`/`stopping` (`abortIfActive`). The same
+  check runs when the scanner window closes, since `EchoScannerModal.vue`
+  keeps the component mounted (see "Reviewing results"). That's the safety net
+  for "the window closed on an active session," not just the explicit
+  Stop/Cancel buttons. Unlike Stop, it doesn't let the capture
   queue drain first (see "Capture queue").
 - **The `<dialog>` itself**: `EchoScannerModal.vue`/`CalculatorEchoImporter.vue`
   wire `@close` on the `<dialog>` element itself, not just `@click` on the
@@ -225,8 +227,10 @@ done. Every capture path releases the same way:
   stuck `true` (dialog visually gone, `EchoScannerCapture.vue` still
   mounted underneath, its unmount cleanup never firing) — exactly the
   wrong failure mode for a feature whose whole pitch is "nothing keeps
-  running once you're done." `triggerCloseModal` is idempotent (closing an
-  already-closed dialog, or resetting empty state, are no-ops), so it's
+  running once you're done." The capture now stays mounted while the window
+  is closed, so `triggerCloseModal` stops a running capture itself
+  (`stopCapture`). It's idempotent (closing an already-closed dialog,
+  stopping an idle capture, or resetting empty state are no-ops), so it's
   safe that both the click path and the native close event can end up
   calling it.
 
@@ -892,8 +896,23 @@ Every candidate now carries:
 - `panelPreviewUrl`: a ~480px-wide JPEG of `PANEL_BOX` from the same
   frame (`grabRegionPreviewJpeg`), always kept, not only in debug mode.
   At ~30-50KB each, a 200-echo scan holds under ~10MB in memory. It's
-  never persisted and goes away with the candidate list when the modal
-  closes.
+  never persisted.
+
+**Closing the window keeps the review.** `EchoScannerModal.vue` mounts
+`EchoScannerCapture.vue` on first open and keeps it, so closing the window
+(✕, backdrop, Escape, or Cancel on the duplicate review) keeps the results,
+Reviewed marks, saved edits and filter, and reopening continues where it
+was. A capture that's still going is stopped on close, keeping what it read.
+Closing with unsaved results asks first (`useConfirm().ask`): Discard drops
+the review, Keep and close keeps it, and Cancel (or clicking away from the
+question) stays in the scan. Escape is
+intercepted on the dialog's `cancel` event so it asks too (browsers only let a
+page cancel Escape after the player has clicked in it; otherwise Escape closes
+and keeps the review). While there are
+unsaved results, the page asks before a reload or closing the tab
+(`beforeunload`). A
+save or "Scan again" (`discard()`) clears it. Everything stays in the
+tab's memory only.
 
 `src/scanner/review.ts` holds the pure rules (unit-tested in
 `tests/scanner/review.test.ts`):

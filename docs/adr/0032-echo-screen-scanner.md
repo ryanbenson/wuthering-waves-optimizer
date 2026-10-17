@@ -435,6 +435,11 @@ against real footage at last, three product changes landed together:
   session, on either path — specifically so hesitant users don't have to
   infer that from the code or take it on faith from a buried sentence.
 
+  **Updated 2026-10-17:** the review (results and their snapshots) now
+  survives closing the window, held in the tab's memory until a save,
+  "Scan again" or closing the tab, so a misclick doesn't lose a long
+  review. Nothing is stored beyond the tab, and the callout says so.
+
 ## Related (updated)
 
 - `src/components/EchoScannerModal.vue`,

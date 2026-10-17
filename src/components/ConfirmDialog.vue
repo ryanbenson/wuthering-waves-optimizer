@@ -20,6 +20,13 @@
           </li>
         </ul>
         <div class="modal-action">
+          <button
+            v-if="confirmRequest.discardLabel"
+            type="button"
+            class="btn btn-error btn-outline me-auto"
+            @click="settle('discard')">
+            {{ confirmRequest.discardLabel }}
+          </button>
           <button type="button" class="btn" @click="handleCancel">
             {{ confirmRequest.cancelLabel }}
           </button>
