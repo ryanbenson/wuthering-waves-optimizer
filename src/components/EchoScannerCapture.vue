@@ -1,27 +1,10 @@
 <template>
   <div class="echo-scanner">
     <template v-if="(status === 'idle' || status === 'error') && showGuide">
-      <EchoScannerGuide @close="closeGuide" />
+      <EchoScannerGuide />
     </template>
 
     <template v-else-if="status === 'idle' || status === 'error'">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="text-xl font-bold">Scan echoes from the game</h2>
-        <button type="button" class="btn btn-ghost btn-sm" @click="showGuide = true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="h-4 w-4 stroke-current">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path>
-          </svg>
-          How to scan
-        </button>
-      </div>
       <p class="mb-2">
         Share your WuWa window (Backpack → Echoes) and click through your
         echoes one at a time, or upload a video you already recorded doing
@@ -394,20 +377,18 @@
       </div>
     </template>
 
-    <dialog ref="captureDialog" class="modal" @close="openCaptureCandidate = null">
-      <div v-if="openCaptureCandidate" class="modal-box max-w-xl p-3">
-        <p class="text-sm font-semibold mb-2">
-          In-game capture #{{ openCaptureCandidate.captureIndex }}
-        </p>
-        <img
-          :src="openCaptureCandidate.panelPreviewUrl"
-          class="w-full h-auto max-h-[80vh] object-contain rounded"
-          :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+    <AppModal
+      ref="captureModal"
+      :title="openCaptureCandidate ? `In-game capture #${openCaptureCandidate.captureIndex}` : ''"
+      max-width-class="max-w-xl"
+      :sheet="false"
+      @close="openCaptureCandidate = null">
+      <img
+        v-if="openCaptureCandidate"
+        :src="openCaptureCandidate.panelPreviewUrl"
+        class="w-full h-auto max-h-[80vh] object-contain rounded"
+        :alt="`In-game capture #${openCaptureCandidate.captureIndex}`" />
+    </AppModal>
   </div>
 </template>
 
@@ -429,6 +410,7 @@ import EchoScannerTimings from "./EchoScannerTimings.vue";
 import EchoScannerGuide from "./EchoScannerGuide.vue";
 import EchoScannerResultCard from "./EchoScannerResultCard.vue";
 import EchoScannerSavedCard from "./EchoScannerSavedCard.vue";
+import AppModal from "./AppModal.vue";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
@@ -663,6 +645,14 @@ function closeGuide() {
   writeFlag(GUIDE_SEEN_KEY, true);
 }
 
+function openGuide() {
+  showGuide.value = true;
+}
+
+/** The guide shows on the idle/error screen; the modal's header carries its title and buttons. */
+const isShowingGuide = computed(() => (status.value === "idle" || status.value === "error") && showGuide.value);
+const canOpenGuide = computed(() => (status.value === "idle" || status.value === "error") && !showGuide.value);
+
 const captureCueEnabled = scanner.captureCueEnabled;
 captureCueEnabled.value = readFlag(CAPTURE_CUE_KEY);
 watch(captureCueEnabled, (enabled) => writeFlag(CAPTURE_CUE_KEY, enabled));
@@ -781,13 +771,12 @@ const emptyFilterMessage = computed(() => {
   }
 });
 
-const captureDialog = ref<HTMLDialogElement | null>(null);
+const captureModal = ref<InstanceType<typeof AppModal> | null>(null);
 const openCaptureCandidate = ref<ScanCandidate | null>(null);
 
 async function openCapture(candidate: ScanCandidate) {
   openCaptureCandidate.value = candidate;
-  await nextTick();
-  captureDialog.value?.showModal();
+  await captureModal.value?.triggerOpenModal();
 }
 
 // --- Save ----------------------------------------------------------------
@@ -808,4 +797,6 @@ function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);
   emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value);
 }
+
+defineExpose({ openGuide, closeGuide, canOpenGuide, isShowingGuide });
 </script>

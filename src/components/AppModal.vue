@@ -5,14 +5,14 @@
     enemy browsers sit deep inside cards with their own overflow rules).
   -->
   <Teleport to="body">
-  <dialog ref="dialogEl" class="modal app-chooser-modal" @close="handleDialogClose">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
+  <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
+    <form v-if="closeOnBackdrop" method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
     <div
-      v-if="isOpen"
-      class="modal-box app-chooser-modal__box flex flex-col p-0 gap-0"
-      :class="maxWidthClass">
+      v-if="isOpen || !lazy"
+      class="modal-box app-modal__box flex flex-col p-0 gap-0"
+      :class="[maxWidthClass, { 'app-modal__box--sheet': sheet }]">
       <div class="flex items-center gap-2 px-4 pt-4 pb-3 shrink-0">
         <button
           v-if="showBack"
@@ -50,7 +50,7 @@
         <slot name="toolbar" />
       </div>
 
-      <div class="app-chooser-modal__body flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+      <div class="app-modal__body flex-1 min-h-0 overflow-y-auto px-4 pb-4">
         <slot />
       </div>
 
@@ -67,6 +67,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from "vue";
 
+// The root is a <Teleport>, so attributes (data-test-*, ids) are passed to the <dialog> by hand.
+defineOptions({ inheritAttrs: false });
+
 const props = withDefaults(
   defineProps<{
     title?: string;
@@ -79,12 +82,21 @@ const props = withDefaults(
     closeTestAttr?: string | null;
     showBack?: boolean;
     maxWidthClass?: string;
+    /** Render the body only while open (the choosers). false keeps it mounted while closed. */
+    lazy?: boolean;
+    /** false: a click outside the box does nothing (Esc and the ✕ still close). */
+    closeOnBackdrop?: boolean;
+    /** Full-screen sheet on phones. Off for small forms. */
+    sheet?: boolean;
   }>(),
   {
     title: "",
     closeTestAttr: null,
     showBack: false,
     maxWidthClass: "max-w-5xl",
+    lazy: true,
+    closeOnBackdrop: true,
+    sheet: true,
   },
 );
 
@@ -135,7 +147,7 @@ defineExpose({ triggerOpenModal, triggerCloseModal });
  * modal-box.
  */
 @media (max-width: 639px) {
-  .app-chooser-modal__box {
+  .app-modal__box--sheet {
     max-width: 100%;
     width: 100%;
     height: 100%;
@@ -148,7 +160,7 @@ defineExpose({ triggerOpenModal, triggerCloseModal });
  * Wide content inside a chooser (a long substat row, a filter pill strip)
  * scrolls within its own container rather than pushing the dialog sideways.
  */
-.app-chooser-modal__body {
+.app-modal__body {
   overflow-x: hidden;
   overscroll-behavior: contain;
 }

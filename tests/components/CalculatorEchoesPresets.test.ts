@@ -51,6 +51,7 @@ function renderWithHost(options?: Record<string, unknown>) {
   );
 }
 
+// The modal is teleported to <body>, so queries go through baseElement, not container.
 function activeTab(container: Element) {
   const checked = container.querySelector("[data-test-echo-presets-tab]:checked");
   return checked?.getAttribute("data-test-echo-presets-tab");
@@ -70,55 +71,55 @@ describe("CalculatorEchoesPresets", () => {
   });
 
   it("v3 opens on theorycrafter builds when there are no saved presets", async () => {
-    const { getByText, container } = renderWithHost();
+    const { getByText, baseElement } = renderWithHost();
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("community");
-    expect(container.querySelector("[data-test-echo-presets-community-intro]")).not.toBeNull();
+    expect(activeTab(baseElement)).toBe("community");
+    expect(baseElement.querySelector("[data-test-echo-presets-community-intro]")).not.toBeNull();
   });
 
   it("v3 opens on my presets when the player has saved presets", async () => {
     useInventoryStore().echoPresets = [SAVED_PRESET] as any;
-    const { getByText, container } = renderWithHost();
+    const { getByText, baseElement } = renderWithHost();
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("mine");
+    expect(activeTab(baseElement)).toBe("mine");
   });
 
   it("v3 falls back to my presets when the character has no theorycrafter builds", async () => {
     communityPresets.list = [];
-    const { getByText, container } = renderWithHost();
+    const { getByText, baseElement } = renderWithHost();
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("mine");
-    expect(container.querySelector("[data-test-echo-presets-mine-empty]")).not.toBeNull();
-    expect(container.querySelector("[data-test-echo-presets-browse-community]")).toBeNull();
+    expect(activeTab(baseElement)).toBe("mine");
+    expect(baseElement.querySelector("[data-test-echo-presets-mine-empty]")).not.toBeNull();
+    expect(baseElement.querySelector("[data-test-echo-presets-browse-community]")).toBeNull();
   });
 
   it("opens the requested tab and links an empty my-presets tab to theorycrafter builds", async () => {
-    const { getByText, container } = renderWithHost({ tab: "mine" });
+    const { getByText, baseElement } = renderWithHost({ tab: "mine" });
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("mine");
-    const browse = container.querySelector("[data-test-echo-presets-browse-community]") as HTMLElement;
+    expect(activeTab(baseElement)).toBe("mine");
+    const browse = baseElement.querySelector("[data-test-echo-presets-browse-community]") as HTMLElement;
     expect(browse.textContent).toContain("Browse 1 theorycrafter build");
 
     await fireEvent.click(browse);
-    expect(activeTab(container)).toBe("community");
+    expect(activeTab(baseElement)).toBe("community");
   });
 
   it("classic keeps its labels and always opens on my presets", async () => {
     useSettingsStore().addToConfig({ useClassicUi: true });
-    const { getByText, container } = renderWithHost();
+    const { getByText, baseElement } = renderWithHost();
     await flushPromises();
     await fireEvent.click(getByText("open"));
 
-    expect(activeTab(container)).toBe("mine");
-    expect(container.querySelector('[aria-label="Other Presets"]')).not.toBeNull();
+    expect(activeTab(baseElement)).toBe("mine");
+    expect(baseElement.querySelector('[aria-label="Other Presets"]')).not.toBeNull();
     getByText("No echo presets available");
   });
 });

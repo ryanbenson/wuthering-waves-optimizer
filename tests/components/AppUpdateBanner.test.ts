@@ -66,7 +66,7 @@ describe("AppUpdateBanner", () => {
   it("'See what's new' opens the v3 features modal instead of navigating away", async () => {
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]");
+    const dialog = document.body.querySelector("[data-test-whats-new-v3-modal]");
     expect(dialog?.hasAttribute("open")).toBe(true);
     expect(getByText("What's new in the v3 UI")).toBeTruthy();
   });
@@ -74,7 +74,7 @@ describe("AppUpdateBanner", () => {
   it("the modal renders a feature card with an image for each v3 highlight", async () => {
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    const dialog = document.body.querySelector("[data-test-whats-new-v3-modal]")!;
     expect(getByText("Character control panel")).toBeTruthy();
     expect(getByText("Inventory")).toBeTruthy();
     // 9 feature cards, 11 images across them (echoes and custom/team buffs
@@ -86,7 +86,7 @@ describe("AppUpdateBanner", () => {
   it("swaps a broken feature image for a labeled placeholder", async () => {
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    const dialog = document.body.querySelector("[data-test-whats-new-v3-modal]")!;
     const figure = dialog.querySelector(".v3-feature-figure")!;
     const img = figure.querySelector("img")!;
     await fireEvent.error(img);
@@ -97,12 +97,12 @@ describe("AppUpdateBanner", () => {
   it("clicking a feature image opens it full size in a lightbox", async () => {
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const featureImageBtn = container.querySelector<HTMLButtonElement>(".v3-feature-figure__item")!;
+    const featureImageBtn = document.body.querySelector<HTMLButtonElement>(".v3-feature-figure__item")!;
     const expectedAlt = featureImageBtn.querySelector("img")!.getAttribute("alt");
 
     await fireEvent.click(featureImageBtn);
 
-    const lightbox = container.querySelector("[data-test-image-lightbox]")!;
+    const lightbox = document.body.querySelector("[data-test-image-lightbox]")!;
     expect(lightbox.hasAttribute("open")).toBe(true);
     const lightboxImg = lightbox.querySelector<HTMLImageElement>("img")!;
     expect(lightboxImg.getAttribute("alt")).toBe(expectedAlt);
@@ -118,7 +118,7 @@ describe("AppUpdateBanner", () => {
     const settingsStore = useSettingsStore() as any;
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    const dialog = document.body.querySelector("[data-test-whats-new-v3-modal]")!;
     expect(dialog.querySelector("[data-test-whats-new-use-v3]")).toBeNull();
     await fireEvent.click(dialog.querySelector("[data-test-whats-new-use-classic]")!);
     expect(settingsStore.config?.useClassicUi).toBe(true);
@@ -130,7 +130,7 @@ describe("AppUpdateBanner", () => {
     settingsStore.addToConfig({ useClassicUi: true });
     const { getByText, container } = renderBanner();
     await fireEvent.click(getByText("See what's new"));
-    const dialog = container.querySelector("[data-test-whats-new-v3-modal]")!;
+    const dialog = document.body.querySelector("[data-test-whats-new-v3-modal]")!;
     await fireEvent.click(dialog.querySelector("[data-test-whats-new-use-v3]")!);
     expect(settingsStore.config?.useClassicUi).toBe(false);
   });

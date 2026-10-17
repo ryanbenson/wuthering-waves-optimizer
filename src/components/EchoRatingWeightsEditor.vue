@@ -1,50 +1,39 @@
 <template>
-  <dialog :id="modalId" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-2xl">
-      <form method="dialog" @click="handleClose">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
-        <div class="flex items-center justify-between gap-2 mb-2">
-          <h1 class="text-xl">
-            {{ mode === "character" ? `Substat Priorities — ${characterId}` : "Echo Rating Weights" }}
-          </h1>
-          <button class="btn btn-sm btn-ghost" @click="handleReset">
-            Reset to Default
-          </button>
+  <AppModal
+    ref="modalRef"
+    :title="mode === 'character' ? `Substat Priorities — ${characterId}` : 'Echo Rating Weights'"
+    max-width-class="max-w-2xl"
+    :lazy="false">
+    <template #header-actions>
+      <button class="btn btn-sm btn-ghost" @click="handleReset">
+        Reset to Default
+      </button>
+    </template>
+    <p class="text-sm opacity-70 mb-6">
+      Weight each substat from 0 (ignored) to 4 (most important) in 0.5
+      steps to control how much it counts toward
+      {{
+        mode === "character"
+          ? `${characterId}'s Substat Score`
+          : "the Echo Rating shown everywhere"
+      }}. A stat left at 1 is neutral.
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+      <div v-for="stat in subStatsList" :key="stat">
+        <div class="flex justify-between items-baseline gap-2 text-xs mb-1">
+          <span class="font-medium opacity-80">{{ getReadableSubStatLabel(stat) }}</span>
+          <span class="tabular-nums opacity-70">{{ currentWeights[stat] ?? 1 }}</span>
         </div>
-        <p class="text-sm opacity-70 mb-6">
-          Weight each substat from 0 (ignored) to 4 (most important) in 0.5
-          steps to control how much it counts toward
-          {{
-            mode === "character"
-              ? `${characterId}'s Substat Score`
-              : "the Echo Rating shown everywhere"
-          }}. A stat left at 1 is neutral.
-        </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-          <div v-for="stat in subStatsList" :key="stat">
-            <div class="flex justify-between items-baseline gap-2 text-xs mb-1">
-              <span class="font-medium opacity-80">{{ getReadableSubStatLabel(stat) }}</span>
-              <span class="tabular-nums opacity-70">{{ currentWeights[stat] ?? 1 }}</span>
-            </div>
-            <Range
-              :id="`echo-rating-weight-${stat}`"
-              :values="WEIGHT_VALUES"
-              :default-value="currentWeights[stat] ?? 1"
-              size="xs"
-              show-ticks
-              @update-value="handleWeightChange(stat, $event)" />
-          </div>
-        </div>
+        <Range
+          :id="`echo-rating-weight-${stat}`"
+          :values="WEIGHT_VALUES"
+          :default-value="currentWeights[stat] ?? 1"
+          size="xs"
+          show-ticks
+          @update-value="handleWeightChange(stat, $event)" />
       </div>
     </div>
-  </dialog>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -54,15 +43,15 @@ import { clampSubstatWeight } from "../echoes/rating";
 import { useSettingsStore } from "../stores/settings";
 import { useCharacterStore } from "../stores/character";
 import Range from "./input/Range.vue";
+import AppModal from "./AppModal.vue";
 
 const WEIGHT_VALUES = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
-const MODAL_ID = "modal-echo-rating-weights-editor";
-const modalId = MODAL_ID;
 const subStatsList = subStats;
 
 const settingsStore = useSettingsStore();
 const characterStore = useCharacterStore();
 
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const mode = ref<"global" | "character">("global");
 const characterId = ref<string | null>(null);
 
@@ -98,13 +87,10 @@ function triggerOpenModal(
 ) {
   mode.value = options.mode;
   characterId.value = options.characterId ?? null;
-  (document.getElementById(MODAL_ID) as HTMLDialogElement | null)?.showModal();
+  modalRef.value?.triggerOpenModal();
 }
 function triggerCloseModal() {
-  (document.getElementById(MODAL_ID) as HTMLDialogElement | null)?.close();
-}
-function handleClose() {
-  triggerCloseModal();
+  modalRef.value?.triggerCloseModal();
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });

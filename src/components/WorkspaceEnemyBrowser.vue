@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Choose enemy"
     close-test-attr="data-test-enemy-browser-close"
@@ -105,7 +105,7 @@
         </div>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -119,7 +119,7 @@ import {
   type ResistStats,
 } from "../enemies/index";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 const props = withDefaults(
   defineProps<{ characterElement?: string; currentEnemy?: string | null }>(),
@@ -128,7 +128,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{ "enemy-browser:chosen-enemy": [key: string] }>();
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const filterName = ref("");
 const filterType = ref<EnemyBrowserUiType | null>(null);
 

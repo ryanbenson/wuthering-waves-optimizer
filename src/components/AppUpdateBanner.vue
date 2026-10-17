@@ -39,111 +39,100 @@
     </div>
   </div>
 
-  <dialog ref="whatsNewDialogEl" class="modal" data-test-whats-new-v3-modal>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-4xl">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
-          ✕
-        </button>
-      </form>
-      <h3 class="text-lg font-bold">What's new in the v3 UI</h3>
-      <p class="text-sm opacity-70 mt-1">
-        The v3 UI is now the default: a redesign of the app focused on quick insights and
-        actions. Here are the highlights:
-      </p>
+  <AppModal
+    ref="whatsNewRef"
+    title="What's new in the v3 UI"
+    max-width-class="max-w-4xl"
+    :lazy="false"
+    :close-on-backdrop="false"
+    data-test-whats-new-v3-modal>
+    <p class="text-sm opacity-70 mt-1">
+      The v3 UI is now the default: a redesign of the app focused on quick insights and
+      actions. Here are the highlights:
+    </p>
 
-      <div class="grid grid-cols-1 gap-4 mt-4">
-        <div
-          v-for="feature in v3Features"
-          :key="feature.title"
-          class="card bg-base-200 border border-base-300">
-          <figure class="v3-feature-figure">
-            <template v-for="image in feature.images" :key="image.src">
-              <button
-                v-if="!failedImages.has(image.src)"
-                type="button"
-                class="v3-feature-figure__item"
-                :aria-label="`View full size: ${image.alt}`"
-                @click="openLightbox(image)">
-                <img :src="image.src" :alt="image.alt" loading="lazy" @error="handleImageError(image.src)" />
-                <span class="v3-feature-figure__zoom-hint" aria-hidden="true">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    class="size-6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.75"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <circle cx="10" cy="10" r="7" />
-                    <path d="M10 7v6M7 10h6" />
-                    <path d="M21 21l-5.5-5.5" />
-                  </svg>
-                </span>
-              </button>
-              <div v-else class="v3-feature-figure__placeholder">{{ image.alt }}</div>
-            </template>
-          </figure>
-          <div class="card-body p-4">
-            <h4 class="card-title text-sm">{{ feature.title }}</h4>
-            <p class="text-xs opacity-70">{{ feature.description }}</p>
-          </div>
+    <div class="grid grid-cols-1 gap-4 mt-4">
+      <div
+        v-for="feature in v3Features"
+        :key="feature.title"
+        class="card bg-base-200 border border-base-300">
+        <figure class="v3-feature-figure">
+          <template v-for="image in feature.images" :key="image.src">
+            <button
+              v-if="!failedImages.has(image.src)"
+              type="button"
+              class="v3-feature-figure__item"
+              :aria-label="`View full size: ${image.alt}`"
+              @click="openLightbox(image)">
+              <img :src="image.src" :alt="image.alt" loading="lazy" @error="handleImageError(image.src)" />
+              <span class="v3-feature-figure__zoom-hint" aria-hidden="true">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class="size-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <circle cx="10" cy="10" r="7" />
+                  <path d="M10 7v6M7 10h6" />
+                  <path d="M21 21l-5.5-5.5" />
+                </svg>
+              </span>
+            </button>
+            <div v-else class="v3-feature-figure__placeholder">{{ image.alt }}</div>
+          </template>
+        </figure>
+        <div class="card-body p-4">
+          <h4 class="card-title text-sm">{{ feature.title }}</h4>
+          <p class="text-xs opacity-70">{{ feature.description }}</p>
         </div>
       </div>
-
-      <p class="text-xs opacity-50 mt-4">
-        Prefer the previous layout? The classic UI is still available for now: switch to it here,
-        from the theme menu, or in Settings. Your builds and echoes are shared between both. If
-        you find issues or have suggestions, drop them in the Discord.
-      </p>
-      <div class="modal-action flex-wrap">
-        <RouterLink to="/updates" class="btn btn-ghost btn-sm" @click="closeWhatsNew">
-          Full changelog
-        </RouterLink>
-        <button
-          v-if="!isClassicUi"
-          type="button"
-          class="btn btn-ghost btn-sm"
-          data-test-whats-new-use-classic
-          @click="setClassicUiAndClose(true)">
-          Switch to the classic UI
-        </button>
-        <button
-          v-else
-          type="button"
-          class="btn btn-primary btn-sm"
-          data-test-whats-new-use-v3
-          @click="setClassicUiAndClose(false)">
-          Switch to the v3 UI
-        </button>
-      </div>
     </div>
-  </dialog>
 
-  <dialog ref="lightboxDialogEl" class="modal" data-test-image-lightbox @close="lightboxImage = null">
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-5xl">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Close">
-          ✕
-        </button>
-      </form>
-      <img
-        v-if="lightboxImage"
-        :src="lightboxImage.src"
-        :alt="lightboxImage.alt"
-        class="w-full h-auto rounded-lg" />
-      <p v-if="lightboxImage" class="text-sm text-center opacity-70 mt-2">
-        {{ lightboxImage.alt }}
-      </p>
+    <p class="text-xs opacity-50 mt-4">
+      Prefer the previous layout? The classic UI is still available for now: switch to it here,
+      from the theme menu, or in Settings. Your builds and echoes are shared between both. If
+      you find issues or have suggestions, drop them in the Discord.
+    </p>
+    <div class="modal-action flex-wrap">
+      <RouterLink to="/updates" class="btn btn-ghost btn-sm" @click="closeWhatsNew">
+        Full changelog
+      </RouterLink>
+      <button
+        v-if="!isClassicUi"
+        type="button"
+        class="btn btn-ghost btn-sm"
+        data-test-whats-new-use-classic
+        @click="setClassicUiAndClose(true)">
+        Switch to the classic UI
+      </button>
+      <button
+        v-else
+        type="button"
+        class="btn btn-primary btn-sm"
+        data-test-whats-new-use-v3
+        @click="setClassicUiAndClose(false)">
+        Switch to the v3 UI
+      </button>
     </div>
-  </dialog>
+  </AppModal>
+
+  <AppModal
+    ref="lightboxRef"
+    :title="lightboxImage?.alt"
+    max-width-class="max-w-5xl"
+    :lazy="false"
+    :close-on-backdrop="false"
+    data-test-image-lightbox
+    @close="lightboxImage = null">
+    <img
+      v-if="lightboxImage"
+      :src="lightboxImage.src"
+      :alt="lightboxImage.alt"
+      class="w-full h-auto rounded-lg" />
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -151,6 +140,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import { useSettingsStore } from "../stores/settings";
 import { useClassicUi } from "../composables/useClassicUi";
 import { currentAnnouncement, type Announcement } from "../content/updates";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "AppUpdateBanner" });
 
@@ -272,12 +262,12 @@ function handleImageError(src: string) {
 
 type FeatureImage = { src: string; alt: string };
 
-const lightboxDialogEl = ref<HTMLDialogElement | null>(null);
+const lightboxRef = ref<InstanceType<typeof AppModal> | null>(null);
 const lightboxImage = ref<FeatureImage | null>(null);
 
 function openLightbox(image: FeatureImage) {
   lightboxImage.value = image;
-  lightboxDialogEl.value?.showModal();
+  lightboxRef.value?.triggerOpenModal();
 }
 
 function dismiss() {
@@ -285,14 +275,14 @@ function dismiss() {
   settingsStore.addToConfig({ dismissedUpdateBannerDate: announcement.date });
 }
 
-const whatsNewDialogEl = ref<HTMLDialogElement | null>(null);
+const whatsNewRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function openWhatsNew() {
-  whatsNewDialogEl.value?.showModal();
+  whatsNewRef.value?.triggerOpenModal();
 }
 
 function closeWhatsNew() {
-  whatsNewDialogEl.value?.close();
+  whatsNewRef.value?.triggerCloseModal();
 }
 
 function setClassicUiAndClose(enabled: boolean) {

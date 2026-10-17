@@ -1,34 +1,27 @@
 <template>
-  <dialog :id="modalId" class="modal" @close="handleClose">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
-      <form method="dialog" @click="handleClose">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
-        <CalculatorEchoParser
-          v-if="!isReviewingDuplicates"
-          :inventory-only="inventoryOnly"
-          @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
-        <EchoDuplicateReviewList
-          v-else
-          :items="duplicateReviewItems"
-          :inventory-only="inventoryOnly"
-          :has-selected-echoes="hasSelectedEchoes"
-          @cancel="handleCancelDuplicateReview"
-          @confirm="handleConfirmDuplicateReview"
-          @apply-to-character-only="handleApplyToCharacterOnly"></EchoDuplicateReviewList>
-      </div>
-    </div>
-  </dialog>
+  <AppModal
+    ref="modalRef"
+    title="Import echoes from a screenshot"
+    max-width-class="max-w-5xl"
+    @close="resetDuplicateReview">
+    <CalculatorEchoParser
+      v-if="!isReviewingDuplicates"
+      :inventory-only="inventoryOnly"
+      @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
+    <EchoDuplicateReviewList
+      v-else
+      :items="duplicateReviewItems"
+      :inventory-only="inventoryOnly"
+      :has-selected-echoes="hasSelectedEchoes"
+      @cancel="handleCancelDuplicateReview"
+      @confirm="handleConfirmDuplicateReview"
+      @apply-to-character-only="handleApplyToCharacterOnly"></EchoDuplicateReviewList>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { ref } from "vue";
+import AppModal from "./AppModal.vue";
 import CalculatorEchoParser from "./CalculatorEchoParser.vue";
 import EchoDuplicateReviewList from "./EchoDuplicateReviewList.vue";
 import { useEchoDuplicateReview } from "../composables/useEchoDuplicateReview";
@@ -41,38 +34,20 @@ const props = withDefaults(
   { character: "", inventoryOnly: false },
 );
 
-const modalId = computed(() =>
-  props.inventoryOnly
-    ? "modal-echoes-importer-inventory"
-    : "modal-echoes-importer",
-);
-
-const isOpen = ref(false);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
-  isOpen.value = true;
-  await nextTick();
-  const modalEl = document.getElementById(modalId.value);
-  (modalEl as HTMLDialogElement | null)?.showModal();
+  await modalRef.value?.triggerOpenModal();
 }
 
 /**
- * Also wired to the <dialog>'s own native `close` event (see the
- * template) — Escape closes a native <dialog> shown via showModal()
- * directly, bypassing the backdrop/✕ click handlers entirely, which would
- * otherwise leave `isOpen` stuck true. Safe to call more than once (a
- * click handler's own modalEl.close() triggers this same native event
- * too) — everything here is a no-op the second time.
+ * Programmatic close (finished or cancelled review). A user close (✕,
+ * backdrop, Escape) is handled by AppModal itself, which then emits
+ * `close` → resetDuplicateReview (see the template).
  */
 function triggerCloseModal() {
-  const modalEl = document.getElementById(modalId.value);
-  (modalEl as HTMLDialogElement | null)?.close();
-  isOpen.value = false;
+  modalRef.value?.triggerCloseModal();
   resetDuplicateReview();
-}
-
-function handleClose() {
-  triggerCloseModal();
 }
 
 const {

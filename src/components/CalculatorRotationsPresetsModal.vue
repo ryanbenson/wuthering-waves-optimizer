@@ -1,13 +1,16 @@
 <template>
-  <dialog
-    ref="dialogEl"
-    class="modal"
+  <AppModal
+    ref="modalRef"
+    title="Rotation presets"
+    max-width-class="max-w-lg"
+    :lazy="false"
+    :sheet="false"
+    close-test-attr="data-test-rotations-presets-cancel"
     data-test-rotations-presets-modal
     @close="isOpen = false">
-    <div class="modal-box max-w-lg" data-test-rotations-presets>
-      <h3 class="text-lg font-bold">Rotation presets</h3>
+    <div data-test-rotations-presets>
 
-      <div class="flex flex-col gap-2 mt-2 max-h-[60vh] overflow-y-auto">
+      <div class="flex flex-col gap-2">
         <div v-if="!presets.length" class="text-sm opacity-70">
           No presets are available for {{ characterName }} yet.
         </div>
@@ -28,26 +31,14 @@
           </div>
         </div>
       </div>
-
-      <div class="modal-action">
-        <button
-          type="button"
-          class="btn btn-sm"
-          data-test-rotations-presets-cancel
-          @click="isOpen = false">
-          Close
-        </button>
-      </div>
     </div>
-    <form method="dialog" class="modal-backdrop" @submit.prevent="isOpen = false">
-      <button type="submit">close</button>
-    </form>
-  </dialog>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import type { CharacterRotationPreset } from "../characters/rotationExportImport";
+import AppModal from "./AppModal.vue";
 
 defineProps<{
   presets: CharacterRotationPreset[];
@@ -59,15 +50,13 @@ const emit = defineEmits<{
 }>();
 
 const isOpen = defineModel<boolean>("open", { default: false });
-const dialogEl = ref<HTMLDialogElement | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 watch(isOpen, (open) => {
-  const el = dialogEl.value;
-  if (!el) return;
   if (open) {
-    if (!el.open) el.showModal();
-  } else if (el.open) {
-    el.close();
+    modalRef.value?.triggerOpenModal();
+  } else {
+    modalRef.value?.triggerCloseModal();
   }
 });
 </script>

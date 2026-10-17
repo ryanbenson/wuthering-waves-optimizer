@@ -1,7 +1,7 @@
 // Covers the v3 chooser modals behind the "UI Overhaul 3.0" liveResultBar
 // labs flag: WorkspaceCharacterBrowser, WorkspaceWeaponBrowser,
 // WorkspaceEchoesBrowser and WorkspaceEnemyBrowser, all built on the shared
-// AppChooserModal shell.
+// AppModal shell.
 //
 // The character browser deliberately keeps the same `data-test-character-*`
 // selectors the legacy browser used, so `cy.selectWorkspaceCharacter` and the

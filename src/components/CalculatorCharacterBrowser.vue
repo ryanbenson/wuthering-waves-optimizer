@@ -1,179 +1,170 @@
 <template>
-  <dialog ref="modalElementRef" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
-      <form method="dialog" @click="handleClose">
+  <AppModal
+    ref="modalElementRef"
+    title="Choose character"
+    max-width-class="max-w-5xl"
+    close-test-attr="data-test-character-browser-close"
+    @close="reset">
+    <AppFilterPanel
+      panel-key="calculator-characters"
+      class="mb-6"
+      :active-count="activeFilterCount"
+      :clear-disabled="!activeFilterCount"
+      @clear="resetFilters">
+    <div class="characters__filters flex flex-wrap items-center gap-2">
+      <div class="characters__filters__sets flex">
         <button
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          data-test-character-browser-close>
-          ✕
+          v-for="(elementIcon, element) in characterElementsSetImageMap"
+          :key="element"
+          @click="toggleElementFilter(element)"
+          class="rounded mr-1"
+          :class="{
+            'btn-active': isElementFilterActive(element),
+            element,
+          }">
+          <img
+            :src="elementIcon"
+            class="size-8"
+            :class="getElementClass(element)" />
         </button>
-      </form>
-      <div class="py-4">
-        <AppFilterPanel
-          panel-key="calculator-characters"
-          class="mb-6"
-          :active-count="activeFilterCount"
-          :clear-disabled="!activeFilterCount"
-          @clear="resetFilters">
-        <div class="characters__filters flex flex-wrap items-center gap-2">
-          <div class="characters__filters__sets flex">
-            <button
-              v-for="(elementIcon, element) in characterElementsSetImageMap"
-              :key="element"
-              @click="toggleElementFilter(element)"
-              class="rounded mr-1"
-              :class="{
-                'btn-active': isElementFilterActive(element),
-                element,
-              }">
-              <img
-                :src="elementIcon"
-                class="size-8"
-                :class="getElementClass(element)" />
-            </button>
-          </div>
-          <div class="characters__filters__rarity ml-2">
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(5)"
-              :class="{
-                'btn-active': isRarityFilterActive(5),
-              }">
-              5✦
-            </button>
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(4)"
-              :class="{
-                'btn-active': isRarityFilterActive(4),
-              }">
-              4✦
-            </button>
-          </div>
-          <div class="characters__filter__weapon ml-2 flex">
-            <button
-              v-for="(weaponIcon, weapon) in weaponTypesImageMap"
-              :key="weapon"
-              @click="toggleWeaponFilter(weapon)"
-              class="rounded mr-1"
-              :class="{
-                'btn-active': isWeaponFilterActive(weapon),
-                weapon,
-              }">
-              <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
-            </button>
-          </div>
-          <div
-            class="characters__filters__build-status ml-2 flex items-center gap-2">
-            <div class="min-w-[10rem]">
-              <AppRichSelect
-                v-model="filterBuildStatus"
-                :options="buildStatusFilterOptions"
-                allow-empty
-                empty-label="All statuses"
-                aria-label="Filter by character status"
-                data-test-build-status-filter>
-                <template #selected="{ option }">
-                  <span class="flex items-center gap-1.5 min-w-0">
-                    <span
-                      v-if="option?.dotClass"
-                      class="size-2 rounded-full shrink-0"
-                      :class="String(option.dotClass)"></span>
-                    <span class="truncate">{{
-                      option?.label ?? "All statuses"
-                    }}</span>
-                  </span>
-                </template>
-                <template #option="{ option }">
-                  <span
-                    v-if="option.dotClass"
-                    class="size-2 rounded-full shrink-0"
-                    :class="String(option.dotClass)"></span>
-                  <span>{{ option.label }}</span>
-                </template>
-              </AppRichSelect>
-            </div>
-            <label
-              class="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap"
-              v-tooltip="hideWontBuildTooltip">
-              <input
-                v-model="hideWontBuildCharacters"
-                type="checkbox"
-                class="toggle toggle-primary toggle-sm"
-                aria-label="Hide characters marked Won't build"
-                data-test-browser-hide-wont-build />
-              Hide “Won't build”
-            </label>
-          </div>
-          <div class="characters__filters__favorites ml-2">
-            <button
-              @click="toggleFavoriteFilter"
-              class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
-              :class="{ 'btn-active': filterFavorites }"
-              data-test-favorites-filter>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="size-4 shrink-0"
-                aria-hidden="true">
-                <path
-                  v-if="filterFavorites"
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                  fill="currentColor" />
-                <path
-                  v-else
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-              <span>Favorites</span>
-            </button>
-          </div>
+      </div>
+      <div class="characters__filters__rarity ml-2">
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(5)"
+          :class="{
+            'btn-active': isRarityFilterActive(5),
+          }">
+          5✦
+        </button>
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(4)"
+          :class="{
+            'btn-active': isRarityFilterActive(4),
+          }">
+          4✦
+        </button>
+      </div>
+      <div class="characters__filter__weapon ml-2 flex">
+        <button
+          v-for="(weaponIcon, weapon) in weaponTypesImageMap"
+          :key="weapon"
+          @click="toggleWeaponFilter(weapon)"
+          class="rounded mr-1"
+          :class="{
+            'btn-active': isWeaponFilterActive(weapon),
+            weapon,
+          }">
+          <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
+        </button>
+      </div>
+      <div
+        class="characters__filters__build-status ml-2 flex items-center gap-2">
+        <div class="min-w-[10rem]">
+          <AppRichSelect
+            v-model="filterBuildStatus"
+            :options="buildStatusFilterOptions"
+            allow-empty
+            empty-label="All statuses"
+            aria-label="Filter by character status"
+            data-test-build-status-filter>
+            <template #selected="{ option }">
+              <span class="flex items-center gap-1.5 min-w-0">
+                <span
+                  v-if="option?.dotClass"
+                  class="size-2 rounded-full shrink-0"
+                  :class="String(option.dotClass)"></span>
+                <span class="truncate">{{
+                  option?.label ?? "All statuses"
+                }}</span>
+              </span>
+            </template>
+            <template #option="{ option }">
+              <span
+                v-if="option.dotClass"
+                class="size-2 rounded-full shrink-0"
+                :class="String(option.dotClass)"></span>
+              <span>{{ option.label }}</span>
+            </template>
+          </AppRichSelect>
         </div>
-        </AppFilterPanel>
-
-        <div class="characters__list">
-          <template v-if="!charactersList.length">
-            <div class="characters__list--empty py-12 text-center w-full">
-              No characters found
-            </div>
-          </template>
-          <template v-else>
-            <div
-              class="characters__list__items grid grid-cols-1 md:grid-cols-4 gap-4">
-              <CalculatorCharacterCard
-                v-for="character in charactersList"
-                :key="character.key"
-                :name-key="character.key"
-                :name="character.name"
-                :rarity="character.rarity"
-                :element="character.element"
-                :weapon="character.weapon"
-                :build-status="getCharacterBuildStatus(character.key, characters)"
-                :is-active="false">
-                <button
-                  @click="chooseCharacter(character)"
-                  :data-test-character-browse-select="character.key"
-                  class="btn btn-sm btn-primary">
-                  Use character
-                </button>
-              </CalculatorCharacterCard>
-            </div>
-          </template>
-        </div>
+        <label
+          class="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap"
+          v-tooltip="hideWontBuildTooltip">
+          <input
+            v-model="hideWontBuildCharacters"
+            type="checkbox"
+            class="toggle toggle-primary toggle-sm"
+            aria-label="Hide characters marked Won't build"
+            data-test-browser-hide-wont-build />
+          Hide “Won't build”
+        </label>
+      </div>
+      <div class="characters__filters__favorites ml-2">
+        <button
+          @click="toggleFavoriteFilter"
+          class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
+          :class="{ 'btn-active': filterFavorites }"
+          data-test-favorites-filter>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-4 shrink-0"
+            aria-hidden="true">
+            <path
+              v-if="filterFavorites"
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="currentColor" />
+            <path
+              v-else
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <span>Favorites</span>
+        </button>
       </div>
     </div>
-  </dialog>
+    </AppFilterPanel>
+
+    <div class="characters__list">
+      <template v-if="!charactersList.length">
+        <div class="characters__list--empty py-12 text-center w-full">
+          No characters found
+        </div>
+      </template>
+      <template v-else>
+        <div
+          class="characters__list__items grid grid-cols-1 md:grid-cols-4 gap-4">
+          <CalculatorCharacterCard
+            v-for="character in charactersList"
+            :key="character.key"
+            :name-key="character.key"
+            :name="character.name"
+            :rarity="character.rarity"
+            :element="character.element"
+            :weapon="character.weapon"
+            :build-status="getCharacterBuildStatus(character.key, characters)"
+            :is-active="false">
+            <button
+              @click="chooseCharacter(character)"
+              :data-test-character-browse-select="character.key"
+              class="btn btn-sm btn-primary">
+              Use character
+            </button>
+          </CalculatorCharacterCard>
+        </div>
+      </template>
+    </div>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import {
   allCharactersList,
@@ -194,6 +185,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
+import AppModal from "./AppModal.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 
@@ -299,18 +291,14 @@ const charactersList = computed((): ListedCharacter[] => {
   return characterList;
 });
 
-const modalElementRef = ref<HTMLDialogElement | null>(null);
-const isOpen = ref(false);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 async function triggerOpenModal() {
-  isOpen.value = true;
-  await nextTick();
-  modalElementRef.value?.showModal();
+  await modalElementRef.value?.triggerOpenModal();
 }
 
 function triggerCloseModal() {
-  modalElementRef.value?.close();
-  isOpen.value = false;
+  modalElementRef.value?.triggerCloseModal();
 }
 
 function reset() {
@@ -323,8 +311,6 @@ function reset() {
 
 function handleClose() {
   reset();
-  // Must close the <dialog> itself — only clearing isOpen removes the
-  // modal-box (and its method="dialog" form) while leaving the backdrop open.
   triggerCloseModal();
 }
 
@@ -382,9 +368,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 html[data-theme-style="light"] {
-  .modal-backdrop {
-    opacity: 0.5;
-  }
   .characters__filter__weapon img {
     filter: invert(1);
   }

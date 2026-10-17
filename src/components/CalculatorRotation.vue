@@ -1,138 +1,124 @@
 <template>
-  <dialog :id="modalIdPicker" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-5xl">
-      <form method="dialog" @click="closeEchoChooser">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
-        </button>
-      </form>
-      <div class="py-4">
+  <AppModal
+    ref="pickerRef"
+    title="Choose echo"
+    max-width-class="max-w-5xl"
+    :lazy="false"
+    @close="resetFilters">
+    <div
+      class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+      :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+      <span class="mr-2">Filter</span>
+      <button
+        v-for="echoSet in echoSetsList"
+        :key="echoSet"
+        @click="toggleEchoSetFilter(echoSet)"
+        class="rounded p-[.3rem]"
+        :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+        <img
+          :src="getEchoSetImage(echoSet)"
+          class="size-7 m-width-7"
+          :class="echoSet" />
+      </button>
+      <button @click="resetFilters" class="btn btn-sm btn-ghost">
+        Clear
+      </button>
+    </div>
+    <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
+      <template v-if="!allEchoesListFiltered.length">
+        <div class="echoes__list--empty py-12 text-center w-full col-span-2">
+          No echoes found
+        </div>
+      </template>
+      <template v-else>
         <div
-          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-          <span class="mr-2">Filter</span>
-          <button
-            v-for="echoSet in echoSetsList"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-            <img
-              :src="getEchoSetImage(echoSet)"
-              class="size-7 m-width-7"
-              :class="echoSet" />
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
-        </div>
-      </div>
-      <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
-        <template v-if="!allEchoesListFiltered.length">
-          <div class="echoes__list--empty py-12 text-center w-full col-span-2">
-            No echoes found
-          </div>
-        </template>
-        <template v-else>
-          <div
-            v-for="echoesToChoose in allEchoesListFiltered"
-            :key="echoesToChoose.key"
-            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-            @click="chooseMainEcho(echoesToChoose.key)">
-            <div class="card-body items-center">
+          v-for="echoesToChoose in allEchoesListFiltered"
+          :key="echoesToChoose.key"
+          class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+          @click="chooseMainEcho(echoesToChoose.key)">
+          <div class="card-body items-center">
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
+              :style="{
+                backgroundImage: `url(${echoesToChoose.image})`,
+              }"
+              @click.stop></div>
+            <h2 class="card-title text-center text-lg">
+              {{ echoesToChoose.name }}
+            </h2>
+            <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
+            <div
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
               <div
-                class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-                :style="{
-                  backgroundImage: `url(${echoesToChoose.image})`,
-                }"
-                @click.stop></div>
-              <h2 class="card-title text-center text-lg">
-                {{ echoesToChoose.name }}
-              </h2>
-              <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
-              <div
-                class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
-                <div
-                  v-for="echoSetItem in echoesToChoose.sets"
-                  :key="echoSetItem"
-                  class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
-                  <img
-                    :src="getEchoSetIcon(echoSetItem)"
-                    :class="echoSetItem" />
-                </div>
+                v-for="echoSetItem in echoesToChoose.sets"
+                :key="echoSetItem"
+                class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
+                <img
+                  :src="getEchoSetIcon(echoSetItem)"
+                  :class="echoSetItem" />
               </div>
-              <button
-                @click="chooseMainEcho(echoesToChoose.key)"
-                class="btn btn-sm btn-primary">
-                Use echo
-              </button>
             </div>
-          </div>
-        </template>
-      </div>
-    </div>
-  </dialog>
-  <dialog v-if="isLiveResultBarEnabled" :id="mainEchoSettingsModalId" class="modal">
-    <form method="dialog" class="modal-backdrop" @click="closeMainEchoSettings">
-      <button>close</button>
-    </form>
-    <div class="modal-box max-w-md" @click.stop>
-      <form method="dialog">
-        <button
-          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          @click="closeMainEchoSettings">
-          ✕
-        </button>
-      </form>
-      <h3 class="font-bold text-lg mb-4">Main Echo Settings</h3>
-      <div class="flex flex-col gap-4">
-        <div class="rotation__current-echo flex flex-col gap-2 items-center">
-          <img
-            :src="
-              currentEchoData?.image ||
-              'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
-            "
-            class="size-12 rounded-full border border-solid neutral-content bg-cover"
-            :class="{
-              'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
-              'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
-              'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
-              'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-              'echo__item__image--empty': !currentEchoData?.image,
-            }"
-            :alt="currentEchoData?.name" />
-          <span class="rotation__echo-echo--name">
-            {{ currentEchoData?.name }}
-          </span>
-          <div class="flex gap-2">
-            <button class="btn btn-sm btn-outline btn-primary" @click="openEchoChooser">
-              Choose echo
-            </button>
             <button
-              class="btn btn-sm btn-outline btn-secondary"
-              @click="chooseCurrentMainEcho"
-              :disabled="!hasCurrentMainEcho">
-              Use current echo
+              @click="chooseMainEcho(echoesToChoose.key)"
+              class="btn btn-sm btn-primary">
+              Use echo
             </button>
           </div>
-          <span class="main-echo--rank">
-            <span class="font-bold">Rank</span> <span class="text-primary">{{ mainEchoRank }}</span>
-          </span>
-          <Range
-            id="Rank-modal"
-            :values="[1, 2, 3, 4, 5]"
-            :default-value="5"
-            size="xs"
-            class="w-full"
-            @update-value="(val: string | number) => onMainEchoRankChange(val)"
-            data-test-rotation-main-echo-rank-modal="CritRate" />
         </div>
+      </template>
+    </div>
+  </AppModal>
+  <AppModal
+    v-if="isLiveResultBarEnabled"
+    ref="mainEchoSettingsRef"
+    title="Main Echo Settings"
+    max-width-class="max-w-md"
+    :lazy="false"
+    :sheet="false">
+    <div class="flex flex-col gap-4">
+      <div class="rotation__current-echo flex flex-col gap-2 items-center">
+        <img
+          :src="
+            currentEchoData?.image ||
+            'https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png'
+          "
+          class="size-12 rounded-full border border-solid neutral-content bg-cover"
+          :class="{
+            'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+            'echo__item__image--empty': !currentEchoData?.image,
+          }"
+          :alt="currentEchoData?.name" />
+        <span class="rotation__echo-echo--name">
+          {{ currentEchoData?.name }}
+        </span>
+        <div class="flex gap-2">
+          <button class="btn btn-sm btn-outline btn-primary" @click="openEchoChooser">
+            Choose echo
+          </button>
+          <button
+            class="btn btn-sm btn-outline btn-secondary"
+            @click="chooseCurrentMainEcho"
+            :disabled="!hasCurrentMainEcho">
+            Use current echo
+          </button>
+        </div>
+        <span class="main-echo--rank">
+          <span class="font-bold">Rank</span> <span class="text-primary">{{ mainEchoRank }}</span>
+        </span>
+        <Range
+          id="Rank-modal"
+          :values="[1, 2, 3, 4, 5]"
+          :default-value="5"
+          size="xs"
+          class="w-full"
+          @update-value="(val: string | number) => onMainEchoRankChange(val)"
+          data-test-rotation-main-echo-rank-modal="CritRate" />
       </div>
     </div>
-  </dialog>
+  </AppModal>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     :data-test-rotation-item="id"
@@ -503,6 +489,7 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
+import AppModal from "./AppModal.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
@@ -627,8 +614,8 @@ const durationValue = ref<string | number | null>(null);
 const echoValue = ref<string | null>(null);
 const mainEchoRank = ref<string | number>(5);
 const actionsList = ref<RotationActionRow[]>([]);
-const modalIdPicker = `echo-chooser-modal-${randomString()}`;
-const mainEchoSettingsModalId = `main-echo-settings-modal-${randomString()}`;
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
+const mainEchoSettingsRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 
 const actionRefs = new Map<string, { toggleEdit: () => void }>();
@@ -1075,23 +1062,15 @@ function chooseMainEcho(echoKey: string) {
 
 function closeEchoChooser() {
   echoSetFilter.value = null;
-  const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
-  modalEl?.close();
+  pickerRef.value?.triggerCloseModal();
 }
 
 function openEchoChooser() {
-  const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
-  modalEl?.showModal();
-}
-
-function closeMainEchoSettings() {
-  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
-  modalEl?.close();
+  pickerRef.value?.triggerOpenModal();
 }
 
 function openMainEchoSettings() {
-  const modalEl = document.getElementById(mainEchoSettingsModalId) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  mainEchoSettingsRef.value?.triggerOpenModal();
 }
 
 function getEchoSetImage(echoSet: string) {
