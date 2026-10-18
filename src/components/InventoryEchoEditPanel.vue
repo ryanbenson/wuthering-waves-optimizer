@@ -3,7 +3,8 @@
     context="inventory"
     :echo-id="echoId"
     :is-open="isOpen"
-    @close="handleClose"></CalculatorEchoEditPanel>
+    @close="handleClose"
+    @open-weights-editor="emit('open-weights-editor')"></CalculatorEchoEditPanel>
 </template>
 
 <script setup lang="ts">
@@ -16,6 +17,8 @@ import { ref } from "vue";
 import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
 
 defineOptions({ name: "InventoryEchoEditPanel" });
+
+const emit = defineEmits<{ "open-weights-editor": [] }>();
 
 const echoId = ref<string | null>(null);
 const isOpen = ref(false);

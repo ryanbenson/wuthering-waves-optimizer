@@ -244,3 +244,79 @@ describe("CalculatorEchoTile inline expand-in-place editing", () => {
     expect(String(characterStore.characters[CHARACTER].echoes[0].rank)).toBe("4");
   });
 });
+
+describe("CalculatorEchoTile Odds button", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute("open", "");
+    };
+    HTMLDialogElement.prototype.close = function () {
+      this.removeAttribute("open");
+    };
+  });
+
+  const FULL_SUBSTATS = {
+    echoSubStatsType1: "CritRate",
+    echoSubStatsValue1: 7.5,
+    echoSubStatsType2: "CritDMG",
+    echoSubStatsValue2: 15,
+    echoSubStatsType3: "ATK",
+    echoSubStatsValue3: 8.6,
+    echoSubStatsType4: "HP",
+    echoSubStatsValue4: 7.9,
+    echoSubStatsType5: "DEF_FLAT",
+    echoSubStatsValue5: 50,
+  };
+
+  function renderWithOdds(isExpanded = false) {
+    return render(CalculatorEchoTile, {
+      props: { character: CHARACTER, index: 0, isExpanded },
+      global: {
+        stubs: { AppRichSelect: true, RouterLink: true },
+        directives: { tooltip: () => {} },
+      },
+    });
+  }
+
+  const oddsButton = (container: Element) =>
+    container.querySelector('[data-test-echo-item-odds="0"]') as HTMLElement | null;
+
+  it("has no Odds button on an empty slot", () => {
+    const { container } = renderWithOdds();
+    expect(oddsButton(container)).toBeNull();
+  });
+
+  it("a partly tuned echo's Odds opens its Tune odds in a dialog, without expanding the tile", async () => {
+    setInlineEcho(0);
+    const { container, emitted } = renderWithOdds();
+    await fireEvent.click(oddsButton(container)!);
+    expect(document.body.querySelector("[data-test-echo-tune-odds]")).not.toBeNull();
+    expect(document.body.querySelector("[data-test-echo-tune-odds-chance]")).not.toBeNull();
+    expect(document.body.querySelector("[data-test-echo-better-odds]")).toBeNull();
+    expect(emitted("toggle-edit")).toBeFalsy();
+  });
+
+  it("a fully tuned echo's Odds shows the chance a fresh echo beats it, not a goal", async () => {
+    setInlineEcho(0, FULL_SUBSTATS);
+    const { container } = renderWithOdds();
+    await fireEvent.click(oddsButton(container)!);
+    expect(document.body.querySelector("[data-test-echo-better-odds-chance]")).not.toBeNull();
+    expect(document.body.querySelector("[data-test-echo-tune-odds-chance]")).toBeNull();
+  });
+
+  it("Edit weights in the dialog asks the Echoes tab to open the weights editor", async () => {
+    setInlineEcho(0, FULL_SUBSTATS);
+    const { container, emitted } = renderWithOdds();
+    await fireEvent.click(oddsButton(container)!);
+    await fireEvent.click(document.body.querySelector("[data-test-echo-tune-odds-edit-weights]") as HTMLElement);
+    expect(emitted("open-weights-editor")).toBeTruthy();
+  });
+
+  it("the expanded editor has the Odds button and no Stats / Tune odds tabs", () => {
+    setInlineEcho(0);
+    const { container } = renderWithOdds(true);
+    expect(oddsButton(container)).not.toBeNull();
+    expect(container.querySelector("[data-test-echo-edit-tab]")).toBeNull();
+  });
+});

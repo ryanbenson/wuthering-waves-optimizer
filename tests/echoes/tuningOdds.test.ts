@@ -7,14 +7,19 @@ import {
 import {
   ECHO_SUBSTAT_SLOTS,
   FULL_TUNE_COST,
+  betterEchoOdds,
+  freshEchoPointsDistribution,
   TOTAL_SUBSTAT_TYPES,
   chanceWithinEchoes,
   echoesForConfidence,
+  finalLineGoal,
   formatTuningChance,
   getLowerRollValue,
   getTuningGoalKey,
   getTuningVerdict,
+  getWeightsGoal,
   goalLevers,
+  goalLineBreakdown,
   goalOdds,
   rollChanceAtLeast,
   wantedDrawOdds,
@@ -309,5 +314,144 @@ describe("misc", () => {
     expect(formatTuningChance(0.05)).toBe("5.0%");
     expect(formatTuningChance(0.00001)).toBe("<0.01%");
     expect(formatTuningChance(1)).toBe("100%");
+  });
+});
+
+describe("goalLineBreakdown", () => {
+  const tuned: TunedSubstats = [["CritRate", 8.1], ["ATK", 8.6]];
+
+  it("an open line needs its substat in the remaining draws, then a high enough roll", () => {
+    const [line] = goalLineBreakdown(tuned, [{ stat: "CritDMG", min: 15 }]);
+    expect(line).toMatchObject({ stat: "CritDMG", status: "open", draws: 3, pool: 11 });
+    expect(line.drawChance).toBeCloseTo(3 / 11, 10);
+    expect(line.rollChance).toBeCloseTo(rollChanceAtLeast("CritDMG", 15), 10);
+    // Crit tiers from 15.0% up: 23.33 + 8 + 8 + 8 + 3 + 3 of ~100.
+    expect(line.rollChance).toBeCloseTo(0.5333, 3);
+  });
+
+  it("revealed lines are met or missed, with no draws left to need", () => {
+    const lines = goalLineBreakdown(tuned, [
+      { stat: "CritRate", min: 6.9 },
+      { stat: "ATK", min: 9.4 },
+    ]);
+    expect(lines.map((l) => l.status)).toEqual(["met", "missed"]);
+    expect(lines.every((l) => l.draws === 0)).toBe(true);
+  });
+
+  it("a full echo has nothing left to draw", () => {
+    const full: TunedSubstats = [["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430], ["DEF_FLAT", 50]];
+    const [line] = goalLineBreakdown(full, [{ stat: "CritRate", min: null }]);
+    expect(line).toMatchObject({ status: "open", draws: 0, drawChance: 0 });
+  });
+});
+
+describe("finalLineGoal", () => {
+  it("is the revealed rolls as minimums plus every goal line", () => {
+    const line = finalLineGoal([["CritRate", 8.1], ["ATK", 8.6]], [{ stat: "CritDMG", min: 15 }]);
+    expect(line).toEqual([
+      { stat: "CritRate", min: 8.1 },
+      { stat: "ATK", min: 8.6 },
+      { stat: "CritDMG", min: 15 },
+    ]);
+  });
+
+  it("keeps the higher bar when a goal line repeats a revealed substat", () => {
+    expect(finalLineGoal([["CritRate", 8.1]], [{ stat: "CritRate", min: 6.9 }]))
+      .toEqual([{ stat: "CritRate", min: 8.1 }]);
+    expect(finalLineGoal([["CritRate", 6.3]], [{ stat: "CritRate", min: 8.1 }]))
+      .toEqual([{ stat: "CritRate", min: 8.1 }]);
+  });
+
+  it("treats a revealed substat with no value typed in as any roll", () => {
+    expect(finalLineGoal([["CritRate", 0]], [])).toEqual([{ stat: "CritRate", min: null }]);
+  });
+
+  it("a fresh echo landing three named substats at any roll = C(10,2) / C(13,5)", () => {
+    const line = finalLineGoal([["CritRate", 0], ["ATK", 0]], [{ stat: "CritDMG", min: null }]);
+    expect(goalOdds([], line).chance).toBeCloseTo(45 / 1287, 10);
+  });
+});
+
+describe("getWeightsGoal", () => {
+  it("takes the top-weighted substats at any roll, ties in subStats order", () => {
+    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
+    Object.assign(weights, { CritRate: 1, CritDMG: 1, ATK: 0.5, EnergyRegen: 0.3 });
+    expect(getWeightsGoal(weights)).toEqual([
+      { stat: "CritRate", min: null },
+      { stat: "CritDMG", min: null },
+      { stat: "ATK", min: null },
+    ]);
+  });
+
+  it("returns only what's weighted when fewer than `count` substats are", () => {
+    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
+    weights.CritDMG = 1;
+    expect(getWeightsGoal(weights)).toEqual([{ stat: "CritDMG", min: null }]);
+  });
+
+  it("is null for the neutral all-equal profile or no weights at all", () => {
+    expect(getWeightsGoal(Object.fromEntries(subStats.map((s) => [s, 1])))).toBeNull();
+    expect(getWeightsGoal(Object.fromEntries(subStats.map((s) => [s, 0])))).toBeNull();
+  });
+});
+
+describe("betterEchoOdds", () => {
+  const critOnly = Object.fromEntries(subStats.map((s) => [s, 0]));
+  critOnly.CritRate = 1;
+  // Crit tiers above 7.5% (tier 3): 8 + 8 + 8 + 3 + 3 of the ~100 total.
+  const critAboveTier3 = rollChanceAtLeast("CritRate", 8.1);
+
+  it("the fresh-echo points distribution sums to 1", () => {
+    const total = freshEchoPointsDistribution(critOnly).reduce((sum, [, p]) => sum + p, 0);
+    expect(total).toBeCloseTo(1, 10);
+  });
+
+  it("one weighted substat: beating a tier-3 roll needs it drawn (5/13) and rolled higher", () => {
+    const full: TunedSubstats = [["CritRate", 7.5], ["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430]];
+    const odds = betterEchoOdds(full, critOnly);
+    expect(odds.points).toBe(3);
+    expect(odds.better).toBeCloseTo((5 / 13) * critAboveTier3, 10);
+    expect(odds.atLeast).toBeCloseTo((5 / 13) * rollChanceAtLeast("CritRate", 7.5), 10);
+  });
+
+  it("an echo with nothing weighted is beaten by any fresh echo that draws a weighted substat", () => {
+    const full: TunedSubstats = [["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430], ["DEF_FLAT", 50]];
+    const odds = betterEchoOdds(full, critOnly);
+    expect(odds.points).toBe(0);
+    expect(odds.better).toBeCloseTo(5 / 13, 10);
+    expect(odds.atLeast).toBeCloseTo(1, 10);
+  });
+
+  it("nothing beats a perfect echo", () => {
+    const full: TunedSubstats = [["CritRate", 10.5], ["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430]];
+    expect(betterEchoOdds(full, critOnly).better).toBe(0);
+  });
+
+  it("agrees with a seeded simulation for a curated-style profile within 0.3 points", () => {
+    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
+    Object.assign(weights, { CritRate: 4, CritDMG: 4, BasicAttackDMGBonus: 3, ATK: 2, EnergyRegen: 2, ATK_FLAT: 1 });
+    const full: TunedSubstats = [["CritRate", 8.1], ["CritDMG", 15], ["ATK", 8.6], ["HP", 7.9], ["DEF_FLAT", 50]];
+    const exact = betterEchoOdds(full, weights);
+
+    const rand = mulberry32(4242);
+    const dists = Object.fromEntries(subStats.map((s) => [s, getSubStatRollDistribution(s)]));
+    let better = 0;
+    const trials = 200_000;
+    for (let t = 0; t < trials; t++) {
+      const pool = subStats.slice();
+      let points = 0;
+      for (let k = 0; k < ECHO_SUBSTAT_SLOTS; k++) {
+        const stat = pool.splice(Math.floor(rand() * pool.length), 1)[0];
+        let r = rand();
+        let tier = dists[stat].length;
+        for (const [i, d] of dists[stat].entries()) {
+          if (r < d.chance) { tier = i + 1; break; }
+          r -= d.chance;
+        }
+        points += tier * weights[stat];
+      }
+      if (points > exact.points + 1e-9) better += 1;
+    }
+    expect(Math.abs(exact.better - better / trials)).toBeLessThan(0.003);
   });
 });

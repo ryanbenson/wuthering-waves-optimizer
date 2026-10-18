@@ -5,15 +5,11 @@ import {
   type TuningGoal,
 } from "../echoes/tuningOdds";
 
-// Session-only tuning goal shared by the echo panel's Tune odds tab and the
+// Session-only tuning goal shared by the echo Odds dialog and the
 // inventory's "Finish these first" filter, so picking a goal in one carries
 // to the other. Deliberately not persisted (no store, no migration) until
 // usage shows it's worth keeping — see docs/adr/0044.
 const goal = ref<TuningGoal>(TUNING_GOAL_PRESETS["double-crit"].goal.map((l) => ({ ...l })));
-
-// The tab the echo edit panel should open on next — set by the inventory's
-// "Finish these first" view so tapping an echo lands on its odds.
-const requestedPanelTab = ref<"stats" | "odds" | null>(null);
 
 export function useTuningGoal() {
   function setGoal(next: TuningGoal) {
@@ -34,18 +30,10 @@ export function useTuningGoal() {
     return null;
   }
 
-  function takeRequestedPanelTab() {
-    const tab = requestedPanelTab.value;
-    requestedPanelTab.value = null;
-    return tab;
-  }
-
   return {
     goal,
     setGoal,
     applyPreset,
     getActivePresetKey,
-    requestedPanelTab,
-    takeRequestedPanelTab,
   };
 }

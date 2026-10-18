@@ -16,36 +16,18 @@
       <EchoEditHeader
         :target="target"
         :show-browse="context === 'build'"
+        show-odds
         @close="emit('close')"
-        @open-echoes-browser="emit('open-echoes-browser')" />
+        @open-echoes-browser="emit('open-echoes-browser')"
+        @open-odds="oddsDialogRef?.open()" />
 
-      <div class="px-4 pt-3 shrink-0">
-        <div class="join w-full" role="group" aria-label="Echo panel view">
-          <button
-            type="button"
-            class="btn btn-sm join-item flex-1"
-            :class="activeTab === 'stats' ? 'btn-active' : 'btn-ghost'"
-            :aria-pressed="activeTab === 'stats'"
-            data-test-echo-edit-tab="stats"
-            @click="activeTab = 'stats'">
-            Stats
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm join-item flex-1"
-            :class="activeTab === 'odds' ? 'btn-active' : 'btn-ghost'"
-            :aria-pressed="activeTab === 'odds'"
-            data-test-echo-edit-tab="odds"
-            @click="activeTab = 'odds'">
-            Tune odds
-          </button>
-        </div>
-      </div>
-
-      <EchoEditFields v-if="activeTab === 'stats'" :target="target" />
-      <EchoTuneOddsTab v-else :target="target" />
+      <EchoEditFields :target="target" />
     </div>
   </template>
+  <EchoOddsDialog
+    ref="oddsDialogRef"
+    :target="target"
+    @edit-weights="emit('open-weights-editor')" />
 </template>
 
 <script setup lang="ts">
@@ -53,8 +35,7 @@ import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import type { EchoEditTarget } from "../composables/useEchoEditFields";
 import EchoEditFields from "./EchoEditFields.vue";
 import EchoEditHeader from "./EchoEditHeader.vue";
-import EchoTuneOddsTab from "./EchoTuneOddsTab.vue";
-import { useTuningGoal } from "../composables/useTuningGoal";
+import EchoOddsDialog from "./EchoOddsDialog.vue";
 
 defineOptions({ name: "CalculatorEchoEditPanel" });
 
@@ -69,6 +50,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: [];
   "open-echoes-browser": [];
+  "open-weights-editor": [];
 }>();
 
 const target = computed<EchoEditTarget>(() =>
@@ -77,20 +59,8 @@ const target = computed<EchoEditTarget>(() =>
     : { context: "inventory", echoId: props.echoId },
 );
 
-// Stats (the editor) vs Tune odds. Opens on Stats unless a caller asked
-// for odds — the inventory's "Finish these first" view does.
-const { takeRequestedPanelTab } = useTuningGoal();
-const activeTab = ref<"stats" | "odds">("stats");
-watch(
-  () => [props.isOpen, props.echoId] as const,
-  ([open], previous) => {
-    if (!open) return;
-    const requested = takeRequestedPanelTab();
-    if (requested) activeTab.value = requested;
-    else if (!previous?.[0]) activeTab.value = "stats";
-  },
-  { immediate: true },
-);
+// The header's "Odds" button opens the echo's odds in a dialog.
+const oddsDialogRef = ref<InstanceType<typeof EchoOddsDialog> | null>(null);
 
 // Focus the panel on open so Escape (bound via @keydown.esc on this element)
 // actually has something to bubble from.

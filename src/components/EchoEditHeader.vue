@@ -46,6 +46,14 @@
           @click="emit('open-echoes-browser')">
           Browse
         </button>
+        <button
+          v-if="showOdds && echo"
+          type="button"
+          class="btn btn-xs btn-ghost"
+          data-test-echo-edit-odds
+          @click="emit('open-odds')">
+          Odds
+        </button>
       </div>
       <div v-if="echoSets.length" class="flex items-center gap-1.5 mt-1.5">
         <button
@@ -98,14 +106,17 @@ const props = withDefaults(
   defineProps<{
     target: EchoEditTarget;
     showBrowse?: boolean;
+    /** Show an "Odds" button; the host opens EchoOddsDialog on `open-odds`. */
+    showOdds?: boolean;
     closeLabel?: string;
   }>(),
-  { showBrowse: false, closeLabel: "Close" },
+  { showBrowse: false, showOdds: false, closeLabel: "Close" },
 );
 
 const emit = defineEmits<{
   close: [];
   "open-echoes-browser": [];
+  "open-odds": [];
 }>();
 
 const {

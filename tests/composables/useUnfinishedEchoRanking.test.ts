@@ -71,3 +71,27 @@ describe("useUnfinishedEchoRanking", () => {
     expect(rankUnfinished(echoes.value)[0].echoId).toBe("fodder");
   });
 });
+
+describe("useUnfinishedEchoRanking ties and the fresh-echo divider", () => {
+  it("puts Keep before Baseline on equal chances, and the divider on the first non-Keep", () => {
+    // An empty goal is met by every echo, so every chance ties at 1.
+    const list = ref([
+      makeEcho("fresh", []),
+      makeEcho("half", [["HP", 7.9]]),
+    ]);
+    const { rankUnfinished, getBaselineDividerEchoId, oddsByEchoId } = useUnfinishedEchoRanking(
+      list,
+      ref<TuningGoal>([]),
+    );
+    const ranked = rankUnfinished(list.value);
+    expect(ranked.map((e) => e.echoId)).toEqual(["half", "fresh"]);
+    expect(oddsByEchoId.value.get("half")!.tag).toBe("keep");
+    expect(getBaselineDividerEchoId(ranked)).toBe("fresh");
+  });
+
+  it("has no divider when every unfinished echo is a Keep", () => {
+    const list = ref([makeEcho("crit", [["CritRate", 8.1]])]);
+    const { rankUnfinished, getBaselineDividerEchoId } = useUnfinishedEchoRanking(list, ref(DOUBLE_CRIT));
+    expect(getBaselineDividerEchoId(rankUnfinished(list.value))).toBeNull();
+  });
+});

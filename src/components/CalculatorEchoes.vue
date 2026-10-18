@@ -181,7 +181,8 @@
             @main-echo-rank:updated="handleMainEchoRankUpdated"
             @open-echoes-browser="handleOpenEchoesBrowser"
             @on-echo-removed="handleEchoRemoved"
-            @toggle-edit="handleToggleEdit"></CalculatorEchoTile>
+            @toggle-edit="handleToggleEdit"
+            @open-weights-editor="handleOpenWeightsEditor"></CalculatorEchoTile>
         </div>
 
         <CalculatorEchoSetBonusPanel

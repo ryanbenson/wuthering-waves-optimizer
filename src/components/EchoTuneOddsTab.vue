@@ -1,5 +1,6 @@
 <template>
-  <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-5" data-test-echo-tune-odds>
+  <!-- Padding and scrolling come from the host (docked panel or dialog). -->
+  <div class="flex flex-col gap-5" data-test-echo-tune-odds>
     <section class="flex flex-col gap-2">
       <div class="flex justify-between items-baseline">
         <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Tuned so far</h3>
@@ -28,6 +29,52 @@
       </div>
     </section>
 
+    <section
+      v-if="betterOdds"
+      class="rounded-xl bg-base-200 p-4 flex flex-col gap-3"
+      data-test-echo-better-odds>
+      <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Odds of a better echo</h3>
+      <p class="text-sm">
+        This echo is fully tuned, so its substats are set. Its Substat Score for {{ weightsCharacterName }} is
+        <span class="font-semibold tabular-nums">
+          {{ betterOdds.score.grade }} {{ Math.round(betterOdds.score.percent) }}%</span>.
+        A fresh +0 echo tuned to +25 beats it:
+      </p>
+      <div class="flex items-end gap-3 flex-wrap">
+        <span class="text-4xl font-semibold leading-none tabular-nums" data-test-echo-better-odds-chance>
+          {{ formatTuningChance(betterOdds.better) }}
+        </span>
+        <div class="flex flex-col gap-0.5 pb-0.5">
+          <span class="text-sm font-semibold" :class="betterVerdictClass">{{ betterVerdictLabel }}</span>
+          <span class="text-xs opacity-70">{{ betterOneInLabel }}</span>
+        </div>
+      </div>
+      <div v-if="betterOdds.better > 0" class="grid grid-cols-2 gap-2 text-sm">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs opacity-70">Coin-flip odds by</span>
+          <span class="tabular-nums">{{ formatEchoCount(echoesForConfidence(betterOdds.better, 0.5)) }}</span>
+        </div>
+        <div class="flex flex-col gap-0.5">
+          <span class="text-xs opacity-70">90% sure by</span>
+          <span class="tabular-nums">{{ formatEchoCount(echoesForConfidence(betterOdds.better, 0.9)) }}</span>
+        </div>
+        <div class="col-span-2 flex justify-between gap-3">
+          <span class="opacity-70">Tuners per better echo, tuning each to +25</span>
+          <span class="tabular-nums">{{ Math.round(FULL_TUNE_COST / betterOdds.better).toLocaleString("en-US") }}</span>
+        </div>
+      </div>
+      <p class="text-xs opacity-70">
+        Substats only: the main stat and set come from the drop. Uses {{ weightsCharacterName }}'s substat weights.
+        <button
+          type="button"
+          class="link link-primary"
+          data-test-echo-tune-odds-edit-weights
+          @click="emit('edit-weights')">
+          Edit weights
+        </button>
+      </p>
+    </section>
+
     <section v-if="untunedSlots > 0" class="flex flex-col gap-2">
       <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Remaining tunes</h3>
       <div class="grid grid-cols-3 gap-2">
@@ -50,12 +97,23 @@
         </template>
         <template v-else>Stats you want are your goal's substats:</template>
         {{ wantedLabels || "none yet" }}.
+        <button
+          v-if="target.context === 'build'"
+          type="button"
+          class="link link-primary"
+          data-test-echo-tune-odds-edit-weights
+          @click="emit('edit-weights')">
+          Edit weights
+        </button>
       </p>
     </section>
 
-    <section class="rounded-xl bg-base-200 p-4 flex flex-col gap-3">
+    <section v-if="!isFinishedEcho" class="rounded-xl bg-base-200 p-4 flex flex-col gap-3">
       <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Your goal</h3>
-      <TuningGoalEditor :model-value="goal" @update:model-value="setGoal" />
+      <TuningGoalEditor
+        :model-value="goal"
+        :extra-presets="characterPresets"
+        @update:model-value="setGoal" />
 
       <template v-if="goal.length">
         <div class="flex items-end gap-3 flex-wrap">
@@ -73,11 +131,34 @@
           :value="Math.max(odds.chance * 100, 0.5)"
           max="100"
           :aria-label="`Chance this echo meets the goal: ${formatTuningChance(odds.chance)}`"></progress>
+
+        <div
+          v-for="line in breakdown"
+          :key="line.stat"
+          class="grid grid-cols-2 gap-2 text-sm"
+          :data-test-echo-tune-odds-line="line.stat">
+          <template v-if="line.status === 'open'">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs opacity-70">Needs {{ getReadableSubStatLabel(line.stat) }} in</span>
+              <span class="tabular-nums">
+                {{ line.draws }} / {{ line.pool }} draws · {{ formatTuningChance(line.drawChance) }}
+              </span>
+            </div>
+            <div v-if="line.min != null" class="flex flex-col gap-0.5">
+              <span class="text-xs opacity-70">Then rolls ≥ {{ formatSubstatRoll(line.stat, line.min) }}</span>
+              <span class="tabular-nums">{{ formatTuningChance(line.rollChance) }}</span>
+            </div>
+          </template>
+          <span v-else class="col-span-2" :class="line.status === 'met' ? 'text-success' : 'text-error'">
+            {{ getReadableSubStatLabel(line.stat) }}
+            {{ line.status === "met" ? "already rolled high enough" : "already rolled too low" }}
+          </span>
+        </div>
       </template>
     </section>
 
     <section
-      v-if="advice !== 'no-goal'"
+      v-if="!isFinishedEcho && advice !== 'no-goal'"
       class="alert text-sm items-start"
       :class="advice === 'keep' || advice === 'met' ? 'alert-info' : 'alert-warning'"
       :data-test-echo-tune-odds-advice="advice">
@@ -87,7 +168,7 @@
       </div>
     </section>
 
-    <section v-if="advice === 'keep' || advice === 'fresh-better'" class="flex flex-col gap-1.5 text-sm">
+    <section v-if="!isFinishedEcho && (advice === 'keep' || advice === 'fresh-better')" class="flex flex-col gap-1.5 text-sm">
       <div class="flex justify-between gap-3">
         <span class="opacity-70">Avg tuners from here, stopping early</span>
         <span class="tabular-nums">{{ Math.round(odds.expectedTuners) }}</span>
@@ -114,7 +195,9 @@ import { RouterLink } from "vue-router";
 import { getReadableSubStatLabel } from "../echoes/stats";
 import {
   ECHO_SUBSTAT_SLOTS,
+  FULL_TUNE_COST,
   TOTAL_SUBSTAT_TYPES,
+  echoesForConfidence,
   formatSubstatRoll,
   formatTuningChance,
   getTuningVerdict,
@@ -128,6 +211,7 @@ import TuningGoalEditor from "./TuningGoalEditor.vue";
 defineOptions({ name: "EchoTuneOddsTab" });
 
 const props = defineProps<{ target: EchoEditTarget }>();
+const emit = defineEmits<{ "edit-weights": [] }>();
 
 const {
   goal,
@@ -141,8 +225,42 @@ const {
   odds,
   freshOdds,
   advice,
-  timesFresh,
+  breakdown,
+  finalLine,
+  freshLineOdds,
+  timesFreshLine,
+  characterPresets,
+  weightsCharacterName,
+  isFinishedEcho,
+  betterOdds,
 } = useEchoTuneOdds(() => props.target);
+
+const betterVerdictLabel = computed(() => {
+  const p = betterOdds.value?.better ?? 0;
+  if (p <= 0) return "Can't be beaten";
+  return tuningVerdictLabels[getTuningVerdict(p)];
+});
+const betterVerdictClass = computed(() => {
+  const p = betterOdds.value?.better ?? 0;
+  if (p <= 0) return "text-success";
+  return {
+    likely: "text-warning",
+    "worth-a-shot": "text-warning",
+    "long-grind": "text-info",
+    "very-rare": "text-success",
+  }[getTuningVerdict(p)];
+});
+const betterOneInLabel = computed(() => {
+  const p = betterOdds.value?.better ?? 0;
+  if (p <= 0) return "no substat roll scores higher";
+  if (p >= 1) return "every fresh echo";
+  return `about 1 in ${Math.round(1 / p).toLocaleString("en-US")} fresh echoes`;
+});
+
+function formatEchoCount(count: number): string {
+  if (!Number.isFinite(count)) return "never";
+  return count === 1 ? "1 echo" : `${count.toLocaleString("en-US")} echoes`;
+}
 
 const wantedLabels = computed(() =>
   wantedStats.value.map((stat) => getReadableSubStatLabel(stat)).join(", "),
@@ -192,9 +310,19 @@ const adviceBody = computed(() => {
     case "impossible":
       return `A goal substat rolled too low or there aren't enough slots left. A fresh +0 echo gets there ${fresh} of the time.`;
     case "keep": {
-      const times = timesFresh.value;
-      const ratio = times && times >= 1.05 ? ` — about ${times.toFixed(1)}× a fresh echo` : "";
-      return `A fresh +0 echo gets there ${fresh} of the time; this one is at ${formatTuningChance(odds.value.chance)}${ratio}.`;
+      const line = finalLine.value
+        .map(({ stat, min }) =>
+          min == null
+            ? getReadableSubStatLabel(stat)
+            : `${getReadableSubStatLabel(stat)} ≥ ${formatSubstatRoll(stat, min)}`,
+        )
+        .join(", ");
+      const lineChance = freshLineOdds.value.chance;
+      const oneIn = lineChance > 0 ? `, or 1 in ${Math.round(1 / lineChance).toLocaleString("en-US")}` : "";
+      const times = timesFreshLine.value;
+      const closer =
+        times && times >= 1.05 ? ` This echo is about ${formatTimes(times)}× closer.` : "";
+      return `A fresh echo landing this same final line (${line}) is ${formatTuningChance(lineChance)}${oneIn}.${closer}`;
     }
     case "fresh-better":
       return `A fresh +0 echo gets there ${fresh} of the time, more than this one's ${formatTuningChance(odds.value.chance)}.`;
@@ -202,6 +330,10 @@ const adviceBody = computed(() => {
       return "";
   }
 });
+
+function formatTimes(times: number): string {
+  return times >= 10 ? Math.round(times).toLocaleString("en-US") : times.toFixed(1);
+}
 
 const plannerQuery = computed(() => encodeTuningGoalQuery(goal.value));
 </script>

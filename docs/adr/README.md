@@ -88,7 +88,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0039](./0039-resizable-live-result-panel.md) | Drag-to-resize the Full breakdown panel | accepted | | components, stores |
 | [0040](./0040-optimizer-buffs-from-calculator.md) | Optimizer echo buffs default to the calculator's settings, with a readiness run bar | accepted | | components, optimizer, stores |
 | [0043](./0043-echo-presets-header-button.md) | Echo presets: one header button that shows the preset status | accepted | | components, echoes, stores, analytics |
-| [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Tune odds tab, the planner and "Finish these first" | accepted | | echoes, components, composables |
+| [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Odds dialog, the planner and "Finish these first" | accepted | | echoes, components, composables |
 
 ## When to write a new ADR
 

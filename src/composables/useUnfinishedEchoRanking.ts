@@ -17,6 +17,8 @@ export interface UnfinishedEchoOdds {
 
 type RankableEcho = EchoSubStatsSource & { echoId: string };
 
+const TAG_ORDER: Record<UnfinishedEchoTag, number> = { keep: 0, baseline: 1, fodder: 2 };
+
 /** An echo with fewer than 5 revealed substats still has tunes left. */
 export function isEchoUnfinished(echo: EchoSubStatsSource): boolean {
   return getEchoSubStatEntries(echo).length < ECHO_SUBSTAT_SLOTS;
@@ -54,19 +56,37 @@ export function useUnfinishedEchoRanking(
     return out;
   });
 
-  /** Unfinished echoes only, best chance first (stable for ties). */
+  /**
+   * Unfinished echoes only, best chance first. Ties go Keep, then Baseline,
+   * then Fodder, so the fresh-echo divider has one clean place to sit;
+   * otherwise stable.
+   */
   function rankUnfinished<T extends RankableEcho>(list: T[]): T[] {
     const odds = oddsByEchoId.value;
     return list
       .filter((echo) => odds.has(echo.echoId))
       .map((echo, index) => ({ echo, index }))
-      .sort(
-        (a, b) =>
-          odds.get(b.echo.echoId)!.chance - odds.get(a.echo.echoId)!.chance ||
-          a.index - b.index,
-      )
+      .sort((a, b) => {
+        const oddsA = odds.get(a.echo.echoId)!;
+        const oddsB = odds.get(b.echo.echoId)!;
+        return (
+          oddsB.chance - oddsA.chance ||
+          TAG_ORDER[oddsA.tag] - TAG_ORDER[oddsB.tag] ||
+          a.index - b.index
+        );
+      })
       .map(({ echo }) => echo);
   }
 
-  return { freshChance, oddsByEchoId, rankUnfinished };
+  /**
+   * Where the "Fresh echo" divider goes: the first ranked echo that isn't
+   * a Keep, or null when every echo beats a fresh one.
+   */
+  function getBaselineDividerEchoId(ranked: RankableEcho[]): string | null {
+    const odds = oddsByEchoId.value;
+    const first = ranked.find((echo) => odds.get(echo.echoId)?.tag !== "keep");
+    return first?.echoId ?? null;
+  }
+
+  return { freshChance, oddsByEchoId, rankUnfinished, getBaselineDividerEchoId };
 }

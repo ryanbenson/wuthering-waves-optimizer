@@ -1,8 +1,13 @@
 import { computed } from "vue";
 import { useCharacterStore } from "../stores/character";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import { getReadableSubStatLabel, subStats } from "../echoes/stats";
+import { getSubstatScoreGrade } from "../echoes/rating";
 import {
   ECHO_SUBSTAT_SLOTS,
+  betterEchoOdds,
+  finalLineGoal,
+  goalLineBreakdown,
   goalOdds,
   rollPercentile,
   wantedDrawOdds,
@@ -10,6 +15,7 @@ import {
 } from "../echoes/tuningOdds";
 import { useEchoEditFields, type EchoEditTarget } from "./useEchoEditFields";
 import { useTuningGoal } from "./useTuningGoal";
+import { useCharacterTuningPreset } from "./useCharacterTuningPreset";
 
 export type TuneOddsAdvice = "met" | "impossible" | "keep" | "fresh-better" | "no-goal";
 
@@ -71,9 +77,49 @@ export function useEchoTuneOdds(getTarget: () => EchoEditTarget) {
     return odds.value.chance >= freshOdds.value.chance ? "keep" : "fresh-better";
   });
 
-  const timesFresh = computed(() =>
-    freshOdds.value.chance > 0 ? odds.value.chance / freshOdds.value.chance : null,
+  // Per goal line: does the substat still need drawing, and how likely is
+  // a high enough roll ("Needs Crit DMG in 3 / 11 draws", "Then rolls ≥ …").
+  const breakdown = computed(() => goalLineBreakdown(tuned.value, goal.value));
+
+  // The line this echo ends on if it succeeds, and a fresh echo's chance of
+  // landing that exact line — the "this echo is N× closer" comparison.
+  const finalLine = computed(() => finalLineGoal(tuned.value, goal.value));
+  const freshLineOdds = computed(() => goalOdds([], finalLine.value));
+  const timesFreshLine = computed(() =>
+    freshLineOdds.value.chance > 0 ? odds.value.chance / freshLineOdds.value.chance : null,
   );
+
+  // Whose substat weights score this echo: the build's character, or in
+  // the inventory (no build) the character last selected.
+  const weightsCharacter = computed<string | null>(() => {
+    const t = target.value;
+    if (t.context === "build") return t.character || null;
+    return characterStore.activeCharacter || null;
+  });
+  const weightsCharacterName = computed(() =>
+    weightsCharacter.value ? getCharacterRosterDisplayName(weightsCharacter.value) : null,
+  );
+
+  // A finished echo can't change, so the useful question flips: how likely
+  // is a fresh echo to beat its Substat Score for that character?
+  const isFinishedEcho = computed(
+    () => Boolean(weightsCharacter.value) && tuned.value.length >= ECHO_SUBSTAT_SLOTS,
+  );
+  const betterOdds = computed(() => {
+    if (!isFinishedEcho.value || !weightsCharacter.value) return null;
+    const weights = characterStore.getCharacterSubstatWeights(weightsCharacter.value);
+    const echo: Record<string, string | number> = {};
+    tuned.value.forEach(([stat, value], i) => {
+      echo[`echoSubStatsType${i + 1}`] = stat;
+      echo[`echoSubStatsValue${i + 1}`] = value;
+    });
+    return {
+      ...betterEchoOdds(tuned.value, weights),
+      score: getSubstatScoreGrade(echo, weights),
+    };
+  });
+
+  const characterPresets = useCharacterTuningPreset(() => weightsCharacter.value);
 
   return {
     goal,
@@ -87,6 +133,14 @@ export function useEchoTuneOdds(getTarget: () => EchoEditTarget) {
     odds,
     freshOdds,
     advice,
-    timesFresh,
+    breakdown,
+    finalLine,
+    freshLineOdds,
+    timesFreshLine,
+    characterPresets,
+    weightsCharacter,
+    weightsCharacterName,
+    isFinishedEcho,
+    betterOdds,
   };
 }

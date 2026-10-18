@@ -38,7 +38,7 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-10-17",
     dateLabel: "October 17, 2026",
     items: [
-      "New Tune odds tab in the echo editor: see how likely a half-tuned echo is to reach your goal, and whether a fresh echo is the better bet",
+      "New Odds button on each echo in the calculator and the inventory: see how likely a half-tuned echo is to reach your goal, or for a finished echo, how likely a fresh one is to beat it",
       "New \"Finish these first\" filter in the inventory ranks your unfinished echoes by their chance of hitting your tuning goal",
       "New Tuning Planner under Info: pick substats and minimum rolls to see the chance per echo, how many echoes to farm and the tuner cost",
     ],

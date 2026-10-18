@@ -1,6 +1,6 @@
-// Echo tuning odds end to end: the echo panel's Tune odds tab, the
-// inventory's "Finish these first" filter, and the /info/tuning-odds
-// planner — see docs/adr/0044-echo-tuning-odds.md. Numbers asserted here are
+// Echo tuning odds end to end in the inventory: the Odds dialog (from a
+// tile, the edit panel's header, or a "Finish these first" tag), that
+// filter itself, and the /info/tuning-odds planner — see docs/adr/0044-echo-tuning-odds.md. Numbers asserted here are
 // pinned exactly in tests/echoes/tuningOdds.test.ts; this spec checks they
 // reach the screen and that the three surfaces hand off to each other.
 
@@ -20,9 +20,15 @@ function seedEcho(echoId: string, subs: Array<[string, number]>) {
   return echo;
 }
 
-function visitInventory() {
+function visitInventory(activeCharacter?: string) {
   cy.visit("/inventory", {
     onBeforeLoad(win) {
+      if (activeCharacter) {
+        win.localStorage.setItem(
+          "character",
+          JSON.stringify({ activeCharacter, favoriteCharacters: [], characters: {} }),
+        );
+      }
       win.localStorage.setItem(
         "settings",
         JSON.stringify({ config: { density: "comfy" }, labs: { liveResultBar: { isEnabled: true } } }),
@@ -56,13 +62,13 @@ function editEcho(echoId: string) {
 }
 
 describe("Echo tuning odds", () => {
-  it("Tune odds tab shows the echo's odds for the double-crit goal", () => {
+  it("the edit panel's Odds button shows the echo's odds for the double-crit goal", () => {
     visitInventory();
     editEcho("tune-keep");
     cy.get("[data-test-echo-edit-panel]").should("be.visible");
-    cy.get('[data-test-echo-edit-tab="stats"]').should("have.attr", "aria-pressed", "true");
+    cy.get("[data-test-echo-edit-tab]").should("not.exist");
 
-    cy.get('[data-test-echo-edit-tab="odds"]').click();
+    cy.get("[data-test-echo-edit-odds]").click();
     cy.get("[data-test-echo-tune-odds]").should("be.visible");
     cy.get('[data-test-echo-tune-odds-tuned="CritRate"]').should("contain.text", "8.1%");
     // Needs Crit DMG in the last 3 tunes from 11 substats: 3/11.
@@ -75,7 +81,17 @@ describe("Echo tuning odds", () => {
     cy.get("[data-test-echo-tune-odds-chance]").should("contain.text", "14.5%");
   });
 
-  it("Finish these first ranks unfinished echoes and opens them on Tune odds", () => {
+  it("a tile's Odds on a finished echo scores it with the selected character", () => {
+    visitInventory("Brant");
+    cy.get('[data-test-echo-action-odds="tune-done"]', { timeout: 20000 }).click();
+    cy.get("[data-test-echo-better-odds]").should("be.visible").and("contain.text", "Brant");
+    cy.get("[data-test-echo-better-odds-chance]").should("contain.text", "%");
+    cy.get("[data-test-echo-tune-odds-chance]").should("not.exist");
+    cy.get("[data-test-echo-odds-close]").click();
+    cy.get("[data-test-echo-better-odds]").should("not.exist");
+  });
+
+  it("Finish these first ranks unfinished echoes and its tags open their odds", () => {
     visitInventory();
     cy.get("[data-test-find-unfinished]", { timeout: 20000 }).click();
     cy.get("[data-test-unfinished-goal]").should("be.visible");
@@ -86,6 +102,17 @@ describe("Echo tuning odds", () => {
       const order = $inputs.toArray().map((el) => el.getAttribute("data-test-echo-select"));
       expect(order).to.deep.equal(["tune-keep", "tune-fresh", "tune-fodder"]);
     });
+    // The fresh-echo divider sits between the Keep tiles and the rest.
+    cy.get("[data-test-unfinished-divider]")
+      .should("have.length", 1)
+      .and("contain.text", "Fresh echo · 12.8%")
+      .next(".echo__item-wrap")
+      .find('[data-test-echo-select="tune-fresh"]')
+      .should("exist");
+    cy.get("[data-test-unfinished-divider]")
+      .prev(".echo__item-wrap")
+      .find('[data-test-echo-select="tune-keep"]')
+      .should("exist");
     cy.get('[data-test-echo-select="tune-keep"]')
       .closest(".echo__item-wrap")
       .find('[data-test-unfinished-tag="keep"]')
@@ -99,18 +126,20 @@ describe("Echo tuning odds", () => {
       .find('[data-test-unfinished-tag="fodder"]')
       .should("exist");
 
-    editEcho("tune-keep");
-    cy.get('[data-test-echo-edit-tab="odds"]').should("have.attr", "aria-pressed", "true");
+    cy.get('[data-test-echo-select="tune-keep"]')
+      .closest(".echo__item-wrap")
+      .find('[data-test-unfinished-tag="keep"]')
+      .click();
     cy.get("[data-test-echo-tune-odds-chance]").should("contain.text", "27.3%");
   });
 
-  it("the goal carries from the inventory to the Tune odds tab and on to the planner", () => {
+  it("the goal carries from the inventory to the Odds dialog and on to the planner", () => {
     visitInventory();
     cy.get("[data-test-find-unfinished]", { timeout: 20000 }).click();
     cy.get('[data-test-unfinished-goal] [data-test-tuning-goal-preset="good-double-crit"]').click();
     cy.get("[data-test-unfinished-fresh-chance]").should("not.contain.text", "12.8%");
 
-    editEcho("tune-keep");
+    cy.get('[data-test-echo-action-odds="tune-keep"]').click();
     cy.get('[data-test-tuning-goal-preset="good-double-crit"]').should("have.attr", "aria-pressed", "true");
     cy.get("[data-test-echo-tune-odds-planner-link]").click();
 

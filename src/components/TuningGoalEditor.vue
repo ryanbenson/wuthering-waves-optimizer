@@ -2,13 +2,13 @@
   <div class="flex flex-col gap-3" data-test-tuning-goal-editor>
     <div class="flex flex-wrap gap-1">
       <button
-        v-for="(preset, key) in TUNING_GOAL_PRESETS"
-        :key="key"
+        v-for="preset in presets"
+        :key="preset.key"
         type="button"
         class="btn btn-xs"
-        :class="activePresetKey === key ? 'btn-primary' : 'btn-ghost'"
-        :aria-pressed="activePresetKey === key"
-        :data-test-tuning-goal-preset="key"
+        :class="activePresetKey === preset.key ? 'btn-primary' : 'btn-ghost'"
+        :aria-pressed="activePresetKey === preset.key"
+        :data-test-tuning-goal-preset="preset.key"
         @click="emit('update:modelValue', preset.goal.map((l) => ({ ...l })))">
         {{ preset.label }}
       </button>
@@ -75,19 +75,26 @@ import {
   getTuningGoalKey,
   rollChanceAtLeast,
   type TuningGoal,
+  type TuningGoalPresetOption,
 } from "../echoes/tuningOdds";
 
 defineOptions({ name: "TuningGoalEditor" });
 
-const props = defineProps<{ modelValue: TuningGoal }>();
+const props = defineProps<{
+  modelValue: TuningGoal;
+  /** Shown after the built-in presets, e.g. a character's top substats. */
+  extraPresets?: TuningGoalPresetOption[];
+}>();
 const emit = defineEmits<{ "update:modelValue": [goal: TuningGoal] }>();
+
+const presets = computed<TuningGoalPresetOption[]>(() => [
+  ...Object.entries(TUNING_GOAL_PRESETS).map(([key, preset]) => ({ key, ...preset })),
+  ...(props.extraPresets ?? []),
+]);
 
 const activePresetKey = computed(() => {
   const key = getTuningGoalKey(props.modelValue);
-  for (const [presetKey, preset] of Object.entries(TUNING_GOAL_PRESETS)) {
-    if (getTuningGoalKey(preset.goal) === key) return presetKey;
-  }
-  return null;
+  return presets.value.find((preset) => getTuningGoalKey(preset.goal) === key)?.key ?? null;
 });
 
 const addableStats = computed(() =>

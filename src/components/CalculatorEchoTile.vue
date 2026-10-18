@@ -86,6 +86,15 @@
                 @click="openEchoBrowser">
                 Browse
               </button>
+              <button
+                v-if="echo"
+                type="button"
+                class="btn btn-xs btn-ghost"
+                v-tooltip="oddsTooltip"
+                :data-test-echo-item-odds="index"
+                @click="oddsDialogRef?.open()">
+                Odds
+              </button>
             </div>
             <div v-if="echoSets.length" class="flex items-center gap-1.5 mt-1.5">
               <button
@@ -313,6 +322,19 @@
             </svg>
             Browse
           </button>
+          <button
+            v-if="echo"
+            type="button"
+            class="btn btn-xs btn-ghost justify-start"
+            v-tooltip="oddsTooltip"
+            :data-test-echo-item-odds="index"
+            @click="oddsDialogRef?.open()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 17l6-6 4 4 6-8" />
+              <path d="M14 7h6v6" />
+            </svg>
+            Odds
+          </button>
         </div>
         <div class="flex flex-col gap-1 flex-1 min-w-0">
           <div
@@ -365,6 +387,10 @@
   </div>
 
   <EchoPickerDialog ref="pickerRef" :target="target" />
+  <EchoOddsDialog
+    ref="oddsDialogRef"
+    :target="target"
+    @edit-weights="emit('open-weights-editor')" />
 </template>
 
 <script setup lang="ts">
@@ -386,6 +412,7 @@ import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import EchoEditFields from "./EchoEditFields.vue";
+import EchoOddsDialog from "./EchoOddsDialog.vue";
 import EchoPickerDialog from "./EchoPickerDialog.vue";
 
 defineOptions({ name: "CalculatorEchoTile" });
@@ -405,6 +432,7 @@ const emit = defineEmits<{
   "on-echo-removed": [];
   "open-echoes-browser": [index: number];
   "toggle-edit": [index: number];
+  "open-weights-editor": [];
 }>();
 
 const characterStore = useCharacterStore();
@@ -454,6 +482,18 @@ function handleChooseEchoSet(set: string) {
 }
 
 const pickerRef = ref<InstanceType<typeof EchoPickerDialog> | null>(null);
+
+// "Odds" opens a dialog, not a tab: a partly tuned echo's chance of
+// reaching a goal, or, once fully tuned, the chance a fresh echo beats it.
+const oddsDialogRef = ref<InstanceType<typeof EchoOddsDialog> | null>(null);
+const isEchoFinished = computed(
+  () => slots.filter((slot) => slot.type.value && slot.type.value !== "none").length >= 5,
+);
+const oddsTooltip = computed(() =>
+  isEchoFinished.value
+    ? "Odds a fresh echo beats this one's substats"
+    : "Odds of tuning this echo into what you want",
+);
 
 // Root is a div (not a button) because the expanded state embeds
 // AppRichSelect, whose own trigger is itself an interactive
