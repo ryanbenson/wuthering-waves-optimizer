@@ -66,6 +66,14 @@ describe("Echo tuning odds — Calculator Echoes tab", () => {
     cy.get("[data-test-echo-better-odds]").should("be.visible");
     cy.get("[data-test-echo-better-odds-chance]").should("contain.text", "7.8%");
     cy.get("[data-test-echo-better-odds]").should("contain.text", "about 1 in 13 fresh echoes");
+    // Resources: one fresh echo to +25 is 142,600 EXP, 50 tuners and
+    // 24,260 Shell Credits; feeding the misses back is the cheaper row.
+    cy.get('[data-test-echo-resource-cost-row="each"]')
+      .should("contain.text", "142.6K")
+      .and("contain.text", "50")
+      .and("contain.text", "24.3K");
+    cy.get('[data-test-echo-resource-cost-row="per-better-fed"]').scrollIntoView();
+    cy.get('[data-test-echo-resource-cost-row="per-better-fed"]').should("be.visible");
     // No goal to reach on a finished echo.
     cy.get("[data-test-echo-tune-odds-chance]").should("not.exist");
 

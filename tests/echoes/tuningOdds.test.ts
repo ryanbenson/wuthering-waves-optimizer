@@ -26,6 +26,9 @@ import {
   type TunedSubstats,
   type TuningGoal,
 } from "../../src/echoes/tuningOdds";
+import { ECHO_LEVEL_EXP, tuneStepExp } from "../../src/echoes/levelingCost";
+
+const NO_COST = { expectedTuners: 0, expectedExp: 0, successTuners: 0, successExp: 0 };
 
 // C(11,3) / C(13,5): both crit substats among an echo's 5 of 13.
 const DOUBLE_CRIT_ANY = 165 / 1287;
@@ -91,7 +94,7 @@ describe("goalOdds — fresh echo", () => {
   });
 
   it("an empty goal always succeeds at no cost", () => {
-    expect(goalOdds([], [])).toEqual({ chance: 1, expectedTuners: 0 });
+    expect(goalOdds([], [])).toEqual({ chance: 1, ...NO_COST });
   });
 
   it("six goal lines are impossible", () => {
@@ -128,7 +131,7 @@ describe("goalOdds — partly tuned echo", () => {
   it("a goal already met is certain and costs nothing more", () => {
     const tuned: TunedSubstats = [["CritRate", 8.1], ["CritDMG", 17.4]];
     expect(goalOdds(tuned, [{ stat: "CritRate", min: 8.1 }, { stat: "CritDMG", min: 16.2 }]))
-      .toEqual({ chance: 1, expectedTuners: 0 });
+      .toEqual({ chance: 1, ...NO_COST });
   });
 
   it("a goal line that already rolled too low is impossible", () => {
@@ -180,6 +183,32 @@ describe("goalOdds — expected tuners", () => {
   });
 });
 
+describe("goalOdds — expected EXP", () => {
+  it("an any-roll single-stat goal levels to the tune that hits, or to +25", () => {
+    // Hit on tune t (chance 1/13 each) costs the EXP to +5t; a miss runs to +25.
+    const expected =
+      [1, 2, 3, 4, 5].reduce((a, t) => a + ECHO_LEVEL_EXP[5 * t] / 13, 0) + (8 / 13) * ECHO_LEVEL_EXP[25];
+    expect(goalOdds([], [{ stat: "CritRate", min: null }]).expectedExp).toBeCloseTo(expected, 6);
+  });
+
+  it("success-weighted cost counts only the paths that hit", () => {
+    const odds = goalOdds([], [{ stat: "CritRate", min: null }]);
+    expect(odds.successExp).toBeCloseTo([1, 2, 3, 4, 5].reduce((a, t) => a + ECHO_LEVEL_EXP[5 * t] / 13, 0), 6);
+    expect(odds.successTuners).toBeCloseTo(10 * [1, 2, 3, 4, 5].reduce((a, t) => a + t / 13, 0), 10);
+  });
+
+  it("a +10 echo only pays for the levels it still needs", () => {
+    // 3 tunes left from a pool of 11; Crit DMG lands on each with 1/11,
+    // otherwise the echo runs to +25.
+    const tuned: TunedSubstats = [["CritRate", 8.1], ["ATK", 8.6]];
+    const odds = goalOdds(tuned, [{ stat: "CritDMG", min: null }]);
+    const from10 = (level: number) => ECHO_LEVEL_EXP[level] - ECHO_LEVEL_EXP[10];
+    const expected = (from10(15) + from10(20) + from10(25)) / 11 + (8 / 11) * from10(25);
+    expect(odds.expectedExp).toBeCloseTo(expected, 6);
+    expect(odds.expectedExp).toBeLessThan(tuneStepExp(2) + tuneStepExp(3) + tuneStepExp(4) + 1e-6);
+  });
+});
+
 // Deterministic PRNG so the Monte Carlo cross-check never flakes.
 function mulberry32(seed: number) {
   return () => {
@@ -215,6 +244,59 @@ function simulate(tuned: TunedSubstats, goal: TuningGoal, trials: number, seed: 
   return hits / trials;
 }
 
+// Tunes one substat at a time, stopping once the goal is met, a goal line
+// rolls too low, or too few slots are left — the rule goalOdds prices.
+function simulateCost(tuned: TunedSubstats, goal: TuningGoal, trials: number, seed: number) {
+  const rand = mulberry32(seed);
+  const dists = Object.fromEntries(subStats.map((s) => [s, getSubStatRollDistribution(s)]));
+  const keys = ["expectedExp", "expectedTuners", "successExp", "successTuners"] as const;
+  const sum = { expectedExp: 0, expectedTuners: 0, successExp: 0, successTuners: 0 };
+  const sumSq = { ...sum };
+  const lineMet = (echo: Map<string, number>, line: TuningGoal[number]) =>
+    echo.has(line.stat) && (line.min == null || echo.get(line.stat)! >= line.min - 1e-9);
+  for (let t = 0; t < trials; t++) {
+    const echo = new Map(tuned);
+    const pool = subStats.filter((s) => !echo.has(s));
+    let exp = 0;
+    let tuners = 0;
+    let success = false;
+    for (;;) {
+      if (goal.some((line) => echo.has(line.stat) && !lineMet(echo, line))) break;
+      const left = goal.filter((line) => !echo.has(line.stat)).length;
+      if (left === 0) { success = true; break; }
+      if (ECHO_SUBSTAT_SLOTS - echo.size < left) break;
+      exp += tuneStepExp(echo.size);
+      tuners += 10;
+      const stat = pool.splice(Math.floor(rand() * pool.length), 1)[0];
+      let r = rand();
+      let value = dists[stat].at(-1)!.value;
+      for (const tier of dists[stat]) {
+        if (r < tier.chance) { value = tier.value; break; }
+        r -= tier.chance;
+      }
+      echo.set(stat, value);
+    }
+    const sample = {
+      expectedExp: exp,
+      expectedTuners: tuners,
+      successExp: success ? exp : 0,
+      successTuners: success ? tuners : 0,
+    };
+    for (const key of keys) {
+      sum[key] += sample[key];
+      sumSq[key] += sample[key] ** 2;
+    }
+  }
+  // Mean and its standard error per quantity.
+  return Object.fromEntries(
+    keys.map((key) => {
+      const mean = sum[key] / trials;
+      const variance = sumSq[key] / trials - mean ** 2;
+      return [key, { mean, se: Math.sqrt(Math.max(variance, 0) / trials) }];
+    }),
+  ) as Record<(typeof keys)[number], { mean: number; se: number }>;
+}
+
 describe("goalOdds — Monte Carlo cross-check", () => {
   const cases: Array<{ name: string; tuned: TunedSubstats; goal: TuningGoal }> = [
     { name: "fresh double crit", tuned: [], goal: [{ stat: "CritRate", min: null }, { stat: "CritDMG", min: null }] },
@@ -223,6 +305,16 @@ describe("goalOdds — Monte Carlo cross-check", () => {
     { name: "+10 echo needing CD", tuned: [["CritRate", 8.1], ["ATK", 8.6]], goal: [{ stat: "CritDMG", min: 15 }] },
     { name: "+5 echo, three lines", tuned: [["CritDMG", 17.4]], goal: [{ stat: "CritRate", min: null }, { stat: "ATK", min: 7.9 }, { stat: "CritDMG", min: 15 }] },
   ];
+
+  for (const [i, c] of cases.entries()) {
+    it(`expected EXP, tuners and success-weighted cost agree within 4 standard errors: ${c.name}`, () => {
+      const exact = goalOdds(c.tuned, c.goal);
+      const sim = simulateCost(c.tuned, c.goal, 200_000, 2000 + i);
+      for (const key of ["expectedExp", "expectedTuners", "successExp", "successTuners"] as const) {
+        expect(Math.abs(exact[key] - sim[key].mean)).toBeLessThan(4 * sim[key].se + 1e-6);
+      }
+    });
+  }
 
   for (const [i, c] of cases.entries()) {
     it(`agrees within 0.3 points: ${c.name}`, () => {

@@ -58,10 +58,14 @@
           <span class="text-xs opacity-70">90% sure by</span>
           <span class="tabular-nums">{{ formatEchoCount(echoesForConfidence(betterOdds.better, 0.9)) }}</span>
         </div>
-        <div class="col-span-2 flex justify-between gap-3">
-          <span class="opacity-70">Tuners per better echo, tuning each to +25</span>
-          <span class="tabular-nums">{{ Math.round(FULL_TUNE_COST / betterOdds.better).toLocaleString("en-US") }}</span>
-        </div>
+      </div>
+      <div v-if="betterOdds.better > 0" class="flex flex-col gap-1" data-test-echo-better-odds-cost>
+        <span class="text-xs opacity-70">Resources to find a better echo, leveling and tuning each to +25</span>
+        <EchoResourceCostTable :rows="betterCostRows" />
+        <span class="text-xs opacity-60">
+          Feeding a leveled echo into the next returns {{ FEED_EXP_PERCENT }}% of its EXP and
+          {{ FEED_TUNER_PERCENT }}% of its tuners. Shell Credits aren't returned.
+        </span>
       </div>
       <p class="text-xs opacity-70">
         Substats only: the main stat and set come from the drop. Uses {{ weightsCharacterName }}'s substat weights.
@@ -169,13 +173,10 @@
     </section>
 
     <section v-if="!isFinishedEcho && (advice === 'keep' || advice === 'fresh-better')" class="flex flex-col gap-1.5 text-sm">
-      <div class="flex justify-between gap-3">
-        <span class="opacity-70">Avg tuners from here, stopping early</span>
-        <span class="tabular-nums">{{ Math.round(odds.expectedTuners) }}</span>
-      </div>
+      <EchoResourceCostTable :rows="fromHereCostRows" />
       <div class="flex justify-between gap-3">
         <span class="opacity-70">Stop when</span>
-        <span class="text-right">a goal substat rolls too low, or too few slots are left</span>
+        <span class="text-right">the goal is met, a goal substat rolls too low, or too few slots are left</span>
       </div>
     </section>
 
@@ -192,10 +193,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
+import {
+  FEED_EXP_REFUND,
+  FEED_TUNER_REFUND,
+  FULL_TUNE_RESOURCES,
+  echoResources,
+  fullTuneResourcesPerSuccess,
+} from "../echoes/levelingCost";
+import EchoResourceCostTable, { type EchoResourceCostRow } from "./EchoResourceCostTable.vue";
 import { getReadableSubStatLabel } from "../echoes/stats";
 import {
   ECHO_SUBSTAT_SLOTS,
-  FULL_TUNE_COST,
   TOTAL_SUBSTAT_TYPES,
   echoesForConfidence,
   formatSubstatRoll,
@@ -256,6 +264,33 @@ const betterOneInLabel = computed(() => {
   if (p >= 1) return "every fresh echo";
   return `about 1 in ${Math.round(1 / p).toLocaleString("en-US")} fresh echoes`;
 });
+
+const FEED_EXP_PERCENT = Math.round(FEED_EXP_REFUND * 100);
+const FEED_TUNER_PERCENT = Math.round(FEED_TUNER_REFUND * 100);
+
+// A fresh echo is leveled and tuned all the way, since any substat can
+// still lift its score; the kept echo is the last one, so it's never fed.
+const betterCostRows = computed<EchoResourceCostRow[]>(() => {
+  const p = betterOdds.value?.better ?? 0;
+  return [
+    { key: "each", label: "Each fresh echo", resources: FULL_TUNE_RESOURCES },
+    { key: "per-better", label: "Per better echo", resources: fullTuneResourcesPerSuccess(p, false) },
+    {
+      key: "per-better-fed",
+      label: "Feeding the misses back",
+      resources: fullTuneResourcesPerSuccess(p, true),
+      emphasis: true,
+    },
+  ];
+});
+
+const fromHereCostRows = computed<EchoResourceCostRow[]>(() => [
+  {
+    key: "from-here",
+    label: "Avg from here, stopping early",
+    resources: echoResources(odds.value.expectedExp, odds.value.expectedTuners),
+  },
+]);
 
 function formatEchoCount(count: number): string {
   if (!Number.isFinite(count)) return "never";

@@ -1,6 +1,7 @@
 import { subStats, subStatsTable } from "./stats";
 import { getSubStatRollDistribution } from "./substatRollRates";
 import { getSubstatRollTier } from "./rating";
+import { TUNERS_PER_TUNE, tuneStepExp } from "./levelingCost";
 
 // Echo tuning odds: how likely an echo is to end up with a set of substats
 // at or above chosen minimum rolls. Model (see docs/adr/0044):
@@ -13,7 +14,7 @@ import { getSubstatRollTier } from "./rating";
 
 export const ECHO_SUBSTAT_SLOTS = 5;
 export const TOTAL_SUBSTAT_TYPES = subStats.length;
-export const TUNERS_PER_TUNE = 10;
+export { TUNERS_PER_TUNE };
 
 const EPSILON = 1e-9;
 
@@ -31,9 +32,17 @@ export type TunedSubstats = Array<[string, number]>;
 export interface GoalOdds {
   /** Chance (0-1) the echo ends up meeting every goal line. */
   chance: number;
-  /** Expected tuners spent from here, stopping once the goal can't be met. */
+  /** Expected tuners spent from here, stopping once the goal is met or can't be. */
   expectedTuners: number;
+  /** Expected EXP to level from here, same stopping rule (5★ table). */
+  expectedExp: number;
+  /** Tuners spent weighted by success: E[tuners × 1{goal met}]. */
+  successTuners: number;
+  /** EXP weighted by success: E[EXP × 1{goal met}]. */
+  successExp: number;
 }
+
+const NO_COST = { expectedTuners: 0, expectedExp: 0, successTuners: 0, successExp: 0 };
 
 /** Chance (0-1) a single roll of `stat` lands at or above `min`. */
 export function rollChanceAtLeast(stat: string, min: number | null): number {
@@ -89,7 +98,7 @@ export function goalOdds(tuned: TunedSubstats, goal: TuningGoal): GoalOdds {
     if (revealedValues.has(line.stat)) {
       const value = revealedValues.get(line.stat)!;
       if (line.min != null && value < line.min - EPSILON) {
-        return { chance: 0, expectedTuners: 0 };
+        return { chance: 0, ...NO_COST };
       }
     } else {
       open.push(rollChanceAtLeast(line.stat, line.min));
@@ -110,25 +119,35 @@ export function goalOdds(tuned: TunedSubstats, goal: TuningGoal): GoalOdds {
 
     let result: GoalOdds;
     if (left === 0) {
-      result = { chance: 1, expectedTuners: 0 };
+      result = { chance: 1, ...NO_COST };
     } else if (ECHO_SUBSTAT_SLOTS - n < left) {
-      result = { chance: 0, expectedTuners: 0 };
+      result = { chance: 0, ...NO_COST };
     } else {
+      // This tune: level from +5n to +5(n+1), then spend one tune.
       const pool = TOTAL_SUBSTAT_TYPES - n;
+      const stepExp = tuneStepExp(n);
       let chance = 0;
       let expectedTuners = TUNERS_PER_TUNE;
+      let expectedExp = stepExp;
+      let successTuners = 0;
+      let successExp = 0;
+      const add = (weight: number, next: GoalOdds) => {
+        chance += weight * next.chance;
+        expectedTuners += weight * next.expectedTuners;
+        expectedExp += weight * next.expectedExp;
+        successTuners += weight * next.successTuners;
+        successExp += weight * next.successExp;
+      };
       for (let i = 0; i < k; i++) {
         if ((mask >> i) & 1) continue;
         // Draws this line's substat and clears the bar; drawing it and
         // missing the bar ends the attempt (adds nothing further).
-        const next = solve(n + 1, mask | (1 << i));
-        chance += (open[i] / pool) * next.chance;
-        expectedTuners += (open[i] / pool) * next.expectedTuners;
+        add(open[i] / pool, solve(n + 1, mask | (1 << i)));
       }
-      const other = solve(n + 1, mask);
-      chance += ((pool - left) / pool) * other.chance;
-      expectedTuners += ((pool - left) / pool) * other.expectedTuners;
-      result = { chance, expectedTuners };
+      add((pool - left) / pool, solve(n + 1, mask));
+      successTuners += chance * TUNERS_PER_TUNE;
+      successExp += chance * stepExp;
+      result = { chance, expectedTuners, expectedExp, successTuners, successExp };
     }
     memo.set(id, result);
     return result;

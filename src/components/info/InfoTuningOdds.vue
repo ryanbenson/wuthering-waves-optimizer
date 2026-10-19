@@ -137,13 +137,16 @@
         </section>
 
         <section class="bg-base-200 rounded-xl p-4 flex flex-col gap-2 text-sm">
-          <h2 class="text-xs font-bold uppercase tracking-wider opacity-60 mb-1">Tuner cost</h2>
-          <div class="flex justify-between"><span class="opacity-80">Avg per echo, stopping early</span><span class="tabular-nums">{{ costLabel(odds.expectedTuners) }}</span></div>
-          <div class="flex justify-between"><span class="opacity-80">Avg per success</span><span class="tabular-nums font-semibold">{{ odds.chance > 0 ? costLabel(odds.expectedTuners / odds.chance) : "—" }}</span></div>
-          <div class="flex justify-between"><span class="opacity-80">If you always tune to +25</span><span class="tabular-nums opacity-70">{{ odds.chance > 0 ? costLabel(FULL_TUNE_COST / odds.chance) : "—" }}</span></div>
+          <h2 class="text-xs font-bold uppercase tracking-wider opacity-60 mb-1">Resource cost</h2>
+          <EchoResourceCostTable :rows="costRows" />
           <p class="text-xs opacity-60 mt-1">
-            Stop as soon as a wanted substat rolls too low, or there aren't
-            enough slots left for the rest. Assumes {{ TUNERS_PER_TUNE }} tuners per tune.
+            Stopping early: level and tune until the goal is met, a wanted
+            substat rolls too low, or there aren't enough slots left for the
+            rest. Each tune costs {{ TUNERS_PER_TUNE }} tuners and
+            {{ SHELL_CREDITS_PER_TUNE.toLocaleString("en-US") }} Shell Credits; EXP costs
+            {{ SHELL_CREDITS_PER_EXP }} Shell Credits each (5★ echo). Feeding a leveled echo
+            into the next returns {{ Math.round(FEED_EXP_REFUND * 100) }}% of its EXP and
+            {{ Math.round(FEED_TUNER_REFUND * 100) }}% of its tuners, not Shell Credits.
           </p>
         </section>
 
@@ -171,7 +174,6 @@ import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { getReadableSubStatLabel, subStats, subStatsTable } from "../../echoes/stats";
 import {
   ECHO_SUBSTAT_SLOTS,
-  FULL_TUNE_COST,
   TUNERS_PER_TUNE,
   TUNING_GOAL_PRESETS,
   chanceWithinEchoes,
@@ -187,6 +189,16 @@ import {
   type GoalLever,
   type TuningGoal,
 } from "../../echoes/tuningOdds";
+import {
+  FEED_EXP_REFUND,
+  FEED_TUNER_REFUND,
+  SHELL_CREDITS_PER_EXP,
+  SHELL_CREDITS_PER_TUNE,
+  echoResources,
+  fullTuneResourcesPerSuccess,
+  resourcesPerSuccess,
+} from "../../echoes/levelingCost";
+import EchoResourceCostTable, { type EchoResourceCostRow } from "../EchoResourceCostTable.vue";
 import {
   decodeTuningGoalQuery,
   encodeTuningGoalQuery,
@@ -269,9 +281,22 @@ function echoCountLabel(confidence: number) {
   return n === 1 ? "1 echo" : `${n.toLocaleString("en-US")} echoes`;
 }
 
-function costLabel(tuners: number) {
-  return Math.round(tuners).toLocaleString("en-US");
-}
+const costRows = computed<EchoResourceCostRow[]>(() => {
+  const { chance, expectedExp, expectedTuners, successExp, successTuners } = odds.value;
+  const perAttempt = echoResources(expectedExp, expectedTuners);
+  const onSuccess = echoResources(successExp, successTuners);
+  return [
+    { key: "per-echo", label: "Avg per echo, stopping early", resources: perAttempt },
+    { key: "per-success", label: "Avg per success", resources: resourcesPerSuccess(perAttempt, onSuccess, chance, false) },
+    {
+      key: "per-success-fed",
+      label: "Per success, feeding misses back",
+      resources: resourcesPerSuccess(perAttempt, onSuccess, chance, true),
+      emphasis: true,
+    },
+    { key: "full", label: "If you always tune to +25", resources: fullTuneResourcesPerSuccess(chance, false) },
+  ];
+});
 
 function leverLabel(lever: GoalLever) {
   const name = getReadableSubStatLabel(lever.stat);
