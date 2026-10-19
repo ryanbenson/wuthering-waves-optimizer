@@ -43,7 +43,6 @@ export const updateEntries: UpdateEntry[] = [
       "New \"Finish these first\" filter in the inventory: it lists your unfinished echoes, starting with the ones most likely to reach your tuning goal",
       "New Tuning Planner on the Info page: pick the substats and rolls you want, and see your chance per echo, how many echoes you may need to farm, and the EXP, tuners and Shell Credits it costs, with or without feeding failed echoes back in",
       "Fixed an empty gray bar on the right edge, and the page shifting left, when a popup window opens",
-      "Header bar buttons are now the same size everywhere, and the delete buttons for rotations and teams now show a tooltip",
     ],
   },
   {
@@ -51,6 +50,13 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "October 18, 2026",
     items: [
       "Fixed the 5-piece bonus for Heart of Sworn Vigil and Sound of True Name turning itself back on after you switched it off",
+    ],
+  },
+  {
+    date: "2026-10-17",
+    dateLabel: "October 17, 2026",
+    items: [
+      "Header bar buttons are now the same size everywhere, and the delete buttons for rotations and teams now show a tooltip",
     ],
   },
   {
