@@ -75,6 +75,23 @@ describe("CalculatorEchoEditPanel wiring", () => {
     expect(document.querySelector("[data-test-echo-tune-odds]")).not.toBeNull();
   });
 
+  it("inventory context: a finished echo has no Odds button (its odds need a build's character)", () => {
+    const characterStore = useCharacterStore() as any;
+    characterStore.activeCharacter = "Brant";
+    const inventoryStore = useInventoryStore() as any;
+    inventoryStore.saveEcho({
+      echoId: "e1", echo: "AeroDrake", type: 1, rank: 5, stat: "CritRate",
+      echoSubStatsType1: "CritRate", echoSubStatsValue1: 8.1,
+      echoSubStatsType2: "CritDMG", echoSubStatsValue2: 16.2,
+      echoSubStatsType3: "ATK", echoSubStatsValue3: 8.6,
+      echoSubStatsType4: "HP", echoSubStatsValue4: 7.9,
+      echoSubStatsType5: "DEF_FLAT", echoSubStatsValue5: 50,
+    });
+    const { container } = renderPanel({ context: "inventory", echoId: "e1" });
+
+    expect(container.querySelector("[data-test-echo-edit-odds]")).toBeNull();
+  });
+
   it("renders nothing when isOpen is false", () => {
     const { container } = renderPanel({ context: "build", character: CHARACTER, index: 0, isOpen: false });
     expect(container.querySelector("[data-test-echo-edit-panel]")).toBeNull();

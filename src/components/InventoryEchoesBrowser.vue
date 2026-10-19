@@ -1,16 +1,11 @@
 <template>
   <InventoryEchoEditPanel
     v-if="isLiveResultBarEnabled"
-    ref="inventoryEchoEditRef"
-    @open-weights-editor="handleOpenWeightsEditor"></InventoryEchoEditPanel>
+    ref="inventoryEchoEditRef"></InventoryEchoEditPanel>
   <EchoOddsDialog
     v-if="isLiveResultBarEnabled"
     ref="oddsDialogRef"
-    :target="{ context: 'inventory', echoId: oddsEchoId }"
-    @edit-weights="handleOpenWeightsEditor" />
-  <EchoRatingWeightsEditor
-    v-if="isLiveResultBarEnabled"
-    ref="weightsEditorRef"></EchoRatingWeightsEditor>
+    :target="{ context: 'inventory', echoId: oddsEchoId }" />
   <InventoryEchoEdit v-else ref="inventoryEchoEditRef"></InventoryEchoEdit>
   <CalculatorEchoImporter
     ref="echoesImporter"
@@ -488,7 +483,6 @@
         <TuningGoalEditor
           class="max-w-md"
           :model-value="tuningGoal"
-          :extra-presets="characterTuningPresets"
           @update:model-value="setTuningGoal" />
       </div>
     </div>
@@ -619,7 +613,7 @@
                       </svg>
                     </button>
                     <button
-                      v-if="echoRow.echo"
+                      v-if="echoRow.echo && isEchoUnfinished(echoRow)"
                       type="button"
                       class="btn btn-sm btn-square"
                       v-tooltip="'Odds'"
@@ -765,7 +759,6 @@ import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
 import EchoOddsDialog from "./EchoOddsDialog.vue";
-import EchoRatingWeightsEditor from "./EchoRatingWeightsEditor.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import EchoScannerModal from "./EchoScannerModal.vue";
 import PaginationControls from "./PaginationControls.vue";
@@ -792,8 +785,6 @@ import {
 } from "../composables/useUnfinishedEchoRanking";
 import { formatTuningChance, type UnfinishedEchoTag } from "../echoes/tuningOdds";
 import TuningGoalEditor from "./TuningGoalEditor.vue";
-import { useCharacterTuningPreset } from "../composables/useCharacterTuningPreset";
-import { useCharacterStore } from "../stores/character";
 
 const { confirm } = useConfirm();
 const { showToast } = useToast();
@@ -930,9 +921,6 @@ const {
   computed(() => (unfinishedFilter.value ? ((echoes.value ?? []) as InventoryEchoRow[]) : [])),
   tuningGoal,
 );
-// The selected character's top substats, offered as a goal preset.
-const characterStore = useCharacterStore();
-const characterTuningPresets = useCharacterTuningPreset(() => characterStore.activeCharacter);
 const UNFINISHED_TAG_LABELS: Record<UnfinishedEchoTag, string> = {
   keep: "Keep",
   baseline: "Baseline",
@@ -1161,19 +1149,14 @@ function handleEditEcho(echoId: string) {
 }
 
 // Tile "Odds" buttons (and the Finish-these-first tags) share one dialog.
-// A finished echo is scored with the selected character's weights.
+// Unfinished echoes only: a finished echo's odds (beating its Substat
+// Score) depend on a character's weights, which belong to a build — the
+// calculator's Odds answers that. See docs/adr/0044-echo-tuning-odds.md.
 const oddsEchoId = ref<string | null>(null);
 const oddsDialogRef = ref<InstanceType<typeof EchoOddsDialog> | null>(null);
-const weightsEditorRef = ref<InstanceType<typeof EchoRatingWeightsEditor> | null>(null);
 function openOdds(echoId: string) {
   oddsEchoId.value = echoId;
   oddsDialogRef.value?.open();
-}
-function handleOpenWeightsEditor() {
-  weightsEditorRef.value?.triggerOpenModal({
-    mode: "character",
-    characterId: characterStore.activeCharacter || null,
-  });
 }
 
 function toggleDuplicatesFilter() {

@@ -95,10 +95,10 @@
             Duplicate
           </button>
           <button
-            v-if="showOdds && echo"
+            v-if="showOdds && echo && !isEchoFinished"
             type="button"
             class="btn btn-xs btn-ghost justify-start"
-            v-tooltip="oddsTooltip"
+            v-tooltip="'Odds of tuning this echo into what you want'"
             :data-test-echo-action-odds="echoId"
             @click="emit('odds')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -174,7 +174,7 @@ const props = withDefaults(
     hideEdit?: boolean;
     deleteLabel?: string;
     deleteTooltip?: string;
-    /** Show an "Odds" button; the parent hosts EchoOddsDialog. */
+    /** Show an "Odds" button on unfinished echoes; the parent hosts EchoOddsDialog. */
     showOdds?: boolean;
   }>(),
   {
@@ -192,11 +192,6 @@ const emit = defineEmits<{ edit: []; duplicate: []; delete: []; odds: [] }>();
 const isEchoFinished = computed(() =>
   [props.echoSubStatsType1, props.echoSubStatsType2, props.echoSubStatsType3, props.echoSubStatsType4, props.echoSubStatsType5]
     .every((type) => type && type !== "none"),
-);
-const oddsTooltip = computed(() =>
-  isEchoFinished.value
-    ? "Odds a fresh echo beats this one's substats"
-    : "Odds of tuning this echo into what you want",
 );
 
 const {

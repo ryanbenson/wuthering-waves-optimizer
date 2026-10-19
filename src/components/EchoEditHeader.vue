@@ -47,7 +47,7 @@
           Browse
         </button>
         <button
-          v-if="showOdds && echo"
+          v-if="showOdds && echo && (target.context === 'build' || !isFullyTuned)"
           type="button"
           class="btn btn-xs btn-ghost"
           data-test-echo-edit-odds
@@ -96,6 +96,7 @@ import { computed, ref } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
+import { ECHO_SUBSTAT_SLOTS } from "../echoes/tuningOdds";
 import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
 import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import EchoPickerDialog from "./EchoPickerDialog.vue";
@@ -106,7 +107,11 @@ const props = withDefaults(
   defineProps<{
     target: EchoEditTarget;
     showBrowse?: boolean;
-    /** Show an "Odds" button; the host opens EchoOddsDialog on `open-odds`. */
+    /**
+     * Show an "Odds" button; the host opens EchoOddsDialog on `open-odds`.
+     * In the inventory it's hidden on finished echoes, whose only odds
+     * (beating its score) need a build's character.
+     */
     showOdds?: boolean;
     closeLabel?: string;
   }>(),
@@ -133,6 +138,10 @@ const {
   handleChooseEchoSet: handleChooseEchoSetField,
   isSetSelected,
 } = useEchoEditFields(() => props.target);
+
+const isFullyTuned = computed(
+  () => slots.filter((slot) => slot.type.value && slot.type.value !== "none").length >= ECHO_SUBSTAT_SLOTS,
+);
 
 const { getEchoFlags } = useEchoInventory();
 const isEchoLocked = computed(() =>

@@ -89,12 +89,12 @@ export function useEchoTuneOdds(getTarget: () => EchoEditTarget) {
     freshLineOdds.value.chance > 0 ? odds.value.chance / freshLineOdds.value.chance : null,
   );
 
-  // Whose substat weights score this echo: the build's character, or in
-  // the inventory (no build) the character last selected.
+  // Whose substat weights score this echo: the build's character. An
+  // inventory echo has none — the same echo suits different characters
+  // differently — so there it gets goal-based odds only.
   const weightsCharacter = computed<string | null>(() => {
     const t = target.value;
-    if (t.context === "build") return t.character || null;
-    return characterStore.activeCharacter || null;
+    return t.context === "build" ? t.character || null : null;
   });
   const weightsCharacterName = computed(() =>
     weightsCharacter.value ? getCharacterRosterDisplayName(weightsCharacter.value) : null,

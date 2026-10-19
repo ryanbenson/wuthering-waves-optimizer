@@ -81,14 +81,14 @@ describe("Echo tuning odds", () => {
     cy.get("[data-test-echo-tune-odds-chance]").should("contain.text", "14.5%");
   });
 
-  it("a tile's Odds on a finished echo scores it with the selected character", () => {
+  it("finished echoes have no Odds: beating one depends on a character's weights", () => {
+    // Even with a character selected — the inventory has no build to score it for.
     visitInventory("Brant");
-    cy.get('[data-test-echo-action-odds="tune-done"]', { timeout: 20000 }).click();
-    cy.get("[data-test-echo-better-odds]").should("be.visible").and("contain.text", "Brant");
-    cy.get("[data-test-echo-better-odds-chance]").should("contain.text", "%");
-    cy.get("[data-test-echo-tune-odds-chance]").should("not.exist");
-    cy.get("[data-test-echo-odds-close]").click();
-    cy.get("[data-test-echo-better-odds]").should("not.exist");
+    cy.get('[data-test-echo-action-odds="tune-keep"]', { timeout: 20000 }).should("exist");
+    cy.get('[data-test-echo-action-odds="tune-done"]').should("not.exist");
+    editEcho("tune-done");
+    cy.get("[data-test-echo-edit-panel]").should("be.visible");
+    cy.get("[data-test-echo-edit-odds]").should("not.exist");
   });
 
   it("Finish these first ranks unfinished echoes and its tags open their odds", () => {

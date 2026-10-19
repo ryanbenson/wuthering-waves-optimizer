@@ -12,7 +12,9 @@
 <script setup lang="ts">
 // The "Odds" button on calculator and inventory echo tiles (and the
 // inventory's edit panel) opens this: the echo's Tune odds (a partly tuned
-// echo) or the odds of a fresh echo beating it (a finished one). Teleported
+// echo) or, in a build, the odds of a fresh echo beating it (a finished
+// one — scored with the build's character, so the inventory doesn't offer
+// Odds on finished echoes). Teleported
 // to <body> by AppChooserModal, so its clicks never reach the calculator
 // tile's own click-to-expand handler. See docs/adr/0044-echo-tuning-odds.md.
 import { computed, ref } from "vue";
@@ -29,7 +31,8 @@ const emit = defineEmits<{ close: []; "edit-weights": [] }>();
 const { slots, echoName } = useEchoEditFields(() => props.target);
 const title = computed(() => {
   const tunedCount = slots.filter((slot) => slot.type.value && slot.type.value !== "none").length;
-  const label = tunedCount >= ECHO_SUBSTAT_SLOTS ? "Better echo odds" : "Tune odds";
+  const finished = props.target.context === "build" && tunedCount >= ECHO_SUBSTAT_SLOTS;
+  const label = finished ? "Better echo odds" : "Tune odds";
   return echoName.value ? `${label} · ${echoName.value}` : label;
 });
 
