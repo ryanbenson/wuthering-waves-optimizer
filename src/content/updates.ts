@@ -35,23 +35,27 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
-    date: "2026-10-17",
-    dateLabel: "October 17, 2026",
+    date: "2026-10-19",
+    dateLabel: "October 19, 2026",
     items: [
-      "New Odds button on echoes in the calculator and the inventory. In a build, see where an echo can finish by Substat Score grade for that character, or for a finished echo, how likely a fresh one is to reach the next grade up, and the EXP, tuners and Shell Credits it takes. In the inventory, see how likely a half-tuned echo is to reach your goal",
-      "New \"Finish these first\" filter in the inventory ranks your unfinished echoes by their chance of hitting your tuning goal",
-      "New Tuning Planner under Info: pick substats and minimum rolls to see the chance per echo, how many echoes to farm and the EXP, tuner and Shell Credit cost, with or without feeding failed echoes back",
+      "New Odds button on echoes in the calculator. It shows which Substat Score grade an echo is likely to end up at for that character. For a fully tuned echo, it shows the chance that a new echo reaches a better grade (the next one up, or one you pick), and the EXP, tuners and Shell Credits that would take",
+      "The Odds button is in the inventory too: for an echo that isn't fully tuned yet, it shows how likely it is to reach your goal",
+      "New \"Finish these first\" filter in the inventory: it lists your unfinished echoes, starting with the ones most likely to reach your tuning goal",
+      "New Tuning Planner on the Info page: pick the substats and rolls you want, and see your chance per echo, how many echoes you may need to farm, and the EXP, tuners and Shell Credits it costs, with or without feeding failed echoes back in",
+      "Fixed the 5-piece bonus for Heart of Sworn Vigil and Sound of True Name turning itself back on after you switched it off",
+      "Fixed an empty gray bar on the right edge, and the page shifting left, when a popup window opens",
+      "Header bar buttons are now the same size everywhere, and the delete buttons for rotations and teams now show a tooltip",
     ],
   },
   {
     date: "2026-10-16",
     dateLabel: "October 16, 2026",
     items: [
-      "The character picker modal got updated, the filters are better aligned",
-      "The character browser now puts your favorites at the top",
-      "Fixes the \"swap to classic UI\" that wasn't working and makes the settings UI consistent with the theme chooser",
-      "Fixes Frosty Resolve typo.",
-      "Reworked the presets UI some more to clear up some confusion",
+      "The filter buttons in the character picker now line up properly",
+      "The character browser now shows your favorites at the top",
+      "Fixed the \"Switch to classic UI\" option, and the settings menu now matches the theme menu",
+      "Fixed a typo in the Frosty Resolve 5-piece description: it now says Resonance Skill DMG +18%",
+      "The echo presets menu is easier to understand",
     ],
   },
   {
