@@ -42,9 +42,15 @@ export const updateEntries: UpdateEntry[] = [
       "The Odds button is in the inventory too: for an echo that isn't fully tuned yet, it shows how likely it is to reach your goal",
       "New \"Finish these first\" filter in the inventory: it lists your unfinished echoes, starting with the ones most likely to reach your tuning goal",
       "New Tuning Planner on the Info page: pick the substats and rolls you want, and see your chance per echo, how many echoes you may need to farm, and the EXP, tuners and Shell Credits it costs, with or without feeding failed echoes back in",
-      "Fixed the 5-piece bonus for Heart of Sworn Vigil and Sound of True Name turning itself back on after you switched it off",
       "Fixed an empty gray bar on the right edge, and the page shifting left, when a popup window opens",
       "Header bar buttons are now the same size everywhere, and the delete buttons for rotations and teams now show a tooltip",
+    ],
+  },
+  {
+    date: "2026-10-18",
+    dateLabel: "October 18, 2026",
+    items: [
+      "Fixed the 5-piece bonus for Heart of Sworn Vigil and Sound of True Name turning itself back on after you switched it off",
     ],
   },
   {
