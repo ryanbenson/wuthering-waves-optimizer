@@ -287,12 +287,15 @@ describe("CalculatorEchoTile Odds button", () => {
     expect(oddsButton(container)).toBeNull();
   });
 
-  it("a partly tuned echo's Odds opens its Tune odds in a dialog, without expanding the tile", async () => {
+  it("a partly tuned echo's Odds shows where it can finish by grade, without expanding the tile", async () => {
     setInlineEcho(0);
     const { container, emitted } = renderWithOdds();
     await fireEvent.click(oddsButton(container)!);
     expect(document.body.querySelector("[data-test-echo-tune-odds]")).not.toBeNull();
-    expect(document.body.querySelector("[data-test-echo-tune-odds-chance]")).not.toBeNull();
+    expect(document.body.querySelector("[data-test-echo-score-odds]")).not.toBeNull();
+    expect(document.body.querySelector("[data-test-echo-score-grade-row]")).not.toBeNull();
+    // A build judges by the character's Substat Score: no goal to pick.
+    expect(document.body.querySelector("[data-test-echo-tune-odds-chance]")).toBeNull();
     expect(document.body.querySelector("[data-test-echo-better-odds]")).toBeNull();
     expect(emitted("toggle-edit")).toBeFalsy();
   });

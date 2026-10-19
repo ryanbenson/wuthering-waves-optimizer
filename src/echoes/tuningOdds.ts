@@ -1,6 +1,5 @@
 import { subStats, subStatsTable } from "./stats";
 import { getSubStatRollDistribution } from "./substatRollRates";
-import { getSubstatRollTier } from "./rating";
 import { TUNERS_PER_TUNE, tuneStepExp } from "./levelingCost";
 
 // Echo tuning odds: how likely an echo is to end up with a set of substats
@@ -11,6 +10,7 @@ import { TUNERS_PER_TUNE, tuneStepExp } from "./levelingCost";
 // - the rolled value follows that substat's published tier weights.
 // Pure TS — no Vue — so the Tune odds tab, the planner and the inventory
 // ranking all share one implementation.
+// Substat Score odds (a build's character weights) are in scoreOdds.ts.
 
 export const ECHO_SUBSTAT_SLOTS = 5;
 export const TOTAL_SUBSTAT_TYPES = subStats.length;
@@ -71,7 +71,7 @@ function normalizeGoal(goal: TuningGoal): TuningGoal {
   return [...byStat.values()];
 }
 
-function normalizeTuned(tuned: TunedSubstats): TunedSubstats {
+export function normalizeTuned(tuned: TunedSubstats): TunedSubstats {
   const seen = new Set<string>();
   const out: TunedSubstats = [];
   for (const [stat, value] of tuned) {
@@ -225,90 +225,8 @@ export function finalLineGoal(tuned: TunedSubstats, goal: TuningGoal): TuningGoa
   return [...byStat].map(([stat, min]) => ({ stat, min }));
 }
 
-// Weighted points as the Substat Score counts them (ADR 0012): roll tier
-// (1 = lowest value) × the character's weight for that substat.
-function getWeight(weights: Record<string, number>, stat: string): number {
-  return weights[stat] ?? 1;
-}
-
-const roundPoints = (points: number) => Math.round(points * 1e6) / 1e6;
-
-const freshPointsCache = new Map<string, Array<[number, number]>>();
-
-/**
- * Distribution of a fresh echo's weighted substat points once tuned to +25:
- * `[points, chance]` pairs, lowest points first. Every set of 5 substats is
- * equally likely (1 / C(13,5)), and each substat's tier follows its
- * published weights, so a DP over (substats picked, points) is exact.
- */
-export function freshEchoPointsDistribution(
-  weights: Record<string, number>,
-): Array<[number, number]> {
-  const key = subStats.map((stat) => getWeight(weights, stat)).join(",");
-  const cached = freshPointsCache.get(key);
-  if (cached) return cached;
-
-  // byCount[c]: points → number of c-substat subsets × roll chance.
-  let byCount: Array<Map<number, number>> = Array.from(
-    { length: ECHO_SUBSTAT_SLOTS + 1 },
-    (_, c) => new Map(c === 0 ? [[0, 1]] : []),
-  );
-  for (const stat of subStats) {
-    const weight = getWeight(weights, stat);
-    const tiers = getSubStatRollDistribution(stat);
-    const next = byCount.map((points) => new Map(points));
-    for (let c = 0; c < ECHO_SUBSTAT_SLOTS; c++) {
-      for (const [points, mass] of byCount[c]) {
-        tiers.forEach(({ chance }, i) => {
-          const total = roundPoints(points + (i + 1) * weight);
-          next[c + 1].set(total, (next[c + 1].get(total) ?? 0) + mass * chance);
-        });
-      }
-    }
-    byCount = next;
-  }
-
-  const subsets = choose(TOTAL_SUBSTAT_TYPES, ECHO_SUBSTAT_SLOTS);
-  const out = [...byCount[ECHO_SUBSTAT_SLOTS]]
-    .map(([points, mass]) => [points, mass / subsets] as [number, number])
-    .sort((a, b) => a[0] - b[0]);
-  freshPointsCache.set(key, out);
-  return out;
-}
-
-export interface BetterEchoOdds {
-  /** This echo's weighted substat points (the Substat Score's numerator). */
-  points: number;
-  /** Chance a fresh echo, tuned to +25, scores strictly higher. */
-  better: number;
-  /** Chance it scores at least as high (ties included). */
-  atLeast: number;
-}
-
-/**
- * For a finished echo: how likely is a fresh +0 echo, tuned all the way,
- * to end up with a higher Substat Score for the same character weights?
- * Substats only; the main stat and set come from the drop.
- */
-export function betterEchoOdds(
-  tuned: TunedSubstats,
-  weights: Record<string, number>,
-): BetterEchoOdds {
-  let points = 0;
-  for (const [stat, value] of normalizeTuned(tuned)) {
-    points += getSubstatRollTier(stat, value) * getWeight(weights, stat);
-  }
-  points = roundPoints(points);
-  let better = 0;
-  let atLeast = 0;
-  for (const [freshPoints, chance] of freshEchoPointsDistribution(weights)) {
-    if (freshPoints > points + EPSILON) better += chance;
-    if (freshPoints >= points - EPSILON) atLeast += chance;
-  }
-  return { points, better: Math.min(better, 1), atLeast: Math.min(atLeast, 1) };
-}
-
-function choose(n: number, r: number): number {
+/** n choose r, as a float (small n). */
+export function choose(n: number, r: number): number {
   if (r < 0 || r > n) return 0;
   let out = 1;
   for (let i = 1; i <= r; i++) out = (out * (n - r + i)) / i;
@@ -481,28 +399,6 @@ export interface TuningGoalPresetOption {
   key: string;
   label: string;
   goal: TuningGoal;
-}
-
-/**
- * A goal from a character's substat weights: their `count` highest-weighted
- * substats at any roll (ties keep subStats order). Null when the weights
- * don't single anything out — the all-equal neutral profile.
- */
-export function getWeightsGoal(
-  weights: Record<string, number>,
-  count = 3,
-): TuningGoal | null {
-  const ranked = subStats
-    .map((stat, index) => ({ stat, index, weight: weights[stat] ?? 0 }))
-    .filter((entry) => entry.weight > 0);
-  if (!ranked.length) return null;
-  if (new Set(ranked.map((entry) => entry.weight)).size < 2 && ranked.length > count) {
-    return null;
-  }
-  return ranked
-    .sort((a, b) => b.weight - a.weight || a.index - b.index)
-    .slice(0, count)
-    .map(({ stat }) => ({ stat, min: null }));
 }
 
 const FLAT_SUBSTATS = new Set(["HP_FLAT", "ATK_FLAT", "DEF_FLAT"]);

@@ -7,8 +7,6 @@ import {
 import {
   ECHO_SUBSTAT_SLOTS,
   FULL_TUNE_COST,
-  betterEchoOdds,
-  freshEchoPointsDistribution,
   TOTAL_SUBSTAT_TYPES,
   chanceWithinEchoes,
   echoesForConfidence,
@@ -17,7 +15,6 @@ import {
   getLowerRollValue,
   getTuningGoalKey,
   getTuningVerdict,
-  getWeightsGoal,
   goalLevers,
   goalLineBreakdown,
   goalOdds,
@@ -464,86 +461,3 @@ describe("finalLineGoal", () => {
   });
 });
 
-describe("getWeightsGoal", () => {
-  it("takes the top-weighted substats at any roll, ties in subStats order", () => {
-    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
-    Object.assign(weights, { CritRate: 1, CritDMG: 1, ATK: 0.5, EnergyRegen: 0.3 });
-    expect(getWeightsGoal(weights)).toEqual([
-      { stat: "CritRate", min: null },
-      { stat: "CritDMG", min: null },
-      { stat: "ATK", min: null },
-    ]);
-  });
-
-  it("returns only what's weighted when fewer than `count` substats are", () => {
-    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
-    weights.CritDMG = 1;
-    expect(getWeightsGoal(weights)).toEqual([{ stat: "CritDMG", min: null }]);
-  });
-
-  it("is null for the neutral all-equal profile or no weights at all", () => {
-    expect(getWeightsGoal(Object.fromEntries(subStats.map((s) => [s, 1])))).toBeNull();
-    expect(getWeightsGoal(Object.fromEntries(subStats.map((s) => [s, 0])))).toBeNull();
-  });
-});
-
-describe("betterEchoOdds", () => {
-  const critOnly = Object.fromEntries(subStats.map((s) => [s, 0]));
-  critOnly.CritRate = 1;
-  // Crit tiers above 7.5% (tier 3): 8 + 8 + 8 + 3 + 3 of the ~100 total.
-  const critAboveTier3 = rollChanceAtLeast("CritRate", 8.1);
-
-  it("the fresh-echo points distribution sums to 1", () => {
-    const total = freshEchoPointsDistribution(critOnly).reduce((sum, [, p]) => sum + p, 0);
-    expect(total).toBeCloseTo(1, 10);
-  });
-
-  it("one weighted substat: beating a tier-3 roll needs it drawn (5/13) and rolled higher", () => {
-    const full: TunedSubstats = [["CritRate", 7.5], ["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430]];
-    const odds = betterEchoOdds(full, critOnly);
-    expect(odds.points).toBe(3);
-    expect(odds.better).toBeCloseTo((5 / 13) * critAboveTier3, 10);
-    expect(odds.atLeast).toBeCloseTo((5 / 13) * rollChanceAtLeast("CritRate", 7.5), 10);
-  });
-
-  it("an echo with nothing weighted is beaten by any fresh echo that draws a weighted substat", () => {
-    const full: TunedSubstats = [["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430], ["DEF_FLAT", 50]];
-    const odds = betterEchoOdds(full, critOnly);
-    expect(odds.points).toBe(0);
-    expect(odds.better).toBeCloseTo(5 / 13, 10);
-    expect(odds.atLeast).toBeCloseTo(1, 10);
-  });
-
-  it("nothing beats a perfect echo", () => {
-    const full: TunedSubstats = [["CritRate", 10.5], ["HP", 7.9], ["DEF", 9], ["ATK", 7.1], ["HP_FLAT", 430]];
-    expect(betterEchoOdds(full, critOnly).better).toBe(0);
-  });
-
-  it("agrees with a seeded simulation for a curated-style profile within 0.3 points", () => {
-    const weights = Object.fromEntries(subStats.map((s) => [s, 0]));
-    Object.assign(weights, { CritRate: 4, CritDMG: 4, BasicAttackDMGBonus: 3, ATK: 2, EnergyRegen: 2, ATK_FLAT: 1 });
-    const full: TunedSubstats = [["CritRate", 8.1], ["CritDMG", 15], ["ATK", 8.6], ["HP", 7.9], ["DEF_FLAT", 50]];
-    const exact = betterEchoOdds(full, weights);
-
-    const rand = mulberry32(4242);
-    const dists = Object.fromEntries(subStats.map((s) => [s, getSubStatRollDistribution(s)]));
-    let better = 0;
-    const trials = 200_000;
-    for (let t = 0; t < trials; t++) {
-      const pool = subStats.slice();
-      let points = 0;
-      for (let k = 0; k < ECHO_SUBSTAT_SLOTS; k++) {
-        const stat = pool.splice(Math.floor(rand() * pool.length), 1)[0];
-        let r = rand();
-        let tier = dists[stat].length;
-        for (const [i, d] of dists[stat].entries()) {
-          if (r < d.chance) { tier = i + 1; break; }
-          r -= d.chance;
-        }
-        points += tier * weights[stat];
-      }
-      if (points > exact.points + 1e-9) better += 1;
-    }
-    expect(Math.abs(exact.better - better / trials)).toBeLessThan(0.003);
-  });
-});

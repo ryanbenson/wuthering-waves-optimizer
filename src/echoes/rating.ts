@@ -231,7 +231,7 @@ export function getGradeForSubstatScorePercent(
 // count (rather than by weight alone) correctly values a low-granularity
 // stat like ATK_FLAT/DEF_FLAT below an equally-weighted 8-tier stat, since
 // no real echo can roll it any higher than tier 4 regardless of weight.
-function getBestPossibleWeightedTotal(weights: SubstatWeights): number {
+export function getBestPossibleWeightedTotal(weights: SubstatWeights): number {
   return subStats
     .map((stat) => (weights[stat] ?? 0) * getSubstatTierCount(stat))
     .sort((a, b) => b - a)

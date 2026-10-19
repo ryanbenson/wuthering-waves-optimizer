@@ -29,57 +29,13 @@
       </div>
     </section>
 
-    <section
-      v-if="betterOdds"
-      class="rounded-xl bg-base-200 p-4 flex flex-col gap-3"
-      data-test-echo-better-odds>
-      <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Odds of a better echo</h3>
-      <p class="text-sm">
-        This echo is fully tuned, so its substats are set. Its Substat Score for {{ weightsCharacterName }} is
-        <span class="font-semibold tabular-nums">
-          {{ betterOdds.score.grade }} {{ Math.round(betterOdds.score.percent) }}%</span>.
-        A fresh +0 echo tuned to +25 beats it:
-      </p>
-      <div class="flex items-end gap-3 flex-wrap">
-        <span class="text-4xl font-semibold leading-none tabular-nums" data-test-echo-better-odds-chance>
-          {{ formatTuningChance(betterOdds.better) }}
-        </span>
-        <div class="flex flex-col gap-0.5 pb-0.5">
-          <span class="text-sm font-semibold" :class="betterVerdictClass">{{ betterVerdictLabel }}</span>
-          <span class="text-xs opacity-70">{{ betterOneInLabel }}</span>
-        </div>
-      </div>
-      <div v-if="betterOdds.better > 0" class="grid grid-cols-2 gap-2 text-sm">
-        <div class="flex flex-col gap-0.5">
-          <span class="text-xs opacity-70">Coin-flip odds by</span>
-          <span class="tabular-nums">{{ formatEchoCount(echoesForConfidence(betterOdds.better, 0.5)) }}</span>
-        </div>
-        <div class="flex flex-col gap-0.5">
-          <span class="text-xs opacity-70">90% sure by</span>
-          <span class="tabular-nums">{{ formatEchoCount(echoesForConfidence(betterOdds.better, 0.9)) }}</span>
-        </div>
-      </div>
-      <div v-if="betterOdds.better > 0" class="flex flex-col gap-1" data-test-echo-better-odds-cost>
-        <span class="text-xs opacity-70">Resources to find a better echo, leveling and tuning each to +25</span>
-        <EchoResourceCostTable :rows="betterCostRows" />
-        <span class="text-xs opacity-60">
-          Feeding a leveled echo into the next returns {{ FEED_EXP_PERCENT }}% of its EXP and
-          {{ FEED_TUNER_PERCENT }}% of its tuners. Shell Credits aren't returned.
-        </span>
-      </div>
-      <p class="text-xs opacity-70">
-        Substats only: the main stat and set come from the drop. Uses {{ weightsCharacterName }}'s substat weights.
-        <button
-          type="button"
-          class="link link-primary"
-          data-test-echo-tune-odds-edit-weights
-          @click="emit('edit-weights')">
-          Edit weights
-        </button>
-      </p>
-    </section>
+    <EchoScoreOdds
+      v-if="weightsCharacter"
+      :tuned="tuned"
+      :character="weightsCharacter"
+      @edit-weights="emit('edit-weights')" />
 
-    <section v-if="untunedSlots > 0" class="flex flex-col gap-2">
+    <section v-if="untunedSlots > 0 && wantedSource !== 'none'" class="flex flex-col gap-2">
       <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Remaining tunes</h3>
       <div class="grid grid-cols-3 gap-2">
         <div class="rounded-lg bg-base-200 p-2.5 flex flex-col gap-1">
@@ -101,23 +57,13 @@
         </template>
         <template v-else>Stats you want are your goal's substats:</template>
         {{ wantedLabels || "none yet" }}.
-        <button
-          v-if="target.context === 'build'"
-          type="button"
-          class="link link-primary"
-          data-test-echo-tune-odds-edit-weights
-          @click="emit('edit-weights')">
-          Edit weights
-        </button>
       </p>
     </section>
 
-    <section v-if="!isFinishedEcho" class="rounded-xl bg-base-200 p-4 flex flex-col gap-3">
+    <!-- No build character (the inventory): odds of a goal you pick. -->
+    <section v-if="!weightsCharacter" class="rounded-xl bg-base-200 p-4 flex flex-col gap-3">
       <h3 class="text-xs font-semibold uppercase tracking-wide opacity-60">Your goal</h3>
-      <TuningGoalEditor
-        :model-value="goal"
-        :extra-presets="characterPresets"
-        @update:model-value="setGoal" />
+      <TuningGoalEditor :model-value="goal" @update:model-value="setGoal" />
 
       <template v-if="goal.length">
         <div class="flex items-end gap-3 flex-wrap">
@@ -162,7 +108,7 @@
     </section>
 
     <section
-      v-if="!isFinishedEcho && advice !== 'no-goal'"
+      v-if="!weightsCharacter && advice !== 'no-goal'"
       class="alert text-sm items-start"
       :class="advice === 'keep' || advice === 'met' ? 'alert-info' : 'alert-warning'"
       :data-test-echo-tune-odds-advice="advice">
@@ -172,7 +118,7 @@
       </div>
     </section>
 
-    <section v-if="!isFinishedEcho && (advice === 'keep' || advice === 'fresh-better')" class="flex flex-col gap-1.5 text-sm">
+    <section v-if="!weightsCharacter && (advice === 'keep' || advice === 'fresh-better')" class="flex flex-col gap-1.5 text-sm">
       <EchoResourceCostTable :rows="fromHereCostRows" />
       <div class="flex justify-between gap-3">
         <span class="opacity-70">Stop when</span>
@@ -193,19 +139,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
-import {
-  FEED_EXP_REFUND,
-  FEED_TUNER_REFUND,
-  FULL_TUNE_RESOURCES,
-  echoResources,
-  fullTuneResourcesPerSuccess,
-} from "../echoes/levelingCost";
+import { echoResources } from "../echoes/levelingCost";
 import EchoResourceCostTable, { type EchoResourceCostRow } from "./EchoResourceCostTable.vue";
 import { getReadableSubStatLabel } from "../echoes/stats";
 import {
   ECHO_SUBSTAT_SLOTS,
   TOTAL_SUBSTAT_TYPES,
-  echoesForConfidence,
   formatSubstatRoll,
   formatTuningChance,
   getTuningVerdict,
@@ -215,6 +154,7 @@ import type { EchoEditTarget } from "../composables/useEchoEditFields";
 import { useEchoTuneOdds } from "../composables/useEchoTuneOdds";
 import { encodeTuningGoalQuery } from "../utils/tuningGoalQuery";
 import TuningGoalEditor from "./TuningGoalEditor.vue";
+import EchoScoreOdds from "./EchoScoreOdds.vue";
 
 defineOptions({ name: "EchoTuneOddsTab" });
 
@@ -237,52 +177,8 @@ const {
   finalLine,
   freshLineOdds,
   timesFreshLine,
-  characterPresets,
-  weightsCharacterName,
-  isFinishedEcho,
-  betterOdds,
+  weightsCharacter,
 } = useEchoTuneOdds(() => props.target);
-
-const betterVerdictLabel = computed(() => {
-  const p = betterOdds.value?.better ?? 0;
-  if (p <= 0) return "Can't be beaten";
-  return tuningVerdictLabels[getTuningVerdict(p)];
-});
-const betterVerdictClass = computed(() => {
-  const p = betterOdds.value?.better ?? 0;
-  if (p <= 0) return "text-success";
-  return {
-    likely: "text-warning",
-    "worth-a-shot": "text-warning",
-    "long-grind": "text-info",
-    "very-rare": "text-success",
-  }[getTuningVerdict(p)];
-});
-const betterOneInLabel = computed(() => {
-  const p = betterOdds.value?.better ?? 0;
-  if (p <= 0) return "no substat roll scores higher";
-  if (p >= 1) return "every fresh echo";
-  return `about 1 in ${Math.round(1 / p).toLocaleString("en-US")} fresh echoes`;
-});
-
-const FEED_EXP_PERCENT = Math.round(FEED_EXP_REFUND * 100);
-const FEED_TUNER_PERCENT = Math.round(FEED_TUNER_REFUND * 100);
-
-// A fresh echo is leveled and tuned all the way, since any substat can
-// still lift its score; the kept echo is the last one, so it's never fed.
-const betterCostRows = computed<EchoResourceCostRow[]>(() => {
-  const p = betterOdds.value?.better ?? 0;
-  return [
-    { key: "each", label: "Each fresh echo", resources: FULL_TUNE_RESOURCES },
-    { key: "per-better", label: "Per better echo", resources: fullTuneResourcesPerSuccess(p, false) },
-    {
-      key: "per-better-fed",
-      label: "Feeding the misses back",
-      resources: fullTuneResourcesPerSuccess(p, true),
-      emphasis: true,
-    },
-  ];
-});
 
 const fromHereCostRows = computed<EchoResourceCostRow[]>(() => [
   {
@@ -291,11 +187,6 @@ const fromHereCostRows = computed<EchoResourceCostRow[]>(() => [
     resources: echoResources(odds.value.expectedExp, odds.value.expectedTuners),
   },
 ]);
-
-function formatEchoCount(count: number): string {
-  if (!Number.isFinite(count)) return "never";
-  return count === 1 ? "1 echo" : `${count.toLocaleString("en-US")} echoes`;
-}
 
 const wantedLabels = computed(() =>
   wantedStats.value.map((stat) => getReadableSubStatLabel(stat)).join(", "),

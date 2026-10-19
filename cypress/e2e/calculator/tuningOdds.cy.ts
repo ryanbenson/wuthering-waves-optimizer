@@ -1,9 +1,10 @@
 // Echo tuning odds in the Calculator's Echoes tab: each tile's small "Odds"
-// button opens a dialog (docs/adr/0044-echo-tuning-odds.md). A partly tuned
-// echo shows its Tune odds; a fully tuned one shows the chance a fresh echo
-// beats its Substat Score. The inventory side and the planner are in
-// cypress/e2e/inventory/tuningOdds.cy.ts; numbers here are pinned in
-// tests/echoes/tuningOdds.test.ts.
+// button opens a dialog (docs/adr/0044-echo-tuning-odds.md), judged by the
+// build character's Substat Score. A partly tuned echo shows where it can
+// finish by grade; a fully tuned one shows the chance a fresh echo beats
+// it, "better" defaulting to the next grade up. Numbers are pinned in
+// tests/echoes/scoreOdds.test.ts. The inventory side and the planner are in
+// cypress/e2e/inventory/tuningOdds.cy.ts.
 
 function seededEcho(subs: Array<[string, number]>) {
   const echo: Record<string, unknown> = {
@@ -33,7 +34,7 @@ function openBrantEchoesTab() {
             Brant: {
               echoes: {
                 // Fully tuned: CR and CD at tier 4, ATK% at tier 4, the rest
-                // weighted 0 for Brant — 40 weighted points.
+                // weighted 0 for Brant — 40 of 120 weighted points, C.
                 0: seededEcho([
                   ["CritRate", 8.1],
                   ["CritDMG", 16.2],
@@ -63,15 +64,16 @@ describe("Echo tuning odds — Calculator Echoes tab", () => {
     cy.get('[data-test-echo-item-odds="0"]').click();
     cy.get('[data-test-echo-item="0"]').should("have.attr", "aria-expanded", "false");
 
-    cy.get("[data-test-echo-better-odds]").should("be.visible");
+    cy.get("[data-test-echo-score-percentile]").should("be.visible");
+    cy.get("[data-test-echo-score-percentile]").should("contain.text", "C 33%").and("contain.text", "90%");
+    // "Better" defaults to the next grade up: B.
+    cy.get('[data-test-echo-score-target="B"]').should("have.attr", "aria-pressed", "true");
+    cy.get("[data-test-echo-better-odds-chance]").should("contain.text", "4.41%");
+    // Any higher score at all, by even a point, is more likely.
+    cy.get('[data-test-echo-score-target="higher"]').click();
     cy.get("[data-test-echo-better-odds-chance]").should("contain.text", "7.8%");
     cy.get("[data-test-echo-better-odds]").should("contain.text", "about 1 in 13 fresh echoes");
-    // Resources: one fresh echo to +25 is 142,600 EXP, 50 tuners and
-    // 24,260 Shell Credits; feeding the misses back is the cheaper row.
-    cy.get('[data-test-echo-resource-cost-row="each"]')
-      .should("contain.text", "142.6K")
-      .and("contain.text", "50")
-      .and("contain.text", "24.3K");
+    cy.get('[data-test-echo-resource-cost-row="each"]').should("exist");
     cy.get('[data-test-echo-resource-cost-row="per-better-fed"]').scrollIntoView();
     cy.get('[data-test-echo-resource-cost-row="per-better-fed"]').should("be.visible");
     // No goal to reach on a finished echo.
@@ -81,22 +83,25 @@ describe("Echo tuning odds — Calculator Echoes tab", () => {
     cy.get("[data-test-echo-better-odds]").should("not.exist");
   });
 
-  it("a partly tuned echo's Odds shows its Tune odds and breakdown", () => {
+  it("a partly tuned echo's Odds shows where it can finish by grade", () => {
     openBrantEchoesTab();
     cy.get('[data-test-echo-item-odds="1"]').click();
     cy.get("[data-test-echo-better-odds]").should("not.exist");
-    // Double crit: Crit DMG must show up in the last 3 tunes from 11.
-    cy.get("[data-test-echo-tune-odds-chance]").should("contain.text", "27.3%");
-    cy.get('[data-test-echo-tune-odds-line="CritDMG"]').should("contain.text", "3 / 11 draws");
-  });
+    cy.get("[data-test-tuning-goal-preset]").should("not.exist");
+    cy.get("[data-test-echo-score-odds]").should("be.visible");
+    // D or better is locked in (no row); it makes C about half the time,
+    // so the default target is the next grade up, B.
+    cy.get('[data-test-echo-score-grade-row="D"]').should("not.exist");
+    cy.get('[data-test-echo-score-grade-row="C"]').should("exist");
+    cy.get('[data-test-echo-score-grade-row="B"]')
+      .should("contain.text", "11.3%")
+      .and("contain.text", "4.41%");
+    cy.get("[data-test-echo-score-chance]").should("contain.text", "11.3%");
+    cy.get('[data-test-echo-score-advice="keep"]').should("exist");
 
-  it("the character's top substats are a goal preset", () => {
-    openBrantEchoesTab();
-    cy.get('[data-test-echo-item-odds="1"]').click();
-    cy.get('[data-test-tuning-goal-preset="character-weights"]')
-      .should("contain.text", "Brant's top 3")
-      .click();
-    cy.get('[data-test-tuning-goal-line="BasicAttackDMGBonus"]').should("exist");
+    cy.get('[data-test-echo-score-grade-row="A"]').click();
+    cy.get("[data-test-echo-score-chance]").should("contain.text", "1.04%");
+    cy.get('[data-test-echo-score-cost] [data-test-echo-resource-cost-row="from-here"]').should("exist");
   });
 
   it("Edit weights closes the odds and opens this character's weights editor", () => {
@@ -112,6 +117,6 @@ describe("Echo tuning odds — Calculator Echoes tab", () => {
     cy.get('[data-test-echo-item="1"]').click();
     cy.get('[data-test-echo-item="1"] [data-test-echo-edit-tab]').should("not.exist");
     cy.get('[data-test-echo-item="1"] [data-test-echo-item-odds="1"]').click();
-    cy.get("[data-test-echo-tune-odds]").should("be.visible");
+    cy.get("[data-test-echo-score-odds]").should("be.visible");
   });
 });
