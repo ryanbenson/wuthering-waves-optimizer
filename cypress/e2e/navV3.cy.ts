@@ -74,6 +74,31 @@ describe("v3 nav", () => {
     cy.location("pathname").should("eq", "/scanners");
     cy.get("[data-test-nav-bottom-more]").should("contain", "Scanners");
   });
+
+  it("starts each section and page at the top", () => {
+    visitV3("/");
+    cy.get('[data-test-calculator-nav="optimizer"]').click();
+    cy.get(".calculations__screens").scrollTo(0, 400);
+    cy.get(".calculations__screens").should(($el) => expect($el[0].scrollTop).to.be.gt(0));
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get(".calculations__screens").should(($el) => expect($el[0].scrollTop).to.eq(0));
+
+    // Phones scroll the whole page.
+    cy.viewport(390, 844);
+    visitV3("/");
+    cy.get(".screen--character").should("be.visible");
+    cy.scrollTo(0, 600);
+    cy.window().its("scrollY").should("be.gt", 0);
+    cy.get("[data-test-nav-section-switcher]").click();
+    cy.get('[data-test-calculator-mobile-nav="weapon"]').click();
+    cy.window().its("scrollY").should("eq", 0);
+
+    cy.get(".screen--weapon").should("be.visible");
+    cy.scrollTo(0, 300, { ensureScrollable: false });
+    cy.get("[data-test-nav-inventory]").click();
+    cy.location("pathname").should("eq", "/inventory");
+    cy.window().its("scrollY").should("eq", 0);
+  });
 });
 
 describe("Scanners in the classic UI", () => {

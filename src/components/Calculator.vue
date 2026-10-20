@@ -60,7 +60,7 @@
     <div
       class="calculations__body"
       :class="{ 'calculations__body--legacy': !isLiveResultBarEnabled }">
-    <div class="calculations__screens">
+    <div ref="screensRef" class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div v-if="false" class="alert alert-success mb-6">
           Version 3.6 content is now available
@@ -1320,10 +1320,20 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    // The screens scroll inside their own panel on desktop and with the page
+    // on phones; a new section starts at the top of both.
+    const screensRef = ref(null);
     const changeScreen = (screen: string) => {
+      const isNewScreen = screen !== curScreen.value;
       curScreen.value = screen;
       if (screen === "build-card") {
         hasVisitedBuildCard.value = true;
+      }
+      if (isNewScreen) {
+        nextTick(() => {
+          screensRef.value?.scrollTo({ top: 0 });
+          window.scrollTo({ top: 0 });
+        });
       }
     };
 
@@ -2290,6 +2300,7 @@ export default defineComponent({
       rotationsList,
       curScreen,
       changeScreen,
+      screensRef,
       hasVisitedBuildCard,
       damage,
       updateStatsEchoes,

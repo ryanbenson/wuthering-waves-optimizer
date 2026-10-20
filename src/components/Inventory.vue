@@ -40,6 +40,9 @@ const isV3 = computed(() => isV3UiEnabled(settingsStore));
 const curScreen = ref<"echoes" | "presets">("echoes");
 
 function changeScreen(screen: "echoes" | "presets") {
+  if (screen === curScreen.value) return;
   curScreen.value = screen;
+  // A new section starts at the top.
+  window.scrollTo({ top: 0 });
 }
 </script>

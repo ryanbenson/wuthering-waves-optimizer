@@ -60,6 +60,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory("/"),
   routes,
+  // Back/forward returns to where you were; a new page starts at the top.
+  // Query-only changes (e.g. /settings?section=wavescan) keep the position.
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.path !== from.path) return { top: 0 };
+    return false;
+  },
 });
 
 injectAnalytics();
