@@ -69,7 +69,10 @@ html[data-theme="black"] .nav-bottom-bar {
   min-width: 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: oklch(var(--bc) / 0.7);
+  // Dim with opacity, not a translucent colour: the white game-art icons
+  // don't follow the text colour.
+  color: oklch(var(--bc));
+  opacity: 0.7;
   cursor: pointer;
 }
 .nav-bottom-bar__pill {
@@ -81,7 +84,7 @@ html[data-theme="black"] .nav-bottom-bar {
   border-radius: 999px;
 }
 .nav-bottom-bar__item--active {
-  color: oklch(var(--bc));
+  opacity: 1;
   .nav-bottom-bar__pill {
     background: oklch(var(--p) / 0.25);
   }

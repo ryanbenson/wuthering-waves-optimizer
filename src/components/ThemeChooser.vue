@@ -1,5 +1,9 @@
 <template>
-  <div title="Change Theme" class="dropdown dropdown-end block" :class="{ 'dropdown-right': placement === 'right' }">
+  <div
+    title="Change Theme"
+    class="dropdown dropdown-end block"
+    :class="{ 'dropdown-right': placement === 'right' }"
+    @mousedown="closeDropdownOnTriggerReclick">
     <div
       tabindex="0"
       role="button"
@@ -99,6 +103,7 @@ import { computed, onMounted, ref } from "vue";
 import { THEME_OPTIONS, useTheme } from "../composables/useTheme";
 import { useUiDensity, type UiDensity } from "../composables/useUiDensity";
 import { useClassicUi } from "../composables/useClassicUi";
+import { closeDropdownOnTriggerReclick } from "../utils/dropdownToggle";
 
 defineOptions({ name: "ThemeChooser" });
 

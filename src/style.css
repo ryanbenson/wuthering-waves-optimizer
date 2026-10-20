@@ -394,8 +394,8 @@ html[data-density="compact"] .character__selection__avatar-icon {
 }
 /* The v3 nav's icons (navigation/NavIcon.vue). The SVGs keep their own
  * outline/fill in light themes, where the rules above fill every svg path
- * inside .navbar and .dropdown-content black; the id outranks them. The game
- * art is white on transparent, so it's inverted like the classic nav's. */
+ * inside .navbar and .dropdown-content black; the id outranks them. Both the
+ * art and the SVGs are white, so they're inverted like the classic nav's. */
 html[data-theme-style="light"] #navbar-container svg.nav-icon path {
   stroke: currentColor !important;
   fill: none !important;

@@ -86,10 +86,13 @@ html[data-theme="black"] .nav-rail {
   border-radius: 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: oklch(var(--bc) / 0.7);
+  // Dim with opacity, not a translucent colour: the white game-art icons
+  // don't follow the text colour.
+  color: oklch(var(--bc));
+  opacity: 0.7;
 }
 .nav-rail__item:hover {
-  color: oklch(var(--bc));
+  opacity: 1;
 }
 .nav-rail__pill {
   display: flex;
@@ -104,7 +107,7 @@ html[data-theme="black"] .nav-rail {
   background: oklch(var(--bc) / 0.06);
 }
 .nav-rail__item--active {
-  color: oklch(var(--bc));
+  opacity: 1;
   .nav-rail__pill {
     background: oklch(var(--p) / 0.25);
   }

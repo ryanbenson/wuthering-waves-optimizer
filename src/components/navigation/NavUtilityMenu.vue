@@ -1,6 +1,10 @@
 <template>
   <!-- Same focus-driven dropdown as ThemeChooser.vue: it closes on click-away. -->
-  <div class="dropdown dropdown-end block" :class="placementClass" data-test-options-menu>
+  <div
+    class="dropdown dropdown-end block"
+    :class="placementClass"
+    data-test-options-menu
+    @mousedown="closeDropdownOnTriggerReclick">
     <slot name="trigger">
       <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="More">
         <svg
@@ -193,6 +197,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useClassicUi } from "../../composables/useClassicUi";
+import { closeDropdownOnTriggerReclick } from "../../utils/dropdownToggle";
 
 defineOptions({
   name: "NavUtilityMenu",

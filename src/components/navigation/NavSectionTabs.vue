@@ -3,7 +3,8 @@
     :aria-label="label"
     class="nav-section-tabs flex items-stretch gap-1 px-3 xl:px-4 h-[52px] bg-base-300 text-base-content border-b border-base-content/10 overflow-x-auto">
     <template v-for="(group, index) in desktopGroups" :key="group.label">
-      <div v-if="index > 0" class="w-px my-3.5 mx-1.5 bg-base-content/10 shrink-0" aria-hidden="true"></div>
+      <!-- Group dividers only with labels; icons alone read fine without them. -->
+      <div v-if="index > 0" class="hidden xl:block w-px my-3.5 mx-1.5 bg-base-content/10 shrink-0" aria-hidden="true"></div>
       <button
         v-for="item in group.items"
         :key="item.key"
@@ -12,7 +13,7 @@
         :class="
           item.key === active
             ? 'border-primary text-base-content'
-            : 'border-transparent text-base-content/70 hover:text-base-content'
+            : 'border-transparent text-base-content opacity-70 hover:opacity-100'
         "
         :title="item.label"
         :aria-label="item.label"

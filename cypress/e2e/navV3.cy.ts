@@ -25,6 +25,12 @@ describe("v3 nav", () => {
     cy.get("[data-test-nav-inventory]").click();
     cy.location("pathname").should("eq", "/inventory");
     cy.get("[data-test-nav-inventory]").should("have.attr", "aria-current", "page");
+
+    // The rail's menus close when their button is clicked again.
+    cy.get("[data-test-options-menu] [role=button]").click();
+    cy.get("[data-test-options-settings]").should("be.visible");
+    cy.get("[data-test-options-menu] [role=button]").click();
+    cy.get("[data-test-options-settings]").should("not.be.visible");
     cy.get('[data-test-inventory-nav="presets"]').should("be.visible");
   });
 
@@ -50,12 +56,18 @@ describe("v3 nav", () => {
     cy.get("[data-test-nav-section-switcher]").click();
     cy.get('[data-test-calculator-mobile-nav="optimizer"]').click();
     cy.get(".screen--optimizer").should("be.visible");
-    cy.get("[data-test-nav-section-switcher]").should("contain", "Optimizer");
+    cy.get("[data-test-nav-section-title]").should("contain", "Optimizer");
+
+    // Clicking the hamburger again closes it.
+    cy.get("[data-test-nav-section-switcher]").click();
+    cy.get('[data-test-calculator-mobile-nav="weapon"]').should("be.visible");
+    cy.get("[data-test-nav-section-switcher]").click();
+    cy.get('[data-test-calculator-mobile-nav="weapon"]').should("not.be.visible");
 
     // The main sections are in the bottom bar; everything else is under More.
     cy.get("[data-test-nav-inventory]").click();
     cy.location("pathname").should("eq", "/inventory");
-    cy.get("[data-test-nav-section-switcher]").should("contain", "Echoes");
+    cy.get("[data-test-nav-section-title]").should("contain", "Echoes");
 
     cy.get("[data-test-nav-bottom-more]").click();
     cy.get("[data-test-options-scanners]").click();
