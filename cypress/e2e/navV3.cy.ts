@@ -1,5 +1,5 @@
-// The v3 header (ADR 0045): labeled main sections, the page's own sections as
-// a second row on desktop and a bottom bar on phones, and the Scanners page.
+// The v3 nav (ADR 0045): a side rail and a row of the page's sections on
+// desktop, a section switcher and a bottom bar on phones, and the Scanners page.
 const visitV3 = (path: string) =>
   cy.visit(path, {
     onBeforeLoad(win) {
@@ -10,7 +10,7 @@ const visitV3 = (path: string) =>
     },
   });
 
-describe("v3 header", () => {
+describe("v3 nav", () => {
   it("switches main sections and calculator sections on desktop", () => {
     visitV3("/");
     cy.get("[data-test-nav-calculator]").should("have.attr", "aria-current", "page");
@@ -24,6 +24,7 @@ describe("v3 header", () => {
 
     cy.get("[data-test-nav-inventory]").click();
     cy.location("pathname").should("eq", "/inventory");
+    cy.get("[data-test-nav-inventory]").should("have.attr", "aria-current", "page");
     cy.get('[data-test-inventory-nav="presets"]').should("be.visible");
   });
 
@@ -44,21 +45,22 @@ describe("v3 header", () => {
   it("uses a section switcher and a bottom bar on phones", () => {
     cy.viewport(390, 844);
     visitV3("/");
-    cy.get('[data-test-calculator-nav="optimizer"]').should("not.be.visible");
-
-    cy.get('[data-test-calculator-mobile-nav="optimizer"]').click();
-    cy.get(".screen--optimizer").should("be.visible");
-
-    // Sections not in the bar sit behind "All".
-    cy.get("[data-test-nav-bottom-all]").click();
-    cy.get('[data-test-calculator-mobile-nav="weapon"]').click();
-    cy.get(".screen--weapon").should("be.visible");
-    cy.get("[data-test-nav-bottom-all]").should("contain", "Weapon");
+    cy.get('[data-test-calculator-nav="optimizer"]').should("not.exist");
 
     cy.get("[data-test-nav-section-switcher]").click();
-    cy.get("[data-test-nav-switcher-scanners]").click();
+    cy.get('[data-test-calculator-mobile-nav="optimizer"]').click();
+    cy.get(".screen--optimizer").should("be.visible");
+    cy.get("[data-test-nav-section-switcher]").should("contain", "Optimizer");
+
+    // The main sections are in the bottom bar; everything else is under More.
+    cy.get("[data-test-nav-inventory]").click();
+    cy.location("pathname").should("eq", "/inventory");
+    cy.get("[data-test-nav-section-switcher]").should("contain", "Echoes");
+
+    cy.get("[data-test-nav-bottom-more]").click();
+    cy.get("[data-test-options-scanners]").click();
     cy.location("pathname").should("eq", "/scanners");
-    cy.get("[data-test-nav-section-switcher]").should("contain", "Scanners");
+    cy.get("[data-test-nav-bottom-more]").should("contain", "Scanners");
   });
 });
 

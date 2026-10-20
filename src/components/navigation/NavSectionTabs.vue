@@ -1,34 +1,29 @@
 <template>
   <nav
     :aria-label="label"
-    class="flex items-center gap-1 px-3 xl:px-5 h-12 border-t border-base-content/10 overflow-x-auto">
-    <div
-      v-for="(group, index) in desktopGroups"
-      :key="group.label"
-      class="flex items-center gap-0.5 shrink-0"
-      :class="{ 'pr-2 mr-1 border-r border-base-content/10': index < desktopGroups.length - 1 }">
-      <span
-        v-if="desktopGroups.length > 1"
-        class="hidden xl:inline text-[0.7rem] font-bold uppercase tracking-wider text-base-content/55 pl-1 pr-2">
-        {{ group.label }}
-      </span>
+    class="nav-section-tabs flex items-stretch gap-1 px-3 xl:px-4 h-[52px] bg-base-300 text-base-content border-b border-base-content/10 overflow-x-auto">
+    <template v-for="(group, index) in desktopGroups" :key="group.label">
+      <div v-if="index > 0" class="w-px my-3.5 mx-1.5 bg-base-content/10 shrink-0" aria-hidden="true"></div>
       <button
         v-for="item in group.items"
         :key="item.key"
         type="button"
-        class="flex items-center gap-2 h-9 px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors"
+        class="flex items-center gap-2 shrink-0 px-2.5 xl:px-3 border-b-2 text-xs font-semibold whitespace-nowrap transition-colors"
         :class="
           item.key === active
-            ? 'bg-base-content/10 text-base-content'
-            : 'text-base-content/70 hover:text-base-content hover:bg-base-content/5'
+            ? 'border-primary text-base-content'
+            : 'border-transparent text-base-content/70 hover:text-base-content'
         "
+        :title="item.label"
+        :aria-label="item.label"
         :aria-current="item.key === active ? 'page' : undefined"
         v-bind="{ [`data-test-${sections.testName}-nav`]: item.testId }"
         @click="emit('select', item.key)">
-        <NavIcon :d="item.icon" class="hidden xl:block size-[18px]" />
-        {{ item.label }}
+        <NavIcon :icon="item.icon" class="size-[22px]" />
+        <!-- Labels from xl: at 1024px the icons alone fit beside the rail. -->
+        <span class="hidden xl:inline">{{ item.label }}</span>
       </button>
-    </div>
+    </template>
   </nav>
 </template>
 
@@ -37,6 +32,7 @@ import { computed } from "vue";
 import NavIcon from "./NavIcon.vue";
 import type { NavSections } from "./navSections";
 
+// The v3 desktop row of the page's own sections (ADR 0045), right of the rail.
 const props = defineProps<{
   sections: NavSections;
   active: string;
@@ -51,3 +47,13 @@ const desktopGroups = computed(() =>
     .filter((group) => group.items.length > 0),
 );
 </script>
+
+<style lang="scss" scoped>
+// Scrolls sideways only if a page ever has more tabs than fit; no bar.
+.nav-section-tabs {
+  scrollbar-width: none;
+}
+html[data-theme="black"] .nav-section-tabs {
+  background: oklch(var(--b1));
+}
+</style>

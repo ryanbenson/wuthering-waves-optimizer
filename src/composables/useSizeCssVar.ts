@@ -1,18 +1,23 @@
 import { onMounted, onUnmounted, watch, type Ref } from "vue";
 
 /**
- * Keeps a CSS variable on <html> equal to an element's rendered height, e.g.
- * `--nav-h` for the fixed top nav, so layout offsets follow it instead of a
- * hard-coded 80px. With `resetTo`, the variable goes back to that value when
- * the component unmounts (Vue runs the old page's unmount before the new
- * page's mount, so the next nav's value wins).
+ * Keeps a CSS variable on <html> equal to an element's rendered height (or
+ * width), e.g. `--nav-h` for the fixed top nav, so layout offsets follow it
+ * instead of a hard-coded 80px. With `resetTo`, the variable goes back to that
+ * value when the component unmounts (Vue runs the old page's unmount before
+ * the new page's mount, so the next nav's value wins).
  */
-export function useHeightCssVar(target: Ref<HTMLElement | null>, name: string, resetTo?: string) {
+export function useSizeCssVar(
+  target: Ref<HTMLElement | null>,
+  name: string,
+  options: { dimension?: "height" | "width"; resetTo?: string } = {},
+) {
+  const { dimension = "height", resetTo } = options;
   const root = document.documentElement;
   let observer: ResizeObserver | null = null;
 
   function update(el: HTMLElement) {
-    root.style.setProperty(name, `${Math.round(el.getBoundingClientRect().height)}px`);
+    root.style.setProperty(name, `${Math.round(el.getBoundingClientRect()[dimension])}px`);
   }
 
   function observe(el: HTMLElement | null) {

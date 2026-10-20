@@ -1,14 +1,28 @@
 <template>
   <Teleport to="#navbar-container">
+    <!-- Fixed children (the rail, the bottom bar) don't count toward its height. -->
     <div ref="barRef">
-      <!-- v3: labeled two-row header (ADR 0045). -->
-      <NavV3Header
-        v-if="isV3"
-        :cur-page="curPage"
-        :sections="sections"
-        :active-section="activeSection"
-        @home="handleLogoClick"
-        @select-section="emit('select-section', $event)" />
+      <!-- v3: a side rail and a row of the page's sections on desktop; a header
+           with a section switcher and a bottom bar on phones (ADR 0045). -->
+      <template v-if="isV3 && isDesktop">
+        <NavRail :cur-page="curPage" @home="handleLogoClick" />
+        <NavSectionTabs
+          v-if="sections"
+          class="ml-[var(--nav-rail-w)]"
+          :sections="sections"
+          :active="activeSection"
+          :label="`${pageLabel(curPage)} sections`"
+          @select="emit('select-section', $event)" />
+      </template>
+      <template v-else-if="isV3">
+        <NavPhoneHeader
+          :cur-page="curPage"
+          :sections="sections"
+          :active="activeSection"
+          @home="handleLogoClick"
+          @select="emit('select-section', $event)" />
+        <NavBottomBar :cur-page="curPage" />
+      </template>
 
       <!-- Classic: the original icon bar. -->
       <div
@@ -115,13 +129,17 @@ import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import NavUtilityMenu from "./NavUtilityMenu.vue";
-import NavV3Header from "./NavV3Header.vue";
-import type { NavSections } from "./navSections";
+import NavRail from "./NavRail.vue";
+import NavSectionTabs from "./NavSectionTabs.vue";
+import NavPhoneHeader from "./NavPhoneHeader.vue";
+import NavBottomBar from "./NavBottomBar.vue";
+import { pageLabel, type NavSections } from "./navSections";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
 import { isV3UiEnabled } from "../../utils/uiVersion";
-import { useHeightCssVar } from "../../composables/useHeightCssVar";
+import { useSizeCssVar } from "../../composables/useSizeCssVar";
+import { useMediaQuery } from "../../composables/useMediaQuery";
 
 defineOptions({
   name: "Nav",
@@ -136,8 +154,8 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // v3 only: the page's own sections (row two on desktop, the bottom bar on
-  // phones). Classic pages fill the slots below instead.
+  // v3 only: the page's own sections (the tab row on desktop, the section
+  // switcher on phones). Classic pages fill the slots below instead.
   sections: {
     type: Object as PropType<NavSections | null>,
     default: null,
@@ -167,10 +185,13 @@ const settingsStore = useSettingsStore();
 const characterBrowserRef = ref<InstanceType<typeof CalculatorCharacterBrowser> | null>(null);
 
 const isV3 = computed(() => isV3UiEnabled(settingsStore));
+// Tailwind's lg. Rendered with v-if rather than hidden with CSS, so each nav
+// control (and its data-test-* attribute) is on the page once.
+const isDesktop = useMediaQuery("(min-width: 1024px)");
 
 // The bar is position: fixed, so pages offset themselves by --nav-h.
 const barRef = ref<HTMLElement | null>(null);
-useHeightCssVar(barRef, "--nav-h");
+useSizeCssVar(barRef, "--nav-h");
 
 const displayCharacter = computed(() => {
   if (activeCharacter.value) {
@@ -236,7 +257,7 @@ html[data-theme="black"] {
 
 <style lang="scss">
 // The logo is white on transparent, so it's drawn as a mask in the text
-// colour to show up in light themes too. Unscoped: NavV3Header.vue uses it.
+// colour to show up in light themes too. Unscoped: the v3 nav uses it.
 .nav-logo {
   display: block;
   width: 40px;

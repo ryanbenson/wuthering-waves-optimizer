@@ -1,23 +1,25 @@
 <template>
   <!-- Same focus-driven dropdown as ThemeChooser.vue: it closes on click-away. -->
-  <div class="dropdown dropdown-end block" data-test-options-menu>
-    <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="More">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        class="inline-block size-6 stroke-current">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-      </svg>
-    </div>
+  <div class="dropdown dropdown-end block" :class="placementClass" data-test-options-menu>
+    <slot name="trigger">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="More">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="inline-block size-6 stroke-current">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+        </svg>
+      </div>
+    </slot>
     <div
       tabindex="0"
-      class="dropdown-content bg-base-200 text-base-content rounded-box top-px border border-white/5 shadow-2xl outline-1 outline-black/5"
-      :class="isV3 ? 'mt-14' : 'mt-16'">
+      class="dropdown-content z-50 bg-base-200 text-base-content rounded-box border border-white/5 shadow-2xl outline-1 outline-black/5"
+      :class="contentClass">
       <!-- Classic UI: flat list. -->
       <ul v-if="!isV3" class="menu w-56">
         <li class="mb-2">
@@ -189,16 +191,35 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { useClassicUi } from "../../composables/useClassicUi";
 
 defineOptions({
   name: "NavUtilityMenu",
 });
 
-defineProps<{
-  curPage: string;
-  isV3: boolean;
-}>();
+// "right" opens beside the v3 side rail; "up" opens above the phone bottom bar,
+// which passes its own trigger.
+const props = withDefaults(
+  defineProps<{
+    curPage: string;
+    isV3: boolean;
+    placement?: "down" | "right" | "up";
+  }>(),
+  { placement: "down" },
+);
+
+defineSlots<{ trigger?(): any }>();
+
+const placementClass = computed(() => ({
+  "dropdown-right": props.placement === "right",
+  "dropdown-top": props.placement === "up",
+}));
+const contentClass = computed(() => {
+  if (props.placement === "right") return "ml-2 w-max";
+  if (props.placement === "up") return "mb-3";
+  return ["top-px", props.isV3 ? "mt-14" : "mt-16"];
+});
 
 function closeMenu() {
   (document.activeElement as HTMLElement | null)?.blur();
@@ -213,6 +234,13 @@ function switchToClassicUi() {
 </script>
 
 <style lang="scss" scoped>
+// The global stylesheet's leftover `a` purple, which the classic bar's own
+// styles used to cover; the v3 rail and bottom bar don't.
+.dropdown-content a,
+.dropdown-content a:hover {
+  color: inherit;
+}
+
 .subnav--v3 {
   .subnav__eyebrow {
     font-size: 0.65rem;

@@ -27,9 +27,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* The fixed top nav's height and the phone bottom bar's, measured by
-   * navigation/Nav.vue. Layout offsets read these instead of a fixed 80px. */
+  /* The fixed top nav's height, the v3 side rail's width and the phone bottom
+   * bar's height, measured by navigation/Nav.vue. Layout offsets read these
+   * instead of a fixed 80px. */
   --nav-h: 80px;
+  --nav-rail-w: 0px;
   --nav-bottom-h: 0px;
 }
 
@@ -390,10 +392,17 @@ html[data-density="compact"] .character__selection__avatar-icon {
   width: 1.15rem;
   height: 1.15rem;
 }
-/* The v3 header's stroke icons (navigation/NavIcon.vue) stay outlines in light
- * themes: the rules above fill every svg path inside .navbar and
- * .dropdown-content black. The id outranks them. */
+/* The v3 nav's icons (navigation/NavIcon.vue). The SVGs keep their own
+ * outline/fill in light themes, where the rules above fill every svg path
+ * inside .navbar and .dropdown-content black; the id outranks them. The game
+ * art is white on transparent, so it's inverted like the classic nav's. */
 html[data-theme-style="light"] #navbar-container svg.nav-icon path {
   stroke: currentColor !important;
   fill: none !important;
+}
+html[data-theme-style="light"] #navbar-container svg.nav-icon path.nav-icon__fill {
+  fill: currentColor !important;
+}
+html[data-theme-style="light"] .nav-icon-img {
+  filter: invert(100%);
 }

@@ -1,5 +1,5 @@
 <template>
-  <div title="Change Theme" class="dropdown dropdown-end block">
+  <div title="Change Theme" class="dropdown dropdown-end block" :class="{ 'dropdown-right': placement === 'right' }">
     <div
       tabindex="0"
       role="button"
@@ -15,7 +15,8 @@
     </div>
     <div
       tabindex="0"
-      class="dropdown-content bg-base-200 text-base-content rounded-box top-px max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16">
+      class="dropdown-content bg-base-200 text-base-content rounded-box top-px max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5"
+      :class="placement === 'right' ? 'ml-2 w-max' : 'mt-16'">
       <ul class="menu w-56">
         <li class="menu-title text-xs">Theme</li>
         <li v-for="option in themeOptions" :key="option">
@@ -100,6 +101,9 @@ import { useUiDensity, type UiDensity } from "../composables/useUiDensity";
 import { useClassicUi } from "../composables/useClassicUi";
 
 defineOptions({ name: "ThemeChooser" });
+
+// "right": opens beside the trigger, for the v3 side rail.
+withDefaults(defineProps<{ placement?: "down" | "right" }>(), { placement: "down" });
 
 const { theme: settingsTheme, setTheme: applyTheme } = useTheme();
 const { density, setDensity, initDensity } = useUiDensity();

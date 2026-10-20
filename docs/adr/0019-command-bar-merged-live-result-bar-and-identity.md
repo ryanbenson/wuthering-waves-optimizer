@@ -3,7 +3,6 @@ status: accepted
 date: 2026-09-01
 tags: [calculator, components]
 supersedes: [0013]
-superseded_by: [0045]
 ---
 
 # 19. Command Bar (merged live result bar + character identity)
@@ -126,5 +125,3 @@ stacked components into one thin row. This ADR builds that approved layout.
   elsewhere in v3 (weapon panel, party page, Command Bar avatar) made the
   nav's own character-swap click redundant, and per-page inconsistency
   read as a bug rather than an intentional cue.
-  **Superseded 2026-10-20:** v3's tuning icon is gone too. The logo and a
-  labeled Calculator tab are the home links now (ADR 0045).
