@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
 type SectionId =
   | "preferences"
@@ -86,7 +87,10 @@ const sectionGroups = computed<WorkspaceNavGroup[]>(() => [
 
 const allSections = computed(() => sectionGroups.value.flatMap((g) => g.items));
 
-const activeSection = ref<SectionId>("preferences");
+// /settings?section=wavescan (the Scanners page's import link) opens that section.
+const activeSection = ref<SectionId>(
+  useRoute()?.query.section === "wavescan" ? "wavescan" : "preferences",
+);
 const activeSectionMeta = computed(
   () =>
     allSections.value.find((s) => s.id === activeSection.value) ??

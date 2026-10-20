@@ -25,6 +25,7 @@ import LegalView from "./pages/LegalView.vue";
 import InventoryView from "./pages/InventoryView.vue";
 import ConveneView from "./pages/ConveneView.vue";
 import TeamRotationsView from "./pages/TeamRotationsView.vue";
+import ScannersView from "./pages/ScannersView.vue";
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -53,6 +54,7 @@ const routes = [
   { path: "/inventory", component: InventoryView, name: "InventoryView" },
   { path: "/convene", component: ConveneView, name: "ConveneView" },
   { path: "/teams", component: TeamRotationsView, name: "TeamRotationsView" },
+  { path: "/scanners", component: ScannersView, name: "ScannersView" },
 ];
 
 const router = createRouter({

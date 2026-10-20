@@ -5,7 +5,12 @@
       'calculations--full-width': curScreen === 'build-card',
       'calculations--live-bar': isLiveResultBarEnabled,
     }">
-    <Nav cur-page="home" @home="changeScreen('character')">
+    <Nav
+      cur-page="home"
+      :sections="isLiveResultBarEnabled ? calculatorSections : null"
+      :active-section="curScreen"
+      @home="changeScreen('character')"
+      @select-section="changeScreen">
       <template #mobile>
         <CalculatorMobileSubNav
           @change-screen="changeScreen"
@@ -567,6 +572,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import { CALCULATOR_SECTIONS } from "./navigation/navSections";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import CalculatorCommandBar from "./CalculatorCommandBar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
@@ -2266,6 +2272,7 @@ export default defineComponent({
 
     return {
       allDamages,
+      calculatorSections: CALCULATOR_SECTIONS,
       character,
       characters,
       characterLevel,
@@ -2405,7 +2412,7 @@ export default defineComponent({
   // live AppUpdateBanner height via --announce-banner-h (0px when the
   // banner is hidden/unmounted). Falling out of sync here overflows the
   // parent and clips the bottom of both panels whenever the banner shows.
-  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
+  height: calc(100vh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
 
   @media (max-width: 768px) {
     display: block;

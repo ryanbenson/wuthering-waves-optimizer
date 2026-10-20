@@ -2,11 +2,15 @@
   <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
   <ToastContainer />
   <ConfirmDialog />
+  <!-- --nav-h / --nav-bottom-h: the fixed nav's measured heights (Nav.vue). -->
   <div
-    class="contain mt-20"
-    :style="{ height: 'calc(100vh - 80px - var(--announce-banner-h, 0px))' }">
+    class="contain"
+    :style="{
+      marginTop: 'var(--nav-h)',
+      height: 'calc(100vh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px))',
+    }">
     <AppUpdateBanner />
-    <div class="content">
+    <div class="content" :style="{ paddingBottom: 'var(--nav-bottom-h)' }">
       <RouterView />
     </div>
   </div>

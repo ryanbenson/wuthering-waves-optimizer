@@ -27,6 +27,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* The fixed top nav's height and the phone bottom bar's, measured by
+   * navigation/Nav.vue. Layout offsets read these instead of a fixed 80px. */
+  --nav-h: 80px;
+  --nav-bottom-h: 0px;
 }
 
 a {
@@ -385,4 +389,11 @@ html[data-density="compact"] .character__selection__avatar-wrap {
 html[data-density="compact"] .character__selection__avatar-icon {
   width: 1.15rem;
   height: 1.15rem;
+}
+/* The v3 header's stroke icons (navigation/NavIcon.vue) stay outlines in light
+ * themes: the rules above fill every svg path inside .navbar and
+ * .dropdown-content black. The id outranks them. */
+html[data-theme-style="light"] #navbar-container svg.nav-icon path {
+  stroke: currentColor !important;
+  fill: none !important;
 }
