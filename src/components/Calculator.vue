@@ -5,7 +5,7 @@
       'calculations--full-width': curScreen === 'build-card',
       'calculations--live-bar': isLiveResultBarEnabled,
     }">
-    <Nav cur-page="home">
+    <Nav cur-page="home" @home="changeScreen('character')">
       <template #mobile>
         <CalculatorMobileSubNav
           @change-screen="changeScreen"

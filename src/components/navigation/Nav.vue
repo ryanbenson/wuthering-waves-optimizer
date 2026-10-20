@@ -5,6 +5,16 @@
       :class="{ 'h-20': curPage === 'inventory' }"
       style="min-height: 80px">
       <div class="navbar-start">
+        <!-- Hidden on phones: the bar already runs out of room there. -->
+        <RouterLink
+          to="/"
+          class="btn btn-ghost p-0 hidden sm:flex justify-center basis-[48px] min-w-[48px] mr-2"
+          aria-label="Wuthering Tools home"
+          title="Wuthering Tools"
+          data-test-nav-logo
+          @click="handleLogoClick">
+          <span class="nav-logo" aria-hidden="true"></span>
+        </RouterLink>
         <details class="main-menu-mobile dropdown" v-if="!disableMobileNav">
           <summary tabindex="0" role="button" class="btn btn-ghost size-5 p-0 flex justify-center min-w-[48px] mr-2 lg:hidden">
             <svg
@@ -301,6 +311,10 @@ defineSlots<{
   mobile?(): any;
 }>();
 
+// "home": the logo was clicked while already on the calculator, so it can go
+// back to its main (Character) screen.
+const emit = defineEmits<{ home: [] }>();
+
 const characterStore = useCharacterStore();
 const { activeCharacter } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
@@ -337,6 +351,12 @@ function handleCalculatorNavClick(event: MouseEvent) {
   if (props.curPage === "home" && !showTuningIcon.value) {
     event.preventDefault();
     characterBrowserRef.value?.triggerOpenModal();
+  }
+}
+
+function handleLogoClick() {
+  if (props.curPage === "home") {
+    emit("home");
   }
 }
 
@@ -388,6 +408,16 @@ html[data-theme="black"] {
   .navbar {
     background: oklch(var(--b1)) !important;
   }
+}
+
+// The logo is white on transparent, so it's drawn as a mask in the text
+// colour to show up in light themes too.
+.nav-logo {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: currentColor;
+  mask: url("/logo.png") center / contain no-repeat;
 }
 
 .nav-character-avatar {
