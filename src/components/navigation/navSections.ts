@@ -27,6 +27,8 @@ export interface NavSectionItem {
   testId: string;
   /** Only in the phone section switcher, not the desktop tabs. */
   phoneOnly?: boolean;
+  /** A small count beside the label, e.g. Settings' number of labs. */
+  badge?: string;
 }
 
 export interface NavSectionGroup {
@@ -95,6 +97,18 @@ export const NAV_ICONS = {
   scanner: outline("M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"),
   more: outline("M5 12h.01M12 12h.01M19 12h.01"),
   menu: outline("M4 6h16M4 12h16M4 18h16"),
+  // Info and Settings sections.
+  overview: outline("M2 12a10 10 0 1020 0 10 10 0 10-20 0z", "M12 16v-4M12 8h.01"),
+  echoRating: outline("M6 8a6 6 0 1012 0 6 6 0 10-12 0z", "M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"),
+  tuningOdds: outline("M4 17l6-6 4 4 6-8", "M14 7h6v6"),
+  formulas: outline("M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"),
+  credits: outline(
+    "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z",
+  ),
+  preferences: outline("M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"),
+  backupRestore: outline("M21 8v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8", "M23 3H1v5h22V3z", "M10 12h4"),
+  dangerZone: outline("M3 6h18", "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"),
+  labs: outline("M9 2v6.3L4.2 17a2 2 0 001.8 3h12a2 2 0 001.8-3L15 8.3V2", "M8.5 2h7M8 15h8"),
 } satisfies Record<string, NavIconDef>;
 
 export interface NavMainSection {
@@ -175,6 +189,46 @@ export const INVENTORY_SECTIONS: NavSections = {
         { key: "echoes", label: "Echoes", icon: NAV_ICONS.echoes, testId: "echoes" },
         { key: "presets", label: "Presets", icon: NAV_ICONS.presets, testId: "presets" },
       ],
+    },
+  ],
+};
+
+/** Info's pages, keyed by their route path. */
+export const INFO_SECTIONS: NavSections = {
+  testName: "info",
+  groups: [
+    {
+      label: "Info",
+      items: [
+        { key: "/info", label: "Overview", icon: NAV_ICONS.overview, testId: "overview" },
+        { key: "/info/cv-echo-rating", label: "CV & Echo Rating", icon: NAV_ICONS.echoRating, testId: "cv-echo-rating" },
+        { key: "/info/tuning-odds", label: "Tuning Planner", icon: NAV_ICONS.tuningOdds, testId: "tuning-odds" },
+        { key: "/info/formulas", label: "Formulas", icon: NAV_ICONS.formulas, testId: "formulas" },
+        { key: "/info/credits", label: "Credits & Community", icon: NAV_ICONS.credits, testId: "credits" },
+      ],
+    },
+  ],
+};
+
+/** Settings sections, keyed by SettingsWorkspace.vue's section ids. */
+export const SETTINGS_SECTIONS: NavSections = {
+  testName: "settings",
+  groups: [
+    {
+      label: "General",
+      items: [{ key: "preferences", label: "Preferences", icon: NAV_ICONS.preferences, testId: "preferences" }],
+    },
+    {
+      label: "Your Data",
+      items: [
+        { key: "backup-restore", label: "Backup & Restore", icon: NAV_ICONS.backupRestore, testId: "backup-restore" },
+        { key: "wavescan", label: "Wavescan", icon: NAV_ICONS.scanner, testId: "wavescan" },
+        { key: "danger-zone", label: "Danger Zone", icon: NAV_ICONS.dangerZone, testId: "danger-zone" },
+      ],
+    },
+    {
+      label: "Labs",
+      items: [{ key: "labs", label: "Labs", icon: NAV_ICONS.labs, testId: "labs", badge: "1" }],
     },
   ],
 };

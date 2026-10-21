@@ -75,9 +75,9 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, navigation |
-| [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, settings, stores |
+| [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, settings, stores |
 | [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
-| [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, routing, content |
+| [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, routing, content |
 | [0025](./0025-privacy-legal-formatting-consistency.md) | Privacy & Legal formatting consistency (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
 | [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes, weapons, enemies |
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | | team-rotations, components |

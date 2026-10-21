@@ -25,6 +25,7 @@
               @click="select(item.key)">
               <NavIcon :icon="item.icon" class="size-6" />
               {{ item.label }}
+              <span v-if="item.badge" class="badge badge-primary badge-sm font-mono">{{ item.badge }}</span>
             </button>
           </li>
         </template>

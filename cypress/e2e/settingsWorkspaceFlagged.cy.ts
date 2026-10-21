@@ -16,38 +16,45 @@ describe("Settings Workspace (v3 UI)", () => {
     cy.viewport(1280, 800);
   });
 
-  it("switches sections via the desktop sidebar", () => {
+  it("switches sections via the tab row", () => {
     visitWithFlagEnabled();
 
-    cy.get('[data-test-workspace-nav-item="preferences"]').should(
-      "have.class",
-      "workspace-side-nav__item--active",
-    );
+    cy.get('[data-test-settings-nav="preferences"]').should("have.attr", "aria-current", "page");
     cy.get('[data-test-hide-wont-build-characters]').should("exist");
 
-    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
+    cy.get('[data-test-settings-nav="backup-restore"]').click();
     cy.get('[data-test-settings-export-copy]').should("be.visible");
     cy.get(".alert-warning").should("contain.text", "replaces all of your existing data");
 
-    cy.get('[data-test-workspace-nav-item="danger-zone"]').click();
+    cy.get('[data-test-settings-nav="danger-zone"]').click();
     cy.contains("button", "Delete").should("be.visible");
 
-    cy.get('[data-test-workspace-nav-item="labs"]').click();
+    cy.get('[data-test-settings-nav="labs"]').click();
     cy.contains("Echo scanning").should("be.visible");
   });
 
-  it("switches sections via the always-visible mobile pill row", () => {
+  it("switches sections via the phone section menu", () => {
     cy.viewport(390, 844);
     visitWithFlagEnabled();
 
-    // No trigger to open first - every pill is already visible.
-    cy.get('[data-test-workspace-nav-mobile-item="backup-restore"]').click();
+    cy.get("[data-test-nav-section-switcher]").click();
+    cy.get('[data-test-settings-mobile-nav="backup-restore"]').click();
     cy.get('[data-test-settings-export-download]').should("be.visible");
+    cy.get("[data-test-nav-section-title]").should("have.text", "Backup & Restore");
+  });
+
+  it("opens the Wavescan section from the Scanners page's link", () => {
+    cy.visit("/settings?section=wavescan", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("settings", JSON.stringify({ config: {}, labs: {} }));
+      },
+    });
+    cy.get('[data-test-settings-nav="wavescan"]').should("have.attr", "aria-current", "page");
   });
 
   it("exports data via download and copy", () => {
     visitWithFlagEnabled();
-    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
+    cy.get('[data-test-settings-nav="backup-restore"]').click();
 
     cy.window().then((win) => {
       cy.stub(win.navigator.clipboard, "writeText").as("copy");
@@ -58,7 +65,7 @@ describe("Settings Workspace (v3 UI)", () => {
 
   it("imports and overwrites via the warning-bannered restore panel", () => {
     visitWithFlagEnabled();
-    cy.get('[data-test-workspace-nav-item="backup-restore"]').click();
+    cy.get('[data-test-settings-nav="backup-restore"]').click();
 
     const payload = JSON.stringify({
       meta: { version: "9", source: "WutheringTools" },
@@ -78,10 +85,10 @@ describe("Settings Workspace (v3 UI)", () => {
     // The seed turns Echo scanning (now the only lab) on; confirm the card
     // reflects it and survives a reload.
     visitWithFlagEnabled();
-    cy.get('[data-test-workspace-nav-item="labs"]').click();
+    cy.get('[data-test-settings-nav="labs"]').click();
     cy.get('input[type="checkbox"]').first().should("be.checked");
     cy.reload();
-    cy.get('[data-test-workspace-nav-item="labs"]').click();
+    cy.get('[data-test-settings-nav="labs"]').click();
     cy.get('input[type="checkbox"]').first().should("be.checked");
   });
 });
@@ -98,6 +105,6 @@ describe("Settings page (classic UI)", () => {
     cy.get("[data-test-settings-export]").click();
     cy.get("[data-test-settings-export-copy]").should("be.visible");
     // The new grouped/v3-only elements must not leak into the legacy page.
-    cy.get("[data-test-workspace-nav-item]").should("not.exist");
+    cy.get("[data-test-settings-nav]").should("not.exist");
   });
 });

@@ -2,7 +2,7 @@
   <nav
     ref="railRef"
     aria-label="Main"
-    class="nav-rail fixed inset-y-0 left-0 w-[84px] flex flex-col items-stretch gap-1 px-1.5 py-3 bg-base-300 text-base-content border-r border-base-content/10">
+    class="nav-rail fixed inset-y-0 left-0 w-16 flex flex-col items-stretch gap-1 px-1 py-3 bg-base-300 text-base-content border-r border-base-content/10">
     <RouterLink
       to="/"
       class="flex justify-center pt-1 pb-3 text-base-content"
@@ -21,7 +21,7 @@
       :class="{ 'nav-rail__item--active': section.page === curPage }"
       :aria-current="section.page === curPage ? 'page' : undefined"
       v-bind="{ [section.testAttr]: '' }">
-      <span class="nav-rail__pill"><NavIcon :icon="section.icon" class="size-7" /></span>
+      <span class="nav-rail__pill"><NavIcon :icon="section.icon" class="size-6" /></span>
       {{ section.label }}
     </RouterLink>
 
@@ -84,7 +84,9 @@ html[data-theme="black"] .nav-rail {
   gap: 0.25rem;
   padding: 0.4rem 0;
   border-radius: 0.75rem;
-  font-size: 0.75rem;
+  // 11px: "Calculator" fits the 64px rail, which matches the tab row's height.
+  font-size: 0.6875rem;
+  white-space: nowrap;
   font-weight: 600;
   // Dim with opacity, not a translucent colour: the white game-art icons
   // don't follow the text colour.
@@ -99,7 +101,7 @@ html[data-theme="black"] .nav-rail {
   align-items: center;
   justify-content: center;
   width: 3.25rem;
-  height: 2.25rem;
+  height: 2rem;
   border-radius: 999px;
   transition: background-color 0.15s;
 }
