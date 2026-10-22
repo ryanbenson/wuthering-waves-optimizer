@@ -38,6 +38,13 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-22",
+    dateLabel: "October 22, 2026",
+    items: [
+      "Fixes Suoming buff: Inherent Skill: Sunken Seal, Forged Lock, the Crit DMG and Multiplier wasn't right",
+    ],
+  },
+  {
     date: "2026-10-21",
     dateLabel: "October 21, 2026",
     items: [
