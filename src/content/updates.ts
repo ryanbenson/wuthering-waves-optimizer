@@ -31,9 +31,19 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = null;
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-10-21",
+  headline: "Suoming is released!",
+};
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-10-21",
+    dateLabel: "October 21, 2026",
+    items: [
+      "Releases Suoming",
+    ],
+  },
   {
     date: "2026-10-19",
     dateLabel: "October 19, 2026",
