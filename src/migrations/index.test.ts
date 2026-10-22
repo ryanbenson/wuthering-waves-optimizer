@@ -8,6 +8,7 @@ import {
   parseMetaDataVersion,
   runMigrations,
 } from "./index";
+import { dedupeInventoryEchoIds } from "./versions/010_dedupeInventoryEchoIds";
 
 describe("data migrations", () => {
   beforeEach(() => {
@@ -473,5 +474,106 @@ describe("data migrations", () => {
         },
       },
     });
+  });
+});
+
+describe("v10: dedupe inventory echo ids", () => {
+  const blank = (echoId: string) => ({
+    echo: null,
+    type: null,
+    rank: null,
+    stat: null,
+    echoId,
+    echoSet: null,
+    echoSubStatsType1: null,
+    echoSubStatsValue1: null,
+  });
+  const formrender = (echoId: string) => ({
+    echoId,
+    echo: "Formrender",
+    echoSet: "HeartofSwornVigil",
+    type: 3,
+    rank: 5,
+    stat: "Electro",
+    echoSubStatsType1: "CritRate",
+    echoSubStatsValue1: 6.9,
+  });
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  // The reported case: a blank pointer copy sits before the real echo, so
+  // the equipped slot rendered empty.
+  it("drops a blank copy so the id resolves to the real echo, leaving references alone", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "9");
+    const equipped = { txq6t2lj5z: { Suoming: 2 } };
+    const echoPresets = [{ presetId: "p1", echo1Id: "txq6t2lj5z" }];
+    localStorage.setItem(
+      "inventory",
+      JSON.stringify({
+        echoes: [formrender("other"), blank("txq6t2lj5z"), formrender("txq6t2lj5z")],
+        equipped,
+        echoPresets,
+        equippedPresets: {},
+      }),
+    );
+    const character = JSON.stringify({
+      characters: { Suoming: { echoes: { 2: blank("txq6t2lj5z") } } },
+    });
+    localStorage.setItem("character", character);
+
+    runMigrations();
+
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
+    const inventory = JSON.parse(localStorage.getItem("inventory") ?? "{}");
+    expect(inventory.echoes).toEqual([formrender("other"), formrender("txq6t2lj5z")]);
+    expect(inventory.equipped).toEqual(equipped);
+    expect(inventory.echoPresets).toEqual(echoPresets);
+    // Character slots point at the kept id, so the character store is untouched.
+    expect(JSON.parse(localStorage.getItem("character") ?? "{}").characters.Suoming.echoes[2].echoId).toBe(
+      "txq6t2lj5z",
+    );
+  });
+
+  it("keeps the first copy with data on the id and gives later copies with data fresh, unequipped ids", () => {
+    const second = { ...formrender("dup"), echo: "Soulfrayer" };
+    const result = JSON.parse(
+      dedupeInventoryEchoIds(
+        JSON.stringify({
+          echoes: [formrender("dup"), second, formrender("taken")],
+          equipped: { dup: { Suoming: 0 }, stale: { Hsin: 1 } },
+          echoPresets: [],
+        }),
+      ),
+    );
+
+    expect(result.echoes).toHaveLength(3);
+    expect(result.echoes[0]).toEqual(formrender("dup"));
+    const newId = result.echoes[1].echoId;
+    expect(result.echoes[1]).toEqual({ ...second, echoId: newId });
+    expect(newId).toEqual(expect.any(String));
+    expect(["dup", "taken", "stale"]).not.toContain(newId);
+    expect(result.equipped).toEqual({ dup: { Suoming: 0 }, stale: { Hsin: 1 } });
+  });
+
+  it("keeps one entry when every copy is blank", () => {
+    const result = JSON.parse(
+      dedupeInventoryEchoIds(JSON.stringify({ echoes: [blank("x"), blank("x")], equipped: {} })),
+    );
+    expect(result.echoes).toEqual([blank("x")]);
+  });
+
+  it("returns the input string unchanged when there's nothing to fix", () => {
+    const inventory = JSON.stringify({ echoes: [formrender("a"), blank("b")], equipped: {} });
+    expect(dedupeInventoryEchoIds(inventory)).toBe(inventory);
+    const character = JSON.stringify({ characters: { Suoming: { echoes: { 0: blank("a") } } } });
+    expect(dedupeInventoryEchoIds(character)).toBe(character);
+    expect(dedupeInventoryEchoIds("not json")).toBe("not json");
+  });
+
+  it("applyMigrationTransforms dedupes a v9 backup's inventory", () => {
+    const input = JSON.stringify({ echoes: [blank("dup"), formrender("dup")], equipped: {} });
+    expect(JSON.parse(applyMigrationTransforms(input, 9)).echoes).toEqual([formrender("dup")]);
   });
 });

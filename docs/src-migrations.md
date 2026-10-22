@@ -39,6 +39,8 @@ Documented at the top of `index.ts`:
 | 6 | Replace character rotation `excludeWeaponBuffs`/`excludeTeamBuffs`/`excludeSelfBuffs` checkboxes with an `advancedConfig` per-buff override (issue #401) — see `versions/006_replaceCharacterRotationExcludeBuffs.ts` |
 | 7 | Move `mainEcho.isEnabled`/`stacks` and `optimizer.mainEchoBuffs` into per-buff maps — see `versions/007_mainEchoBuffs.ts` |
 | 8 | Add `builds`/`activeBuildId` to character records, seeding a "Default build" from each character's existing data (issue #278) — see `versions/008_addCharacterBuilds.ts` |
+| 9 | Resolve echoes with both `locked` and `trash` set (now mutually exclusive; locked wins) — see `versions/009_resolveEchoLockTrashConflicts.ts` |
+| 10 | Give inventory echoes that share an `echoId` unique ids. Per duplicated id, the first entry with echo data keeps the id, so character slots, builds, `equipped` and presets need no rewrite; other entries with data get fresh ids, other blank entries (a slot pointer that leaked into the inventory) are dropped — see `versions/010_dedupeInventoryEchoIds.ts` |
 
 ## Two call sites, two purposes
 
