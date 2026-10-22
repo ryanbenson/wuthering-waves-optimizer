@@ -122,15 +122,22 @@ export const useInventoryStore = defineStore("inventory", {
     },
   },
   actions: {
+    /**
+     * Stores a copy, never the caller's object: a caller that also puts the
+     * same object on a character slot (the image import did) would otherwise
+     * share it, and a later in-place merge into that slot (equipping another
+     * echo there) would overwrite this inventory echo with a blank pointer
+     * carrying the other echo's id.
+     */
     saveEcho(data) {
-      const { echoId } = data;
+      const echo = { ...data };
       const foundIndex = this.echoes.findIndex(
-        (echo) => echo.echoId === echoId,
+        (existing) => existing.echoId === echo.echoId,
       );
       if (foundIndex >= 0) {
-        this.echoes[foundIndex] = data;
+        this.echoes[foundIndex] = echo;
       } else {
-        this.echoes.push(data);
+        this.echoes.push(echo);
       }
     },
     saveEchoPreset(data) {
