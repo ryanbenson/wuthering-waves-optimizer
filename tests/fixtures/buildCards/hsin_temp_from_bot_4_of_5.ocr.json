@@ -1,0 +1,11 @@
+{
+  "image": "hsin_temp_from_bot_4_of_5.jpeg",
+  "note": "tesseract.js (eng) output for each slot's text regions, read with preprocessForOcr + RECOMMENDED_OCR_PARAMS. Order per slot: cost, main stat label, substats 1-5. Slot 5 is empty on the card.",
+  "slots": [
+    ["4", "crit. MG", "DEF 10%", "ATK 10.9%", "DEF 60", "Crit. DMG 15%", "Crit. Rate 6.3%"],
+    ["3", "Electro DMG Bonus", "HP 8.6%", "crit. DMG 15%", "ATK 7.9%", "Crit. Rate 9.3%", "HP 320"],
+    ["1", "ATK", "Crit. Rate 6.3%", "Energy Regen 12.4%", "Crit. DMG 13.8%", "HP 470", "Heavy Attack DMG Bonus 7.9%"],
+    ["1", "ATK", "ATK 9.4%", "ATK a a0", "Crit. DMG 15%", "HP 7.9%", "Crit. Rate 6.3%"],
+    ["a", "", "aT", "RE", "al", "", "FEL"]
+  ]
+}

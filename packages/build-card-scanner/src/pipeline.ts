@@ -24,10 +24,26 @@ export function echoCandidates(
 }
 
 /**
+ * True when a slot's text has nothing an equipped echo always shows: no readable cost, no
+ * main stat and no substat value. A card for a character with fewer than five echoes leaves
+ * the extra slots as bare background, which OCRs as stray letters at most.
+ */
+export function isEmptySlotText(
+  cost: number | null,
+  mainStatLabel: string,
+  substats: ParsedSubstat[],
+): boolean {
+  return cost === null && !mainStatLabel.trim() && substats.every((s) => !s.subStatValue);
+}
+
+/**
  * Reads one echo slot.
  *
- * Text first (cost, main stat, substats), then images. The set icon is matched against
- * every set first, because a confident set narrows the echo portrait match to a handful of
+ * Text first (cost, main stat, substats), then images. An empty slot (see
+ * `isEmptySlotText`) stops there and comes back with every field blank, because image
+ * matching always returns its closest echo, even for bare background.
+ *
+ * The set icon is matched against every set first, because a confident set narrows the echo portrait match to a handful of
  * candidates. If no set matches, the portrait is matched against every echo instead, and
  * the set is taken from that echo (or matched among its sets when it has several).
  */
@@ -43,6 +59,10 @@ export async function parseEchoSlot(
   for (const region of regions.substats) {
     const substat = parseSubstatLine(await adapters.readText(region));
     if (substat) substats.push(substat);
+  }
+
+  if (isEmptySlotText(cost, mainStatLabel, substats)) {
+    return { cost: null, mainStatLabel: "", substats: [], echo: null, set: null };
   }
 
   const costOf = (echoKey: string) => data.echoCostByClass[data.echoes[echoKey]?.class];
@@ -66,7 +86,8 @@ export async function parseEchoSlot(
 }
 
 /**
- * Reads all five echo slots off a build card, left to right.
+ * Reads all five echo slots off a build card, left to right. Empty slots are included, with
+ * every field blank, so indexes always line up with the card.
  *
  * The caller must have checked the image is 1920×1080 (`isBuildCardSize`); regions are
  * fixed pixel positions.

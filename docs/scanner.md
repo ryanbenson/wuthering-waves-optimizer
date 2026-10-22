@@ -1039,7 +1039,9 @@ capture ends, not after the capture queue finishes draining.
 - `src/echoes/parsedEchoMapping.ts` (`mapParsedEchoes`, `getSubstatType`,
   `getSubstatValue`) is shared between the Discord-bot importer and this
   scanner — fix a mapping bug once, both flows benefit. Don't re-duplicate
-  it back into a component.
+  it back into a component. A fully empty slot (a build card with fewer than
+  five echoes) maps with `echoId: null`, so it's never saved to the inventory
+  and the duplicate review leaves it out.
 - Unit tests: `tests/scanner/*` (fingerprint/stability with synthetic
   frames, the capture queue's ordering/backpressure/clear, layout at the three measured real resolutions, parse against real
   transcripts read off the provided screenshots) and

@@ -227,7 +227,7 @@ const summary = summarizeCandidates(candidates, context);
 | `parse` | `parseEchoCandidate`, `resolveEchoByNameAndCost`, `matchEchoName`, `inferCostFromSecondaryStat`, `parseSubstatColumns`, `normalizeStatLabel`, `parseStatRow` |
 | `review` | `filterCandidates`, `summarizeCandidates`, `needsAttention`, `hasLowConfidence` |
 | `dedupe` | `computeSignature`, `createDedupeSet` |
-| `parsedEchoMapping` | `mapParsedEchoes`, `getSubstatType`, `getSubstatValue` (`ParsedSubstat` is exported from the root as `LooseParsedSubstat`) |
+| `parsedEchoMapping` | `mapParsedEchoes`, `isEmptyParsedEcho`, `getSubstatType`, `getSubstatValue`. An empty slot (no echo, set, main stat or substat value) never gets an `echoId`, so it isn't saved to an inventory (`ParsedSubstat` is exported from the root as `LooseParsedSubstat`) |
 | `echoIdentity` | `getEchoIdentityKey`, `buildIdentityKeySet` |
 | `equippedBy` | `matchEquippedBy`, `findEquippedByName`, `PLAYER_CHARACTER_KEY`, `isPlayerCharacterKey` |
 | `levenshtein` | `levenshteinSimilarity`, `prefixTolerantSimilarity` |
