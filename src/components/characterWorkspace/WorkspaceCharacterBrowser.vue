@@ -3,13 +3,13 @@
     ref="modalRef"
     title="Choose character"
     close-test-attr="data-test-character-browser-close"
-    @close="reset">
+    @close="resetSearch">
     <template #toolbar>
       <AppFilterPanel
         panel-key="calculator-characters"
         :active-count="activeFilterCount"
         :clear-disabled="!activeFilterCount"
-        @clear="resetFilters">
+        @clear="clearAll">
         <template #bar>
           <input
             v-model="search"
@@ -207,10 +207,10 @@ import {
   getCharacterBuildStatusDotClass,
   getCharacterBuildStatusLabel,
   CHARACTER_BUILD_STATUSES,
-  type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../../characters/characterBuildStatus";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
+import { useCharacterBrowserFilters } from "../../composables/useCharacterBrowserFilters";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppChooserModal from "../AppChooserModal.vue";
@@ -235,12 +235,16 @@ const { config } = storeToRefs(settingsStore);
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 
+// Search clears every time; the other filters are remembered.
 const search = ref("");
-const filterElement = ref<string | null>(null);
-const filterRarity = ref<number | null>(null);
-const filterWeapon = ref<string | null>(null);
-const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
-const filterFavorites = ref(false);
+const {
+  filterElement,
+  filterRarity,
+  filterWeapon,
+  filterBuildStatus,
+  filterFavorites,
+  resetFilters,
+} = useCharacterBrowserFilters();
 const viewMode = ref<"list" | "grid">("grid");
 
 const hideWontBuildTooltip =
@@ -328,17 +332,13 @@ function triggerCloseModal() {
   modalRef.value?.triggerCloseModal();
 }
 
-function reset() {
+function resetSearch() {
   search.value = "";
-  resetFilters();
 }
 
-function resetFilters() {
-  filterElement.value = null;
-  filterRarity.value = null;
-  filterWeapon.value = null;
-  filterBuildStatus.value = null;
-  filterFavorites.value = false;
+function clearAll() {
+  resetSearch();
+  resetFilters();
 }
 
 function toggleElementFilter(element: string) {
@@ -368,7 +368,7 @@ function getElementClass(element: string) {
 
 function chooseCharacter(character: ListedCharacter) {
   emit("character-browser:chosen-character", character.key);
-  reset();
+  resetSearch();
   triggerCloseModal();
 }
 

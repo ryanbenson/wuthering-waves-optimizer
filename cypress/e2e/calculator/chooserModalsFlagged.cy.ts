@@ -128,6 +128,49 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-character-browser-close]").click({ force: true });
   });
 
+  it("remembers character browser filters across reopening and reloading, but not the search", () => {
+    // Seed on the first visit only; the reload must keep what the app saved.
+    let seeded = false;
+    const visit = () =>
+      cy.visit("/", {
+        onBeforeLoad(win) {
+          if (seeded) return;
+          seeded = true;
+          win.localStorage.setItem(
+            "settings",
+            JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+          );
+          win.localStorage.setItem(
+            "character",
+            JSON.stringify({ favoriteCharacters: ["Zani", "Brant"], characters: {} }),
+          );
+        },
+      });
+    visit();
+    cy.selectWorkspaceCharacter("Carlotta");
+
+    cy.get("[data-test-workspace-avatar]").first().click();
+    cy.get("[data-test-favorites-filter]").click();
+    cy.get("[data-test-character-browser-search]").type("Zani");
+    cy.get("[data-test-character-browser-count]").should("contain.text", "1 character");
+    cy.get("[data-test-character-browser-close]").click({ force: true });
+
+    // Reopened: the favorites filter is still on, the search is cleared.
+    cy.get("[data-test-workspace-avatar]").first().click();
+    cy.get("[data-test-character-browser-search]").should("have.value", "");
+    cy.get("[data-test-favorites-filter]").should("have.class", "btn-active");
+    cy.get("[data-test-character-browser-count]").should("contain.text", "2 characters");
+    cy.get("[data-test-character-browser-close]").click({ force: true });
+
+    // After a reload too.
+    visit();
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.get("[data-test-workspace-avatar]").first().click();
+    cy.get("[data-test-favorites-filter]").should("have.class", "btn-active");
+    cy.get("[data-test-character-browser-count]").should("contain.text", "2 characters");
+    cy.get("[data-test-character-browser-close]").click({ force: true });
+  });
+
   it("filters the character browser and switches between list and grid views", () => {
     visitWithFlagEnabled();
     cy.selectWorkspaceCharacter("Carlotta");
