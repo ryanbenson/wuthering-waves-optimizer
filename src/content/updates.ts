@@ -43,6 +43,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Adds Suoming echo presets and recommended weapons",
       "Character browser now remembers your filters and view settings",
+      "Adds Suoming echo presets and recommended weapons, and adds DPS rotation for her",
     ],
   },
   {
