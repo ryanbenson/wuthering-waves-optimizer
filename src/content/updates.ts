@@ -41,7 +41,7 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-10-23",
     dateLabel: "October 23, 2026",
     items: [
-      "Adds Suoming echo presets and recommended weapons",
+      "Adds Suoming echo presets and recommended weapons, and adds DPS rotation for her",
     ],
   },
   {
