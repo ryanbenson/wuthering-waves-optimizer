@@ -3,6 +3,8 @@ import {
   buildCardRegions,
   isEmptySlotText,
   parseBuildCard,
+  parseCostText,
+  parseSubstatLine,
   type BuildCardAdapters,
   type BuildCardGameData,
   type Region,
@@ -21,11 +23,11 @@ const data: BuildCardGameData = {
 };
 
 /** Replays the fixture's recorded OCR; image matchers always "find" an echo, like the real worker. */
-function fixtureAdapters() {
+function fixtureAdapters(slots: string[][] = fixture.slots) {
   const at = (r: Region) => `${r.x},${r.y}`;
   const text = new Map<string, string>();
   buildCardRegions().forEach((slot, i) => {
-    const [cost, mainStat, ...substats] = fixture.slots[i];
+    const [cost, mainStat, ...substats] = slots[i];
     text.set(at(slot.cost), cost);
     text.set(at(slot.mainStatLabel), mainStat);
     slot.substats.forEach((region, j) => text.set(at(region), substats[j]));
@@ -53,6 +55,28 @@ describe("isEmptySlotText", () => {
     expect(isEmptySlotText(null, "ATK", [])).toBe(false);
     expect(isEmptySlotText(null, "", [{ subStat: "HP", subStatValue: "470" }])).toBe(false);
   });
+
+  it("ignores background noise that doesn't look like a stat", () => {
+    expect(isEmptySlotText(null, "go", [{ subStat: "j al", subStatValue: "1" }])).toBe(true);
+  });
+
+  it("keeps an unleveled echo (no substats) whose cost OCR failed", () => {
+    expect(isEmptySlotText(null, "Crit. Rate", [])).toBe(false);
+    expect(isEmptySlotText(null, "crit. MG", [])).toBe(false);
+  });
+
+  it("treats every recorded reading of the empty slot as empty, and no filled slot", () => {
+    const isEmpty = ([cost, mainStat, ...lines]: string[]) =>
+      isEmptySlotText(
+        parseCostText(cost),
+        mainStat.trim(),
+        lines.map(parseSubstatLine).filter((s) => s !== null),
+      );
+    for (const reading of fixture.emptySlotVariants.readings) {
+      expect(isEmpty(reading), JSON.stringify(reading)).toBe(true);
+    }
+    expect(fixture.slots.map(isEmpty)).toEqual([false, false, false, false, true]);
+  });
 });
 
 describe("build card with an empty slot (4 of 5 echoes)", () => {
@@ -65,6 +89,13 @@ describe("build card with an empty slot (4 of 5 echoes)", () => {
     const fifthSlot = buildCardRegions()[4];
     expect(imageMatchXs).not.toContain(fifthSlot.set.x);
     expect(imageMatchXs).not.toContain(fifthSlot.echoImage.x);
+  });
+
+  it("leaves the empty slot blank when OCR reads background noise as a main stat", async () => {
+    const [noisy] = fixture.emptySlotVariants.readings;
+    const { adapters } = fixtureAdapters([...fixture.slots.slice(0, 4), noisy]);
+    const slots = await parseBuildCard(adapters, data);
+    expect(slots[4]).toEqual({ cost: null, mainStatLabel: "", substats: [], echo: null, set: null });
   });
 
   it("still reads the four filled slots", async () => {

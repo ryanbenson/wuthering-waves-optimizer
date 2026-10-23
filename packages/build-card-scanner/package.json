@@ -1,6 +1,6 @@
 {
   "name": "@wutheringtools/build-card-scanner",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reads the five echoes off an exported Wuthering Waves build card image (the 1920×1080 card from Discord bots): layout, OCR text parsing and match order. Bring your own OCR and image matching.",
   "license": "GPL-3.0-or-later",
   "type": "module",

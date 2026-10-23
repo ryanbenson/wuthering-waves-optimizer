@@ -24,16 +24,28 @@ export function echoCandidates(
 }
 
 /**
+ * A word every stat label contains ("Crit. DMG", "Electro DMG Bonus", "ATK", "Energy Regen"…).
+ * Matched case-insensitively and without word boundaries, so common misreads like
+ * "crit. MG" still count.
+ */
+const STAT_WORD = /ATK|HP|DEF|Crit|DMG|Bonus|Regen|Healing/i;
+
+/**
  * True when a slot's text has nothing an equipped echo always shows: no readable cost, no
- * main stat and no substat value. A card for a character with fewer than five echoes leaves
- * the extra slots as bare background, which OCRs as stray letters at most.
+ * main stat and no substat with a value. A card for a character with fewer than five echoes
+ * leaves the extra slots as bare background, which OCRs as stray letters ("go", "aT", "RE")
+ * that vary with tiny decoding differences, so labels count only when they look like a stat.
  */
 export function isEmptySlotText(
   cost: number | null,
   mainStatLabel: string,
   substats: ParsedSubstat[],
 ): boolean {
-  return cost === null && !mainStatLabel.trim() && substats.every((s) => !s.subStatValue);
+  return (
+    cost === null &&
+    !STAT_WORD.test(mainStatLabel) &&
+    !substats.some((s) => s.subStatValue && STAT_WORD.test(s.subStat))
+  );
 }
 
 /**

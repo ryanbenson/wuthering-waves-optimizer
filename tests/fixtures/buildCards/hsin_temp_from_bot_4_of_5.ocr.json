@@ -7,5 +7,15 @@
     ["1", "ATK", "Crit. Rate 6.3%", "Energy Regen 12.4%", "Crit. DMG 13.8%", "HP 470", "Heavy Attack DMG Bonus 7.9%"],
     ["1", "ATK", "ATK 9.4%", "ATK a a0", "Crit. DMG 15%", "HP 7.9%", "Crit. Rate 6.3%"],
     ["a", "", "aT", "RE", "al", "", "FEL"]
-  ]
+  ],
+  "emptySlotVariants": {
+    "note": "Other readings of the empty fifth slot, from the same image shifted 1px, slightly blurred, brightened or re-encoded. OCR of bare background varies with tiny decoding differences, as between browsers.",
+    "readings": [
+      ["a", "go", "orl", "WEN", "al TN", "", "RL"],
+      ["a", "oo", "TH", "ERE", "j al TT", "", "RL"],
+      ["a", "Lo", "TH", "ERE", "j al TT", "", "FEL"],
+      ["a", "i", "IEE a", "ae dk Ea", "", "SEE", "fe oR"],
+      ["a", "Pe", "BEC SR", "Cale dak See", "", "Bal Se", "ie Re"]
+    ]
+  }
 }
