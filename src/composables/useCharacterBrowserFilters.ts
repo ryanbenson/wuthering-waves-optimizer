@@ -74,3 +74,24 @@ export function useCharacterBrowserFilters() {
     resetFilters: () => settingsStore.setCharacterBrowserFilters({ ...EMPTY_FILTERS }),
   };
 }
+
+export type CharacterBrowserView = "list" | "grid";
+
+/**
+ * The v3 character browser's list/grid view, remembered globally in
+ * settings.config like the filters. Not a filter, so "Clear" leaves it alone.
+ */
+export function useCharacterBrowserView() {
+  const settingsStore = useSettingsStore();
+  const { config } = storeToRefs(settingsStore);
+
+  return computed({
+    get: (): CharacterBrowserView =>
+      (config.value as { characterBrowserView?: unknown } | null)?.characterBrowserView === "list"
+        ? "list"
+        : "grid",
+    set: (value: CharacterBrowserView) => {
+      settingsStore.addToConfig({ characterBrowserView: value });
+    },
+  });
+}

@@ -210,7 +210,10 @@ import {
 } from "../../characters/characterBuildStatus";
 import { useCharacterStore } from "../../stores/character";
 import { useSettingsStore } from "../../stores/settings";
-import { useCharacterBrowserFilters } from "../../composables/useCharacterBrowserFilters";
+import {
+  useCharacterBrowserFilters,
+  useCharacterBrowserView,
+} from "../../composables/useCharacterBrowserFilters";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppChooserModal from "../AppChooserModal.vue";
@@ -235,7 +238,7 @@ const { config } = storeToRefs(settingsStore);
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 
-// Search clears every time; the other filters are remembered.
+// Search clears every time; the other filters and the view are remembered.
 const search = ref("");
 const {
   filterElement,
@@ -245,7 +248,7 @@ const {
   filterFavorites,
   resetFilters,
 } = useCharacterBrowserFilters();
-const viewMode = ref<"list" | "grid">("grid");
+const viewMode = useCharacterBrowserView();
 
 const hideWontBuildTooltip =
   "Hide characters marked “Won't build”. This preference is saved globally.";

@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from "pinia";
 import {
   parseCharacterBrowserFilters,
   useCharacterBrowserFilters,
+  useCharacterBrowserView,
 } from "../../src/composables/useCharacterBrowserFilters";
 import { useSettingsStore } from "../../src/stores/settings";
 
@@ -73,5 +74,29 @@ describe("useCharacterBrowserFilters", () => {
       buildStatus: null,
       favorites: false,
     });
+  });
+});
+
+describe("useCharacterBrowserView", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("defaults to grid and remembers list", () => {
+    expect(useCharacterBrowserView().value).toBe("grid");
+    useCharacterBrowserView().value = "list";
+    expect(useSettingsStore().config.characterBrowserView).toBe("list");
+    expect(useCharacterBrowserView().value).toBe("list");
+  });
+
+  it("isn't reset with the filters", () => {
+    useCharacterBrowserView().value = "list";
+    useCharacterBrowserFilters().resetFilters();
+    expect(useCharacterBrowserView().value).toBe("list");
+  });
+
+  it("falls back to grid for an unknown saved value", () => {
+    useSettingsStore().config.characterBrowserView = "table";
+    expect(useCharacterBrowserView().value).toBe("grid");
   });
 });

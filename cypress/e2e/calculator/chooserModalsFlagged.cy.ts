@@ -128,7 +128,7 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-character-browser-close]").click({ force: true });
   });
 
-  it("remembers character browser filters across reopening and reloading, but not the search", () => {
+  it("remembers character browser filters and view across reopening and reloading, but not the search", () => {
     // Seed on the first visit only; the reload must keep what the app saved.
     let seeded = false;
     const visit = () =>
@@ -151,14 +151,16 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
 
     cy.get("[data-test-workspace-avatar]").first().click();
     cy.get("[data-test-favorites-filter]").click();
+    cy.get("[data-test-character-browser-view='list']").click();
     cy.get("[data-test-character-browser-search]").type("Zani");
     cy.get("[data-test-character-browser-count]").should("contain.text", "1 character");
     cy.get("[data-test-character-browser-close]").click({ force: true });
 
-    // Reopened: the favorites filter is still on, the search is cleared.
+    // Reopened: the favorites filter and list view are kept, the search is cleared.
     cy.get("[data-test-workspace-avatar]").first().click();
     cy.get("[data-test-character-browser-search]").should("have.value", "");
     cy.get("[data-test-favorites-filter]").should("have.class", "btn-active");
+    cy.get("[data-test-character-browser-view='list']").should("have.class", "btn-active");
     cy.get("[data-test-character-browser-count]").should("contain.text", "2 characters");
     cy.get("[data-test-character-browser-close]").click({ force: true });
 
@@ -167,6 +169,7 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
     cy.get("[data-test-workspace-avatar]").first().click();
     cy.get("[data-test-favorites-filter]").should("have.class", "btn-active");
+    cy.get("[data-test-character-browser-view='list']").should("have.class", "btn-active");
     cy.get("[data-test-character-browser-count]").should("contain.text", "2 characters");
     cy.get("[data-test-character-browser-close]").click({ force: true });
   });
