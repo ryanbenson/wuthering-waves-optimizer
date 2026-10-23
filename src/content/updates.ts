@@ -38,6 +38,13 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-23",
+    dateLabel: "October 23, 2026",
+    items: [
+      "Adds Suoming echo presets and recommended weapons",
+    ],
+  },
+  {
     date: "2026-10-22",
     dateLabel: "October 22, 2026",
     items: [
