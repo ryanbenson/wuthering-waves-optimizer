@@ -42,6 +42,7 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "October 23, 2026",
     items: [
       "Adds Suoming echo presets and recommended weapons",
+      "Character browser now remembers your filters and view settings",
     ],
   },
   {
