@@ -100,7 +100,7 @@ stacked components into one thin row. This ADR builds that approved layout.
    stat-chip row is gated, since it's the one element dense enough to
    justify hiding by default.
    **Superseded 2026-10-24:** on phones (below `md`) the bar is now one row
-   and level, build, mode and the stats live in a bottom sheet
+   and level, build, mode and the stats live in bottom sheets
    (`CalculatorCommandSheet.vue`); the accordion only applies from `md` to
    `lg`. See ADR [0046](./0046-phone-command-bar-sheet.md).
 

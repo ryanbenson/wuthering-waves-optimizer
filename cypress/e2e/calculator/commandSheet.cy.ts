@@ -17,7 +17,7 @@ describe("Command Bar on phones", () => {
     visitV3();
   });
 
-  it("keeps one row and moves the controls into a sheet", () => {
+  it("keeps one row and splits the controls into character and damage sheets", () => {
     cy.selectWorkspaceCharacter("Aemeath");
     cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
 
@@ -28,10 +28,13 @@ describe("Command Bar on phones", () => {
     cy.get("[data-test-live-result-bar-toggle]").should("not.be.visible");
 
     cy.get("[data-test-command-sheet]").should("not.exist");
-    cy.get("[data-test-live-result-bar-sheet-open]").click();
-    cy.get("[data-test-command-sheet]").should("be.visible");
+
+    // The name opens the character half: level, build and mode.
+    cy.get("[data-test-live-result-bar-character-open]").click();
+    cy.get('[data-test-command-sheet-section="character"]').should("be.visible");
     cy.get("[data-test-command-sheet-close]").should("have.focus");
-    cy.get("[data-test-command-sheet-stats]").should("contain.text", "ATK");
+    cy.get("[data-test-command-sheet] [data-test-workspace-level-value]").should("be.visible");
+    cy.get("[data-test-command-sheet-stats]").should("not.exist");
 
     // Switching the mode in the sheet updates the name on the bar.
     cy.get('[data-test-command-sheet-stance="Tune Rupture"]').click();
@@ -42,9 +45,17 @@ describe("Command Bar on phones", () => {
     );
     cy.get("[data-test-live-result-bar-mode]").should("contain.text", "Tune Rupture");
 
-    // Esc closes it.
+    // Esc closes it and puts focus back on the name.
     cy.focused().type("{esc}");
     cy.get("[data-test-command-sheet]").should("not.exist");
+    cy.get("[data-test-live-result-bar-character-open]").should("have.focus");
+
+    // ⌃ by the number opens the damage half: what's measured and the stats.
+    cy.get("[data-test-live-result-bar-sheet-open]").click();
+    cy.get('[data-test-command-sheet-section="damage"]').should("be.visible");
+    cy.get("[data-test-command-sheet-stats]").should("contain.text", "ATK");
+    cy.get("[data-test-command-sheet] [data-test-workspace-level-value]").should("not.exist");
+    cy.get("[data-test-command-sheet-close]").click();
     cy.get("[data-test-live-result-bar-sheet-open]").should("have.focus");
   });
 

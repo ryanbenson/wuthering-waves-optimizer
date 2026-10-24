@@ -1,10 +1,12 @@
 <template>
   <!-- Phones only: the Command Bar shrinks to one row there, and the inputs
-  it drops (level, build, mode, target, stats) live in this sheet instead. -->
+  it drops live in this sheet instead, in two halves: "character" (level,
+  build, mode), opened from the name, and "damage" (what's measured, damage
+  type, stats), opened from ⌃ by the number. -->
   <Teleport to="body">
     <Transition name="command-sheet">
       <div
-        v-if="isOpen"
+        v-if="section"
         class="command-sheet fixed inset-0 z-[60] flex flex-col justify-end md:hidden"
         @keydown.esc="emit('close')">
         <div class="absolute inset-0 bg-black/50" aria-hidden="true" @click="emit('close')"></div>
@@ -14,12 +16,16 @@
           aria-modal="true"
           aria-labelledby="command-sheet-title"
           class="command-sheet__panel relative rounded-t-2xl bg-base-100 text-base-content border-t border-base-300 shadow-2xl px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]"
-          data-test-command-sheet>
+          data-test-command-sheet
+          :data-test-command-sheet-section="section">
           <div class="mx-auto mb-2 h-1 w-10 rounded-full bg-base-content/20" aria-hidden="true"></div>
 
           <div class="flex items-center gap-2 mb-3">
-            <h2 id="command-sheet-title" class="font-bold truncate">{{ characterName }}</h2>
+            <h2 id="command-sheet-title" class="font-bold truncate">
+              {{ section === "character" ? characterName : "Damage" }}
+            </h2>
             <button
+              v-if="section === 'character'"
               type="button"
               class="btn btn-circle btn-ghost btn-sm shrink-0"
               :class="{ 'text-pink-400': isFavorite }"
@@ -47,7 +53,7 @@
             </button>
           </div>
 
-          <div class="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
+          <div v-if="section === 'character'" class="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
             <span class="command-sheet__label">Level</span>
             <div class="font-mono text-sm">
               <WorkspaceLevelStepper
@@ -91,7 +97,9 @@
                 </button>
               </div>
             </template>
+          </div>
 
+          <div v-else class="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
             <span class="command-sheet__label">Measure</span>
             <CalculatorOptimizerTarget
               :key="character"
@@ -108,25 +116,27 @@
               @optimizer:damage-type-updated="emit('update:damage-type', $event)"></CalculatorOptimizerDamageType>
           </div>
 
-          <div v-if="statChips.length" class="grid grid-cols-3 gap-2 mt-4" data-test-command-sheet-stats>
-            <button
-              v-for="chip in statChips"
-              :key="chip.key"
-              type="button"
-              class="flex flex-col items-start rounded-box bg-base-200 px-3 py-2 text-left leading-tight"
-              @click="emit('stat-selected', chip.label)">
-              <span class="text-[10px] uppercase tracking-wide opacity-60 truncate max-w-full">{{ chip.label }}</span>
-              <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
-            </button>
-          </div>
+          <template v-if="section === 'damage'">
+            <div v-if="statChips.length" class="grid grid-cols-3 gap-2 mt-4" data-test-command-sheet-stats>
+              <button
+                v-for="chip in statChips"
+                :key="chip.key"
+                type="button"
+                class="flex flex-col items-start rounded-box bg-base-200 px-3 py-2 text-left leading-tight"
+                @click="emit('stat-selected', chip.label)">
+                <span class="text-[10px] uppercase tracking-wide opacity-60 truncate max-w-full">{{ chip.label }}</span>
+                <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
+              </button>
+            </div>
 
-          <button
-            type="button"
-            class="btn btn-block btn-sm mt-4"
-            data-test-command-sheet-breakdown
-            @click="emit('open-detail')">
-            Full breakdown
-          </button>
+            <button
+              type="button"
+              class="btn btn-block btn-sm mt-4"
+              data-test-command-sheet-breakdown
+              @click="emit('open-detail')">
+              Full breakdown
+            </button>
+          </template>
         </div>
       </div>
     </Transition>
@@ -144,8 +154,11 @@ import { useCharacterStore } from "../stores/character";
 
 defineOptions({ name: "CalculatorCommandSheet" });
 
+export type CommandSheetSection = "character" | "damage";
+
 const props = defineProps<{
-  isOpen: boolean;
+  /** Which half is open; null when the sheet is closed. */
+  section: CommandSheetSection | null;
   character: string;
   characterName: string;
   target: string | null;
@@ -174,7 +187,7 @@ const closeRef = ref<HTMLButtonElement | null>(null);
 // Focus moves into the sheet so Esc and screen readers land in it; the bar
 // puts focus back on its own button when the sheet closes.
 watch(
-  () => props.isOpen,
+  () => props.section,
   async (open) => {
     if (!open) return;
     await nextTick();

@@ -18,7 +18,39 @@
         @click="emit('open-character-browser')" />
 
       <div class="leading-tight min-w-0">
-        <div class="flex items-center gap-1.5 min-w-0">
+        <!-- Phones: the name and mode open the character half of the sheet
+        (level, build, mode); the mode stays visible because it decides what
+        the number means. -->
+        <button
+          ref="characterSheetTriggerRef"
+          type="button"
+          class="md:hidden flex flex-col items-start min-w-0 max-w-full text-left"
+          :aria-expanded="sheetSection === 'character'"
+          aria-haspopup="dialog"
+          aria-label="Character settings: level, build and mode"
+          data-test-live-result-bar-character-open
+          @click="openSheet('character')">
+          <span class="flex items-center gap-1 min-w-0 max-w-full">
+            <span class="font-bold text-sm truncate">{{ characterName }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3 shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+          <span
+            v-if="characterStances.length > 1 && activeStance"
+            class="flex items-center gap-1 text-[11px] opacity-70 mt-0.5 min-w-0 max-w-full"
+            data-test-live-result-bar-mode>
+            <img
+              v-if="activeStanceOption?.image"
+              :src="activeStanceOption.image"
+              alt=""
+              class="command-bar__stance-icon size-3.5 shrink-0"
+              :style="activeStanceOption.imageStyle"
+              loading="lazy" />
+            <span class="truncate">{{ activeStance }}</span>
+          </span>
+        </button>
+        <div class="hidden md:flex items-center gap-1.5 min-w-0">
           <span class="font-bold text-sm truncate" data-test-live-result-bar-name>{{ characterName }}</span>
           <span v-if="characterRarity" class="hidden md:inline text-[10px] text-amber-400 font-semibold shrink-0"
             >{{ characterRarity }}&#9733;</span
@@ -48,21 +80,6 @@
             ><template v-if="element && weaponType"> &middot; </template
             ><template v-if="weaponType">{{ weaponType }}</template>
           </span>
-        </div>
-        <!-- The mode decides what the number means, so phones keep its name
-        here; switching it is in the sheet. -->
-        <div
-          v-if="characterStances.length > 1 && activeStance"
-          class="md:hidden flex items-center gap-1 text-[11px] opacity-70 mt-0.5 min-w-0"
-          data-test-live-result-bar-mode>
-          <img
-            v-if="activeStanceOption?.image"
-            :src="activeStanceOption.image"
-            alt=""
-            class="command-bar__stance-icon size-3.5 shrink-0"
-            :style="activeStanceOption.imageStyle"
-            loading="lazy" />
-          <span class="truncate">{{ activeStance }}</span>
         </div>
         <div class="hidden md:flex items-center gap-1.5 flex-wrap text-[11px] opacity-70 mt-0.5 font-mono">
           <WorkspaceLevelStepper
@@ -275,14 +292,14 @@
           </svg>
         </button>
         <button
-          ref="sheetTriggerRef"
+          ref="damageSheetTriggerRef"
           type="button"
           class="btn btn-sm btn-circle self-center md:hidden"
-          :aria-expanded="isSheetOpen"
+          :aria-expanded="sheetSection === 'damage'"
           aria-haspopup="dialog"
-          aria-label="Open build controls"
+          aria-label="Damage settings and stats"
           data-test-live-result-bar-sheet-open
-          @click="isSheetOpen = true">
+          @click="openSheet('damage')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-4"
@@ -297,7 +314,7 @@
     </div>
 
     <CalculatorCommandSheet
-      :is-open="isSheetOpen"
+      :section="sheetSection"
       :character="character"
       :character-name="characterName"
       :target="target"
@@ -322,7 +339,7 @@ import { storeToRefs } from "pinia";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
-import CalculatorCommandSheet from "./CalculatorCommandSheet.vue";
+import CalculatorCommandSheet, { type CommandSheetSection } from "./CalculatorCommandSheet.vue";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -411,27 +428,36 @@ async function onStanceSelected(value: AppRichSelectValue) {
 
 const isMobileStatsExpanded = ref(false);
 
-const isSheetOpen = ref(false);
-const sheetTriggerRef = ref<HTMLButtonElement | null>(null);
+// Phones: which half of CalculatorCommandSheet is open, if any. The name
+// opens the character half, ⌃ by the number the damage half.
+const sheetSection = ref<CommandSheetSection | null>(null);
+const characterSheetTriggerRef = ref<HTMLButtonElement | null>(null);
+const damageSheetTriggerRef = ref<HTMLButtonElement | null>(null);
+
+function openSheet(section: CommandSheetSection) {
+  sheetSection.value = section;
+}
 
 function closeSheet() {
-  isSheetOpen.value = false;
-  sheetTriggerRef.value?.focus();
+  const trigger =
+    sheetSection.value === "character" ? characterSheetTriggerRef.value : damageSheetTriggerRef.value;
+  sheetSection.value = null;
+  trigger?.focus();
 }
 
 // Stats and the breakdown open over the page, so the sheet gets out of the way.
 function onSheetStatSelected(stat: string) {
-  isSheetOpen.value = false;
+  sheetSection.value = null;
   emit("stat-selected", stat);
 }
 
 function onSheetOpenDetail() {
-  isSheetOpen.value = false;
+  sheetSection.value = null;
   if (!props.isDetailOpen) emit("toggle-detail");
 }
 
 function onSheetManageBuilds() {
-  isSheetOpen.value = false;
+  sheetSection.value = null;
   emit("manage-builds");
 }
 

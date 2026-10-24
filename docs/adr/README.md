@@ -89,7 +89,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0040](./0040-optimizer-buffs-from-calculator.md) | Optimizer echo buffs default to the calculator's settings, with a readiness run bar | accepted | | components, optimizer, stores |
 | [0043](./0043-echo-presets-header-button.md) | Echo presets: one header button that shows the preset status | accepted | | components, echoes, stores, analytics |
 | [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Odds dialog, the planner and "Finish these first" | accepted | | echoes, components, composables |
-| [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in a sheet | accepted | | calculator, components |
+| [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in two sheets | accepted | | calculator, components |
 
 ## When to write a new ADR
 

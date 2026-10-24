@@ -41,7 +41,7 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-10-24",
     dateLabel: "October 24, 2026",
     items: [
-      "On phones, the calculator's top bar is now one row: your character, mode and damage number stay in view, and level, build, mode and stats are under the ⌃ button",
+      "On phones, the calculator's top bar is now one row: your character, mode and damage number stay in view. Tap the name to change level, build or mode, or the ⌃ by the number for damage type and stats",
     ],
   },
   {
