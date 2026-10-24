@@ -37,6 +37,11 @@ export type ParsedEchoSlot = {
   substats: ParsedSubstat[];
   echo: string | null;
   set: string | null;
+  /** Character key of who wears it in game ("Equipped by ..."), when that matched a character. */
+  equippedBy?: string;
+  /** The game's lock / discard marks (see echoMarks.ts). Never both true. */
+  locked?: boolean;
+  trash?: boolean;
 };
 
 /** Per-field confidence, surfaced in the review UI so nothing low-confidence auto-saves silently. */
@@ -71,6 +76,8 @@ export type ScanCandidate = {
   /** Raw OCR text this candidate was parsed from — shown as a diagnostic for low-confidence fields, not used for parsing itself. */
   rawHeaderText: string;
   rawStatsText: string;
+  /** The "Equipped by" name when it didn't match a character (e.g. the main character, shown by the player's name). */
+  equippedByName?: string;
   /** Per-region crop thumbnails + their own OCR text — only populated when the scanner's debug mode was on for this session. See layout.ts's DEBUG_REGIONS. */
   debugCrops?: { key: string; label: string; dataUrl: string; text: string }[];
   /** A downscaled snapshot of the whole frame, for drawing every ROI box on top of as one reviewable image — see capture.ts's grabFullFrameSnapshot. Only populated in debug mode. */

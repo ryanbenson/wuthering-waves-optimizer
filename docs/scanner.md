@@ -947,6 +947,20 @@ A summary line above the button shows the new / already-in-inventory /
 still-flagged / unknown counts. After saving, `onFinalized(savedCount)`
 drives a "Saved N echoes to your inventory" toast.
 
+## Equipped by: equipping scanned echoes on their characters
+
+The panel's "Equipped by <name>" line (`EQUIPPED_BY_LINE` in layout.ts, measured off a 1920x1080 capture, blank when the echo isn't equipped) is OCR'd with the other primary crops and matched by `matchEquippedBy` (scanner-core/equippedBy.ts) against `allCharactersList`. A match sets `slot.equippedBy` to the character key; a name that doesn't match is kept as `candidate.equippedByName` and shown with a "?" on the result card. The main character is shown by the player's name, which the scanner doesn't ask for yet, so Rover's echoes land there and aren't equipped.
+
+The review step's "Equip on the N characters wearing them in game" checkbox (on by default, remembered per browser as `echoScanner.equipWearers`, shown only when some echo has a wearer) is passed with `echoes-parsed`. After the save (or "Apply without saving" on the duplicate review, offered when every scanned echo is already in the inventory, so a rescan still applies), `EchoScannerModal` runs `planScannedLoadouts` (src/scanner/scannedLoadouts.ts): each slot's echo is found in the inventory by identity, so one the player already owned counts too, grouped by `groupWavescanLoadouts` (highest cost first; more than 5 echoes or 12 cost is blocked), then written with `useWavescanLoadouts`' `applyLoadoutWrites` in "scanned" mode: each character keeps one build named "Scanned" (`SCANNED_BUILD_NAME`), updated in place on every scan and switched to; it's created from the active build the first time, or is the only build of a character the app didn't have yet. The player's other builds are never touched, and renaming the Scanned build makes it theirs (the next scan starts a new one). The toast says who was equipped and who was blocked.
+
+## Lock and discard marks
+
+The detail panel's discard (heart, "Z") and lock (padlock, "C") toggles sit over the echo art at a fixed spot (`DISCARD_ICON_BOX` / `LOCK_ICON_BOX` in layout.ts, measured off 1920x1080 captures). `readEchoMarks` (scanner-core/echoMarks.ts) reads them from the same frame as the other crops, synchronously in `snapshotFrame`:
+- **Discarded:** the heart is drawn red instead of white (more red than white pixels).
+- **Locked:** the closed padlock's shackle reaches the body on both sides; the open one lifts its right leg. In the band just above the body (27-36% of the box height) the right half has at least half as many light pixels as the left when closed, and none when open.
+
+In game the two exclude each other (locking un-discards, discarding unlocks), so if both ever read true, locked wins. The result card shows a Locked / Discard badge. After a save, `planScannedMarks` finds every scanned echo in the inventory by identity (already-owned ones too) and lists those whose marks differ from the game's; `EchoScannerModal` applies them with `setEchoLocked` / `setEchoTrash`, which keep the app's flags exclusive the same way. Tests: `tests/scanner/echoMarks.test.ts` runs the regions over real locked / unlocked / discarded / equipped captures (1920x1080, 1280x720, 1920x1200) in `tests/scanner/fixtures/`.
+
 ## Debug view
 
 `EchoScannerCapture.vue` has a "Debug mode" checkbox on the start screen
