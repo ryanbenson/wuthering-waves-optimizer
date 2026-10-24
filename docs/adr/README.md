@@ -72,7 +72,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`) | calculator, components, weapons, characters |
 | [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
 | [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width) | calculator, components, stores |
-| [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | | calculator, components |
+| [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | 0046 (phones: one row plus a sheet) | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, navigation |
 | [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, settings, stores |
@@ -89,6 +89,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0040](./0040-optimizer-buffs-from-calculator.md) | Optimizer echo buffs default to the calculator's settings, with a readiness run bar | accepted | | components, optimizer, stores |
 | [0043](./0043-echo-presets-header-button.md) | Echo presets: one header button that shows the preset status | accepted | | components, echoes, stores, analytics |
 | [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Odds dialog, the planner and "Finish these first" | accepted | | echoes, components, composables |
+| [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in a sheet | accepted | | calculator, components |
 
 ## When to write a new ADR
 

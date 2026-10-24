@@ -38,6 +38,13 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-24",
+    dateLabel: "October 24, 2026",
+    items: [
+      "On phones, the calculator's top bar is now one row: your character, mode and damage number stay in view, and level, build, mode and stats are under the ⌃ button",
+    ],
+  },
+  {
     date: "2026-10-23",
     dateLabel: "October 23, 2026",
     items: [
