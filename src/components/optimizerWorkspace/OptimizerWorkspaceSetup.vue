@@ -10,21 +10,28 @@
             ✕
           </button>
         </form>
-        <div class="py-4">
-          <div
-            class="flex align-center gap-1 mb-6 items-center flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-            <span class="mr-2">Filter</span>
+        <div class="py-4 flex flex-col gap-3">
+          <input
+            v-model="pickerSearch"
+            type="search"
+            placeholder="Search echoes…"
+            class="input input-bordered input-sm w-full max-w-xs"
+            aria-label="Search echoes"
+            data-test-optimizer-workspace-picker-search />
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-medium opacity-60 mr-1">Set</span>
             <button
-              v-for="echoSet in echoSets"
-              :key="echoSet"
-              @click="toggleEchoSetFilter(echoSet)"
-              class="rounded p-[.3rem]"
-              :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-              <img :src="getEchoSetImage(echoSet)" class="size-7" :class="echoSet" />
+              v-if="recommendedSets.length"
+              type="button"
+              class="btn btn-sm btn-ghost rounded px-2"
+              :class="{ 'btn-active': sameSets(pickerSets, recommendedSets) }"
+              data-test-optimizer-workspace-picker-recommended
+              @click="pickerSets = sameSets(pickerSets, recommendedSets) ? [] : [...recommendedSets]">
+              Recommended
             </button>
-            <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
+            <button type="button" class="btn btn-sm btn-ghost" @click="resetFilters">Clear</button>
           </div>
+          <EchoSetToggles v-model="pickerSets" :sets="echoSets" />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <template v-if="!allEchoesListFiltered.length">
@@ -77,17 +84,29 @@
       <!-- Echo sets + main echo -->
       <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
         <div ref="setsSection" class="scroll-mt-20">
-          <div class="text-xs font-bold uppercase tracking-wider opacity-50">
-            Eligible echo sets
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-xs font-bold uppercase tracking-wider opacity-50">
+              Eligible echo sets
+            </div>
+            <button
+              v-if="recommendedSets.length"
+              type="button"
+              class="btn btn-xs btn-ghost"
+              :class="{ 'btn-active': sameSets(setFilters, recommendedSets) }"
+              data-test-optimizer-workspace-recommended-sets
+              @click="toggleRecommendedSets">
+              Recommended
+            </button>
           </div>
           <p class="text-xs opacity-60 mt-1">
             Only echoes from these sets are considered.
           </p>
         </div>
-        <OptimizerWorkspaceEchoSets
+        <EchoSetToggles
+          v-model="setFilters"
           :sets="echoSets"
-          :selected="setFilters"
-          @toggle="toggleSetFilter"></OptimizerWorkspaceEchoSets>
+          data-test-optimizer-workspace-echo-sets
+          @update:model-value="syncOptimizerConfig" />
 
         <div class="divider my-0"></div>
 
@@ -283,7 +302,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, toRef } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, toRef, watch } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import {
   getSetBonusEffectsFromListOfSetKeys,
@@ -296,7 +315,7 @@ import type { OptimizerMinStatRow } from "../CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "../CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "../CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerSettings from "../CalculatorOptimizerSettings.vue";
-import OptimizerWorkspaceEchoSets from "./OptimizerWorkspaceEchoSets.vue";
+import EchoSetToggles from "../EchoSetToggles.vue";
 import OptimizerWorkspaceTarget from "./OptimizerWorkspaceTarget.vue";
 import OptimizerWorkspaceRunBar, {
   type OptimizerSetupSection,
@@ -309,7 +328,7 @@ import {
 
 defineOptions({ name: "OptimizerWorkspaceSetup" });
 
-const props = defineProps<{ character: string }>();
+const props = defineProps<{ character: string; suggestedEchoSets?: string[] }>();
 
 const emit = defineEmits<{
   "optimizer:optimize": [
@@ -328,7 +347,12 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 
 const modalIdPicker = "optimizerWorkspaceEchoPicker";
-const echoSetFilter = ref<string | null>(null);
+// Main echo picker: name search and sets (an echo matches any of them), opening on the
+// character's recommended sets.
+const pickerSearch = ref("");
+const pickerSets = ref<string[]>([]);
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+const sameSets = (a: string[], b: string[]) => a.length === b.length && b.every((set) => a.includes(set));
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
 const minStats = ref<OptimizerMinStatRow[]>([]);
@@ -399,8 +423,12 @@ type EchoListEntry = {
 
 const allEchoesListFiltered = computed((): EchoListEntry[] => {
   let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
-  if (echoSetFilter.value) {
-    allEchoes = allEchoes.filter((echo) => echo.sets.includes(echoSetFilter.value!));
+  if (pickerSets.value.length) {
+    allEchoes = allEchoes.filter((echo) => echo.sets.some((set) => pickerSets.value.includes(set)));
+  }
+  const needle = pickerSearch.value.trim().toLowerCase();
+  if (needle) {
+    allEchoes = allEchoes.filter((echo) => echo.name.toLowerCase().includes(needle));
   }
   const classOrder: Record<string, number> = {
     Calamity: 0,
@@ -474,12 +502,15 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
-function toggleSetFilter(set: string) {
-  const index = setFilters.value.findIndex((setFilter) => setFilter === set);
-  if (index >= 0) setFilters.value.splice(index, 1);
-  else setFilters.value.push(set);
+function toggleRecommendedSets() {
+  setFilters.value = sameSets(setFilters.value, recommendedSets.value) ? [] : [...recommendedSets.value];
   void syncOptimizerConfig();
 }
+
+// The recommended sets can arrive after mount (the character data loads separately).
+watch(recommendedSets, (sets) => {
+  if (!setFilters.value.length) setFilters.value = [...sets];
+});
 
 function handleUpdatedTarget(target: unknown) {
   optimizationTarget.value = target;
@@ -505,35 +536,26 @@ async function syncOptimizerConfig() {
   });
 }
 
-function getEchoSetImage(echoSet: string) {
-  return getEchoSetIconByType(echoSet);
-}
 
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
 }
 
 function openEchoChooser() {
+  pickerSets.value = [...recommendedSets.value];
+  pickerSearch.value = "";
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
 function closeEchoChooser() {
-  echoSetFilter.value = null;
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.close();
 }
 
-function toggleEchoSetFilter(echoSet: string) {
-  echoSetFilter.value = echoSetFilter.value === echoSet ? null : echoSet;
-}
-
-function isEchoSetFilterActive(echoSet: string) {
-  return echoSetFilter.value === echoSet;
-}
-
 function resetFilters() {
-  echoSetFilter.value = null;
+  pickerSets.value = [];
+  pickerSearch.value = "";
 }
 
 function handleUpdatedMinStats(stats: OptimizerMinStatRow[]) {
@@ -592,7 +614,9 @@ onMounted(() => {
     };
   };
   mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
-  setFilters.value = ch.optimizer?.echoSets ?? [];
+  // No sets chosen (the optimizer can't run without one) starts on the recommended
+  // ones; a saved choice stays.
+  setFilters.value = ch.optimizer?.echoSets?.length ? ch.optimizer.echoSets : [...recommendedSets.value];
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value = ch.optimizer?.ignoreOtherResonantorEchoes ?? false;

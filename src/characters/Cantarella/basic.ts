@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "RadiantDawn", label: "BP" },
       { key: "JizhouKeeper", label: "4*" },
     ],
+    suggestedEchoSets: ["MidnightVeil", "MoonlitClouds"],
   };
 }

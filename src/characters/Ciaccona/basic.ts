@@ -22,5 +22,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "StaticMist", label: "Standard" },
       { key: "RomanceinFarewell", label: "4*" },
     ],
+    suggestedEchoSets: ["GustsofWelkin", "MoonlitClouds"],
   };
 }

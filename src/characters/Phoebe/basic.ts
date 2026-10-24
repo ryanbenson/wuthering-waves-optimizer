@@ -24,5 +24,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "CosmicRipples", label: "Standard" },
       { key: "OceansGift", label: "Event" },
     ],
+    suggestedEchoSets: ["EternalRadiance"],
   };
 }

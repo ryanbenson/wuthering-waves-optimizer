@@ -19,5 +19,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Variation", label: "Alternate" },
       { key: "CalloftheAbyss", label: "Last resort" },
     ],
+    suggestedEchoSets: ["SongofFeatheredTrace", "RejuvenatingGlow"],
   };
 }

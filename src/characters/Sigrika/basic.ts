@@ -22,5 +22,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "AetherStrike", label: "BP" },
       { key: "LegendofDrunkenHero", label: "4*" },
     ],
+    suggestedEchoSets: ["SoundofTrueName"],
   };
 }

@@ -26,5 +26,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "RadiantDawn", label: "BP" },
       { key: "WaltzinMasquerade", label: "4*" },
     ],
+    suggestedEchoSets: ["ChromaticFoam", "ReelofSplicedMemories"],
   };
 }

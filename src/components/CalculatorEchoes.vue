@@ -10,6 +10,7 @@
       v-if="isLiveResultBarEnabled"
       ref="echoesBrowser"
       :character="character"
+      :suggested-echo-sets="suggestedEchoSets"
       @chosen-echo-inventory="handleChosenEchoInventory" />
     <CalculatorEchoesBrowser
       v-else
@@ -318,7 +319,7 @@ import { trackEvent } from "../utils/analytics";
 
 const MAX_ECHO_COST = 12;
 
-const props = defineProps<{ character: string }>();
+const props = defineProps<{ character: string; suggestedEchoSets?: string[] }>();
 const emit = defineEmits<{
   "update-stats": [stats: Record<string, any>];
   "updated-main-echo": [echo: string | null];

@@ -14,5 +14,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     liveResultBarStats: ["totalDef", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    suggestedEchoSets: ["RejuvenatingGlow"],
   };
 }

@@ -49,6 +49,7 @@
       </p>
       <OptimizerWorkspaceSetup
         :character="character"
+        :suggested-echo-sets="suggestedEchoSets"
         @optimizer:optimize="
           (...args) => emit('optimizer:optimize', ...args)
         "></OptimizerWorkspaceSetup>
@@ -73,6 +74,8 @@ defineOptions({ name: "CalculatorOptimizerWorkspace" });
 const props = withDefaults(
   defineProps<{
     character: string;
+    /** The character's recommended echo sets (basic.ts), for the setup's set pickers. */
+    suggestedEchoSets?: string[];
     totalCombos?: number;
     processedCombos?: number;
     optimizerElapsedMs?: number;

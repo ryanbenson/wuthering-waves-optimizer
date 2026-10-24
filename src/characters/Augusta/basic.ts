@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Autumntrace", label: "BP" },
       { key: "WaningRedshift", label: "4*" },
     ],
+    suggestedEchoSets: ["CrownofValor"],
   };
 }

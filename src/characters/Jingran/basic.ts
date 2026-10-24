@@ -16,5 +16,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "AureateZenith", label: "BP" },
       { key: "HeliosCleaver", label: "4*" },
     ],
+    suggestedEchoSets: ["LampofNetherRoad"],
   };
 }

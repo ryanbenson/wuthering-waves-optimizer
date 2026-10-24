@@ -19,5 +19,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Discord", label: "2nd best" },
       { key: "Broadblade41", label: "4*" },
     ],
+    suggestedEchoSets: ["HaloofStarryRadiance", "RejuvenatingGlow"],
   };
 }

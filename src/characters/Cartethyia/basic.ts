@@ -22,5 +22,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "EmeraldOfGenesis", label: "Standard" },
       { key: "GuardianSword", label: "3*" },
     ],
+    suggestedEchoSets: ["WindwardPilgrimage"],
   };
 }

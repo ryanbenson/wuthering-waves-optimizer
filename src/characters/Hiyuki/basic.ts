@@ -21,5 +21,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "FeatherEdge", label: "BP" },
       { key: "FablesofWisdom", label: "4*" },
     ],
+    suggestedEchoSets: ["WishesofQuietSnowfall"],
   };
 }

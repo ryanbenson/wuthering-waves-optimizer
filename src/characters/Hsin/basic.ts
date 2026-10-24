@@ -19,5 +19,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "FusionAccretion", label: "4*" },
     ],
     stances: ["Unison", "Electro Flare"],
+    suggestedEchoSets: ["HeartofSwornVigil"],
   };
 }

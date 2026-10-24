@@ -255,3 +255,32 @@ describe("InventoryEchoesBrowser bulk delete confirmation", () => {
     expect(confirmRequest.value?.message).toContain("1 locked echo");
   });
 });
+
+describe("InventoryEchoesBrowser set filter", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    useSettingsStore().config = { useClassicUi: true };
+    useInventoryStore().echoes = [
+      makeCompleteInventoryEcho("veil", ELITE_ECHO, 3, "EnergyRegen"),
+      { ...makeCompleteInventoryEcho("frost", ELITE_ECHO, 3, "EnergyRegen"), echoSet: "FreezingFrost" },
+      { ...makeCompleteInventoryEcho("rift", ELITE_ECHO, 3, "EnergyRegen"), echoSet: "MoltenRift" },
+    ];
+  });
+
+  const shownIds = (container: Element) =>
+    Array.from(container.querySelectorAll("[data-test-card]"))
+      .map((el) => el.getAttribute("data-echo-id"))
+      .sort();
+  const toggle = (container: Element, set: string) =>
+    fireEvent.click(container.querySelector(`[data-test-echo-set-toggle="${set}"]`)!);
+
+  it("shows echoes from any of the picked sets", async () => {
+    const { container } = renderBrowser();
+    await toggle(container, "MidnightVeil");
+    await toggle(container, "FreezingFrost");
+    expect(shownIds(container)).toEqual(["frost", "veil"]);
+
+    await toggle(container, "MidnightVeil");
+    expect(shownIds(container)).toEqual(["frost"]);
+  });
+});
