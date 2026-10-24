@@ -5,7 +5,10 @@
     :data-test-optimizer-results-index="index">
     <div
       class="optimizer-result__header flex justify-between mb-2 items-center">
-      <span class="badge">Loadout #{{ index + 1 }}</span>
+      <span v-if="isCurrent" class="badge">
+        Current loadout (equipped when you ran the optimizer)
+      </span>
+      <span v-else class="badge">Loadout #{{ index + 1 }}</span>
       <button
         class="btn btn-primary btn-sm"
         @click="equipLoadout"
@@ -40,12 +43,7 @@
       <CalculatorOptimizerResultStats
         :character-element="characterElement"
         :final-stats="finalStats"
-        :total-atk="totalAtk"
-        :total-hp="totalHp"
-        :total-def="totalDef"
-        :total-crit-rate="totalCritRate"
-        :total-crit-dmg="totalCritDmg"
-        :energy-regen="energyRegen"
+        :current-stats="currentStats"
         :target-value="targetValue" />
     </div>
   </div>
@@ -70,6 +68,7 @@ const props = withDefaults(
     character: string;
     id: string;
     index: number;
+    isCurrent?: boolean;
     targetType: string;
     targetValue: string;
     loadout?: unknown[];
@@ -82,6 +81,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStats: Record<string, number>;
   }>(),
   {
     loadout: () => [],

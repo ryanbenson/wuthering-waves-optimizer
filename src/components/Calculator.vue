@@ -211,6 +211,7 @@
           :total-crit-rate="totalCritRate"
           :total-crit-dmg="totalCritDMG"
           :energy-regen="energyRegen"
+          :current-stats="optimizerCurrentStats"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
           @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
@@ -233,6 +234,7 @@
           :total-crit-rate="totalCritRate"
           :total-crit-dmg="totalCritDMG"
           :energy-regen="energyRegen"
+          :current-stats="optimizerCurrentStats"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
           :is-optimizer-running="isOptimizerRunning"
@@ -546,6 +548,7 @@ import {
   getCalculationContext,
 } from "../calculator/attacks";
 import { buildOptimizerRotationData } from "../calculator/rotationData";
+import { computeRunBuffData, processLoadout } from "../calculator/processLoadout";
 import { calcCharacterRotationDamage } from "../calculator/characterRotation";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
@@ -561,7 +564,10 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
+import {
+  resolveOptimizerWorkerCount,
+  resolveOptimizerResultCount,
+} from "../utils/optimizerPreferences";
 import { trackEvent } from "../utils/analytics";
 import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
@@ -827,6 +833,27 @@ export default defineComponent({
     const optimizerNoPossibleLoadouts = ref(false);
     const optimizerEmptyReason = ref<OptimizerEmptyReason | null>(null);
     const optimizerResults = ref([]);
+    // The equipped build's stats, keyed and scaled like an optimizer result's
+    // finalStats, so result stats can show a delta against it.
+    const optimizerCurrentStats = computed(() => ({
+      totalHp: totalHp.value,
+      totalAtk: totalAtk.value,
+      totalDef: totalDef.value,
+      totalCritRate: totalCritRate.value,
+      totalCritDMG: totalCritDMG.value,
+      energyRegen: energyRegen.value,
+      basicAttackDMGBonus: BasicAttackDMGBonus.value,
+      heavyAttackDMGBonus: HeavyAttackDMGBonus.value,
+      resonanceSkillDMGBonus: ResonanceSkillDMGBonus.value,
+      resonanceLiberationDMGBonus: ResonanceLiberationDMGBonus.value,
+      glacio: Glacio.value,
+      fusion: Fusion.value,
+      electro: Electro.value,
+      aero: Aero.value,
+      spectro: Spectro.value,
+      havoc: Havoc.value,
+      healingBonus: healingBonus.value,
+    }));
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
     const optimizerElapsedMs = ref(0);
@@ -1457,7 +1484,10 @@ export default defineComponent({
       const echoes = inventoryStore.echoes;
       const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
-      const topN = 5;
+      const topN = resolveOptimizerResultCount(
+        (settingsStore.config as { optimizerResultCount?: unknown })
+          ?.optimizerResultCount,
+      );
       processedCombos.value = 0;
       totalCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
@@ -1862,6 +1892,42 @@ export default defineComponent({
         ? JSON.parse(JSON.stringify(rotationData))
         : null;
 
+      // The loadout equipped when the run starts, scored by the same function as
+      // every candidate (min stats not applied); listed after the top results.
+      const currentLoadoutResult = (() => {
+        const slots = Object.values(
+          characterStore.characters[character.value]?.echoes ?? {},
+        ) as any[];
+        const equipped = slots
+          .map((slot) =>
+            slot?.echoId ? inventoryStore.getEchoById(slot.echoId) : slot,
+          )
+          .filter((echo) => echo?.echo);
+        if (!equipped.length) return null;
+        try {
+          const runRotationData = serializableRotationData ?? undefined;
+          const { selfBuffsData, resonanceChainsBuffsData, overrideBuffVariants } =
+            computeRunBuffData(serializableContext, runRotationData);
+          const result = processLoadout(
+            serializeEchoes(equipped),
+            serializableContext,
+            [],
+            serializableEchoSetPassiveBuffs,
+            serializableMainEchoStats,
+            target,
+            damageType,
+            runRotationData,
+            selfBuffsData,
+            resonanceChainsBuffsData,
+            overrideBuffVariants,
+          );
+          return result ? { ...result, id: "current", isCurrent: true } : null;
+        } catch (error) {
+          console.error("Could not score the equipped loadout:", error);
+          return null;
+        }
+      })();
+
       const cleanupWorkers = () => {
         if (cleanedUp) return;
         cleanedUp = true;
@@ -2099,7 +2165,10 @@ export default defineComponent({
           const finalResults = heap
             .slice()
             .sort((a, b) => b.targetValue - a.targetValue);
-          optimizerResults.value = finalResults;
+          optimizerResults.value =
+            finalResults.length && currentLoadoutResult
+              ? [...finalResults, currentLoadoutResult]
+              : finalResults;
           if (finalResults.length === 0) {
             optimizerEmptyReason.value = resolveOptimizerEmptyReason({
               inventoryCount: emptyReasonContext.inventoryCount,
@@ -2354,6 +2423,7 @@ export default defineComponent({
       optimizerNoPossibleLoadouts,
       optimizerEmptyReason,
       optimizerResults,
+      optimizerCurrentStats,
       optimizationTargetType,
       optimizationTargetObject,
       // optimizer workspace (liveResultBar flag) only
