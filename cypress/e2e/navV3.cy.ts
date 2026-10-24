@@ -98,6 +98,28 @@ describe("v3 nav", () => {
     cy.get("html").should("have.attr", "data-theme", "light");
   });
 
+  it("tucks the phone bottom bar away while scrolling down", () => {
+    cy.viewport(390, 844);
+    visitV3("/");
+    cy.get(".screen--character").should("be.visible");
+    cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
+
+    cy.scrollTo(0, 600);
+    cy.get("[data-test-nav-bottom-bar]").should("have.class", "nav-bottom-bar--tucked");
+    cy.scrollTo(0, 400);
+    cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
+
+    // Not while its More menu is open.
+    cy.scrollTo(0, 1000);
+    cy.get("[data-test-nav-bottom-bar]").should("have.class", "nav-bottom-bar--tucked");
+    cy.scrollTo(0, 900);
+    cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
+    cy.get("[data-test-nav-bottom-more]").click({ scrollBehavior: false });
+    cy.scrollTo(0, 1400);
+    cy.get("[data-test-options-settings]").should("be.visible");
+    cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
+  });
+
   it("starts each section and page at the top", () => {
     visitV3("/");
     cy.get('[data-test-calculator-nav="optimizer"]').click();
@@ -117,8 +139,13 @@ describe("v3 nav", () => {
     cy.window().its("scrollY").should("eq", 0);
 
     cy.get(".screen--weapon").should("be.visible");
-    cy.scrollTo(0, 300, { ensureScrollable: false });
-    cy.get("[data-test-nav-inventory]").click();
+    cy.scrollTo(0, 300);
+    // Scrolling down tucks the bottom bar away; a small scroll up brings it back.
+    cy.get("[data-test-nav-bottom-bar]").should("have.class", "nav-bottom-bar--tucked");
+    cy.window().then((win) => win.scrollBy(0, -20));
+    cy.get("[data-test-nav-bottom-bar]").should("not.have.class", "nav-bottom-bar--tucked");
+    // Cypress's scroll-into-view before a click would tuck it away again.
+    cy.get("[data-test-nav-inventory]").click({ scrollBehavior: false });
     cy.location("pathname").should("eq", "/inventory");
     cy.window().its("scrollY").should("eq", 0);
   });

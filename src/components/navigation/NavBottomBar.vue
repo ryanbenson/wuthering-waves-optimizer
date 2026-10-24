@@ -2,7 +2,11 @@
   <nav
     ref="barRef"
     aria-label="Main"
-    class="nav-bottom-bar fixed inset-x-0 bottom-0 z-40 bg-base-300 border-t border-base-content/10 grid grid-cols-5 px-1 pt-1.5">
+    class="nav-bottom-bar fixed inset-x-0 bottom-0 z-40 bg-base-300 border-t border-base-content/10 grid grid-cols-5 px-1 pt-1.5"
+    :class="{ 'nav-bottom-bar--tucked': isTucked }"
+    data-test-nav-bottom-bar
+    @focusin="hasFocus = true"
+    @focusout="onFocusOut">
     <RouterLink
       v-for="section in MAIN_SECTIONS"
       :key="section.page"
@@ -34,11 +38,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import NavIcon from "./NavIcon.vue";
 import NavUtilityMenu from "./NavUtilityMenu.vue";
 import { MAIN_SECTIONS, NAV_ICONS, isMorePage, pageLabel } from "./navSections";
 import { useSizeCssVar } from "../../composables/useSizeCssVar";
+import { useScrollCollapse } from "../../composables/useScrollCollapse";
 
 // The v3 phone bottom bar (ADR 0045): the main sections, then More.
 defineOptions({ name: "NavBottomBar" });
@@ -47,11 +52,31 @@ defineProps<{ curPage: string }>();
 
 const barRef = ref<HTMLElement | null>(null);
 useSizeCssVar(barRef, "--nav-bottom-h", { resetTo: "0px" });
+
+// Slides away while scrolling down and comes back on any scroll up. It moves
+// with a transform, so --nav-bottom-h (and the page's padding) stay put. Never
+// while focus is in it, which is also while the More menu is open.
+const { isCollapsed } = useScrollCollapse();
+const hasFocus = ref(false);
+const isTucked = computed(() => isCollapsed.value && !hasFocus.value);
+
+function onFocusOut(event: FocusEvent) {
+  hasFocus.value = !!barRef.value?.contains(event.relatedTarget as Node | null);
+}
 </script>
 
 <style lang="scss" scoped>
 .nav-bottom-bar {
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  transition: transform 0.2s ease;
+}
+.nav-bottom-bar--tucked {
+  transform: translateY(100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-bottom-bar {
+    transition: none;
+  }
 }
 .nav-bottom-bar a:hover {
   color: inherit;
