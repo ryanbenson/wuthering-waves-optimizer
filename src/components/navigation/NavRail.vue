@@ -5,12 +5,13 @@
     class="nav-rail fixed inset-y-0 left-0 w-16 flex flex-col items-stretch gap-1 px-1 py-3 bg-base-300 text-base-content border-r border-base-content/10">
     <RouterLink
       to="/"
-      class="flex justify-center pt-1 pb-3 text-base-content"
+      class="flex flex-col items-center gap-1 pt-1 pb-3 text-base-content"
       aria-label="Wuthering Tools home"
       title="Wuthering Tools"
       data-test-nav-logo
       @click="emit('home')">
       <span class="nav-logo" aria-hidden="true"></span>
+      <span class="nav-rail__wordmark" aria-hidden="true">Wuthering Tools</span>
     </RouterLink>
 
     <RouterLink
@@ -75,6 +76,15 @@ useSizeCssVar(railRef, "--nav-rail-w", { dimension: "width", resetTo: "0px" });
 
 html[data-theme="black"] .nav-rail {
   background: oklch(var(--b1));
+}
+
+// Wraps to "Wuthering" / "Tools" in the 64px rail.
+.nav-rail__wordmark {
+  font-family: "Red Hat Display", "Figtree", sans-serif;
+  font-size: 0.65625rem;
+  font-weight: 400;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .nav-rail__item {

@@ -19,6 +19,16 @@
   src: url("/fonts/figtree-variable.woff2") format("woff2");
 }
 
+/* The "Wuthering Tools" name under the v3 rail's logo (navigation/NavRail.vue).
+ * Latin subset from Google Fonts; OFL licence in red-hat-display-OFL.txt. */
+@font-face {
+  font-family: "Red Hat Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/red-hat-display-regular.woff2") format("woff2");
+}
+
 /**** custom styles ****/
 
 :root {
