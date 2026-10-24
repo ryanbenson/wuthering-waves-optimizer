@@ -79,4 +79,20 @@ describe("Command Bar on phones", () => {
     cy.get("[data-test-live-result-bar-target-trigger]").click();
     cy.get("[data-test-live-result-bar-settings]").should("not.exist");
   });
+
+  it("shrinks while scrolling down, keeping the mode, number and arrow", () => {
+    cy.selectWorkspaceCharacter("Aemeath");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.get("[data-test-live-result-bar]").should("not.have.class", "command-bar--compact");
+
+    cy.scrollTo(0, 800);
+    cy.get("[data-test-live-result-bar]").should("have.class", "command-bar--compact");
+    cy.get("[data-test-live-result-bar-target-trigger]").should("not.be.visible");
+    cy.get("[data-test-live-result-bar-mode]").should("be.visible");
+    cy.get("[data-test-live-result-bar-sheet-open]").should("be.visible");
+
+    cy.scrollTo(0, 600);
+    cy.get("[data-test-live-result-bar]").should("not.have.class", "command-bar--compact");
+    cy.get("[data-test-live-result-bar-target-trigger]").should("be.visible");
+  });
 });
