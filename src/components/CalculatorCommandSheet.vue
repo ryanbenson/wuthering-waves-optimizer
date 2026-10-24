@@ -13,7 +13,7 @@
           role="dialog"
           aria-modal="true"
           aria-labelledby="command-sheet-title"
-          class="command-sheet__panel relative max-h-[85vh] overflow-y-auto rounded-t-2xl bg-base-100 text-base-content border-t border-base-300 shadow-2xl px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]"
+          class="command-sheet__panel relative rounded-t-2xl bg-base-100 text-base-content border-t border-base-300 shadow-2xl px-4 pt-2 pb-[max(1rem,env(safe-area-inset-bottom))]"
           data-test-command-sheet>
           <div class="mx-auto mb-2 h-1 w-10 rounded-full bg-base-content/20" aria-hidden="true"></div>
 
@@ -51,6 +51,7 @@
             <span class="command-sheet__label">Level</span>
             <div class="font-mono text-sm">
               <WorkspaceLevelStepper
+                class="w-fit"
                 :character="character"
                 @character-level-updated="emit('character-level-updated', $event)" />
             </div>
@@ -183,6 +184,15 @@ watch(
 </script>
 
 <style scoped lang="scss">
+/* No scroll area unless the screen is too short for the sheet: one would clip
+the Measure picker, which opens upwards when there's little room below. */
+@media (max-height: 560px) {
+  .command-sheet__panel {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+}
+
 .command-sheet__label {
   font-size: 10px;
   font-weight: 600;
