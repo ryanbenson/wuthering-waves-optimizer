@@ -75,6 +75,29 @@ describe("v3 nav", () => {
     cy.get("[data-test-nav-bottom-more]").should("contain", "Scanners");
   });
 
+  it("keeps the theme under More → Appearance on phones", () => {
+    cy.viewport(390, 844);
+    visitV3("/settings");
+    cy.get('[aria-label="Change Theme"]').should("not.exist");
+
+    cy.get("[data-test-nav-bottom-more]").click();
+    cy.get("[data-test-options-appearance]").click();
+    cy.get("[data-test-options-appearance-panel]").should("be.visible");
+    cy.get("[data-test-options-settings]").should("not.be.visible");
+    cy.get('[data-test-options-appearance-panel] [data-set-ui]').should("not.exist");
+    cy.get('[data-set-theme="light"]').click();
+    cy.get("html").should("have.attr", "data-theme", "light");
+    // Still open, so you can try another.
+    cy.get('[data-set-theme="dark"]').should("be.visible");
+
+    cy.get("[data-test-options-appearance-back]").click();
+    cy.get("[data-test-options-settings]").should("be.visible");
+
+    // The saved theme still applies on phones without opening the menu.
+    cy.reload();
+    cy.get("html").should("have.attr", "data-theme", "light");
+  });
+
   it("starts each section and page at the top", () => {
     visitV3("/");
     cy.get('[data-test-calculator-nav="optimizer"]').click();

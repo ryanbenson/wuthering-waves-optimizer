@@ -15,8 +15,8 @@
       <span class="truncate max-w-full">{{ section.label }}</span>
     </RouterLink>
 
-    <!-- Scanners, Settings, Info and the rest: the utility menu, opening upwards. -->
-    <NavUtilityMenu :cur-page="curPage" :is-v3="true" placement="up" class="flex">
+    <!-- Scanners, Settings, Appearance, Info and the rest: the utility menu, opening upwards. -->
+    <NavUtilityMenu :cur-page="curPage" :is-v3="true" placement="up" appearance class="flex">
       <template #trigger>
         <div
           tabindex="0"

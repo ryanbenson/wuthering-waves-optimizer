@@ -1,5 +1,5 @@
 <template>
-  <header class="nav-phone-header flex items-center gap-1 h-14 pl-1.5 pr-1.5 bg-base-300 text-base-content border-b border-base-content/10">
+  <header class="nav-phone-header flex items-center gap-1 h-14 pl-1.5 pr-4 bg-base-300 text-base-content border-b border-base-content/10">
     <!-- The page's sections, when it has any, behind a hamburger. -->
     <div v-if="sections" class="dropdown shrink-0" @mousedown="closeDropdownOnTriggerReclick">
       <div
@@ -45,21 +45,18 @@
     <span class="flex-1 min-w-0 truncate text-base font-bold px-1" data-test-nav-section-title>
       {{ activeItem?.label ?? pageLabel(curPage) }}
     </span>
-
-    <ThemeChooser />
   </header>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import ThemeChooser from "../ThemeChooser.vue";
 import NavIcon from "./NavIcon.vue";
 import { NAV_ICONS, pageLabel, type NavSections } from "./navSections";
 import { closeDropdownOnTriggerReclick } from "../../utils/dropdownToggle";
 
 // The v3 phone header (ADR 0045): a hamburger with the page's sections, the
-// logo, the current section (or page) name and the theme menu. The main
-// sections are in NavBottomBar.vue.
+// logo and the current section (or page) name. The main sections and the
+// theme (More → Appearance) are in NavBottomBar.vue.
 defineOptions({ name: "NavPhoneHeader" });
 
 const props = defineProps<{

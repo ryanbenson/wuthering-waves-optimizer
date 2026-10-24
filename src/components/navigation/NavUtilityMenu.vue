@@ -97,7 +97,7 @@
       </ul>
 
       <!-- v3 UI: grouped, with icons. -->
-      <ul v-else class="menu subnav--v3 w-56" data-test-options-menu-v3>
+      <ul v-else v-show="!showAppearance" class="menu subnav--v3 w-56" data-test-options-menu-v3>
         <li class="subnav__eyebrow">Workspace</li>
         <li class="mb-1">
           <RouterLink
@@ -108,6 +108,19 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"></path><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
             Settings
           </RouterLink>
+        </li>
+        <li v-if="appearance" class="mb-1">
+          <button
+            ref="appearanceButtonRef"
+            type="button"
+            class="w-full flex items-center gap-[0.55rem]"
+            aria-haspopup="true"
+            data-test-options-appearance
+            @click="openAppearance(true)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 000 18z" fill="currentColor"></path></svg>
+            Appearance
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4 ml-auto opacity-60"><path d="M9 18l6-6-6-6"></path></svg>
+          </button>
         </li>
         <li class="mb-1">
           <button
@@ -190,12 +203,32 @@
           </a>
         </li>
       </ul>
+
+      <!-- Phones: theme and density, which have no button of their own there.
+           v-show, not v-if: ThemeOptions applies the saved theme on mount. -->
+      <div v-if="isV3 && appearance" v-show="showAppearance" data-test-options-appearance-panel>
+        <ul class="menu subnav--v3 w-56 pb-0">
+          <li>
+            <button
+              ref="backButtonRef"
+              type="button"
+              class="w-full flex items-center gap-[0.55rem]"
+              data-test-options-appearance-back
+              @click="openAppearance(false)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M15 18l-6-6 6-6"></path></svg>
+              Appearance
+            </button>
+          </li>
+        </ul>
+        <ThemeOptions :show-interface="false" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, ref } from "vue";
+import ThemeOptions from "../ThemeOptions.vue";
 import { useClassicUi } from "../../composables/useClassicUi";
 import { closeDropdownOnTriggerReclick } from "../../utils/dropdownToggle";
 
@@ -210,8 +243,10 @@ const props = withDefaults(
     curPage: string;
     isV3: boolean;
     placement?: "down" | "right" | "up";
+    /** v3 phones: an Appearance item with the theme and density lists. */
+    appearance?: boolean;
   }>(),
-  { placement: "down" },
+  { placement: "down", appearance: false },
 );
 
 defineSlots<{ trigger?(): any }>();
@@ -222,12 +257,24 @@ const placementClass = computed(() => ({
 }));
 const contentClass = computed(() => {
   if (props.placement === "right") return "ml-2 w-max";
-  if (props.placement === "up") return "mb-3";
+  if (props.placement === "up") return "mb-3 max-h-[calc(100vh-var(--nav-bottom-h)-5rem)] overflow-y-auto";
   return ["top-px", props.isV3 ? "mt-14" : "mt-16"];
 });
 
 function closeMenu() {
+  showAppearance.value = false;
   (document.activeElement as HTMLElement | null)?.blur();
+}
+
+// Swapping panels hides the focused button, which would close this
+// focus-driven dropdown, so focus moves to the other panel's button.
+const showAppearance = ref(false);
+const appearanceButtonRef = ref<HTMLButtonElement | null>(null);
+const backButtonRef = ref<HTMLButtonElement | null>(null);
+async function openAppearance(open: boolean) {
+  showAppearance.value = open;
+  await nextTick();
+  (open ? backButtonRef : appearanceButtonRef).value?.focus();
 }
 
 // Same switch as the theme menu's Interface → Classic (ADR 0038).
