@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   getSubstatType,
   getSubstatValue,
+  isEmptyParsedEcho,
   mapParsedEchoes,
 } from "../../src/echoes/parsedEchoMapping";
 
@@ -119,5 +120,34 @@ describe("mapParsedEchoes", () => {
     const [saved] = mapParsedEchoes([base], true);
     expect(notSaved.echoId).toBeNull();
     expect(saved.echoId).toEqual(expect.any(String));
+  });
+
+  it("never assigns an echoId to an empty slot, so it can't be saved to inventory", () => {
+    const [empty] = mapParsedEchoes(
+      [{ echo: null, set: null, cost: null, mainStatLabel: "", substats: [] }],
+      true,
+    );
+    expect(empty.echoId).toBeNull();
+    expect(empty.echo).toBeNull();
+  });
+
+  it("still saves a slot whose echo didn't match but whose stats were read", () => {
+    const [unmatched] = mapParsedEchoes(
+      [{ echo: null, set: null, cost: 1, mainStatLabel: "ATK", substats: [] }],
+      true,
+    );
+    expect(unmatched.echoId).toEqual(expect.any(String));
+  });
+});
+
+describe("isEmptyParsedEcho", () => {
+  it("ignores substat labels OCR'd from background noise", () => {
+    expect(
+      isEmptyParsedEcho({ echo: null, substats: [{ subStat: "aT", subStatValue: "" }] }),
+    ).toBe(true);
+    expect(
+      isEmptyParsedEcho({ echo: null, substats: [{ subStat: "HP", subStatValue: "470" }] }),
+    ).toBe(false);
+    expect(isEmptyParsedEcho({ echo: "Test", substats: [] })).toBe(false);
   });
 });

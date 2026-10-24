@@ -143,7 +143,7 @@ Labels are returned **as read**, not mapped to stat keys. A trailing `%` tells p
 
 Each slot is read in this order. Calls are made **one at a time**, so a single OCR worker is enough.
 
-1. **Text.** OCR the cost, the main-stat label, then the five substat lines. Blank substat lines are dropped.
+1. **Text.** OCR the cost, the main-stat label, then the five substat lines. Blank substat lines are dropped. If the slot has no readable cost, no main stat that looks like a stat and no stat-like substat with a value, it's **empty** (the character has fewer than five echoes): it's returned with every field blank (`cost: null`, `mainStatLabel: ""`, `substats: []`, `echo: null`, `set: null`) and no image matching is done, because a matcher always finds *some* closest echo, even for bare background.
 2. **Set icon, against every set.** `matchSet(region, null)`.
 3. **If a set matched:** match the portrait only against echoes that can roll that set **and** have the OCR'd cost: `matchEcho(region, candidates)`. A few dozen candidates instead of hundreds makes portrait matching far more reliable. If cost OCR failed, it's filled in from the matched echo.
 4. **If no set matched:** match the portrait against **every** echo: `matchEcho(region, null)`. Then take the set from that echo. If the echo can only roll one set, that's the answer and no second match is made. If it can roll several, `matchSet(region, thatEchosSets)` picks between them.
@@ -185,8 +185,9 @@ Use these directly if you run your own pipeline.
 
 | Export | Description |
 |---|---|
-| `parseBuildCard(adapters, gameData)` | Reads all five slots. Returns `Promise<BuildCardEchoSlot[]>` |
+| `parseBuildCard(adapters, gameData)` | Reads all five slots. Returns `Promise<BuildCardEchoSlot[]>`, always five entries; empty slots come back blank |
 | `parseEchoSlot(regions, adapters, gameData)` | Reads one slot. Useful for retrying a single slot |
+| `isEmptySlotText(cost, mainStatLabel, substats)` | `true` when a slot's text shows no echo is equipped there. Labels count only when they contain a stat word (ATK, HP, DEF, Crit, DMG, Bonus, Regen, Healing), because OCR of bare background returns stray letters that vary between decoders. `parseEchoSlot` already applies it |
 | `echoCandidates(gameData, set, cost)` | Echo keys that can roll `set`, narrowed to `cost` when it's not `null` |
 
 ### Types

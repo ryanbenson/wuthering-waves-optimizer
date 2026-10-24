@@ -185,10 +185,10 @@ import {
   getCharacterBuildStatusDotClass,
   getCharacterBuildStatusLabel,
   CHARACTER_BUILD_STATUSES,
-  type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
+import { useCharacterBrowserFilters } from "../composables/useCharacterBrowserFilters";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -213,11 +213,15 @@ const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
 }>();
 
-const filterElement = ref<string | null>(null);
-const filterRarity = ref<number | null>(null);
-const filterWeapon = ref<string | null>(null);
-const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
-const filterFavorites = ref(false);
+// Remembered across opens and reloads — see useCharacterBrowserFilters.
+const {
+  filterElement,
+  filterRarity,
+  filterWeapon,
+  filterBuildStatus,
+  filterFavorites,
+  resetFilters,
+} = useCharacterBrowserFilters();
 
 const hideWontBuildTooltip =
   "Hide characters marked “Won't build”. This preference is saved globally.";
@@ -313,16 +317,7 @@ function triggerCloseModal() {
   isOpen.value = false;
 }
 
-function reset() {
-  filterElement.value = null;
-  filterRarity.value = null;
-  filterWeapon.value = null;
-  filterBuildStatus.value = null;
-  filterFavorites.value = false;
-}
-
 function handleClose() {
-  reset();
   // Must close the <dialog> itself — only clearing isOpen removes the
   // modal-box (and its method="dialog" form) while leaving the backdrop open.
   triggerCloseModal();
@@ -354,14 +349,6 @@ function isWeaponFilterActive(weapon: string) {
 
 function toggleFavoriteFilter() {
   filterFavorites.value = !filterFavorites.value;
-}
-
-function resetFilters() {
-  filterElement.value = null;
-  filterRarity.value = null;
-  filterWeapon.value = null;
-  filterBuildStatus.value = null;
-  filterFavorites.value = false;
 }
 
 function getElementClass(element: string) {

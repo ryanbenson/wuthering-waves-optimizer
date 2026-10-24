@@ -10,6 +10,31 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSuoming/SP_IconSuomingD2.webp"],
     signatureWeapon: "UnspokenRue",
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
-    suggestedWeapons: [],
+    suggestedWeapons: [
+      {
+        key: "RedSpring",
+        label: "Alternate",
+      },
+      {
+        key: "EmeraldSentence",
+        label: "Stat Stick",
+      },
+      {
+        key: "Frostburn",
+        label: "Stat Stick",
+      },
+      {
+        key: "EmeraldOfGenesis",
+        label: "Standard",
+      },
+      {
+        key: "FeatherEdge",
+        label: "BP",
+      },
+      {
+        key: "CommandoOfConviction",
+        label: "4*",
+      },
+    ],
   };
 }

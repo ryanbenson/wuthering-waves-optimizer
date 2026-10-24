@@ -1,11 +1,12 @@
 <template>
   <div
-    class="command-bar sticky top-[var(--nav-h)] z-30 flex flex-col items-center gap-3 md:flex-row md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-4 py-2"
+    class="command-bar sticky top-[var(--nav-h)] z-30 flex items-center gap-3 md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-3 md:px-4 py-2"
     data-test-live-result-bar>
-    <!-- Identity + config (inputs): who this is and how it's set up. -->
-    <div class="flex items-center gap-2 shrink-0 min-w-0">
+    <!-- Identity + config (inputs): who this is and how it's set up. Phones
+    keep one row (avatar, name, mode); the rest moves to CalculatorCommandSheet. -->
+    <div class="flex items-center gap-2 min-w-0 md:shrink-0">
       <AppHoverZoomAvatar
-        class="live-result-bar__avatar size-14 border-2"
+        class="live-result-bar__avatar size-11 md:size-14 border-2"
         :class="{
           'border-amber-300': characterRarity === 5,
           'border-violet-600': characterRarity === 4,
@@ -17,14 +18,46 @@
         @click="emit('open-character-browser')" />
 
       <div class="leading-tight min-w-0">
-        <div class="flex items-center gap-1.5 min-w-0">
+        <!-- Phones: the name and mode open the character half of the sheet
+        (level, build, mode); the mode stays visible because it decides what
+        the number means. -->
+        <button
+          ref="characterSheetTriggerRef"
+          type="button"
+          class="md:hidden flex flex-col items-start min-w-0 max-w-full text-left"
+          :aria-expanded="sheetSection === 'character'"
+          aria-haspopup="dialog"
+          aria-label="Character settings: level, build and mode"
+          data-test-live-result-bar-character-open
+          @click="openSheet('character')">
+          <span class="flex items-center gap-1 min-w-0 max-w-full">
+            <span class="font-bold text-sm truncate">{{ characterName }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3 shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+          <span
+            v-if="characterStances.length > 1 && activeStance"
+            class="flex items-center gap-1 text-[11px] opacity-70 mt-0.5 min-w-0 max-w-full"
+            data-test-live-result-bar-mode>
+            <img
+              v-if="activeStanceOption?.image"
+              :src="activeStanceOption.image"
+              alt=""
+              class="command-bar__stance-icon size-3.5 shrink-0"
+              :style="activeStanceOption.imageStyle"
+              loading="lazy" />
+            <span class="truncate">{{ activeStance }}</span>
+          </span>
+        </button>
+        <div class="hidden md:flex items-center gap-1.5 min-w-0">
           <span class="font-bold text-sm truncate" data-test-live-result-bar-name>{{ characterName }}</span>
-          <span v-if="characterRarity" class="text-[10px] text-amber-400 font-semibold shrink-0"
+          <span v-if="characterRarity" class="hidden md:inline text-[10px] text-amber-400 font-semibold shrink-0"
             >{{ characterRarity }}&#9733;</span
           >
           <button
             type="button"
-            class="command-bar__favorite btn btn-circle btn-ghost btn-xs shrink-0"
+            class="command-bar__favorite hidden md:inline-flex btn btn-circle btn-ghost btn-xs shrink-0"
             :class="{ 'text-pink-400': isFavorite }"
             :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
             :data-test-workspace-favorite="character"
@@ -42,13 +75,13 @@
                 stroke-width="2" />
             </svg>
           </button>
-          <span v-if="element || weaponType" class="text-[10px] opacity-60 whitespace-nowrap">
+          <span v-if="element || weaponType" class="hidden md:inline text-[10px] opacity-60 whitespace-nowrap">
             <template v-if="element">{{ element }}</template
             ><template v-if="element && weaponType"> &middot; </template
             ><template v-if="weaponType">{{ weaponType }}</template>
           </span>
         </div>
-        <div class="flex items-center gap-1.5 flex-wrap text-[11px] opacity-70 mt-0.5 font-mono">
+        <div class="hidden md:flex items-center gap-1.5 flex-wrap text-[11px] opacity-70 mt-0.5 font-mono">
           <WorkspaceLevelStepper
             :character="character"
             @character-level-updated="emit('character-level-updated', $event)" />
@@ -104,10 +137,10 @@
     chips down to almost nothing and force them into a single narrow,
     left-aligned column instead of wrapping normally. At lg+ both rows
     collapse back into the original single bottom-aligned row. -->
-    <div class="flex flex-col items-end gap-2 lg:flex-row lg:items-end lg:gap-4 md:ml-auto">
+    <div class="flex flex-col items-end gap-2 lg:flex-row lg:items-end lg:gap-4 ml-auto shrink-0">
       <div
         v-if="statChips.length"
-        :class="[isMobileStatsExpanded ? 'flex' : 'hidden', 'lg:flex w-full lg:w-auto items-end justify-center lg:justify-start gap-x-4 gap-y-2 flex-wrap']"
+        :class="[isMobileStatsExpanded ? 'hidden md:flex' : 'hidden', 'lg:flex w-full lg:w-auto items-end justify-center lg:justify-start gap-x-4 gap-y-2 flex-wrap']"
         data-test-live-result-bar-stats>
         <button
           v-for="chip in statChips"
@@ -121,11 +154,11 @@
         </button>
       </div>
 
-      <div class="flex items-end gap-4">
+      <div class="flex items-end gap-2 md:gap-4">
         <button
           v-if="statChips.length"
           type="button"
-          class="btn btn-xs btn-ghost gap-1 rounded-full lg:hidden self-center"
+          class="btn btn-xs btn-ghost gap-1 rounded-full hidden md:inline-flex lg:hidden self-center"
           :aria-expanded="isMobileStatsExpanded"
           aria-label="Show stat breakdown"
           data-test-live-result-bar-mobile-stats-toggle
@@ -146,13 +179,13 @@
           v-if="character"
           ref="settingsTriggerRef"
           type="button"
-          class="btn btn-sm btn-circle btn-ghost self-center"
+          class="btn btn-sm btn-circle btn-ghost self-center hidden md:inline-flex"
           :class="{ 'btn-active': isSettingsOpen }"
           aria-label="Change target and damage type"
           :aria-expanded="isSettingsOpen"
           v-tooltip="'Target & damage type'"
           data-test-live-result-bar-settings-trigger
-          @click="toggleSettings">
+          @click="toggleSettings(settingsTriggerRef)">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-4"
@@ -204,7 +237,22 @@
         </Teleport>
 
         <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
-          <span class="text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+          <span class="hidden md:inline text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+          <!-- Phones have no gear, so the label itself opens the same popover. -->
+          <button
+            v-if="character"
+            ref="phoneTargetTriggerRef"
+            type="button"
+            class="md:hidden flex items-center gap-0.5 max-w-36 text-[10px] uppercase tracking-wide opacity-60"
+            aria-label="Change target and damage type"
+            :aria-expanded="isSettingsOpen"
+            data-test-live-result-bar-target-trigger
+            @click="toggleSettings(phoneTargetTriggerRef)">
+            <span class="truncate">{{ heroLabel }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-2.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
           <div class="flex items-center gap-2">
             <Transition name="live-result-bar-delta">
               <span
@@ -215,7 +263,7 @@
                 {{ deltaLabel }}
               </span>
             </Transition>
-            <span class="font-mono font-bold text-xl leading-tight tabular-nums text-secondary">{{
+            <span class="font-mono font-bold text-lg md:text-xl leading-tight tabular-nums text-secondary">{{
               heroDisplay
             }}</span>
           </div>
@@ -223,7 +271,7 @@
 
         <button
           type="button"
-          class="btn btn-sm btn-circle self-center"
+          class="btn btn-sm btn-circle self-center hidden md:inline-flex"
           :class="{ 'btn-primary': isDetailOpen }"
           :aria-expanded="isDetailOpen"
           aria-label="Show full stats and damage breakdown"
@@ -243,8 +291,47 @@
               d="M19 9l-7 7-7-7" />
           </svg>
         </button>
+        <button
+          ref="damageSheetTriggerRef"
+          type="button"
+          class="btn btn-sm btn-circle self-center md:hidden"
+          :aria-expanded="sheetSection === 'damage'"
+          aria-haspopup="dialog"
+          aria-label="Damage settings and stats"
+          data-test-live-result-bar-sheet-open
+          @click="openSheet('damage')">
+          <!-- Points down like the desktop toggle and the name's ▾, and flips while open. -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4 transition-transform"
+            :class="{ 'rotate-180': sheetSection === 'damage' }"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
     </div>
+
+    <CalculatorCommandSheet
+      :section="sheetSection"
+      :character="character"
+      :character-name="characterName"
+      :target="target"
+      :damage-type="damageType"
+      :stance-options="characterStances.length > 1 ? stanceOptions : []"
+      :active-stance="activeStance"
+      :stat-chips="statChips"
+      @close="closeSheet"
+      @update:target="onTargetUpdated"
+      @update:damage-type="onDamageTypeUpdated"
+      @select-stance="onStanceSelected"
+      @stat-selected="onSheetStatSelected"
+      @open-detail="onSheetOpenDetail"
+      @manage-builds="onSheetManageBuilds"
+      @character-level-updated="emit('character-level-updated', $event)" />
   </div>
 </template>
 
@@ -254,6 +341,7 @@ import { storeToRefs } from "pinia";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
+import CalculatorCommandSheet, { type CommandSheetSection } from "./CalculatorCommandSheet.vue";
 import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -328,6 +416,10 @@ const stanceOptions = computed((): AppRichSelectOption[] =>
   }),
 );
 
+const activeStanceOption = computed(() =>
+  stanceOptions.value.find((option) => option.value === activeStance.value),
+);
+
 async function onStanceSelected(value: AppRichSelectValue) {
   if (typeof value !== "string" || !value || value === activeStance.value) {
     return;
@@ -337,6 +429,39 @@ async function onStanceSelected(value: AppRichSelectValue) {
 }
 
 const isMobileStatsExpanded = ref(false);
+
+// Phones: which half of CalculatorCommandSheet is open, if any. The name
+// opens the character half, the arrow by the number the damage half.
+const sheetSection = ref<CommandSheetSection | null>(null);
+const characterSheetTriggerRef = ref<HTMLButtonElement | null>(null);
+const damageSheetTriggerRef = ref<HTMLButtonElement | null>(null);
+
+function openSheet(section: CommandSheetSection) {
+  sheetSection.value = section;
+}
+
+function closeSheet() {
+  const trigger =
+    sheetSection.value === "character" ? characterSheetTriggerRef.value : damageSheetTriggerRef.value;
+  sheetSection.value = null;
+  trigger?.focus();
+}
+
+// Stats and the breakdown open over the page, so the sheet gets out of the way.
+function onSheetStatSelected(stat: string) {
+  sheetSection.value = null;
+  emit("stat-selected", stat);
+}
+
+function onSheetOpenDetail() {
+  sheetSection.value = null;
+  if (!props.isDetailOpen) emit("toggle-detail");
+}
+
+function onSheetManageBuilds() {
+  sheetSection.value = null;
+  emit("manage-builds");
+}
 
 const characterRarity = computed(() =>
   props.characterRarity === undefined || props.characterRarity === null
@@ -397,6 +522,9 @@ const deltaLabel = computed(() => {
 });
 
 const settingsTriggerRef = ref<HTMLButtonElement | null>(null);
+const phoneTargetTriggerRef = ref<HTMLButtonElement | null>(null);
+// Whichever of the two triggers opened the popover; it's positioned off this one.
+const settingsAnchor = ref<HTMLButtonElement | null>(null);
 const settingsMenuRef = ref<HTMLElement | null>(null);
 const isSettingsOpen = ref(false);
 const settingsMenuStyle = reactive({ top: "0px", left: "0px" });
@@ -405,7 +533,7 @@ const SETTINGS_MENU_GAP_PX = 4;
 const SETTINGS_MENU_WIDTH_FALLBACK_PX = 288; // w-72, before the menu itself has been measured
 
 function updateSettingsMenuPosition() {
-  const trigger = settingsTriggerRef.value;
+  const trigger = settingsAnchor.value;
   if (!trigger) return;
   const triggerRect = trigger.getBoundingClientRect();
   const menu = settingsMenuRef.value;
@@ -433,11 +561,12 @@ function updateSettingsMenuPosition() {
   settingsMenuStyle.left = `${left}px`;
 }
 
-async function toggleSettings() {
+async function toggleSettings(trigger: HTMLButtonElement | null) {
   if (isSettingsOpen.value) {
     isSettingsOpen.value = false;
     return;
   }
+  settingsAnchor.value = trigger;
   isSettingsOpen.value = true;
   await nextTick();
   updateSettingsMenuPosition();
@@ -458,7 +587,7 @@ function onDocumentPointerDown(event: PointerEvent) {
   const target = event.target as Node | null;
   if (
     target &&
-    (settingsTriggerRef.value?.contains(target) ||
+    (settingsAnchor.value?.contains(target) ||
       settingsMenuRef.value?.contains(target))
   ) {
     return;
@@ -510,5 +639,8 @@ html[data-theme-style="light"] .command-bar__stance-select {
   :deep(.app-rich-select__thumb) {
     filter: invert(1);
   }
+}
+html[data-theme-style="light"] .command-bar__stance-icon:not([style*="filter"]) {
+  filter: invert(1);
 }
 </style>

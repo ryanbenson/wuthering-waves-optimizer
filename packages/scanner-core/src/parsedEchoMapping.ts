@@ -72,6 +72,17 @@ export function getSubstatType(subStatData: ParsedSubstat | undefined): string |
   return scannerGameData().verboseStatLabelMap[type] ?? null;
 }
 
+/** A slot nothing was read from (e.g. a build card's unused fifth slot): no echo, set, main stat or substat value. */
+export function isEmptyParsedEcho(echo: ParsedEcho): boolean {
+  return (
+    !echo.echo &&
+    !echo.set &&
+    !echo.mainStatLabel &&
+    echo.substats.every((substat) => !substat.subStatValue)
+  );
+}
+
+/** Empty slots (`isEmptyParsedEcho`) map with `echoId: null` so they're never saved to the inventory. */
 export function mapParsedEchoes(
   echoData: ParsedEcho[],
   isSavingToInventory: boolean,
@@ -88,7 +99,7 @@ export function mapParsedEchoes(
     const echoSubStatsType5 = getSubstatType(echo.substats[4]);
     const echoSubStatsValue5 = getSubstatValue(echo.substats[4]?.subStatValue);
     let echoId: string | null = null;
-    if (isSavingToInventory) {
+    if (isSavingToInventory && !isEmptyParsedEcho(echo)) {
       echoId = randomString();
     }
     return {

@@ -30,11 +30,11 @@ export const buffs = [
           "BasicAttackUnfurledCanopyWhirlingThunderStage1DMG",
           "BasicAttackUnfurledCanopyWhirlingThunderStage2DMG",
         ],
-        modifierValue: 0.4,
+        modifierValue: 1,
       },
       {
         modifier: "CritDMG",
-        modifierValue: 0.8,
+        modifierValue: 1,
       }
     ],
     minStacks: 0,

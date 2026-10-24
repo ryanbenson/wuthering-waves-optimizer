@@ -12,7 +12,7 @@ export const swordsList = {
     { key: "LaserShearer", name: "Laser Shearer", mainStat: "EnergyRegen" },
     { key: "RedSpring", name: "Red Spring", mainStat: "CritRate" },
     { key: "UnflickeringValor", name: "Unflickering Valor", mainStat: "EnergyRegen" },
-    // { key: "UnspokenRue", name: "Unspoken Rue", mainStat: "CritRate" },
+    { key: "UnspokenRue", name: "Unspoken Rue", mainStat: "CritRate" },
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction", mainStat: "ATK" },

@@ -35,6 +35,36 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-24",
+    dateLabel: "October 24, 2026",
+    items: [
+      "On phones, the calculator's top bar is now one row: your character, mode and damage number stay in view. Tap the name to change level, build or mode, or the arrow by the number for damage type and stats",
+    ],
+  },
+  {
+    date: "2026-10-23",
+    dateLabel: "October 23, 2026",
+    items: [
+      "Adds Suoming echo presets and recommended weapons",
+      "Character browser now remembers your filters and view settings",
+      "Adds Suoming echo presets and recommended weapons, and adds DPS rotation for her",
+    ],
+  },
+  {
+    date: "2026-10-22",
+    dateLabel: "October 22, 2026",
+    items: [
+      "Fixes Suoming buff: Inherent Skill: Sunken Seal, Forged Lock, the Crit DMG and Multiplier wasn't right",
+    ],
+  },
+  {
+    date: "2026-10-21",
+    dateLabel: "October 21, 2026",
+    items: [
+      "Releases Suoming",
+    ],
+  },
+  {
     date: "2026-10-19",
     dateLabel: "October 19, 2026",
     items: [

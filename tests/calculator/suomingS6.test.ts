@@ -52,7 +52,7 @@ describe("Suoming Sequence Node 6: Nine Shadows at Her Side", () => {
       {},
     );
 
-    expect(withoutS6.CritDMG).toBeCloseTo(0.8);
-    expect(withS6.CritDMG).toBeCloseTo(1.6);
+    expect(withoutS6.CritDMG).toBeCloseTo(1);
+    expect(withS6.CritDMG).toBeCloseTo(1.8);
   });
 });

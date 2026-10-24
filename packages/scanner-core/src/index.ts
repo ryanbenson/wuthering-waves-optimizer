@@ -22,6 +22,7 @@ export * from "./parse.js";
 export {
   getSubstatType,
   getSubstatValue,
+  isEmptyParsedEcho,
   mapParsedEchoes,
   type MappedEcho,
   type ParsedEcho,

@@ -32,6 +32,11 @@ export const useSettingsStore = defineStore("settings", {
     resetEchoRatingWeights() {
       delete this.config.echoRatingWeights;
     },
+    // Replaced whole rather than merged, so clearing a filter can't leave
+    // the old value behind. See useCharacterBrowserFilters.
+    setCharacterBrowserFilters(filters) {
+      this.config.characterBrowserFilters = filters;
+    },
     // Most-recently-chosen enemy catalog keys, newest first, capped and
     // de-duplicated. A plain array assignment rather than `addToConfig` —
     // lodash `merge` combines arrays index-by-index, which would leave

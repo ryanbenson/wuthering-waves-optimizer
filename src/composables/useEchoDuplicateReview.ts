@@ -36,6 +36,8 @@ export function useEchoDuplicateReview(options: {
 
   const isReviewingDuplicates = ref(false);
   const duplicateReviewItems = ref<DuplicateReviewItem[]>([]);
+  /** Every parsed slot, in card order — the review items leave out empty slots, but applying to the character must keep positions. */
+  const reviewEchoes = ref<MappedEcho[]>([]);
   const hasSelectedEchoes = computed(() =>
     duplicateReviewItems.value.some((item) => item.selected),
   );
@@ -43,6 +45,7 @@ export function useEchoDuplicateReview(options: {
   function resetDuplicateReview() {
     isReviewingDuplicates.value = false;
     duplicateReviewItems.value = [];
+    reviewEchoes.value = [];
   }
 
   function isExactInventoryMatch(echo: MappedEcho, inventoryKeys: Set<string>) {
@@ -113,21 +116,19 @@ export function useEchoDuplicateReview(options: {
   }
 
   async function handleApplyToCharacterOnly() {
-    const echoes = duplicateReviewItems.value.map((item) => item.echo);
-    await finalizeImport(echoes, new Set());
+    await finalizeImport(reviewEchoes.value, new Set());
   }
 
   async function handleConfirmDuplicateReview() {
     if (!hasSelectedEchoes.value) {
       return;
     }
-    const echoes = duplicateReviewItems.value.map((item) => item.echo);
     const inventoryEchoIndexes = new Set(
       duplicateReviewItems.value
         .filter((item) => item.selected)
         .map((item) => item.index),
     );
-    await finalizeImport(echoes, inventoryEchoIndexes);
+    await finalizeImport(reviewEchoes.value, inventoryEchoIndexes);
   }
 
   async function handleEchoesParsed(
@@ -143,14 +144,13 @@ export function useEchoDuplicateReview(options: {
     }
 
     const inventoryKeys = buildIdentityKeySet(inventoryStore.echoes);
-    const reviewItems: DuplicateReviewItem[] = echoes.map((echo, index) => {
+    // Empty slots (no echoId — see mapParsedEchoes) have nothing to review or save.
+    const reviewItems: DuplicateReviewItem[] = echoes.flatMap((echo, index) => {
+      if (!echo.echoId) {
+        return [];
+      }
       const isDuplicate = isExactInventoryMatch(echo, inventoryKeys);
-      return {
-        index,
-        echo,
-        isDuplicate,
-        selected: !isDuplicate,
-      };
+      return [{ index, echo, isDuplicate, selected: !isDuplicate }];
     });
 
     const hasDuplicates = reviewItems.some((item) => item.isDuplicate);
@@ -160,6 +160,7 @@ export function useEchoDuplicateReview(options: {
     }
 
     duplicateReviewItems.value = reviewItems;
+    reviewEchoes.value = echoes;
     isReviewingDuplicates.value = true;
   }
 
