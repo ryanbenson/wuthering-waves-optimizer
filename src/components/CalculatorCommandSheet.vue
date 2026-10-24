@@ -2,7 +2,7 @@
   <!-- Phones only: the Command Bar shrinks to one row there, and the inputs
   it drops live in this sheet instead, in two halves: "character" (level,
   build, mode), opened from the name, and "damage" (what's measured, damage
-  type, stats), opened from ⌃ by the number. -->
+  type, stats), opened from the arrow by the number. -->
   <Teleport to="body">
     <Transition name="command-sheet">
       <div

@@ -300,14 +300,16 @@
           aria-label="Damage settings and stats"
           data-test-live-result-bar-sheet-open
           @click="openSheet('damage')">
+          <!-- Points down like the desktop toggle and the name's ▾, and flips while open. -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="size-4"
+            class="size-4 transition-transform"
+            :class="{ 'rotate-180': sheetSection === 'damage' }"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
             aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
       </div>
@@ -429,7 +431,7 @@ async function onStanceSelected(value: AppRichSelectValue) {
 const isMobileStatsExpanded = ref(false);
 
 // Phones: which half of CalculatorCommandSheet is open, if any. The name
-// opens the character half, ⌃ by the number the damage half.
+// opens the character half, the arrow by the number the damage half.
 const sheetSection = ref<CommandSheetSection | null>(null);
 const characterSheetTriggerRef = ref<HTMLButtonElement | null>(null);
 const damageSheetTriggerRef = ref<HTMLButtonElement | null>(null);
