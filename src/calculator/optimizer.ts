@@ -488,7 +488,7 @@ function combineBuffObjects(...sources: Record<string, unknown>[]): Record<strin
  * shared `calculateFinalStatsFromBuffs` pipeline (stats.ts) against
  * loadout-independent buff data (`selfBuffsData`/`resonanceChainsBuffsData`,
  * computed once per optimizer run by the caller — see `optimize`). Shared by
- * `optimize()` here and `processor.worker.ts`'s `processLoadout`, which
+ * `optimize()` here and `processLoadout.ts`'s `processLoadout`, which
  * previously each re-implemented this block independently and had drifted
  * (see the Augusta/`EchoDMGBonus` handling `calculateFinalStatsFromBuffs` now
  * owns for both).

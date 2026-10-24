@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   OPTIMIZER_WORKER_COUNT_OPTIONS,
   resolveOptimizerWorkerCount,
+  resolveOptimizerResultCount,
 } from "../../src/utils/optimizerPreferences";
 
 describe("resolveOptimizerWorkerCount", () => {
@@ -31,5 +32,22 @@ describe("OPTIMIZER_WORKER_COUNT_OPTIONS", () => {
       { value: 16, label: "16" },
       { value: 32, label: "32" },
     ]);
+  });
+});
+
+describe("resolveOptimizerResultCount", () => {
+  it("defaults to 5 when unset or not a number", () => {
+    expect(resolveOptimizerResultCount(undefined)).toBe(5);
+    expect(resolveOptimizerResultCount(null)).toBe(5);
+    expect(resolveOptimizerResultCount("20")).toBe(5);
+    expect(resolveOptimizerResultCount(Number.NaN)).toBe(5);
+  });
+
+  it("keeps whole numbers from 1 to 50", () => {
+    expect(resolveOptimizerResultCount(0)).toBe(1);
+    expect(resolveOptimizerResultCount(-3)).toBe(1);
+    expect(resolveOptimizerResultCount(12.7)).toBe(12);
+    expect(resolveOptimizerResultCount(50)).toBe(50);
+    expect(resolveOptimizerResultCount(500)).toBe(50);
   });
 });

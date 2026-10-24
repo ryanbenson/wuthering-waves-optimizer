@@ -23,6 +23,7 @@
         :total-crit-rate="totalCritRate"
         :total-crit-dmg="totalCritDmg"
         :energy-regen="energyRegen"
+        :current-stats="currentStats"
         :total-combos="totalCombos"
         :optimizer-elapsed-ms="optimizerElapsedMs"
         @edit-setup="emit('optimizer:edit-setup')"></OptimizerWorkspaceResults>
@@ -87,6 +88,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStats: Record<string, number>;
     optimizationTargetType: string;
     optimizationTargetObject: string;
     isOptimizerRunning?: boolean;
