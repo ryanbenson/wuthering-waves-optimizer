@@ -174,6 +174,30 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get("[data-test-echo-edit-panel]").should("not.exist");
   });
 
+  it("swaps two slots by dragging one tile onto another", () => {
+    openBrantEchoesTab();
+    cy.get('[data-test-echo-item="0"]').click();
+    pickEcho("BellBorneGeochelone");
+    collapseEcho(0);
+    cy.get('[data-test-echo-item="1"]').click();
+    pickEcho("AeroDrake");
+    collapseEcho(1);
+
+    cy.get('[data-test-echo-item="0"]').should("contain.text", "Bell-Borne Geochelone");
+    cy.get('[data-test-echo-item="0"] [data-test-echo-item-main-badge]').should("exist");
+
+    const dataTransfer = new DataTransfer();
+    cy.get('[data-test-echo-slot="1"]').trigger("dragstart", { dataTransfer });
+    cy.get('[data-test-echo-slot="0"]').trigger("dragenter", { dataTransfer }).trigger("dragover", { dataTransfer });
+    cy.get("[data-test-echo-slot-drop-hint]").should("contain.text", "Swap with slot 2");
+    cy.get('[data-test-echo-slot="0"]').trigger("drop", { dataTransfer });
+    cy.get('[data-test-echo-slot="1"]').trigger("dragend", { dataTransfer });
+
+    cy.get('[data-test-echo-item="0"]').should("contain.text", "Aero Drake");
+    cy.get('[data-test-echo-item="1"]').should("contain.text", "Bell-Borne Geochelone");
+    cy.get("[data-test-echo-slot-drop-hint]").should("not.exist");
+  });
+
   it("stays off by default — the legacy modal renders unchanged", () => {
     cy.visit("/");
     cy.richSelect("[data-test-character-select]", "Brant");

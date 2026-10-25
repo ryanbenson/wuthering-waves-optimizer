@@ -305,3 +305,51 @@ describe("useCharacterStore builds", () => {
     });
   });
 });
+
+describe("swapCharacterEchoes", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("swaps two slots and moves each echo's equipped index with it", () => {
+    const store = useCharacterStore() as any;
+    const inventory = useInventoryStore() as any;
+    store.setCharacterData("Carlotta", {
+      echoes: {
+        0: { echoId: "main", echo: null },
+        1: { echoId: "second", echo: null },
+      },
+    });
+    inventory.setEquippedData("main", { Carlotta: 0, Phoebe: 3 });
+    inventory.setEquippedData("second", { Carlotta: 1 });
+
+    store.swapCharacterEchoes("Carlotta", 0, 1);
+
+    expect(store.characters.Carlotta.echoes[0].echoId).toBe("second");
+    expect(store.characters.Carlotta.echoes[1].echoId).toBe("main");
+    expect(inventory.equipped.main).toEqual({ Carlotta: 1, Phoebe: 3 });
+    expect(inventory.equipped.second).toEqual({ Carlotta: 0 });
+  });
+
+  it("moves an unsaved echo's inline data and leaves an empty slot behind", () => {
+    const store = useCharacterStore() as any;
+    store.setCharacterData("Carlotta", {
+      echoes: { 0: { echoId: null, echo: "AeroDrake", echoSubStatsType1: "CritRate" } },
+    });
+
+    store.swapCharacterEchoes("Carlotta", 0, 3);
+
+    expect(store.characters.Carlotta.echoes[3]).toMatchObject({ echo: "AeroDrake", echoSubStatsType1: "CritRate" });
+    expect(store.characters.Carlotta.echoes[0]).toMatchObject({ echo: null, echoId: null });
+  });
+
+  it("copies the slots, so later edits to one don't reach the other", () => {
+    const store = useCharacterStore() as any;
+    store.setCharacterData("Carlotta", {
+      echoes: { 0: { echoId: "a", echo: null }, 1: { echoId: "b", echo: null } },
+    });
+    store.swapCharacterEchoes("Carlotta", 0, 1);
+    store.setCharacterData("Carlotta", { echoes: { 0: { rank: "5" } } });
+    expect(store.characters.Carlotta.echoes[1].rank).toBeUndefined();
+  });
+});

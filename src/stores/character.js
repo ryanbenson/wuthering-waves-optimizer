@@ -3,6 +3,7 @@ import { merge } from "lodash";
 import { useInventoryStore } from "./inventory";
 import {
   applyEchoLoadout as applyEchoLoadoutState,
+  createEmptyEchoSlot,
   removeCharacterFromEquippedMap,
   buildEquippedMapForCharacter,
 } from "../echoes/echoLoadout";
@@ -148,6 +149,30 @@ export const useCharacterStore = defineStore("character", {
       if (this.characters[characterId]) {
         this.characters[characterId].echoes = echoes;
       }
+    },
+    // Swaps two echo slots (drag-and-drop on the echoes tab). Slots are
+    // copied rather than moved by reference, and each echo's `equipped`
+    // entry follows it to its new slot index.
+    swapCharacterEchoes(characterId, fromIndex, toIndex) {
+      const character = this.characters[characterId];
+      if (!character || fromIndex === toIndex) return;
+      if (!character.echoes) character.echoes = {};
+      const echoes = character.echoes;
+      const fromSlot = { ...(echoes[fromIndex] ?? createEmptyEchoSlot()) };
+      const toSlot = { ...(echoes[toIndex] ?? createEmptyEchoSlot()) };
+      echoes[fromIndex] = toSlot;
+      echoes[toIndex] = fromSlot;
+
+      const inventoryStore = useInventoryStore();
+      inventoryStore.$patch((state) => {
+        [
+          [fromSlot.echoId, toIndex],
+          [toSlot.echoId, fromIndex],
+        ].forEach(([echoId, index]) => {
+          if (!echoId) return;
+          state.equipped[echoId] = { ...(state.equipped[echoId] ?? {}), [characterId]: index };
+        });
+      });
     },
     setCharacterSubstatWeights(characterId, weights) {
       if (this.characters[characterId]) {
