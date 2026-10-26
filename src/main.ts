@@ -11,7 +11,6 @@ import { runMigrations } from "./migrations";
 import { injectAnalytics } from "./utils/analytics";
 
 import HomeView from "./pages/HomeView.vue";
-import OptimizerView from "./pages/OptimizerView.vue";
 import UpdatesView from "./pages/UpdatesView.vue";
 import InfoView from "./pages/InfoView.vue";
 import InfoOverview from "./components/info/InfoOverview.vue";
@@ -29,7 +28,8 @@ import TeamRotationsView from "./pages/TeamRotationsView.vue";
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
   // { path: "/calculator", component: HomeView, name: 'HomeView' },
-  { path: "/optimizer", component: OptimizerView, name: "OptimizerView" },
+  // The optimizer lives in the calculator; old links to its placeholder page land there.
+  { path: "/optimizer", redirect: "/" },
   { path: "/updates", component: UpdatesView, name: "UpdatesView" },
   // Children only render when the liveResultBar "UI Overhaul 3.0" flag is
   // on - InfoView.vue renders the full legacy article on every one of

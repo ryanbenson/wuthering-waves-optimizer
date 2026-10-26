@@ -62,6 +62,13 @@ made for this whole redesign wave.
    flag off — closing that specific gap for `/info` while it remains open
    for Settings/Updates/Privacy/Legal. See `docs/src-components.md`.
 
+   **Superseded 2026-10-26:** every page except the calculator now calls
+   `useDocumentTitle` (Updates, Convene, Privacy, Legal, Settings, Inventory
+   and Teams were added), and the composable puts back the site-wide title
+   and description from `index.html` on unmount, unless the next page has
+   already set its own. Without that, the calculator, which uses the
+   site-wide title, kept the last page's title in the tab.
+
 3. **Flag-off renders the complete legacy article on every `/info/*` path —
    no redirect, no guard.** Since legacy `InfoView.vue` already contains
    every section in one place, `v-else` on `isLiveResultBarEnabled` just

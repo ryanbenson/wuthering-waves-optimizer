@@ -411,6 +411,12 @@ import {
   ASTRITE_WHIMPERING_WASTES,
   astriteFromStaticContentRuns,
 } from "../convene/contentAstrite";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
+
+useDocumentTitle(
+  "Convene odds — Wuthering Waves Calculator & Optimizer",
+  "Estimate your chance of pulling featured 5★ resonators and weapons in Wuthering Waves from your Astrite, Lunite and wishes.",
+);
 
 interface TopUpLineRow {
   id: number;
