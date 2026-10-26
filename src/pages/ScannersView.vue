@@ -4,7 +4,7 @@
   <div class="page-scanners" data-test-scanners-page>
     <section class="flex flex-col gap-4 max-w-2xl">
       <p class="text-xs font-bold uppercase tracking-widest text-primary">
-        Wavescan · Desktop app for Windows
+        Wavescan · Desktop app for Windows and Mac
       </p>
       <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight text-base-content">
         Scan your echoes straight from the game
@@ -15,7 +15,7 @@
         inventory fills itself in. No typing, no screenshots.
       </p>
       <p class="sm:hidden text-sm text-base-content/80 bg-base-200 border border-base-content/10 rounded-lg px-4 py-3">
-        Wavescan runs on your PC. Open wavescan.app there, or send yourself the link.
+        Wavescan runs on your computer. Open wavescan.app there, or send yourself the link.
       </p>
       <div class="flex flex-col sm:flex-row gap-3 pt-1">
         <a
@@ -98,7 +98,7 @@ useDocumentTitle(
 const steps = [
   {
     title: "Get Wavescan",
-    body: "Download it from wavescan.app and install it on your Windows PC.",
+    body: "Download it from wavescan.app and install it on your Windows PC or Mac.",
   },
   {
     title: "Scan in the game",

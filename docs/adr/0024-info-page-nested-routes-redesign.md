@@ -63,6 +63,11 @@ made for this whole redesign wave.
    flag off — closing that specific gap for `/info` while it remains open
    for Settings/Updates/Privacy/Legal. See `docs/src-components.md`.
 
+   **Superseded 2026-10-26:** `useDocumentTitle` now puts back the site-wide
+   title and description from `index.html` on unmount (unless the next page
+   has already set its own), because leaving the Scanners page (ADR 0045) for
+   the calculator, which has no title of its own, kept "Wavescan…" in the tab.
+
 3. **Flag-off renders the complete legacy article on every `/info/*` path —
    no redirect, no guard.** Since legacy `InfoView.vue` already contains
    every section in one place, `v-else` on `isLiveResultBarEnabled` just
