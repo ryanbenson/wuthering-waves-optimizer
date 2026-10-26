@@ -56,6 +56,15 @@
       :active-count="activeFilterCount"
       :clear-disabled="!activeFilterCount"
       @clear="resetFilters">
+      <template #bar>
+        <input
+          v-model="search"
+          type="search"
+          placeholder="Search echoes…"
+          class="input input-bordered input-sm flex-1 min-w-40"
+          aria-label="Search echoes"
+          data-test-inventory-echoes-search />
+      </template>
       <!-- Diagnostics: these filter the list too, so they live here instead
            of competing with Add/Import for header space. -->
       <div class="echoes__filters__row flex flex-wrap items-center gap-2">
@@ -127,14 +136,6 @@
           empty-label="Main stat"
           aria-label="Main stat filter"
           class="w-fit min-w-[150px]" />
-        <AppRichSelect
-          v-model="echo"
-          :options="echoSelectOptions"
-          searchable
-          allow-empty
-          empty-label="Echo"
-          aria-label="Echo filter"
-          class="w-fit min-w-[200px]" />
         <AppRichSelect
           v-model:selected-values="substatFilter"
           :options="substatFilterOptions"
@@ -712,7 +713,6 @@ import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
 
-type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 type InventoryEchoRow = {
   echoId: string;
   locked?: boolean;
@@ -768,10 +768,8 @@ import AppRichSelect, {
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import AppBulkActionBar from "./AppBulkActionBar.vue";
-import {
-  buildEchoSelectOptions,
-  buildSimpleSelectOptions,
-} from "../utils/richSelectOptions";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+import { echoMatchesNameSearch } from "../utils/echoNameSearch";
 import { randomString } from "../utils/strings";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { useConfirm } from "../composables/useConfirm";
@@ -820,7 +818,7 @@ const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
 const echoScanner = ref<InstanceType<typeof EchoScannerModal> | null>(null);
 
 const echoSet = ref<string | null>(null);
-const echo = ref<string | null>(null);
+const search = ref("");
 const costFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const lockedFilter = ref(false);
@@ -841,7 +839,7 @@ const hasSelection = computed(() => selectedEchoIds.value.length > 0);
 const activeFilterCount = computed(() => {
   let count = 0;
   if (echoSet.value) count += 1;
-  if (echo.value) count += 1;
+  if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
   if (lockedFilter.value) count += 1;
@@ -946,7 +944,7 @@ watch(
   [
     mainStatFilter,
     echoSet,
-    echo,
+    search,
     costFilter,
     lockedFilter,
     trashFilter,
@@ -977,8 +975,10 @@ const echoesList = computed(() => {
   if (echoSet.value) {
     allEchoes = allEchoes.filter((e) => e.echoSet === echoSet.value);
   }
-  if (echo.value) {
-    allEchoes = allEchoes.filter((e) => e.echo === echo.value);
+  if (search.value.trim()) {
+    allEchoes = allEchoes.filter((e) =>
+      echoMatchesNameSearch(e.echo, search.value),
+    );
   }
   if (costFilter.value) {
     allEchoes = allEchoes.filter((e) => e.type === costFilter.value);
@@ -1061,24 +1061,6 @@ const totalPages = computed(() =>
   Math.ceil(echoesList.value.length / perPage),
 );
 
-const mainEchoesDataComputed = computed(() => ({ ...mainEchoesData }));
-
-const mainEchoOptions = computed(() => {
-  const buckets: Record<MainEchoRow["class"], MainEchoRow[]> = {
-    Calamity: [],
-    Overlord: [],
-    Elite: [],
-    Common: [],
-  };
-  const mainEchoValues = Object.values(mainEchoesDataComputed.value);
-  mainEchoValues.forEach((e) => {
-    if (e?.class && buckets[e.class]) {
-      buckets[e.class].push(e);
-    }
-  });
-  return buckets;
-});
-
 const allMainStats = computed(() => {
   const fourSlotOptions = Object.keys(statsTable["4"]);
   const threeSlotOptions = Object.keys(statsTable["3"]);
@@ -1099,9 +1081,6 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
   buildSimpleSelectOptions(allMainStats.value, (stat) =>
     getReadableSubStatLabel(String(stat)),
   ),
-);
-const echoSelectOptions = computed((): AppRichSelectOption[] =>
-  buildEchoSelectOptions(mainEchoOptions.value),
 );
 const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
   getReadableSubStatLabel(String(stat)),
@@ -1169,7 +1148,7 @@ function toggleIncompleteFilter() {
 
 function resetFilters() {
   echoSet.value = null;
-  echo.value = null;
+  search.value = "";
   mainStatFilter.value = null;
   costFilter.value = null;
   lockedFilter.value = false;
