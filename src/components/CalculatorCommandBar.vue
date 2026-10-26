@@ -244,7 +244,14 @@
         </Teleport>
 
         <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
-          <span class="hidden md:inline text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+          <!-- Some action names run 60-75 characters, so they wrap to two
+          lines (the end tells similar ones apart) rather than pushing the bar. -->
+          <span
+            class="hidden md:block max-w-60 text-right text-[10px] uppercase tracking-wide opacity-60"
+            :title="heroLabel"
+            data-test-live-result-bar-label>
+            <span class="line-clamp-2 break-words">{{ heroLabel }}</span>
+          </span>
           <!-- Phones have no gear, so the label itself opens the same popover. -->
           <button
             v-if="character"
