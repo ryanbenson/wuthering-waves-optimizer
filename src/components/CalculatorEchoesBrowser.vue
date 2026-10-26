@@ -16,6 +16,15 @@
           :active-count="activeFilterCount"
           :clear-disabled="!activeFilterCount"
           @clear="resetFilters">
+          <template #bar>
+            <input
+              v-model="search"
+              type="search"
+              placeholder="Search echoes…"
+              class="input input-bordered input-sm flex-1 min-w-40"
+              aria-label="Search echoes"
+              data-test-echoes-browser-search />
+          </template>
           <div class="echoes__filters__row flex flex-wrap items-center gap-2">
             <AppRichSelect
               v-model="costFilter"
@@ -31,14 +40,6 @@
               empty-label="Main stat"
               aria-label="Main stat filter"
               class="w-fit min-w-[150px]" />
-            <AppRichSelect
-              v-model="echo"
-              :options="echoSelectOptions"
-              searchable
-              allow-empty
-              empty-label="Echo"
-              aria-label="Echo filter"
-              class="w-fit min-w-[200px]" />
             <AppRichSelect
               v-model="equippedFilter"
               :options="equippedFilterOptions"
@@ -194,7 +195,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { mainEchoesData } from "../echoes/index.ts";
 import {
   ECHO_CV_MAX,
   ECHO_RV_MAX,
@@ -218,10 +218,8 @@ import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import {
-  buildEchoSelectOptions,
-  buildSimpleSelectOptions,
-} from "../utils/richSelectOptions";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+import { echoMatchesNameSearch } from "../utils/echoNameSearch";
 import { useToast } from "../composables/useToast";
 import { useUiDensity } from "../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../composables/useEchoSlotAssignment";
@@ -240,7 +238,7 @@ const { getEchoEquippedChars } = inventoryStore;
 const echoIndex = ref<number | null>(null);
 const costFilter = ref<number | null>(null);
 const echoSet = ref<string | null>(null);
-const echo = ref<string | null>(null);
+const search = ref("");
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const favoriteFilter = ref(false);
@@ -261,7 +259,7 @@ const isOpen = ref(false);
 const activeFilterCount = computed(() => {
   let count = 0;
   if (echoSet.value) count += 1;
-  if (echo.value) count += 1;
+  if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
   if (equippedFilter.value) count += 1;
@@ -277,7 +275,7 @@ watch(
   [
     mainStatFilter,
     echoSet,
-    echo,
+    search,
     favoriteFilter,
     equippedFilter,
     costFilter,
@@ -305,9 +303,10 @@ const echoesList = computed(() => {
       if (echoSet.value) {
         allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
       }
-      // filter by main echo if set
-      if (echo.value) {
-        allEchoes = allEchoes.filter((item: any) => item.echo === echo.value);
+      if (search.value.trim()) {
+        allEchoes = allEchoes.filter((item: any) =>
+          echoMatchesNameSearch(item.echo, search.value),
+        );
       }
       if (costFilter.value) {
         allEchoes = allEchoes.filter((item: any) => item.type === costFilter.value);
@@ -370,22 +369,6 @@ const paginatedEchoesList = computed(() => {
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(echoesList.value.length / perPage)),
 );
-const mainEchoOptions = computed(() => {
-      const echoes = {
-        Calamity: [] as any[],
-        Overlord: [] as any[],
-        Elite: [] as any[],
-        Common: [] as any[],
-      };
-      const mainEchoValues = Object.values(mainEchoesData);
-      mainEchoValues.forEach((echo) => {
-        const echoClass = (echo as any)?.class as keyof typeof echoes | undefined;
-        if (echoClass && echoes[echoClass]) {
-          echoes[echoClass].push(echo);
-        }
-      });
-      return echoes;
-    });
 const allMainStats = computed(() => {
       const fourSlotOptions = Object.keys((statsTable as any)["4"]);
       const threeSlotOptions = Object.keys((statsTable as any)["3"]);
@@ -405,9 +388,6 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
   buildSimpleSelectOptions(allMainStats.value, (stat) =>
     getReadableSubStatLabel(String(stat)),
   ),
-);
-const echoSelectOptions = computed((): AppRichSelectOption[] =>
-  buildEchoSelectOptions(mainEchoOptions.value),
 );
 const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
   getReadableSubStatLabel(String(stat)),
@@ -466,7 +446,7 @@ async function assignEcho(echoId: string) {
     }
 function resetFilters() {
       echoSet.value = null;
-      echo.value = null;
+      search.value = "";
       mainStatFilter.value = null;
       costFilter.value = null;
       equippedFilter.value = null;
