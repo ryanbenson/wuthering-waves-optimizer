@@ -1,11 +1,11 @@
 // Covers the redesigned Settings page (src/components/SettingsWorkspace.vue),
 // the v3 UI's default. The classic tab strip is covered at the bottom.
-function visitWithFlagEnabled() {
+function visitSettings() {
   cy.visit("/settings", {
     onBeforeLoad(win) {
       win.localStorage.setItem(
         "settings",
-        JSON.stringify({ config: {}, labs: { echoScanning: { isEnabled: true } } }),
+        JSON.stringify({ config: {}, labs: {} }),
       );
     },
   });
@@ -17,7 +17,7 @@ describe("Settings Workspace (v3 UI)", () => {
   });
 
   it("switches sections via the tab row", () => {
-    visitWithFlagEnabled();
+    visitSettings();
 
     cy.get('[data-test-settings-nav="preferences"]').should("have.attr", "aria-current", "page");
     cy.get('[data-test-hide-wont-build-characters]').should("exist");
@@ -30,12 +30,12 @@ describe("Settings Workspace (v3 UI)", () => {
     cy.contains("button", "Delete").should("be.visible");
 
     cy.get('[data-test-settings-nav="labs"]').click();
-    cy.contains("Echo scanning").should("be.visible");
+    cy.get("[data-test-settings-labs-empty]").should("contain.text", "No experiments running right now");
   });
 
   it("switches sections via the phone section menu", () => {
     cy.viewport(390, 844);
-    visitWithFlagEnabled();
+    visitSettings();
 
     cy.get("[data-test-nav-section-switcher]").click();
     cy.get('[data-test-settings-mobile-nav="backup-restore"]').click();
@@ -53,7 +53,7 @@ describe("Settings Workspace (v3 UI)", () => {
   });
 
   it("exports data via download and copy", () => {
-    visitWithFlagEnabled();
+    visitSettings();
     cy.get('[data-test-settings-nav="backup-restore"]').click();
 
     cy.window().then((win) => {
@@ -64,7 +64,7 @@ describe("Settings Workspace (v3 UI)", () => {
   });
 
   it("imports and overwrites via the warning-bannered restore panel", () => {
-    visitWithFlagEnabled();
+    visitSettings();
     cy.get('[data-test-settings-nav="backup-restore"]').click();
 
     const payload = JSON.stringify({
@@ -81,16 +81,6 @@ describe("Settings Workspace (v3 UI)", () => {
     cy.contains("Your data has been overwritten!").should("be.visible");
   });
 
-  it("shows the active lab as enabled, persisted across reload", () => {
-    // The seed turns Echo scanning (now the only lab) on; confirm the card
-    // reflects it and survives a reload.
-    visitWithFlagEnabled();
-    cy.get('[data-test-settings-nav="labs"]').click();
-    cy.get('input[type="checkbox"]').first().should("be.checked");
-    cy.reload();
-    cy.get('[data-test-settings-nav="labs"]').click();
-    cy.get('input[type="checkbox"]').first().should("be.checked");
-  });
 });
 
 describe("Settings page (classic UI)", () => {
@@ -100,7 +90,7 @@ describe("Settings page (classic UI)", () => {
     cy.get("[data-test-hide-wont-build-characters]").should("exist");
 
     cy.get("[data-test-settings-labs]").click();
-    cy.contains("Echo scanning").should("be.visible");
+    cy.contains("No labs are currently running").should("be.visible");
 
     cy.get("[data-test-settings-export]").click();
     cy.get("[data-test-settings-export-copy]").should("be.visible");

@@ -239,7 +239,7 @@ export const SETTINGS_SECTIONS: NavSections = {
     },
     {
       label: "Labs",
-      items: [{ key: "labs", label: "Labs", icon: NAV_ICONS.labs, testId: "labs", badge: "1" }],
+      items: [{ key: "labs", label: "Labs", icon: NAV_ICONS.labs, testId: "labs" }],
     },
   ],
 };

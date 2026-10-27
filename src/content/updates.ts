@@ -43,6 +43,7 @@ export const updateEntries: UpdateEntry[] = [
       "Settings and Info now use the same sections row as the calculator, instead of their own side menus",
       "On phones, theme and display options are under More → Appearance",
       "New Scanners page introducing Wavescan, a desktop app for Windows and Mac that reads your echoes straight from the game so you can import them into your inventory",
+      "The in-browser echo scanner is out of Labs: use Scan echoes in your inventory to read echoes from a shared game window or a recording",
       "On phones, the bottom bar and the calculator's top bar get out of the way while you scroll down, and come back as soon as you scroll up",
       "Long attack names in the calculator's top bar now wrap onto two lines instead of pushing everything aside",
       "Changing page or section now starts you at the top",

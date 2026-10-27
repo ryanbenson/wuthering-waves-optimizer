@@ -56,7 +56,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0012](./0012-echo-substat-ratings.md) | Echo & character substat ratings | accepted | | echoes, characters, stores |
 | [0029](./0029-buff-realistic-max-stacks.md) | `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap | accepted | | calculator, characters, buffs |
 | [0031](./0031-mutually-exclusive-buffs.md) | `mutuallyExclusiveWith` for buffs/passives/resonance-chain nodes that can't be active together | accepted | | calculator, characters, weapons, buffs, components |
-| [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | | echoes, workers, components, inventory |
+| [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | [0045](./0045-v3-side-rail-navigation.md) (out of Labs) | echoes, workers, components, inventory |
 | [0034](./0034-scanner-core-package.md) | Extract the echo scanner's logic into `@wutheringtools/scanner-core` | accepted | | scanner, packages, architecture |
 | [0035](./0035-publish-scanner-data-json.md) | Publish `scanner-data.json` for the desktop scanner | accepted | 0041 (signature, pictures) | scanner, data, interop |
 | [0036](./0036-formulas-package.md) | Publish the damage formulas as `@wutheringtools/formulas` | accepted | | calculator, packages, architecture |

@@ -10,9 +10,7 @@
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
-  <EchoScannerModal
-    v-if="isEchoScanningEnabled"
-    ref="echoScanner"></EchoScannerModal>
+  <EchoScannerModal ref="echoScanner"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -25,8 +23,8 @@
           Import echoes
         </button>
         <button
-          v-if="isEchoScanningEnabled"
           class="btn btn-sm btn-secondary"
+          data-test-inventory-scan-echoes
           @click="handleOpenEchoScanner">
           Scan echoes
         </button>
@@ -808,9 +806,6 @@ const inventoryEchoEditRef = ref<
 >(null);
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
-);
-const isEchoScanningEnabled = computed(
-  () => settingsStore.labs?.echoScanning?.isEnabled ?? false,
 );
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
