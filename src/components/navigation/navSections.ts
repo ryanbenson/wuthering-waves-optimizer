@@ -4,6 +4,17 @@
 
 const ASSETS = "https://ryanbenson.github.io/wuthering-waves-assets/images";
 
+/**
+ * Scanners shows a "New" pill in the nav until this date (UTC). It's the
+ * same for everyone, with nothing stored per visitor, and goes away on its
+ * own (ADR 0045).
+ */
+export const SCANNERS_NEW_UNTIL = "2026-12-01";
+
+export function isNewUntil(until: string, now: Date = new Date()): boolean {
+  return now < new Date(until);
+}
+
 /** One path of an SVG icon: outlined in the text colour, or `fill`ed solid. */
 export interface NavIconPath {
   d: string;

@@ -29,16 +29,27 @@
     <div class="flex-1"></div>
     <div class="h-px bg-base-content/10 mx-2.5 my-1.5"></div>
 
-    <RouterLink
-      to="/scanners"
-      class="nav-rail__item"
-      :class="{ 'nav-rail__item--active': curPage === 'scanners' }"
-      :aria-current="curPage === 'scanners' ? 'page' : undefined"
-      title="Wavescan, the desktop echo scanner"
-      data-test-nav-wavescan>
-      <span class="nav-rail__pill"><NavIcon :icon="NAV_ICONS.scanner" class="size-5" /></span>
-      Scanners
-    </RouterLink>
+    <!-- The pill sits outside the link so the link's dimming doesn't fade it. -->
+    <div class="relative">
+      <RouterLink
+        to="/scanners"
+        class="nav-rail__item"
+        :class="{ 'nav-rail__item--active': curPage === 'scanners' }"
+        :aria-current="curPage === 'scanners' ? 'page' : undefined"
+        title="Wavescan, the desktop echo scanner"
+        data-test-nav-wavescan>
+        <span class="nav-rail__pill"><NavIcon :icon="NAV_ICONS.scanner" class="size-5" /></span>
+        Scanners
+        <span v-if="isScannersNew" class="sr-only">(new)</span>
+      </RouterLink>
+      <span
+        v-if="isScannersNew"
+        class="badge badge-primary badge-xs absolute -top-1.5 left-1/2 -translate-x-1/2 pointer-events-none text-[9px] font-semibold uppercase tracking-wide"
+        aria-hidden="true"
+        data-test-nav-scanners-new>
+        New
+      </span>
+    </div>
 
     <div class="flex flex-col items-center gap-1">
       <ThemeChooser placement="right" />
@@ -52,7 +63,7 @@ import { ref } from "vue";
 import ThemeChooser from "../ThemeChooser.vue";
 import NavIcon from "./NavIcon.vue";
 import NavUtilityMenu from "./NavUtilityMenu.vue";
-import { MAIN_SECTIONS, NAV_ICONS } from "./navSections";
+import { MAIN_SECTIONS, NAV_ICONS, SCANNERS_NEW_UNTIL, isNewUntil } from "./navSections";
 import { useSizeCssVar } from "../../composables/useSizeCssVar";
 
 // The v3 desktop side rail (ADR 0045): logo, the main sections, Scanners,
@@ -62,6 +73,8 @@ defineOptions({ name: "NavRail" });
 defineProps<{ curPage: string }>();
 
 const emit = defineEmits<{ home: [] }>();
+
+const isScannersNew = isNewUntil(SCANNERS_NEW_UNTIL);
 
 // Pages offset themselves by --nav-rail-w (AppLayout.vue).
 const railRef = ref<HTMLElement | null>(null);

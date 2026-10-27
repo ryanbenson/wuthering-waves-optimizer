@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-03
 tags: [components, navigation]
+superseded_by: [45]
 ---
 
 # 21. Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -53,6 +54,12 @@ made for this whole redesign wave.
    worse than no badge. If usage patterns change later this can be
    revisited, but it should be re-proposed deliberately, not silently
    readded.
+
+   **Superseded 2026-10-27:** Scanners now has a "New" pill in the v3 rail
+   and in this menu until `SCANNERS_NEW_UNTIL` (`navSections.ts`). It isn't
+   an unread indicator: nothing is tracked per visitor, everyone sees it
+   until that date and then it's gone. Chosen deliberately for the Scanners
+   launch in place of an announcement banner (ADR 0045).
 
 ## Consequences
 

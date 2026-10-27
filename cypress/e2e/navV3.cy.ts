@@ -98,6 +98,26 @@ describe("v3 nav", () => {
     cy.get("html").should("have.attr", "data-theme", "light");
   });
 
+  it("marks Scanners as new in the rail and the More menu until it expires", () => {
+    // Only Date is faked; the app's timers run as normal.
+    cy.clock(Date.UTC(2026, 10, 1), ["Date"]);
+    visitV3("/");
+    // Not "be.visible": the pill lets clicks through to the link
+    // (pointer-events: none), so Cypress reads it as covered by the link.
+    cy.get("[data-test-nav-scanners-new]").should("exist").and("contain.text", "New");
+
+    cy.viewport(390, 844);
+    cy.get("[data-test-nav-bottom-more]").click();
+    cy.get("[data-test-options-scanners-new]").should("be.visible");
+  });
+
+  it("drops the new pill once the date has passed", () => {
+    cy.clock(Date.UTC(2026, 11, 1), ["Date"]);
+    visitV3("/");
+    cy.get("[data-test-nav-wavescan]").should("be.visible");
+    cy.get("[data-test-nav-scanners-new]").should("not.exist");
+  });
+
   it("tucks the phone bottom bar away while scrolling down", () => {
     cy.viewport(390, 844);
     visitV3("/");

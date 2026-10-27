@@ -142,6 +142,12 @@
             data-test-options-scanners>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="size-4"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"></path></svg>
             Scanners
+            <span
+              v-if="isScannersNew"
+              class="badge badge-primary badge-sm text-[10px] font-semibold uppercase tracking-wide"
+              data-test-options-scanners-new>
+              New
+            </span>
           </RouterLink>
         </li>
         <li class="mb-1">
@@ -231,6 +237,7 @@ import { computed, nextTick, ref } from "vue";
 import ThemeOptions from "../ThemeOptions.vue";
 import { useClassicUi } from "../../composables/useClassicUi";
 import { closeDropdownOnTriggerReclick } from "../../utils/dropdownToggle";
+import { SCANNERS_NEW_UNTIL, isNewUntil } from "./navSections";
 
 defineOptions({
   name: "NavUtilityMenu",
@@ -250,6 +257,8 @@ const props = withDefaults(
 );
 
 defineSlots<{ trigger?(): any }>();
+
+const isScannersNew = isNewUntil(SCANNERS_NEW_UNTIL);
 
 const placementClass = computed(() => ({
   "dropdown-right": props.placement === "right",
