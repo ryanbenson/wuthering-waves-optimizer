@@ -10,6 +10,13 @@
         :clear-disabled="!activeFilterCount"
         @clear="resetFilters">
         <template #bar>
+          <input
+            v-model="search"
+            type="search"
+            placeholder="Search echoes…"
+            class="input input-bordered input-sm flex-1 min-w-40"
+            aria-label="Search echoes"
+            data-test-workspace-echoes-browser-search />
           <select
             v-model="sortBy"
             class="select select-bordered select-sm"
@@ -35,14 +42,6 @@
             empty-label="Main stat"
             aria-label="Main stat filter"
             class="w-fit min-w-[150px]" />
-          <AppRichSelect
-            v-model="echo"
-            :options="echoSelectOptions"
-            searchable
-            allow-empty
-            empty-label="Echo"
-            aria-label="Echo filter"
-            class="w-fit min-w-[200px]" />
           <AppRichSelect
             v-model="equippedFilter"
             :options="equippedFilterOptions"
@@ -220,7 +219,6 @@ import {
   statsTable,
   subStats,
 } from "../../echoes/stats";
-import { mainEchoesData } from "../../echoes/index";
 import { getEchoRatingGrade } from "../../echoes/rating";
 import {
   estimateEchoSwapImpactBatch,
@@ -238,10 +236,8 @@ import PaginationControls from "../PaginationControls.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppChooserModal from "../AppChooserModal.vue";
-import {
-  buildEchoSelectOptions,
-  buildSimpleSelectOptions,
-} from "../../utils/richSelectOptions";
+import { buildSimpleSelectOptions } from "../../utils/richSelectOptions";
+import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
 import { useUiDensity } from "../../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
@@ -263,7 +259,7 @@ const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const echoIndex = ref<number | null>(null);
 const costFilter = ref<number | null>(null);
 const echoSet = ref<string | null>(null);
-const echo = ref<string | null>(null);
+const search = ref("");
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const favoriteFilter = ref(false);
@@ -297,7 +293,7 @@ const equippedEchoIdInSlot = computed(() => {
 const activeFilterCount = computed(() => {
   let count = 0;
   if (echoSet.value) count += 1;
-  if (echo.value) count += 1;
+  if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
   if (equippedFilter.value) count += 1;
@@ -310,7 +306,7 @@ const activeFilterCount = computed(() => {
 });
 
 watch(
-  [mainStatFilter, echoSet, echo, favoriteFilter, equippedFilter, costFilter,
+  [mainStatFilter, echoSet, search, favoriteFilter, equippedFilter, costFilter,
    substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
@@ -325,8 +321,10 @@ const echoesFiltered = computed(() => {
   if (echoSet.value) {
     allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
   }
-  if (echo.value) {
-    allEchoes = allEchoes.filter((item: any) => item.echo === echo.value);
+  if (search.value.trim()) {
+    allEchoes = allEchoes.filter((item: any) =>
+      echoMatchesNameSearch(item.echo, search.value),
+    );
   }
   if (costFilter.value) {
     allEchoes = allEchoes.filter((item: any) => item.type === costFilter.value);
@@ -515,22 +513,6 @@ function impactBadgeClasses(delta: EchoImpactDelta | null | undefined) {
   return delta.pct >= 0 ? "badge-success" : "badge-error";
 }
 
-const mainEchoOptions = computed(() => {
-  const grouped = {
-    Calamity: [] as any[],
-    Overlord: [] as any[],
-    Elite: [] as any[],
-    Common: [] as any[],
-  };
-  Object.values(mainEchoesData).forEach((entry) => {
-    const echoClass = (entry as any)?.class as keyof typeof grouped | undefined;
-    if (echoClass && grouped[echoClass]) {
-      grouped[echoClass].push(entry);
-    }
-  });
-  return grouped;
-});
-
 const allMainStats = computed(() => {
   const allOptions = [
     ...Object.keys((statsTable as any)["4"]),
@@ -546,9 +528,6 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
     getReadableSubStatLabel(String(stat)),
   ),
 );
-const echoSelectOptions = computed((): AppRichSelectOption[] =>
-  buildEchoSelectOptions(mainEchoOptions.value),
-);
 const equippedFilterOptions = computed((): AppRichSelectOption[] => [
   { value: "self", label: `Hide equipped by ${props.character}` },
   { value: "any", label: "Hide equipped by anyone" },
@@ -559,7 +538,7 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 
 function resetFilters() {
   echoSet.value = null;
-  echo.value = null;
+  search.value = "";
   costFilter.value = null;
   mainStatFilter.value = null;
   equippedFilter.value = null;

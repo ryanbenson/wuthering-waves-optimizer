@@ -124,6 +124,12 @@ import { computed } from "vue";
 import Nav from "../components/navigation/Nav.vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
+
+useDocumentTitle(
+  "Legal — Wuthering Waves Calculator & Optimizer",
+  "Legal disclaimer for Wuthering Tools, a fan-made, non-commercial tool for Wuthering Waves not affiliated with Kuro Games.",
+);
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(

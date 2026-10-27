@@ -3,7 +3,7 @@
     role="button"
     tabindex="0"
     class="echo__tile card card-bordered card-compact bg-base-100 shadow w-full text-left cursor-pointer"
-    :class="$attrs.class"
+    :class="[$attrs.class, { 'echo__tile--main border-primary/50 ring-1 ring-primary/25': index === 0 }]"
     :aria-expanded="isExpanded"
     :data-test-echo-item="index"
     @click="handleCardActivate"
@@ -206,7 +206,12 @@
             <span class="font-bold text-sm truncate" :class="rankTextClass">
               {{ echoName ?? "Select echo" }}
             </span>
-            <span v-if="index === 0" class="badge badge-xs badge-outline">Main echo</span>
+            <span
+              v-if="index === 0"
+              class="badge badge-sm badge-primary badge-outline font-semibold"
+              data-test-echo-item-main-badge>
+              Main echo
+            </span>
           </div>
           <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
             <span class="text-xs opacity-60 truncate">{{ echoSetLabel }}</span>
@@ -249,6 +254,32 @@
             <EchoLockTrashActions v-if="echoId" :echo-id="echoId" layout="row" size="xs" />
           </div>
         </div>
+        <!--
+          Drag cue: the whole collapsed tile is draggable (CalculatorEchoes.vue
+          owns the drop handling), and this grip says so. Arrow keys on the
+          grip swap with the slot above/below for keyboard users.
+        -->
+        <button
+          type="button"
+          class="echo__tile__grip btn btn-ghost btn-xs btn-square shrink-0 -mr-1 cursor-grab active:cursor-grabbing text-base-content/40 hover:text-base-content"
+          :aria-label="`Reorder slot ${index + 1}: drag the tile, or press the up and down arrow keys`"
+          v-tooltip="'Drag to swap slots'"
+          :data-test-echo-item-grip="index"
+          @click.stop
+          @keydown.enter.stop
+          @keydown.space.stop
+          @keydown.up.prevent.stop="emit('swap', index, index - 1)"
+          @keydown.down.prevent.stop="emit('swap', index, index + 1)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="size-4 pointer-events-none"
+            aria-hidden="true">
+            <path
+              d="M7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
+          </svg>
+        </button>
       </div>
 
       <div v-if="mainStatValue" class="flex items-center gap-3 mt-2 text-xs flex-wrap">
@@ -432,6 +463,7 @@ const emit = defineEmits<{
   "on-echo-removed": [];
   "open-echoes-browser": [index: number];
   "toggle-edit": [index: number];
+  swap: [fromIndex: number, toIndex: number];
   "open-weights-editor": [];
 }>();
 

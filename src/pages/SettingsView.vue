@@ -22,6 +22,12 @@ import Nav from "../components/navigation/Nav.vue";
 import { SETTINGS_SECTIONS } from "../components/navigation/navSections";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
+
+useDocumentTitle(
+  "Settings — Wuthering Waves Calculator & Optimizer",
+  "Preferences, backup and restore, Wavescan import and Labs for the Wuthering Waves Calculator & Optimizer.",
+);
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(

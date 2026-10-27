@@ -23,6 +23,12 @@ import UpdatesWorkspace from "../components/UpdatesWorkspace.vue";
 import { updateEntries } from "../content/updates";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
+
+useDocumentTitle(
+  "Updates — Wuthering Waves Calculator & Optimizer",
+  "What's new in the Wuthering Waves Calculator & Optimizer: new characters, weapons, echoes and features, newest first.",
+);
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(

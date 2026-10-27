@@ -323,3 +323,33 @@ describe("CalculatorEchoTile Odds button", () => {
     expect(container.querySelector("[data-test-echo-edit-tab]")).toBeNull();
   });
 });
+
+describe("CalculatorEchoTile slot order", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("outlines and labels only the main echo slot", () => {
+    setInlineEcho(0);
+    setInlineEcho(1);
+    const main = renderTile(0);
+    expect(main.container.querySelector(".echo__tile--main")).not.toBeNull();
+    expect(main.container.querySelector("[data-test-echo-item-main-badge]")).not.toBeNull();
+    main.unmount();
+
+    const other = renderTile(1);
+    expect(other.container.querySelector(".echo__tile--main")).toBeNull();
+    expect(other.container.querySelector("[data-test-echo-item-main-badge]")).toBeNull();
+  });
+
+  it("swaps with the neighbouring slot from the grip's arrow keys, without expanding", async () => {
+    setInlineEcho(2);
+    const { container, emitted } = renderTile(2);
+    const grip = container.querySelector("[data-test-echo-item-grip]") as HTMLElement;
+    await fireEvent.keyDown(grip, { key: "ArrowUp" });
+    await fireEvent.keyDown(grip, { key: "ArrowDown" });
+    await fireEvent.click(grip);
+    expect(emitted().swap).toEqual([[2, 1], [2, 3]]);
+    expect(emitted()["toggle-edit"]).toBeUndefined();
+  });
+});

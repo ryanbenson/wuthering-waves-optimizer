@@ -96,6 +96,12 @@ import { computed } from "vue";
 import Nav from "../components/navigation/Nav.vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useDocumentTitle } from "../composables/useDocumentTitle";
+
+useDocumentTitle(
+  "Privacy Policy — Wuthering Waves Calculator & Optimizer",
+  "How the Wuthering Waves Calculator & Optimizer handles your data: privacy-first analytics, and builds and inventory kept in your browser.",
+);
 
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(

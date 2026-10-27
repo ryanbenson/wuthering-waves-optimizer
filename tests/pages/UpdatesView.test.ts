@@ -48,4 +48,11 @@ describe("UpdatesView", () => {
       updateEntries[0].items.length,
     );
   });
+
+  it("sets its own page title", () => {
+    render(UpdatesView, {
+      global: { plugins: [router, createTestingPinia()] },
+    });
+    expect(document.title).toBe("Updates — Wuthering Waves Calculator & Optimizer");
+  });
 });
