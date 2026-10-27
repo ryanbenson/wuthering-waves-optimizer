@@ -127,7 +127,7 @@ watch(host, async () => {
 }
 
 .toast-layer :deep(.toast.toast-top) {
-  top: 5rem;
+  top: var(--nav-h);
 }
 
 .toast-layer :deep(.alert) {

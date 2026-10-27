@@ -1,0 +1,245 @@
+// Section lists for the v3 navigation (ADR 0045): the app's main sections (the
+// side rail on desktop, the bottom bar on phones), and each page's own sections
+// (the tab row on desktop, the section switcher on phones).
+
+const ASSETS = "https://ryanbenson.github.io/wuthering-waves-assets/images";
+
+/**
+ * Scanners shows a "New" pill in the nav until this date (UTC). It's the
+ * same for everyone, with nothing stored per visitor, and goes away on its
+ * own (ADR 0045).
+ */
+export const SCANNERS_NEW_UNTIL = "2026-12-01";
+
+export function isNewUntil(until: string, now: Date = new Date()): boolean {
+  return now < new Date(until);
+}
+
+/** One path of an SVG icon: outlined in the text colour, or `fill`ed solid. */
+export interface NavIconPath {
+  d: string;
+  fill?: boolean;
+}
+
+/**
+ * A nav icon: the white-on-transparent game art the old icon nav used (`src`),
+ * or an SVG drawn the same white. Both are inverted in light themes
+ * (NavIcon.vue). `scale` evens out art whose glyph fills more or less of its
+ * box than the rest, so every icon looks the same size.
+ */
+export type NavIconDef = ({ src: string } | { paths: NavIconPath[]; viewBox?: string }) & { scale?: number };
+
+export interface NavSectionItem {
+  /** The page's own key for it, e.g. Calculator.vue's screen name. */
+  key: string;
+  label: string;
+  icon: NavIconDef;
+  /** Value of the page's data-test-*-nav attribute, kept from the old icon nav. */
+  testId: string;
+  /** Only in the phone section switcher, not the desktop tabs. */
+  phoneOnly?: boolean;
+  /** A small count beside the label, e.g. Settings' number of labs. */
+  badge?: string;
+}
+
+export interface NavSectionGroup {
+  label: string;
+  items: NavSectionItem[];
+}
+
+export interface NavSections {
+  groups: NavSectionGroup[];
+  /** Attribute stem: "calculator" gives data-test-calculator-nav / -mobile-nav. */
+  testName: string;
+}
+
+const outline = (...d: string[]): NavIconDef => ({ paths: d.map((path) => ({ d: path })) });
+
+export const NAV_ICONS = {
+  // The old icon nav's art and icons.
+  calculator: {
+    paths: [
+      { d: "M6 20V4M12 20V4M18 20V4" },
+      { d: "M4.6 15a1.4 1.4 0 102.8 0 1.4 1.4 0 10-2.8 0z", fill: true },
+      { d: "M10.6 9a1.4 1.4 0 102.8 0 1.4 1.4 0 10-2.8 0z", fill: true },
+      { d: "M16.6 13a1.4 1.4 0 102.8 0 1.4 1.4 0 10-2.8 0z", fill: true },
+    ],
+  },
+  inventory: { src: `${ASSETS}/backpack.png` },
+  teams: { src: `${ASSETS}/icons/teams.webp` },
+  convene: { src: `${ASSETS}/Icon_Convene.webp` },
+  character: { src: `${ASSETS}/T_IconAchv_002.png` },
+  weapon: { src: `${ASSETS}/T_IconAchv_014.png` },
+  echoes: { src: `${ASSETS}/echoes.png` },
+  teamBuffs: { src: `${ASSETS}/team.png` },
+  enemy: { src: `${ASSETS}/enemy.png`, scale: 1.12 },
+  optimizer: { src: `${ASSETS}/sparkles.png` },
+  stats: { src: `${ASSETS}/damages.png` },
+  buildCard: { src: `${ASSETS}/icons/camera.webp`, scale: 1.3 },
+  rotations: {
+    viewBox: "0 0 512 512",
+    scale: 0.72,
+    paths: [
+      {
+        d: "M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z",
+        fill: true,
+      },
+    ],
+  },
+  customBuffs: {
+    viewBox: "0 0 512 512",
+    scale: 0.72,
+    paths: [
+      {
+        d: "M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z",
+        fill: true,
+      },
+    ],
+  },
+  presets: {
+    paths: [
+      { d: "M6.75 3C3.88 3 3 3.88 3 6.75s.88 3.75 3.75 3.75 3.75-.88 3.75-3.75S9.62 3 6.75 3z", fill: true },
+      { d: "M6.75 13.5C3.88 13.5 3 14.38 3 17.25S3.88 21 6.75 21s3.75-.88 3.75-3.75-.88-3.75-3.75-3.75z", fill: true },
+      { d: "M17.25 13.5c-2.87 0-3.75.88-3.75 3.75S14.38 21 17.25 21 21 20.12 21 17.25s-.88-3.75-3.75-3.75z", fill: true },
+      { d: "M17.25 3c-2.87 0-3.75.88-3.75 3.75s.88 3.75 3.75 3.75S21 9.62 21 6.75 20.12 3 17.25 3z" },
+    ],
+  },
+  // Pages the old nav only reached through the utility menu.
+  scanner: outline("M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16"),
+  more: outline("M5 12h.01M12 12h.01M19 12h.01"),
+  menu: outline("M4 6h16M4 12h16M4 18h16"),
+  // Info and Settings sections.
+  overview: outline("M2 12a10 10 0 1020 0 10 10 0 10-20 0z", "M12 16v-4M12 8h.01"),
+  echoRating: outline("M6 8a6 6 0 1012 0 6 6 0 10-12 0z", "M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"),
+  tuningOdds: outline("M4 17l6-6 4 4 6-8", "M14 7h6v6"),
+  formulas: outline("M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"),
+  credits: outline(
+    "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z",
+  ),
+  preferences: outline("M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"),
+  backupRestore: outline("M21 8v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8", "M23 3H1v5h22V3z", "M10 12h4"),
+  dangerZone: outline("M3 6h18", "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"),
+  labs: outline("M9 2v6.3L4.2 17a2 2 0 001.8 3h12a2 2 0 001.8-3L15 8.3V2", "M8.5 2h7M8 15h8"),
+} satisfies Record<string, NavIconDef>;
+
+export interface NavMainSection {
+  /** Matches Nav.vue's curPage. */
+  page: string;
+  to: string;
+  label: string;
+  icon: NavIconDef;
+  /** Kept from the old icon nav so existing specs still find it. */
+  testAttr: string;
+}
+
+export const MAIN_SECTIONS: NavMainSection[] = [
+  { page: "home", to: "/", label: "Calculator", icon: NAV_ICONS.calculator, testAttr: "data-test-nav-calculator" },
+  { page: "inventory", to: "/inventory", label: "Inventory", icon: NAV_ICONS.inventory, testAttr: "data-test-nav-inventory" },
+  { page: "team-rotations", to: "/teams", label: "Teams", icon: NAV_ICONS.teams, testAttr: "data-test-nav-team-rotations" },
+  { page: "convene", to: "/convene", label: "Convene", icon: NAV_ICONS.convene, testAttr: "data-test-nav-convene" },
+];
+
+const PAGE_LABELS: Record<string, string> = {
+  home: "Calculator",
+  inventory: "Inventory",
+  "team-rotations": "Teams",
+  convene: "Convene",
+  scanners: "Scanners",
+  info: "Info",
+  updates: "Updates",
+  settings: "Settings",
+  privacy: "Privacy",
+  legal: "Legal",
+};
+
+export function pageLabel(curPage: string): string {
+  return PAGE_LABELS[curPage] ?? "Wuthering Tools";
+}
+
+/** Whether a page lives under the phone bottom bar's More (not a main section). */
+export function isMorePage(curPage: string): boolean {
+  return curPage in PAGE_LABELS && !MAIN_SECTIONS.some((section) => section.page === curPage);
+}
+
+/** Calculator screens, keyed by Calculator.vue's curScreen values. */
+export const CALCULATOR_SECTIONS: NavSections = {
+  testName: "calculator",
+  groups: [
+    {
+      label: "Build",
+      items: [
+        { key: "character", label: "Character", icon: NAV_ICONS.character, testId: "character" },
+        { key: "weapon", label: "Weapon", icon: NAV_ICONS.weapon, testId: "weapon" },
+        { key: "echoes", label: "Echoes", icon: NAV_ICONS.echoes, testId: "echoes" },
+        { key: "party", label: "Team Buffs", icon: NAV_ICONS.teamBuffs, testId: "team" },
+        { key: "enemy", label: "Enemy", icon: NAV_ICONS.enemy, testId: "enemy" },
+      ],
+    },
+    {
+      label: "Analyze",
+      items: [
+        { key: "optimizer", label: "Optimizer", icon: NAV_ICONS.optimizer, testId: "optimizer" },
+        { key: "rotations", label: "Rotations", icon: NAV_ICONS.rotations, testId: "rotations" },
+        { key: "custom-buffs", label: "Custom Buffs", icon: NAV_ICONS.customBuffs, testId: "customBuffs" },
+        { key: "results", label: "Stats & Damages", icon: NAV_ICONS.stats, testId: "stats", phoneOnly: true },
+      ],
+    },
+    {
+      label: "Share",
+      items: [{ key: "build-card", label: "Build Card", icon: NAV_ICONS.buildCard, testId: "buildCard" }],
+    },
+  ],
+};
+
+export const INVENTORY_SECTIONS: NavSections = {
+  testName: "inventory",
+  groups: [
+    {
+      label: "Inventory",
+      items: [
+        { key: "echoes", label: "Echoes", icon: NAV_ICONS.echoes, testId: "echoes" },
+        { key: "presets", label: "Presets", icon: NAV_ICONS.presets, testId: "presets" },
+      ],
+    },
+  ],
+};
+
+/** Info's pages, keyed by their route path. */
+export const INFO_SECTIONS: NavSections = {
+  testName: "info",
+  groups: [
+    {
+      label: "Info",
+      items: [
+        { key: "/info", label: "Overview", icon: NAV_ICONS.overview, testId: "overview" },
+        { key: "/info/cv-echo-rating", label: "CV & Echo Rating", icon: NAV_ICONS.echoRating, testId: "cv-echo-rating" },
+        { key: "/info/tuning-odds", label: "Tuning Planner", icon: NAV_ICONS.tuningOdds, testId: "tuning-odds" },
+        { key: "/info/formulas", label: "Formulas", icon: NAV_ICONS.formulas, testId: "formulas" },
+        { key: "/info/credits", label: "Credits & Community", icon: NAV_ICONS.credits, testId: "credits" },
+      ],
+    },
+  ],
+};
+
+/** Settings sections, keyed by SettingsWorkspace.vue's section ids. */
+export const SETTINGS_SECTIONS: NavSections = {
+  testName: "settings",
+  groups: [
+    {
+      label: "General",
+      items: [{ key: "preferences", label: "Preferences", icon: NAV_ICONS.preferences, testId: "preferences" }],
+    },
+    {
+      label: "Your Data",
+      items: [
+        { key: "backup-restore", label: "Backup & Restore", icon: NAV_ICONS.backupRestore, testId: "backup-restore" },
+        { key: "wavescan", label: "Wavescan", icon: NAV_ICONS.scanner, testId: "wavescan" },
+        { key: "danger-zone", label: "Danger Zone", icon: NAV_ICONS.dangerZone, testId: "danger-zone" },
+      ],
+    },
+    {
+      label: "Labs",
+      items: [{ key: "labs", label: "Labs", icon: NAV_ICONS.labs, testId: "labs" }],
+    },
+  ],
+};

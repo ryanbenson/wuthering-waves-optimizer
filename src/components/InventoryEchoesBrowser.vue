@@ -10,9 +10,7 @@
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
-  <EchoScannerModal
-    v-if="isEchoScanningEnabled"
-    ref="echoScanner"></EchoScannerModal>
+  <EchoScannerModal ref="echoScanner"></EchoScannerModal>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -21,14 +19,14 @@
         <button class="btn btn-sm btn-primary" @click="createEcho">
           Add echo
         </button>
-        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
-          Import echoes
-        </button>
         <button
-          v-if="isEchoScanningEnabled"
           class="btn btn-sm btn-secondary"
+          data-test-inventory-scan-echoes
           @click="handleOpenEchoScanner">
           Scan echoes
+        </button>
+        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
+          Import echoes
         </button>
         <AppOverflowMenu
           aria-label="More inventory actions"
@@ -709,7 +707,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
 
@@ -808,9 +807,6 @@ const inventoryEchoEditRef = ref<
 >(null);
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
-);
-const isEchoScanningEnabled = computed(
-  () => settingsStore.labs?.echoScanning?.isEnabled ?? false,
 );
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
@@ -1393,6 +1389,18 @@ function handleOpenEchoesImporter() {
 function handleOpenEchoScanner() {
   echoScanner.value?.triggerOpenModal();
 }
+
+// The Scanners page links here with ?open=scan or ?open=import to open that
+// tool straight away; the query is dropped so a reload doesn't reopen it.
+const route = useRoute();
+const router = useRouter();
+onMounted(() => {
+  const open = route?.query.open;
+  if (open === "scan") handleOpenEchoScanner();
+  else if (open === "import") handleOpenEchoesImporter();
+  else return;
+  void router?.replace({ query: { ...route.query, open: undefined } });
+});
 </script>
 
 <style lang="scss" scoped>

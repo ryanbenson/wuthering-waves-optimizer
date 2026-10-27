@@ -5,7 +5,12 @@
       'calculations--full-width': curScreen === 'build-card',
       'calculations--live-bar': isLiveResultBarEnabled,
     }">
-    <Nav cur-page="home">
+    <Nav
+      cur-page="home"
+      :sections="isLiveResultBarEnabled ? calculatorSections : null"
+      :active-section="curScreen"
+      @home="changeScreen('character')"
+      @select-section="changeScreen">
       <template #mobile>
         <CalculatorMobileSubNav
           @change-screen="changeScreen"
@@ -55,7 +60,7 @@
     <div
       class="calculations__body"
       :class="{ 'calculations__body--legacy': !isLiveResultBarEnabled }">
-    <div class="calculations__screens">
+    <div ref="screensRef" class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div v-if="false" class="alert alert-success mb-6">
           Version 3.6 content is now available
@@ -567,6 +572,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import { CALCULATOR_SECTIONS } from "./navigation/navSections";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import CalculatorCommandBar from "./CalculatorCommandBar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
@@ -1314,10 +1320,20 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    // The screens scroll inside their own panel on desktop and with the page
+    // on phones; a new section starts at the top of both.
+    const screensRef = ref(null);
     const changeScreen = (screen: string) => {
+      const isNewScreen = screen !== curScreen.value;
       curScreen.value = screen;
       if (screen === "build-card") {
         hasVisitedBuildCard.value = true;
+      }
+      if (isNewScreen) {
+        nextTick(() => {
+          screensRef.value?.scrollTo({ top: 0 });
+          window.scrollTo({ top: 0 });
+        });
       }
     };
 
@@ -2266,6 +2282,7 @@ export default defineComponent({
 
     return {
       allDamages,
+      calculatorSections: CALCULATOR_SECTIONS,
       character,
       characters,
       characterLevel,
@@ -2283,6 +2300,7 @@ export default defineComponent({
       rotationsList,
       curScreen,
       changeScreen,
+      screensRef,
       hasVisitedBuildCard,
       damage,
       updateStatsEchoes,
@@ -2405,7 +2423,7 @@ export default defineComponent({
   // live AppUpdateBanner height via --announce-banner-h (0px when the
   // banner is hidden/unmounted). Falling out of sync here overflows the
   // parent and clips the bottom of both panels whenever the banner shows.
-  height: calc(100vh - 80px - var(--announce-banner-h, 0px));
+  height: calc(100vh - var(--nav-h) - var(--nav-bottom-h) - var(--announce-banner-h, 0px));
 
   @media (max-width: 768px) {
     display: block;

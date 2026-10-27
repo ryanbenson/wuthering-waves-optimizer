@@ -73,6 +73,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute } from "vue-router";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
@@ -88,7 +89,8 @@ type SettingsTab =
   | "advanced"
   | "labs";
 
-const tab = ref<SettingsTab>("preferences");
+// /settings?section=wavescan (the Scanners page's import link) opens that tab.
+const tab = ref<SettingsTab>(useRoute()?.query.section === "wavescan" ? "wavescan" : "preferences");
 
 function setTab(next: SettingsTab) {
   tab.value = next;

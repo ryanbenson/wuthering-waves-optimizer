@@ -22,7 +22,7 @@
     </p>
     <h2>Echo scanner (screen share / video upload)</h2>
     <p>
-      The optional echo scanner (Labs → Echo scanning) lets you share your
+      The optional echo scanner (Inventory → Scan echoes) lets you share your
       game window or upload a recording so the app can read your echoes'
       stats automatically. Both options are processed entirely in your
       browser — nothing is uploaded to a server, no video or screen capture
@@ -68,7 +68,7 @@
           Echo scanner (screen share / video upload)
         </div>
         <p class="text-sm opacity-80">
-          The optional echo scanner (Labs → Echo scanning) lets you share
+          The optional echo scanner (Inventory → Scan echoes) lets you share
           your game window or upload a recording so the app can read your
           echoes' stats automatically. Both options are processed entirely
           in your browser — nothing is uploaded to a server, no video or

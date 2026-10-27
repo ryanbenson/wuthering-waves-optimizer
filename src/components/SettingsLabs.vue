@@ -12,9 +12,15 @@
         :label="lab.label"
         :details="lab.details"
         variant="v3"></SettingsLab>
-      <div class="bg-base-200/50 rounded-xl p-4 border border-dashed border-base-300">
+      <div
+        class="bg-base-200/50 rounded-xl p-4 border border-dashed border-base-300"
+        data-test-settings-labs-empty>
         <p class="text-xs opacity-40 text-center">
-          More experiments will land here as they're ready.
+          {{
+            labsFeatures.length
+              ? "More experiments will land here as they're ready."
+              : "No experiments running right now. New ones will land here as they're ready."
+          }}
         </p>
       </div>
     </div>
@@ -69,14 +75,9 @@ withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
 
 type LabFeature = { key: string; label: string; details: string };
 
-const labsFeatures = ref<LabFeature[]>([
-  {
-    key: "echoScanning",
-    label: "Echo scanning",
-    details:
-      "Adds a \"Scan echoes\" button to your inventory. Share your game window (or upload a recording) while browsing your in-game Echo list and it reads each echo's stats automatically — everything runs in your browser, nothing is uploaded anywhere. Still being tuned for accuracy.",
-  },
-]);
+// Echo scanning graduated on 2026-10-27; any stored `labs.echoScanning` is
+// simply ignored now.
+const labsFeatures = ref<LabFeature[]>([]);
 </script>
 
 <style scoped lang="scss">

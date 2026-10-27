@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-03
 tags: [components, settings, stores]
+superseded_by: [45]
 ---
 
 # 22. Settings page redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -44,6 +45,12 @@ made for this whole redesign wave.
    Info's real `RouterLink`s) and a click-driven one (no `to`, emits
    `select`, for Settings' local section state). The header bar
    (`bg-base-200 p-1 pl-3 rounded-lg`) stays local to `SettingsWorkspace.vue`.
+
+   **Superseded 2026-10-20:** the sidebar is gone. Settings' sections are
+   now tabs in the nav's section row on desktop and its section menu on
+   phones (`SETTINGS_SECTIONS`, ADR [0045](./0045-v3-side-rail-navigation.md)),
+   `SettingsView.vue` holds the open section, and `WorkspaceSideNav.vue` was
+   deleted. The grouping and the header bar are unchanged.
 
 2. **Export + Import merged into one "Backup & Restore" panel, with an
    explicit warning banner before the destructive path.** This is the one

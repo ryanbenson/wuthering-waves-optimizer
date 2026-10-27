@@ -35,6 +35,22 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-27",
+    dateLabel: "October 27, 2026",
+    items: [
+      "A new look for Wuthering Tools: a new logo, in the menu and on your browser tab",
+      "New navigation. On a computer, the main areas (Calculator, Inventory, Teams and Convene) are down the left side, and the current page's sections run along the top. On phones, the main areas sit in a bar at the bottom, and the menu button at the top lists the page's sections",
+      "Settings and Info now use the same sections row as the calculator, instead of their own side menus",
+      "On phones, theme and display options are under More → Appearance",
+      "New Scanners page that walks through every way to get your echoes in without typing them: Wavescan (a new desktop app for Windows and Mac), scanning in your browser by sharing your screen or uploading a recording, and Discord bot build cards. It also explains how each one keeps your data on your device",
+      "The in-browser echo scanner is out of Labs: use Scan echoes in your inventory to read echoes from a shared game window or a recording",
+      "On phones, the bottom bar and the calculator's top bar get out of the way while you scroll down, and come back as soon as you scroll up",
+      "Long attack names in the calculator's top bar now wrap onto two lines instead of pushing everything aside",
+      "Changing page or section now starts you at the top",
+      "Fixed buttons that became hard to read when you hovered over them",
+    ],
+  },
+  {
     date: "2026-10-26",
     dateLabel: "October 26, 2026",
     items: [

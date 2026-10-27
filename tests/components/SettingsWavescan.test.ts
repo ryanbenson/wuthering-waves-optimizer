@@ -4,6 +4,7 @@ import { render, fireEvent, waitFor } from "@testing-library/vue";
 import fixture from "../../fixtures/wavescan.json";
 import SettingsWavescan from "../../src/components/SettingsWavescan.vue";
 import SettingsWorkspace from "../../src/components/SettingsWorkspace.vue";
+import { SETTINGS_SECTIONS } from "../../src/components/navigation/navSections";
 import { useInventoryStore } from "../../src/stores/inventory";
 import { useCharacterStore } from "../../src/stores/character";
 import { getCostByClass, mainEchoesData } from "../../src/echoes";
@@ -303,8 +304,13 @@ describe("SettingsWorkspace — Wavescan section", () => {
   });
 
   it("always lists Wavescan, with no Labs flag needed", () => {
-    const selector = '[data-test-workspace-nav-mobile-item="wavescan"]';
-    const { container } = render(SettingsWorkspace);
-    expect(container.querySelector(selector)).not.toBeNull();
+    const keys = SETTINGS_SECTIONS.groups.flatMap((group) => group.items.map((item) => item.key));
+    expect(keys).toContain("wavescan");
+  });
+
+  it("shows the Wavescan section when it's the open one", () => {
+    const { container } = render(SettingsWorkspace, { props: { section: "wavescan" } });
+    expect(container.querySelector("h3")?.textContent).toBe("Wavescan");
+    expect(container.querySelector("input[type=file]")).not.toBeNull();
   });
 });

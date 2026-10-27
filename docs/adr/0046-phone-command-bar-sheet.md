@@ -22,6 +22,7 @@ A mockup (an Artifact, not checked in) compared the two layouts and settled the 
 - **The action label on the bar opens the same target popover the desktop gear opens.** Phones have no gear. The popover is positioned off whichever of the two buttons opened it.
 - **One layout in the DOM, split with CSS (`hidden md:…`, `md:hidden`)**, like the rest of the calculator's responsive splits, rather than a JS breakpoint. The sheet only mounts while open, so its build picker and level stepper don't sit next to the bar's hidden ones.
 - **The sheet's mode switch reuses the bar's `stanceOptions` and `onStanceSelected`.** It's a different control (a full-width segmented row instead of the bar's select), but there is still one copy of the stance logic. The stat tiles use the bar's `statChips`.
+- **While the page scrolls down, the bar shrinks** (with the v3 bottom bar tucking away, ADR 0045, from the same `useScrollCollapse` state): a smaller avatar, the mode with its ▾ (the name hides when there is a mode), the number and a smaller arrow. The action label hides. The arrow stays so it's still clear the controls are there. It doesn't shrink while the target popover or a sheet is open.
 - **The tablet "Stats" accordion (`isMobileStatsExpanded`) now only applies from `md` to `lg`.** Phones get the stats in the sheet instead.
 
 ## Consequences

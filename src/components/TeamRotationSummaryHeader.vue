@@ -10,7 +10,7 @@
   layout's sticky column. -->
   <div ref="sentinelEl" class="h-px"></div>
   <div
-    class="sticky top-20 z-30"
+    class="sticky top-[var(--nav-h)] z-30"
     :class="isStuck ? 'bg-base-200/95 backdrop-blur shadow-md rounded-lg px-4 py-2 mb-6' : 'bg-base-200 shadow-lg rounded-lg p-4 mb-6'"
     data-test-team-rotation-summary
     :data-test-team-rotation-summary-stuck="isStuck">
@@ -115,6 +115,11 @@ const sentinelEl = ref<HTMLElement | null>(null);
 const isStuck = ref(false);
 let observer: IntersectionObserver | null = null;
 
+// The fixed nav's height (--nav-h, set by Nav.vue), so "stuck" means stuck under it.
+function navHeight(): number {
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 80;
+}
+
 onMounted(() => {
   // `root: null` (the default) tracks the browser viewport — on this page
   // the actual scroll position lives on `document.documentElement`
@@ -123,7 +128,7 @@ onMounted(() => {
     ([entry]) => {
       isStuck.value = !entry.isIntersecting;
     },
-    { rootMargin: "-80px 0px 0px 0px", threshold: 0 },
+    { rootMargin: `-${navHeight()}px 0px 0px 0px`, threshold: 0 },
   );
   if (sentinelEl.value) observer.observe(sentinelEl.value);
 });

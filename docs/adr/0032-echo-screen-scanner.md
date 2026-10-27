@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-22
 tags: [echoes, workers, components, inventory]
+superseded_by: [45]
 ---
 
 # 32. Echo screen scanner (live share + video upload), OCR in a dedicated worker
@@ -427,6 +428,10 @@ against real footage at last, three product changes landed together:
   "Scan echoes" button and `EchoScannerModal.vue` itself are both
   `v-if`-gated on the flag; the old ungated tab access point is gone
   (replaced by this gated one), so there's no second, ungated way in.
+
+  **Superseded 2026-10-27:** the flag is gone. "Scan echoes" is in every
+  inventory, launched alongside the Scanners page (ADR 0045); a stored
+  `labs.echoScanning` is ignored, like the old `liveResultBar` flag.
 - **Explicit, prominent privacy messaging.** The intro screen already had
   a one-line "processed in your browser" mention; added a dedicated
   `alert-info` callout ahead of the feature description stating plainly

@@ -1,6 +1,7 @@
 <template>
   <div
-    class="command-bar sticky top-20 z-30 flex items-center gap-3 md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-3 md:px-4 py-2"
+    class="command-bar sticky top-[var(--nav-h)] z-30 flex items-center gap-3 md:flex-wrap md:gap-6 bg-base-200 border-b border-base-300 px-3 md:px-4 py-2"
+    :class="{ 'command-bar--compact': isCompact }"
     data-test-live-result-bar>
     <!-- Identity + config (inputs): who this is and how it's set up. Phones
     keep one row (avatar, name, mode); the rest moves to CalculatorCommandSheet. -->
@@ -30,7 +31,10 @@
           aria-label="Character settings: level, build and mode"
           data-test-live-result-bar-character-open
           @click="openSheet('character')">
-          <span class="flex items-center gap-1 min-w-0 max-w-full">
+          <!-- Compact, the mode line (and its own ▾) carries the button when there is one. -->
+          <span
+            class="flex items-center gap-1 min-w-0 max-w-full"
+            :class="{ 'command-bar__compact-hide': characterStances.length > 1 && activeStance }">
             <span class="font-bold text-sm truncate">{{ characterName }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="size-3 shrink-0 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -48,6 +52,9 @@
               :style="activeStanceOption.imageStyle"
               loading="lazy" />
             <span class="truncate">{{ activeStance }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="command-bar__compact-only size-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
           </span>
         </button>
         <div class="hidden md:flex items-center gap-1.5 min-w-0">
@@ -237,13 +244,20 @@
         </Teleport>
 
         <div class="flex flex-col items-end leading-tight" data-test-live-result-bar-hero>
-          <span class="hidden md:inline text-[10px] uppercase tracking-wide opacity-60 whitespace-nowrap">{{ heroLabel }}</span>
+          <!-- Some action names run 60-75 characters, so they wrap to two
+          lines (the end tells similar ones apart) rather than pushing the bar. -->
+          <span
+            class="hidden md:block max-w-60 text-right text-[10px] uppercase tracking-wide opacity-60"
+            :title="heroLabel"
+            data-test-live-result-bar-label>
+            <span class="line-clamp-2 break-words">{{ heroLabel }}</span>
+          </span>
           <!-- Phones have no gear, so the label itself opens the same popover. -->
           <button
             v-if="character"
             ref="phoneTargetTriggerRef"
             type="button"
-            class="md:hidden flex items-center gap-0.5 max-w-36 text-[10px] uppercase tracking-wide opacity-60"
+            class="command-bar__compact-hide md:hidden flex items-center gap-0.5 max-w-36 text-[10px] uppercase tracking-wide opacity-60"
             aria-label="Change target and damage type"
             :aria-expanded="isSettingsOpen"
             data-test-live-result-bar-target-trigger
@@ -263,7 +277,7 @@
                 {{ deltaLabel }}
               </span>
             </Transition>
-            <span class="font-mono font-bold text-lg md:text-xl leading-tight tabular-nums text-secondary">{{
+            <span class="command-bar__hero-value font-mono font-bold text-lg md:text-xl leading-tight tabular-nums text-secondary">{{
               heroDisplay
             }}</span>
           </div>
@@ -294,7 +308,7 @@
         <button
           ref="damageSheetTriggerRef"
           type="button"
-          class="btn btn-sm btn-circle self-center md:hidden"
+          class="command-bar__sheet-open btn btn-sm btn-circle self-center md:hidden"
           :aria-expanded="sheetSection === 'damage'"
           aria-haspopup="dialog"
           aria-label="Damage settings and stats"
@@ -357,6 +371,7 @@ import {
 import { resolveActiveStance } from "../calculator/stances";
 import { getStanceIconConfig } from "../calculator/stanceIcons";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
+import { useScrollCollapse } from "../composables/useScrollCollapse";
 import { useCharacterStore } from "../stores/character";
 
 defineOptions({ name: "CalculatorCommandBar" });
@@ -527,6 +542,14 @@ const phoneTargetTriggerRef = ref<HTMLButtonElement | null>(null);
 const settingsAnchor = ref<HTMLButtonElement | null>(null);
 const settingsMenuRef = ref<HTMLElement | null>(null);
 const isSettingsOpen = ref(false);
+
+// Phones: while the page scrolls down (when the v3 bottom bar tucks away),
+// the bar shrinks to the avatar, mode, number and arrow. Not while one of its
+// menus is open. The CSS only applies below md.
+const { isCollapsed } = useScrollCollapse();
+const isCompact = computed(
+  () => isCollapsed.value && !isSettingsOpen.value && sheetSection.value === null,
+);
 const settingsMenuStyle = reactive({ top: "0px", left: "0px" });
 
 const SETTINGS_MENU_GAP_PX = 4;
@@ -617,6 +640,53 @@ function onDamageTypeUpdated(next: string) {
 </script>
 
 <style scoped lang="scss">
+.command-bar__compact-only {
+  display: none;
+}
+@media (max-width: 767px) {
+  .command-bar {
+    transition:
+      padding 0.18s ease,
+      min-height 0.18s ease;
+  }
+  .live-result-bar__avatar,
+  .command-bar__sheet-open {
+    transition:
+      width 0.18s ease,
+      height 0.18s ease,
+      min-height 0.18s ease;
+  }
+  .command-bar--compact {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    .live-result-bar__avatar {
+      width: 2rem;
+      height: 2rem;
+    }
+    .command-bar__compact-hide {
+      display: none;
+    }
+    .command-bar__compact-only {
+      display: block;
+    }
+    .command-bar__hero-value {
+      font-size: 1rem;
+    }
+    .command-bar__sheet-open {
+      width: 1.75rem;
+      height: 1.75rem;
+      min-height: 1.75rem;
+    }
+  }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  .command-bar,
+  .live-result-bar__avatar,
+  .command-bar__sheet-open {
+    transition: none;
+  }
+}
+
 .live-result-bar-delta-enter-active,
 .live-result-bar-delta-leave-active {
   transition:

@@ -56,7 +56,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0012](./0012-echo-substat-ratings.md) | Echo & character substat ratings | accepted | | echoes, characters, stores |
 | [0029](./0029-buff-realistic-max-stacks.md) | `realisticMaxStacks`/`realisticBaseAttrValue` are manually-authored fields, not a computed soft cap | accepted | | calculator, characters, buffs |
 | [0031](./0031-mutually-exclusive-buffs.md) | `mutuallyExclusiveWith` for buffs/passives/resonance-chain nodes that can't be active together | accepted | | calculator, characters, weapons, buffs, components |
-| [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | | echoes, workers, components, inventory |
+| [0032](./0032-echo-screen-scanner.md) | Echo screen scanner (live share + video upload), OCR in a dedicated worker | accepted | [0045](./0045-v3-side-rail-navigation.md) (out of Labs) | echoes, workers, components, inventory |
 | [0034](./0034-scanner-core-package.md) | Extract the echo scanner's logic into `@wutheringtools/scanner-core` | accepted | | scanner, packages, architecture |
 | [0035](./0035-publish-scanner-data-json.md) | Publish `scanner-data.json` for the desktop scanner | accepted | 0041 (signature, pictures) | scanner, data, interop |
 | [0036](./0036-formulas-package.md) | Publish the damage formulas as `@wutheringtools/formulas` | accepted | | calculator, packages, architecture |
@@ -74,10 +74,10 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width) | calculator, components, stores |
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | 0046 (phones: one row plus a sheet) | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
-| [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, navigation |
-| [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, settings, stores |
+| [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) (Scanners "New" pill) | components, navigation |
+| [0022](./0022-settings-page-redesign.md) | Settings page redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, settings, stores |
 | [0023](./0023-updates-page-search-and-grouping-redesign.md) | Updates page search and grouping redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
-| [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, routing, content |
+| [0024](./0024-info-page-nested-routes-redesign.md) | Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) | components, routing, content |
 | [0025](./0025-privacy-legal-formatting-consistency.md) | Privacy & Legal formatting consistency (Labs-flagged, shares the `liveResultBar` flag) | accepted | | components, content |
 | [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes, weapons, enemies |
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | | team-rotations, components |
@@ -89,6 +89,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0040](./0040-optimizer-buffs-from-calculator.md) | Optimizer echo buffs default to the calculator's settings, with a readiness run bar | accepted | | components, optimizer, stores |
 | [0043](./0043-echo-presets-header-button.md) | Echo presets: one header button that shows the preset status | accepted | | components, echoes, stores, analytics |
 | [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Odds dialog, the planner and "Finish these first" | accepted | | echoes, components, composables |
+| [0045](./0045-v3-side-rail-navigation.md) | v3 navigation: a side rail, a section row, a phone bottom bar and a Scanners page | accepted | | components, navigation |
 | [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in two sheets | accepted | | calculator, components |
 
 ## When to write a new ADR

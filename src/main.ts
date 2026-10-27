@@ -24,6 +24,7 @@ import LegalView from "./pages/LegalView.vue";
 import InventoryView from "./pages/InventoryView.vue";
 import ConveneView from "./pages/ConveneView.vue";
 import TeamRotationsView from "./pages/TeamRotationsView.vue";
+import ScannersView from "./pages/ScannersView.vue";
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -53,11 +54,19 @@ const routes = [
   { path: "/inventory", component: InventoryView, name: "InventoryView" },
   { path: "/convene", component: ConveneView, name: "ConveneView" },
   { path: "/teams", component: TeamRotationsView, name: "TeamRotationsView" },
+  { path: "/scanners", component: ScannersView, name: "ScannersView" },
 ];
 
 const router = createRouter({
   history: createWebHistory("/"),
   routes,
+  // Back/forward returns to where you were; a new page starts at the top.
+  // Query-only changes (e.g. /settings?section=wavescan) keep the position.
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    if (to.path !== from.path) return { top: 0 };
+    return false;
+  },
 });
 
 injectAnalytics();

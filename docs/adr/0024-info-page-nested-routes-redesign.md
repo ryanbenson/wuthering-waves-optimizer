@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-09-03
 tags: [components, routing, content]
+superseded_by: [45]
 ---
 
 # 24. Info page nested routes redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -63,11 +64,12 @@ made for this whole redesign wave.
    for Settings/Updates/Privacy/Legal. See `docs/src-components.md`.
 
    **Superseded 2026-10-26:** every page except the calculator now calls
-   `useDocumentTitle` (Updates, Convene, Privacy, Legal, Settings, Inventory
-   and Teams were added), and the composable puts back the site-wide title
-   and description from `index.html` on unmount, unless the next page has
-   already set its own. Without that, the calculator, which uses the
-   site-wide title, kept the last page's title in the tab.
+   `useDocumentTitle` (Updates, Convene, Privacy, Legal, Settings, Inventory,
+   Teams and the Scanners page from ADR 0045), and the composable puts back
+   the site-wide title and description from `index.html` on unmount, unless
+   the next page has already set its own. Without that, the calculator,
+   which uses the site-wide title, kept the last page's title in the tab
+   (e.g. "Wavescan…" after visiting Scanners).
 
 3. **Flag-off renders the complete legacy article on every `/info/*` path —
    no redirect, no guard.** Since legacy `InfoView.vue` already contains
@@ -88,6 +90,10 @@ made for this whole redesign wave.
    suggest distinct pages that don't yet resolve to distinct crawled
    content. Revisit once the flag is default-on.
 
+   **Superseded 2026-10-27:** v3 is now the default for every visitor
+   (ADR 0038), so a crawler gets the nested routes, each with its own
+   title. The four `/info/*` sub-pages are in `public/sitemap.xml`.
+
 5. **The mini-nav became `WorkspaceSideNav.vue`, a real shared component**
    (post-review revision — the first draft was InfoView-local markup with
    no icons and a raw path caption under each label). Design feedback
@@ -97,6 +103,12 @@ made for this whole redesign wave.
    mount, not two kept in sync by hand. See ADR
    [0022](./0022-settings-page-redesign.md)'s Decision 1 for the
    component's shape (route-driven vs. click-driven items).
+
+   **Superseded 2026-10-20:** the side nav is gone. Info's pages are now
+   tabs in the nav's section row on desktop and its section menu on phones
+   (`INFO_SECTIONS`, keyed by route path, ADR
+   [0045](./0045-v3-side-rail-navigation.md)). The nested routes are
+   unchanged.
 
 6. **CV & RV became CV & Echo Rating.** RV (Roll Value) is deprecated
    in-app in favor of two more precise scores already shipped elsewhere —

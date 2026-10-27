@@ -120,13 +120,13 @@ onUnmounted(() => {
 }
 
 .echo-edit-panel--inventory {
-  /* AppLayout.vue's nav is itself `position: fixed` at z-50, 80px tall
-     (its content offsets below it with mt-20) — this needs to clear it the
+  /* AppLayout.vue's nav is itself `position: fixed` at z-50, --nav-h tall
+     (its content offsets below it by the same) — this needs to clear it the
      same way, not just out-z-index it, or it'd cover the nav instead. */
   position: fixed;
-  top: 80px;
+  top: var(--nav-h);
   right: 0;
-  bottom: 0;
+  bottom: var(--nav-bottom-h);
   width: 380px;
   max-width: 100%;
   z-index: 51;

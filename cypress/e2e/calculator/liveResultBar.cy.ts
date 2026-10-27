@@ -58,6 +58,29 @@ describe("Live Result Bar (Labs flag)", () => {
     cy.get("[data-test-live-result-detail]").should("not.exist");
   });
 
+  it("wraps a long action name to two lines instead of widening the bar", () => {
+    enableLiveResultBarLab();
+    cy.selectWorkspaceCharacter("Hsin");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+
+    cy.get("[data-test-live-result-bar-settings-trigger]").click();
+    cy.richSelect(
+      "[data-test-live-result-bar-settings] .app-rich-select__trigger",
+      "Attack:introAttacks|IntroSkillIlluminingFormElectroFlareDMG",
+      { search: "Illumining Form DMG in Resonance Mode - Electro Flare" },
+    );
+    cy.get("[data-test-live-result-bar-label]")
+      .should("contain.text", "Intro Skill - Illumining Form DMG in Resonance Mode - Electro Flare")
+      .and("have.attr", "title", "Intro Skill - Illumining Form DMG in Resonance Mode - Electro Flare")
+      .then(($label) => {
+        const label = $label[0];
+        const lineHeight = parseFloat(getComputedStyle(label).lineHeight);
+        // 15rem wide at most, and two lines tall.
+        expect(label.getBoundingClientRect().width).to.be.at.most(240);
+        expect(label.getBoundingClientRect().height).to.be.within(lineHeight * 1.5, lineHeight * 2.5);
+      });
+  });
+
   it("picking a specific action + damage type from the settings popover updates the hero number, and persists per character across a reload", () => {
     enableLiveResultBarLab();
     cy.selectWorkspaceCharacter("Brant");

@@ -2,26 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wutheringtools.com</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-10-27</lastmod>
   </url>
   <url>
     <loc>https://www.wutheringtools.com/updates</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-27</lastmod>
   </url>
   <url>
     <loc>https://www.wutheringtools.com/convene</loc>
-    <lastmod>2026-04-13</lastmod>
+    <lastmod>2026-10-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.wutheringtools.com/scanners</loc>
+    <lastmod>2026-10-27</lastmod>
   </url>
   <url>
     <loc>https://www.wutheringtools.com/info</loc>
     <lastmod>2026-10-19</lastmod>
   </url>
   <url>
+    <loc>https://www.wutheringtools.com/info/cv-echo-rating</loc>
+    <lastmod>2026-09-03</lastmod>
+  </url>
+  <url>
+    <loc>https://www.wutheringtools.com/info/tuning-odds</loc>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
+    <loc>https://www.wutheringtools.com/info/formulas</loc>
+    <lastmod>2026-09-14</lastmod>
+  </url>
+  <url>
+    <loc>https://www.wutheringtools.com/info/credits</loc>
+    <lastmod>2026-09-03</lastmod>
+  </url>
+  <url>
     <loc>https://www.wutheringtools.com/privacy</loc>
-    <lastmod>2024-11-12</lastmod>
+    <lastmod>2026-10-26</lastmod>
   </url>
   <url>
     <loc>https://www.wutheringtools.com/legal</loc>
-    <lastmod>2024-12-26</lastmod>
+    <lastmod>2026-10-26</lastmod>
   </url>
 </urlset>
