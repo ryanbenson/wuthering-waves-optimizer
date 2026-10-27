@@ -35,6 +35,22 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-26",
+    dateLabel: "October 26, 2026",
+    items: [
+      "You can now find an echo by typing its name in a search box in your inventory and when picking an echo, just like the weapon and character pickers",
+      "Each page now shows its own name in the browser tab",
+    ],
+  },
+  {
+    date: "2026-10-25",
+    dateLabel: "October 25, 2026",
+    items: [
+      "Your main echo slot now stands out more",
+      "Drag one echo onto another to swap their slots",
+    ],
+  },
+  {
     date: "2026-10-24",
     dateLabel: "October 24, 2026",
     items: [
