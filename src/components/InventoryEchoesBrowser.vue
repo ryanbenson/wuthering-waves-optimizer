@@ -707,7 +707,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
 
@@ -1388,6 +1389,18 @@ function handleOpenEchoesImporter() {
 function handleOpenEchoScanner() {
   echoScanner.value?.triggerOpenModal();
 }
+
+// The Scanners page links here with ?open=scan or ?open=import to open that
+// tool straight away; the query is dropped so a reload doesn't reopen it.
+const route = useRoute();
+const router = useRouter();
+onMounted(() => {
+  const open = route?.query.open;
+  if (open === "scan") handleOpenEchoScanner();
+  else if (open === "import") handleOpenEchoesImporter();
+  else return;
+  void router?.replace({ query: { ...route.query, open: undefined } });
+});
 </script>
 
 <style lang="scss" scoped>
