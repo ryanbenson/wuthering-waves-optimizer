@@ -32,7 +32,7 @@
         <span class="text-sm text-base-content/75 leading-snug">{{ option.summary }}</span>
         <span class="mt-auto pt-1 flex flex-wrap gap-1.5">
           <span class="badge badge-sm badge-ghost">{{ option.where }}</span>
-          <span v-if="option.recommended" class="badge badge-sm badge-primary">Most complete</span>
+          <span v-if="option.recommended" class="badge badge-sm badge-primary">Fastest</span>
         </span>
       </a>
     </nav>
@@ -253,7 +253,7 @@ const options = [
   {
     id: "wavescan",
     title: "Wavescan",
-    summary: "A desktop app that scans your whole echo inventory and what your characters wear.",
+    summary: "A desktop app that scans your whole echo inventory in a few minutes, plus what your characters wear.",
     where: "Windows and Mac app",
     icon: ICONS.app,
     recommended: true,
