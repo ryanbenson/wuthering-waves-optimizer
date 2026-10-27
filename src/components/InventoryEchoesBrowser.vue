@@ -19,14 +19,14 @@
         <button class="btn btn-sm btn-primary" @click="createEcho">
           Add echo
         </button>
-        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
-          Import echoes
-        </button>
         <button
           class="btn btn-sm btn-secondary"
           data-test-inventory-scan-echoes
           @click="handleOpenEchoScanner">
           Scan echoes
+        </button>
+        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
+          Import echoes
         </button>
         <AppOverflowMenu
           aria-label="More inventory actions"
