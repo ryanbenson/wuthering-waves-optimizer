@@ -227,7 +227,7 @@ CD: <span class="param">15</span>s.`,
     modifiers: [],
     actions: [
       {
-        key: "AutopuppetScoutAttacak",
+        key: "AutopuppetScoutAttack",
         label: "Attack DMG",
         description: `Transform into Autopuppet Scout, dealing <span class="param">170.00%/195.50%/221.00%/246.50%/272.00%</span> Glacio DMG to the surroundings, and generate up to 3 Ice Walls to block off the enemies.`,
         talents: {
@@ -1151,7 +1151,7 @@ The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen
 CD: 20s</span>`,
     modifiers: [
       {
-        key: "_StayTunedElite2ER",
+        key: "FormrenderER",
         details: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.<br>The Resonator with this Echo equipped in the main slot gains 10.00% Energy Regen.`,
         modifier: "EnergyRegen",
         modifierValue: 0.1,
@@ -1160,7 +1160,7 @@ CD: 20s</span>`,
     ],
     actions: [
       {
-        key: "_StayTunedElite2DMG",
+        key: "FormrenderDMG",
         label: "Summon DMG",
         description: `Use Echo Skill to summon a Formrender, dealing 182.40%/212.80%/243.20%/273.60% Fusion DMG.`,
         talents: {
@@ -4877,14 +4877,14 @@ CD: 20s`,
     details: `<span>Cast Echo Skill to deal 4 instances of 27.36% Electro DMG and 1 instance of 164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus. Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s.<br>CD: 20s</span>`,
     modifiers: [
       {
-        key: "_StayTunedCalamity1Electro1",
+        key: "ReminiscenceSuhsintheInevitableElectro1",
         details: `Cast Echo Skill to deal 4 instances of 21.28%/24.32%/27.36% Electro DMG and 1 instance of 109.44%/127.68%/145.92%/164.16% Electro DMG.<br>When equipped by Hsin, the Echo Skill instead deals 5 instances of 13.68% Electro DMG and 1 instance of 232.56% Electro DMG to targets within a larger range.<br>The Resonator with this Echo equipped in their main slot gains 10.00% Electro DMG Bonus`,
         modifier: "Electro",
         modifierValue: 0.1,
         alwaysEnabled: true,
       },
       {
-        key: "_StayTunedCalamity1Electro2",
+        key: "ReminiscenceSuhsintheInevitableElectro2",
         details: `Inflicting Electro Flare, gaining Unison, or triggering Unison Response grants the Resonator an extra 10.00% Electro DMG Bonus for 30s`,
         modifier: "Electro",
         modifierValue: 0.1,
@@ -5000,7 +5000,7 @@ CD: 20s`,
     ],
     actions: [
       {
-        key: "Aleph-1'sCreationDMG",
+        key: "Aleph1sCreationDMG",
         label: "Aleph-1's Creation DMG",
         description: `Summon Aleph-1's Creation to deal 14.59%/17.02%/19.45%/21.88% Glacio DMG 5 times and 109.44%/127.68%/145.92%/164.16% Glacio DMG 1 time to enemies.`,
         talents: {

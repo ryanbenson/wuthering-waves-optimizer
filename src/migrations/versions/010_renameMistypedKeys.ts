@@ -37,6 +37,19 @@ export const MISTYPED_KEY_RENAMES: Record<string, string> = {
     "GuardianGauntletsResonanceLiberationDMGBonus",
   // Bell-Borne Geochelone team buff
   "BellBorne eochelone": "BellBorneGeochelone",
+  // Punctuation carried over from in-game names
+  "OutroSkillApplausePlease!": "OutroSkillApplausePlease",
+  "SequenceNode4AdventureLetsgo!": "SequenceNode4AdventureLetsgo",
+  "SequenceNode1Brushwork'Finish": "SequenceNode1BrushworkFinish",
+  "Mid-AirAttackDamage": "MidAirAttackDamage",
+  "Aleph-1'sCreationDMG": "Aleph1sCreationDMG",
+  // Echo keys left over from before the echoes were released
+  _StayTunedElite2ER: "FormrenderER",
+  _StayTunedElite2DMG: "FormrenderDMG",
+  _StayTunedCalamity1Electro1: "ReminiscenceSuhsintheInevitableElectro1",
+  _StayTunedCalamity1Electro2: "ReminiscenceSuhsintheInevitableElectro2",
+  // Autopuppet Scout echo attack
+  AutopuppetScoutAttacak: "AutopuppetScoutAttack",
 };
 
 const OLD_KEYS = Object.keys(MISTYPED_KEY_RENAMES);

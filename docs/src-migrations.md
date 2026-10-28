@@ -40,7 +40,7 @@ Documented at the top of `index.ts`:
 | 7 | Move `mainEcho.isEnabled`/`stacks` and `optimizer.mainEchoBuffs` into per-buff maps — see `versions/007_mainEchoBuffs.ts` |
 | 8 | Add `builds`/`activeBuildId` to character records, seeding a "Default build" from each character's existing data (issue #278) — see `versions/008_addCharacterBuilds.ts` |
 | 9 | Resolve echoes that are both `locked` and `trash` (locked wins) — see `versions/009_resolveEchoLockTrashConflicts.ts` |
-| 10 | Rename mistyped attack/buff/resonance chain/weapon passive keys (e.g. Qiuyuan `Undaunted ayfarerDMG` → `UndauntedWayfarerDMG`) wherever they appear as an object key or string value — see `versions/010_renameMistypedKeys.ts`. Its `renameMistypedKeys` transform is also applied by `parseRotationImportPayload`/`parseTeamImportPayload`, since rotation and team exports aren't on this version timeline. To fix another key typo, add it to `MISTYPED_KEY_RENAMES` in a **new** migration rather than editing this one, so profiles already at v10 still get it |
+| 10 | Rename attack/buff/resonance chain/weapon passive/echo keys that had typos, spaces or punctuation (e.g. Qiuyuan `Undaunted ayfarerDMG` → `UndauntedWayfarerDMG`, Encore `SequenceNode4AdventureLetsgo!` → `SequenceNode4AdventureLetsgo`) wherever they appear as an object key or string value — see `versions/010_renameMistypedKeys.ts`. Its `renameMistypedKeys` transform is also applied by `parseRotationImportPayload`/`parseTeamImportPayload`, since rotation and team exports aren't on this version timeline. To fix another key typo, add it to `MISTYPED_KEY_RENAMES` in a **new** migration rather than editing this one, so profiles already at v10 still get it |
 
 ## Two call sites, two purposes
 

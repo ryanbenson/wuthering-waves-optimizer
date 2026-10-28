@@ -89,7 +89,7 @@ export const basicAttacks = {
       type: "Heavy",
     },
     {
-      key: "Mid-AirAttackDamage",
+      key: "MidAirAttackDamage",
       label: "Mid-Air Attack DMG",
       talents: {
         "1": "62.00%",

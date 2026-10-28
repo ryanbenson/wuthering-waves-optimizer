@@ -817,7 +817,7 @@ export const buffsByCharacter = {
       realisticBaseAttrValue: 70,
     },
     {
-      key: "OutroSkillApplausePlease!",
+      key: "OutroSkillApplausePlease",
       name: "Outro Skill: Applause, Please!y",
       details: `<div class="skilldescription">The incoming Resonator has their Havoc DMG Amplified by 20% and Basic Attack DMG Amplified by 25% for 14s or until the Resonator is switched out.</div>`,
       hasStacks: false,

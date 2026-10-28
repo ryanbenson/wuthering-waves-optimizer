@@ -543,6 +543,41 @@ describe("data migrations", () => {
     expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(String(CURRENT_DATA_VERSION));
   });
 
+  it("renames punctuated and placeholder echo keys on v10", () => {
+    const input = JSON.stringify({
+      characters: {
+        Hsin: {
+          mainEcho: { echo: "Formrender", buffs: { _StayTunedElite2ER: { isEnabled: true } } },
+          resonanceChains: { "SequenceNode4AdventureLetsgo!": { isEnabled: true } },
+          rotations: [
+            {
+              actions: [
+                { key: "Aleph-1'sCreationDMG", type: "echoAttacks" },
+                { key: "Mid-AirAttackDamage", type: "basic" },
+              ],
+            },
+          ],
+        },
+      },
+    });
+    expect(JSON.parse(applyMigrationTransforms(input, 9))).toEqual({
+      characters: {
+        Hsin: {
+          mainEcho: { echo: "Formrender", buffs: { FormrenderER: { isEnabled: true } } },
+          resonanceChains: { SequenceNode4AdventureLetsgo: { isEnabled: true } },
+          rotations: [
+            {
+              actions: [
+                { key: "Aleph1sCreationDMG", type: "echoAttacks" },
+                { key: "MidAirAttackDamage", type: "basic" },
+              ],
+            },
+          ],
+        },
+      },
+    });
+  });
+
   it("keeps an existing corrected key instead of overwriting it on v10", () => {
     const input = JSON.stringify({
       characters: {
