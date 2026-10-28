@@ -159,7 +159,7 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "S6Blooming orYouThousandsofTimesDeepSlumberEternalFlowerBuff",
+    key: "S6BloomingForYouThousandsofTimesDeepSlumberEternalFlowerBuff",
     name: "Sequence Node 6: Blooming for You Thousands of Times",
     details: `<span class="skilldescription">Camellya enters <span class="Highlight">Budding Mode</span> after casting <span class="Highlight">Perennial</span> and removes all Crimson Buds. The bonus DMG Multiplier granted by Forte Circuit's <span class="Highlight">Sweet Dream</span> is increased to 250%.</span>`,
     hasStacks: false,
