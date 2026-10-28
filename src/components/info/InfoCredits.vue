@@ -42,6 +42,10 @@
         <li>Namelag, and Dustin for all of your help with the Spectro Frazzle formula!</li>
         <li>noyaosu for your help in data gathering for Aero Erosion!</li>
         <li>F.I.S.H. and invidia.exe for your help in figuring out Tune Break!</li>
+        <li data-test-credits-wuwalab>
+          <a href="https://wuwalab.com" target="_blank" rel="noopener noreferrer" class="link font-semibold">wuwalab</a>
+          for the action frame data behind rotation timing!
+        </li>
       </ul>
     </div>
 

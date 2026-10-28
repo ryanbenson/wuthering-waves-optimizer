@@ -164,3 +164,7 @@ cypress/downloads
 # AI
 .serena
 packages/*/dist/
+
+# wuwalab's published rotations: test material only, never committed (ADR 0047).
+# Fetch with `npm run fixtures:wuwalab`.
+tests/fixtures/frames/reference/

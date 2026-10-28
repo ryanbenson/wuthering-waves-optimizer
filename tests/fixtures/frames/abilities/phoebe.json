@@ -1,0 +1,890 @@
+{
+ "slug": "phoebe",
+ "name": "Phoebe",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Golden Grace",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 98,
+   "earliest_frame_cancel": 45,
+   "no_swap": 69,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 46,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 45,
+     "commit_frame": 45,
+     "motion_value": 19881,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Attentive Heart",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 180,
+   "earliest_frame_cancel": 135,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 3,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 45,
+     "commit_frame": 45,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 75,
+     "commit_frame": 75,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 90,
+     "commit_frame": 90,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 105,
+     "commit_frame": 105,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 120,
+     "commit_frame": 120,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 135,
+     "commit_frame": 135,
+     "motion_value": 6606,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Chamuel's Star 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 22,
+   "earliest_frame_cancel": 18,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 5935,
+     "energy": 100,
+     "concerto": 199
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Chamuel's Star 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 32,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 3977,
+     "energy": 67,
+     "concerto": 134
+    },
+    {
+     "frame": 120,
+     "commit_frame": 0,
+     "motion_value": 3977,
+     "energy": 67,
+     "concerto": 134
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Chamuel's Star 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 61,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    },
+    {
+     "frame": 42,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    },
+    {
+     "frame": 48,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    },
+    {
+     "frame": 54,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    },
+    {
+     "frame": 60,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    },
+    {
+     "frame": 66,
+     "commit_frame": 0,
+     "motion_value": 2893,
+     "energy": 49,
+     "concerto": 97
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Chamuel's Star 3 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    },
+    {
+     "frame": 42,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    },
+    {
+     "frame": 48,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    },
+    {
+     "frame": 54,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    },
+    {
+     "frame": 60,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    },
+    {
+     "frame": 66,
+     "commit_frame": 0,
+     "motion_value": 4384,
+     "energy": 74,
+     "concerto": 147
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: O Come Divine Light 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 26,
+   "earliest_frame_cancel": 16,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 2953,
+     "energy": 100,
+     "concerto": 199
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: O Come Divine Light 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 26,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 2237,
+     "energy": 60,
+     "concerto": 120
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 2734,
+     "energy": 74,
+     "concerto": 147
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: O Come Divine Light 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 42,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 48,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 54,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 60,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 66,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 72,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    },
+    {
+     "frame": 78,
+     "commit_frame": 36,
+     "motion_value": 1424,
+     "energy": 37,
+     "concerto": 73
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: O Come Divine Light 3 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 42,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 48,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 54,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 60,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 66,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 72,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    },
+    {
+     "frame": 78,
+     "commit_frame": 36,
+     "motion_value": 2158,
+     "energy": 56,
+     "concerto": 111
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: O Come Divine Light (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 78,
+   "earliest_frame_cancel": 27,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 2,
+     "commit_frame": 2,
+     "motion_value": 4623,
+     "energy": 150,
+     "concerto": 300
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 4623,
+     "energy": 150,
+     "concerto": 300
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: To Where Light Shines",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 70,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 720,
+   "hits": [
+    {
+     "frame": 37,
+     "commit_frame": 0,
+     "motion_value": 6263,
+     "energy": 57,
+     "concerto": 114
+    },
+    {
+     "frame": 44,
+     "commit_frame": 0,
+     "motion_value": 6263,
+     "energy": 57,
+     "concerto": 114
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: To Where Light Shines Teleport",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 91,
+   "earliest_frame_cancel": 53,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 42,
+   "hits": [
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 6263,
+     "energy": 57,
+     "concerto": 114
+    },
+    {
+     "frame": 59,
+     "commit_frame": 53,
+     "motion_value": 6263,
+     "energy": 57,
+     "concerto": 114
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Ring of Mirrors: Refracted Holy Light",
+   "genre": "none",
+   "group_label": "resonance skill",
+   "total_frames": 18,
+   "earliest_frame_cancel": 18,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 1492,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 1492,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Utter Confession",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 66,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 4000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 48,
+     "commit_frame": 0,
+     "motion_value": 18788,
+     "energy": 1800,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Absolution Litany",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 66,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 48,
+     "commit_frame": 0,
+     "motion_value": 63819,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Starflash",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 55,
+   "earliest_frame_cancel": 28,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 28,
+     "commit_frame": 28,
+     "motion_value": 8269,
+     "energy": 153,
+     "concerto": 138
+    },
+    {
+     "frame": 34,
+     "commit_frame": 28,
+     "motion_value": 8269,
+     "energy": 153,
+     "concerto": 138
+    },
+    {
+     "frame": 40,
+     "commit_frame": 28,
+     "motion_value": 8269,
+     "energy": 153,
+     "concerto": 138
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Starflash (Confession) - S3",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 55,
+   "earliest_frame_cancel": 28,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 28,
+     "commit_frame": 28,
+     "motion_value": 28856,
+     "energy": 153,
+     "concerto": 138
+    },
+    {
+     "frame": 34,
+     "commit_frame": 28,
+     "motion_value": 28856,
+     "energy": 153,
+     "concerto": 138
+    },
+    {
+     "frame": 40,
+     "commit_frame": 28,
+     "motion_value": 28856,
+     "energy": 153,
+     "concerto": 138
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: O Come Divine Light",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 61,
+   "earliest_frame_cancel": 40,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 4135,
+     "energy": 70,
+     "concerto": 139
+    },
+    {
+     "frame": 49,
+     "commit_frame": 40,
+     "motion_value": 4135,
+     "energy": 70,
+     "concerto": 139
+    },
+    {
+     "frame": 58,
+     "commit_frame": 40,
+     "motion_value": 4135,
+     "energy": 70,
+     "concerto": 139
+    },
+    {
+     "frame": 67,
+     "commit_frame": 40,
+     "motion_value": 4135,
+     "energy": 70,
+     "concerto": 139
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Dawn of Enlightenment",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 220,
+   "earliest_frame_cancel": 220,
+   "no_swap": 0,
+   "time_stop": 220,
+   "time_stop_start": 0,
+   "motion_stop": 218,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 186,
+     "commit_frame": 186,
+     "motion_value": 40160,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Dawn of Enlightenment (Absolution)",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 220,
+   "earliest_frame_cancel": 220,
+   "no_swap": 0,
+   "time_stop": 220,
+   "time_stop_start": 0,
+   "motion_stop": 218,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 186,
+     "commit_frame": 186,
+     "motion_value": 142567,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Dawn of Enlightenment (Confession) - S1",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 220,
+   "earliest_frame_cancel": 220,
+   "no_swap": 0,
+   "time_stop": 220,
+   "time_stop_start": 0,
+   "motion_stop": 218,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 186,
+     "commit_frame": 186,
+     "motion_value": 76304,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 90,
+   "earliest_frame_cancel": 90,
+   "no_swap": 90,
+   "time_stop": 90,
+   "time_stop_start": 0,
+   "motion_stop": 54,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 160000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

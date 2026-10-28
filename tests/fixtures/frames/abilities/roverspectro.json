@@ -1,0 +1,561 @@
+{
+ "slug": "roverspectro",
+ "name": "Rover: Spectro",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Waveshock",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 72,
+   "earliest_frame_cancel": 56,
+   "no_swap": 71,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 51,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 16899,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Instant",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 21,
+   "earliest_frame_cancel": 10,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 5915,
+     "energy": 50,
+     "concerto": 200
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 25,
+   "earliest_frame_cancel": 12,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 7605,
+     "energy": 100,
+     "concerto": 400
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 24,
+   "earliest_frame_cancel": 14,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1521,
+     "energy": 30,
+     "concerto": 80
+    },
+    {
+     "frame": 20,
+     "commit_frame": 14,
+     "motion_value": 1521,
+     "energy": 30,
+     "concerto": 80
+    },
+    {
+     "frame": 26,
+     "commit_frame": 14,
+     "motion_value": 1521,
+     "energy": 30,
+     "concerto": 80
+    },
+    {
+     "frame": 32,
+     "commit_frame": 14,
+     "motion_value": 1521,
+     "energy": 30,
+     "concerto": 80
+    },
+    {
+     "frame": 38,
+     "commit_frame": 14,
+     "motion_value": 1521,
+     "energy": 30,
+     "concerto": 80
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 49,
+   "earliest_frame_cancel": 20,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 13013,
+     "energy": 200,
+     "concerto": 600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 27,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 19534,
+     "energy": 262,
+     "concerto": 360
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Vibration Manifestation (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 54,
+   "earliest_frame_cancel": 39,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 10478,
+     "energy": 51,
+     "concerto": 100
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 1: Vibration Manifestation",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 12,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 1927,
+     "energy": 28,
+     "concerto": 91
+    },
+    {
+     "frame": 18,
+     "commit_frame": 12,
+     "motion_value": 1927,
+     "energy": 28,
+     "concerto": 91
+    },
+    {
+     "frame": 24,
+     "commit_frame": 12,
+     "motion_value": 1927,
+     "energy": 28,
+     "concerto": 91
+    },
+    {
+     "frame": 30,
+     "commit_frame": 12,
+     "motion_value": 1927,
+     "energy": 28,
+     "concerto": 91
+    },
+    {
+     "frame": 36,
+     "commit_frame": 12,
+     "motion_value": 1927,
+     "energy": 28,
+     "concerto": 91
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 2: Resonance",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 27,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 7605,
+     "energy": 112,
+     "concerto": 360
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 3: Aftertune",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 41,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 12675,
+     "energy": 187,
+     "concerto": 600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Resonating Slashes",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 41,
+   "earliest_frame_cancel": 16,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": 360,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 23619,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Resonating Spin",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 58,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 2000,
+   "cooldown": 360,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 12908,
+     "energy": 500,
+     "concerto": 0
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 12908,
+     "energy": 500,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Resonating Echoes",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 9,
+     "commit_frame": 9,
+     "motion_value": 7953,
+     "energy": 50,
+     "concerto": 300
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 15905,
+     "energy": 200,
+     "concerto": 500
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Echoing Orchestra",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 129,
+   "earliest_frame_cancel": 129,
+   "no_swap": 0,
+   "time_stop": 129,
+   "time_stop_start": 0,
+   "motion_stop": 79,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1200,
+   "hits": [
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 19881,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 123,
+     "commit_frame": 78,
+     "motion_value": 67596,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Echoing Orchestra - S4",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 129,
+   "earliest_frame_cancel": 129,
+   "no_swap": 0,
+   "time_stop": 129,
+   "time_stop_start": 0,
+   "motion_stop": 79,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1200,
+   "hits": [
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 19881,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 123,
+     "commit_frame": 78,
+     "motion_value": 67596,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": [
+    {
+     "frame": 189,
+     "commit_frame": 0,
+     "motion_value": 2000,
+     "base_cure": 0
+    },
+    {
+     "frame": 249,
+     "commit_frame": 0,
+     "motion_value": 2000,
+     "base_cure": 0
+    },
+    {
+     "frame": 309,
+     "commit_frame": 0,
+     "motion_value": 2000,
+     "base_cure": 0
+    },
+    {
+     "frame": 369,
+     "commit_frame": 0,
+     "motion_value": 2000,
+     "base_cure": 0
+    }
+   ]
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 91,
+   "earliest_frame_cancel": 91,
+   "no_swap": 91,
+   "time_stop": 91,
+   "time_stop_start": 0,
+   "motion_stop": 70,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 42,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 120000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

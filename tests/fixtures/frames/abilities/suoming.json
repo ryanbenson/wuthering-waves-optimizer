@@ -1,0 +1,1610 @@
+{
+ "slug": "suoming",
+ "name": "Suoming",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Furled Canopy - Flash Rift",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 103,
+   "earliest_frame_cancel": 85,
+   "no_swap": 90,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 90,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 61,
+     "commit_frame": 61,
+     "motion_value": 11089,
+     "energy": 300,
+     "concerto": 0
+    },
+    {
+     "frame": 67,
+     "commit_frame": 61,
+     "motion_value": 11089,
+     "energy": 300,
+     "concerto": 0
+    },
+    {
+     "frame": 85,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 91,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 97,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 103,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro: Unfurled Canopy - Thunder Rending",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 83,
+   "earliest_frame_cancel": 59,
+   "no_swap": 68,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 68,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 6572,
+     "energy": 125,
+     "concerto": 0
+    },
+    {
+     "frame": 29,
+     "commit_frame": 26,
+     "motion_value": 6572,
+     "energy": 125,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    },
+    {
+     "frame": 59,
+     "commit_frame": 59,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro: Furled Canopy - Sealed Delusion (Unison)",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 103,
+   "earliest_frame_cancel": 85,
+   "no_swap": 90,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 90,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 61,
+     "commit_frame": 61,
+     "motion_value": 11089,
+     "energy": 300,
+     "concerto": 0
+    },
+    {
+     "frame": 67,
+     "commit_frame": 61,
+     "motion_value": 11089,
+     "energy": 300,
+     "concerto": 0
+    },
+    {
+     "frame": 85,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 91,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 97,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 103,
+     "commit_frame": 85,
+     "motion_value": 3697,
+     "energy": 100,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro: Unfurled Canopy - Whirling Thunder (Unison)",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 83,
+   "earliest_frame_cancel": 59,
+   "no_swap": 68,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 68,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 6572,
+     "energy": 125,
+     "concerto": 0
+    },
+    {
+     "frame": 29,
+     "commit_frame": 26,
+     "motion_value": 6572,
+     "energy": 125,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    },
+    {
+     "frame": 59,
+     "commit_frame": 59,
+     "motion_value": 13143,
+     "energy": 250,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Canopy Rumble",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Outro: Canopy Rumble (Unison)",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Furled Canopy 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 24,
+   "earliest_frame_cancel": 10,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 3155,
+     "energy": 191,
+     "concerto": 159
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Furled Canopy 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 47,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1573,
+     "energy": 95,
+     "concerto": 80
+    },
+    {
+     "frame": 19,
+     "commit_frame": 14,
+     "motion_value": 1573,
+     "energy": 95,
+     "concerto": 80
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 3146,
+     "energy": 190,
+     "concerto": 159
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Furled Canopy 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 47,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 2766,
+     "energy": 167,
+     "concerto": 140
+    },
+    {
+     "frame": 19,
+     "commit_frame": 14,
+     "motion_value": 2766,
+     "energy": 167,
+     "concerto": 140
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 5532,
+     "energy": 334,
+     "concerto": 279
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Furled Canopy 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 82,
+   "earliest_frame_cancel": 63,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 2201,
+     "energy": 133,
+     "concerto": 111
+    },
+    {
+     "frame": 21,
+     "commit_frame": 16,
+     "motion_value": 2201,
+     "energy": 133,
+     "concerto": 111
+    },
+    {
+     "frame": 27,
+     "commit_frame": 16,
+     "motion_value": 2201,
+     "energy": 133,
+     "concerto": 111
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 4402,
+     "energy": 266,
+     "concerto": 222
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 39,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 23,
+     "commit_frame": 23,
+     "motion_value": 6542,
+     "energy": 158,
+     "concerto": 132
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 3271,
+     "energy": 79,
+     "concerto": 66
+    },
+    {
+     "frame": 35,
+     "commit_frame": 31,
+     "motion_value": 3271,
+     "energy": 79,
+     "concerto": 66
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 1 (Seal Master)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 39,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 23,
+     "commit_frame": 23,
+     "motion_value": 13084,
+     "energy": 158,
+     "concerto": 382
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 6542,
+     "energy": 79,
+     "concerto": 191
+    },
+    {
+     "frame": 35,
+     "commit_frame": 31,
+     "motion_value": 6542,
+     "energy": 79,
+     "concerto": 191
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 68,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 11440,
+     "energy": 277,
+     "concerto": 231
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 3814,
+     "energy": 93,
+     "concerto": 77
+    },
+    {
+     "frame": 43,
+     "commit_frame": 37,
+     "motion_value": 3814,
+     "energy": 93,
+     "concerto": 77
+    },
+    {
+     "frame": 49,
+     "commit_frame": 37,
+     "motion_value": 3814,
+     "energy": 93,
+     "concerto": 77
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 2 (Seal Master)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 68,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 22880,
+     "energy": 277,
+     "concerto": 481
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 7627,
+     "energy": 93,
+     "concerto": 161
+    },
+    {
+     "frame": 43,
+     "commit_frame": 37,
+     "motion_value": 7627,
+     "energy": 93,
+     "concerto": 161
+    },
+    {
+     "frame": 49,
+     "commit_frame": 37,
+     "motion_value": 7627,
+     "energy": 93,
+     "concerto": 161
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 68,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 17404,
+     "energy": 421,
+     "concerto": 351
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 5802,
+     "energy": 141,
+     "concerto": 117
+    },
+    {
+     "frame": 43,
+     "commit_frame": 37,
+     "motion_value": 5802,
+     "energy": 141,
+     "concerto": 117
+    },
+    {
+     "frame": 49,
+     "commit_frame": 37,
+     "motion_value": 5802,
+     "energy": 141,
+     "concerto": 117
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 70,
+   "earliest_frame_cancel": 50,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 5864,
+     "energy": 142,
+     "concerto": 118
+    },
+    {
+     "frame": 35,
+     "commit_frame": 30,
+     "motion_value": 5864,
+     "energy": 142,
+     "concerto": 118
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 5864,
+     "energy": 142,
+     "concerto": 118
+    },
+    {
+     "frame": 60,
+     "commit_frame": 50,
+     "motion_value": 5864,
+     "energy": 142,
+     "concerto": 118
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 3 (Seal Master)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 70,
+   "earliest_frame_cancel": 50,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 11728,
+     "energy": 142,
+     "concerto": 243
+    },
+    {
+     "frame": 35,
+     "commit_frame": 30,
+     "motion_value": 11728,
+     "energy": 142,
+     "concerto": 243
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 11728,
+     "energy": 142,
+     "concerto": 243
+    },
+    {
+     "frame": 60,
+     "commit_frame": 50,
+     "motion_value": 11728,
+     "energy": 142,
+     "concerto": 243
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 115,
+   "earliest_frame_cancel": 109,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 10725,
+     "energy": 259,
+     "concerto": 216
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 10725,
+     "energy": 259,
+     "concerto": 216
+    },
+    {
+     "frame": 95,
+     "commit_frame": 95,
+     "motion_value": 4767,
+     "energy": 116,
+     "concerto": 96
+    },
+    {
+     "frame": 102,
+     "commit_frame": 102,
+     "motion_value": 4767,
+     "energy": 116,
+     "concerto": 96
+    },
+    {
+     "frame": 109,
+     "commit_frame": 109,
+     "motion_value": 4767,
+     "energy": 116,
+     "concerto": 96
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Unfurled Canopy 4 (Seal Master)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 115,
+   "earliest_frame_cancel": 109,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 21450,
+     "energy": 259,
+     "concerto": 366
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 21450,
+     "energy": 259,
+     "concerto": 366
+    },
+    {
+     "frame": 95,
+     "commit_frame": 95,
+     "motion_value": 9534,
+     "energy": 116,
+     "concerto": 163
+    },
+    {
+     "frame": 102,
+     "commit_frame": 102,
+     "motion_value": 9534,
+     "energy": 116,
+     "concerto": 163
+    },
+    {
+     "frame": 109,
+     "commit_frame": 109,
+     "motion_value": 9534,
+     "energy": 116,
+     "concerto": 163
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Unfurled Canopy - Whirling Thunder 1",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 88,
+   "earliest_frame_cancel": 63,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 7332,
+     "energy": 177,
+     "concerto": 148
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 3666,
+     "energy": 89,
+     "concerto": 74
+    },
+    {
+     "frame": 30,
+     "commit_frame": 27,
+     "motion_value": 3666,
+     "energy": 89,
+     "concerto": 74
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 7332,
+     "energy": 177,
+     "concerto": 148
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 7332,
+     "energy": 177,
+     "concerto": 148
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Unfurled Canopy - Whirling Thunder 1 (Seal Master)",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 88,
+   "earliest_frame_cancel": 63,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 14663,
+     "energy": 177,
+     "concerto": 273
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 7332,
+     "energy": 89,
+     "concerto": 137
+    },
+    {
+     "frame": 30,
+     "commit_frame": 27,
+     "motion_value": 7332,
+     "energy": 89,
+     "concerto": 137
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 14663,
+     "energy": 177,
+     "concerto": 273
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 14663,
+     "energy": 177,
+     "concerto": 273
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Unfurled Canopy - Whirling Thunder 2",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 85,
+   "earliest_frame_cancel": 33,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 5669,
+     "energy": 137,
+     "concerto": 115
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 5669,
+     "energy": 137,
+     "concerto": 115
+    },
+    {
+     "frame": 43,
+     "commit_frame": 33,
+     "motion_value": 5669,
+     "energy": 137,
+     "concerto": 115
+    },
+    {
+     "frame": 48,
+     "commit_frame": 33,
+     "motion_value": 5669,
+     "energy": 137,
+     "concerto": 115
+    },
+    {
+     "frame": 52,
+     "commit_frame": 33,
+     "motion_value": 5669,
+     "energy": 137,
+     "concerto": 115
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Unfurled Canopy - Whirling Thunder 2 (Seal Master)",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 85,
+   "earliest_frame_cancel": 33,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 11337,
+     "energy": 137,
+     "concerto": 215
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 11337,
+     "energy": 137,
+     "concerto": 215
+    },
+    {
+     "frame": 43,
+     "commit_frame": 33,
+     "motion_value": 11337,
+     "energy": 137,
+     "concerto": 215
+    },
+    {
+     "frame": 48,
+     "commit_frame": 33,
+     "motion_value": 11337,
+     "energy": 137,
+     "concerto": 215
+    },
+    {
+     "frame": 52,
+     "commit_frame": 33,
+     "motion_value": 11337,
+     "energy": 137,
+     "concerto": 215
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Mid air",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 41,
+   "earliest_frame_cancel": 29,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 8420,
+     "energy": 509,
+     "concerto": 424
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Furled Canopy - Rift Cleaver",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 42,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 480,
+   "hits": [
+    {
+     "frame": 21,
+     "commit_frame": 0,
+     "motion_value": 10661,
+     "energy": 368,
+     "concerto": 307
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Unfurled Canopy - Crimson Gleam (Parry)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 67,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 2,
+     "commit_frame": 2,
+     "motion_value": 4725,
+     "energy": 163,
+     "concerto": 136
+    },
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 2363,
+     "energy": 82,
+     "concerto": 68
+    },
+    {
+     "frame": 19,
+     "commit_frame": 10,
+     "motion_value": 2363,
+     "energy": 82,
+     "concerto": 68
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 6300,
+     "energy": 218,
+     "concerto": 182
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Furled Canopy - Sealed Delusion",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 107,
+   "earliest_frame_cancel": 107,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 61,
+     "commit_frame": 61,
+     "motion_value": 6278,
+     "energy": 217,
+     "concerto": 181
+    },
+    {
+     "frame": 67,
+     "commit_frame": 67,
+     "motion_value": 6278,
+     "energy": 217,
+     "concerto": 181
+    },
+    {
+     "frame": 89,
+     "commit_frame": 89,
+     "motion_value": 3139,
+     "energy": 109,
+     "concerto": 91
+    },
+    {
+     "frame": 95,
+     "commit_frame": 95,
+     "motion_value": 3139,
+     "energy": 109,
+     "concerto": 91
+    },
+    {
+     "frame": 101,
+     "commit_frame": 101,
+     "motion_value": 3139,
+     "energy": 109,
+     "concerto": 91
+    },
+    {
+     "frame": 107,
+     "commit_frame": 107,
+     "motion_value": 3139,
+     "energy": 109,
+     "concerto": 91
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Unfurled Canopy - Unforsaken Mind",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 68,
+   "earliest_frame_cancel": 59,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 59,
+     "commit_frame": 59,
+     "motion_value": 15267,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Umbral Canopy - Engraved Heart",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 308,
+   "earliest_frame_cancel": 250,
+   "no_swap": 256,
+   "time_stop": 240,
+   "time_stop_start": 107,
+   "motion_stop": 240,
+   "motion_stop_start": 107,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 15514,
+     "energy": 205,
+     "concerto": 0
+    },
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 7757,
+     "energy": 103,
+     "concerto": 0
+    },
+    {
+     "frame": 25,
+     "commit_frame": 19,
+     "motion_value": 7757,
+     "energy": 103,
+     "concerto": 0
+    },
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 15514,
+     "energy": 205,
+     "concerto": 0
+    },
+    {
+     "frame": 90,
+     "commit_frame": 90,
+     "motion_value": 15514,
+     "energy": 205,
+     "concerto": 0
+    },
+    {
+     "frame": 98,
+     "commit_frame": 98,
+     "motion_value": 7757,
+     "energy": 103,
+     "concerto": 0
+    },
+    {
+     "frame": 104,
+     "commit_frame": 98,
+     "motion_value": 7757,
+     "energy": 103,
+     "concerto": 0
+    },
+    {
+     "frame": 108,
+     "commit_frame": 108,
+     "motion_value": 3879,
+     "energy": 52,
+     "concerto": 0
+    },
+    {
+     "frame": 116,
+     "commit_frame": 108,
+     "motion_value": 3879,
+     "energy": 52,
+     "concerto": 0
+    },
+    {
+     "frame": 124,
+     "commit_frame": 108,
+     "motion_value": 3879,
+     "energy": 52,
+     "concerto": 0
+    },
+    {
+     "frame": 131,
+     "commit_frame": 108,
+     "motion_value": 3879,
+     "energy": 52,
+     "concerto": 0
+    },
+    {
+     "frame": 140,
+     "commit_frame": 140,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 146,
+     "commit_frame": 140,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 152,
+     "commit_frame": 140,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 158,
+     "commit_frame": 140,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 164,
+     "commit_frame": 140,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 172,
+     "commit_frame": 172,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 178,
+     "commit_frame": 172,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 184,
+     "commit_frame": 172,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 190,
+     "commit_frame": 172,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 196,
+     "commit_frame": 172,
+     "motion_value": 1940,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 204,
+     "commit_frame": 204,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 209,
+     "commit_frame": 204,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 214,
+     "commit_frame": 214,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 219,
+     "commit_frame": 214,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 224,
+     "commit_frame": 224,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 229,
+     "commit_frame": 224,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 234,
+     "commit_frame": 234,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 239,
+     "commit_frame": 234,
+     "motion_value": 2424,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 250,
+     "commit_frame": 250,
+     "motion_value": 62055,
+     "energy": 818,
+     "concerto": 4000
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Umbral Canopy - Miasma Lock",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 335,
+   "earliest_frame_cancel": 254,
+   "no_swap": 332,
+   "time_stop": 332,
+   "time_stop_start": 0,
+   "motion_stop": 332,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 193,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 199,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 205,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 211,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 217,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 223,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 229,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 235,
+     "commit_frame": 193,
+     "motion_value": 6089,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 254,
+     "commit_frame": 254,
+     "motion_value": 20876,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Blight Rain, Miasmic Thunder",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 3,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 3,
+     "commit_frame": 0,
+     "motion_value": 5965,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 90,
+   "earliest_frame_cancel": 72,
+   "no_swap": 92,
+   "time_stop": 91,
+   "time_stop_start": 0,
+   "motion_stop": 70,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 42,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 120000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

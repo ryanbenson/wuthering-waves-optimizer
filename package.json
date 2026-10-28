@@ -28,6 +28,7 @@
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run",
     "cli": "tsx cli/index.ts",
     "scanner:icons": "tsx scripts/scanner-icons.ts",
+    "fixtures:wuwalab": "tsx scripts/fixtures-wuwalab.ts",
     "scanner:keygen": "tsx scripts/scanner-data-keygen.ts"
   },
   "dependencies": {

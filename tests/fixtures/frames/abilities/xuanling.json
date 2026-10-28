@@ -1,0 +1,1145 @@
+{
+ "slug": "xuanling",
+ "name": "XuanLing",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Skytouch",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 47,
+   "earliest_frame_cancel": 40,
+   "no_swap": 44,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 35,
+   "motion_stop_start": 5,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 11659,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro 2: Aria of the Feather",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 47,
+   "earliest_frame_cancel": 40,
+   "no_swap": 44,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 35,
+   "motion_stop_start": 5,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 11659,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: As the Wind Wills",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 30000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 19,
+   "earliest_frame_cancel": 14,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 4772,
+     "energy": 75,
+     "concerto": 150
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 44,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 2014,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 2014,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 6041,
+     "energy": 95,
+     "concerto": 190
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 44,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 3923,
+     "energy": 62,
+     "concerto": 124
+    },
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 3923,
+     "energy": 62,
+     "concerto": 124
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 11767,
+     "energy": 185,
+     "concerto": 370
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 43,
+   "earliest_frame_cancel": 35,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 3021,
+     "energy": 48,
+     "concerto": 95
+    },
+    {
+     "frame": 35,
+     "commit_frame": 35,
+     "motion_value": 7048,
+     "energy": 111,
+     "concerto": 222
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 76,
+   "earliest_frame_cancel": 41,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 1857,
+     "energy": 30,
+     "concerto": 59
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1857,
+     "energy": 30,
+     "concerto": 59
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 14849,
+     "energy": 234,
+     "concerto": 467
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Azure Sword (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 53,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 9861,
+     "energy": 155,
+     "concerto": 310
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 27,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 3977,
+     "energy": 63,
+     "concerto": 125
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 3977,
+     "energy": 63,
+     "concerto": 125
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 42,
+   "earliest_frame_cancel": 12,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    },
+    {
+     "frame": 20,
+     "commit_frame": 12,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    },
+    {
+     "frame": 29,
+     "commit_frame": 12,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 42,
+   "earliest_frame_cancel": 12,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 6537,
+     "energy": 103,
+     "concerto": 206
+    },
+    {
+     "frame": 20,
+     "commit_frame": 12,
+     "motion_value": 6537,
+     "energy": 103,
+     "concerto": 206
+    },
+    {
+     "frame": 29,
+     "commit_frame": 12,
+     "motion_value": 6537,
+     "energy": 103,
+     "concerto": 206
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 16,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 1486,
+     "energy": 24,
+     "concerto": 47
+    },
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 743,
+     "energy": 12,
+     "concerto": 24
+    },
+    {
+     "frame": 25,
+     "commit_frame": 16,
+     "motion_value": 743,
+     "energy": 12,
+     "concerto": 24
+    },
+    {
+     "frame": 34,
+     "commit_frame": 16,
+     "motion_value": 743,
+     "energy": 12,
+     "concerto": 24
+    },
+    {
+     "frame": 54,
+     "commit_frame": 16,
+     "motion_value": 3714,
+     "energy": 59,
+     "concerto": 117
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 93,
+   "earliest_frame_cancel": 54,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 7158,
+     "energy": 113,
+     "concerto": 225
+    },
+    {
+     "frame": 52,
+     "commit_frame": 52,
+     "motion_value": 7158,
+     "energy": 113,
+     "concerto": 225
+    },
+    {
+     "frame": 54,
+     "commit_frame": 54,
+     "motion_value": 9543,
+     "energy": 150,
+     "concerto": 300
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Sword (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 53,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 9861,
+     "energy": 155,
+     "concerto": 310
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Feather Fall (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 76,
+   "earliest_frame_cancel": 58,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 1480,
+     "energy": 17,
+     "concerto": 42
+    },
+    {
+     "frame": 19,
+     "commit_frame": 10,
+     "motion_value": 1480,
+     "energy": 17,
+     "concerto": 42
+    },
+    {
+     "frame": 28,
+     "commit_frame": 10,
+     "motion_value": 1480,
+     "energy": 17,
+     "concerto": 42
+    },
+    {
+     "frame": 58,
+     "commit_frame": 58,
+     "motion_value": 6657,
+     "energy": 75,
+     "concerto": 186
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Azure Sword",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 105,
+   "earliest_frame_cancel": 70,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 52,
+     "commit_frame": 52,
+     "motion_value": 13516,
+     "energy": 280,
+     "concerto": 260
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 13516,
+     "energy": 280,
+     "concerto": 260
+    },
+    {
+     "frame": 70,
+     "commit_frame": 70,
+     "motion_value": 18021,
+     "energy": 374,
+     "concerto": 347
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Feather Sword",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 45,
+   "earliest_frame_cancel": 45,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 2171,
+     "energy": 19,
+     "concerto": 47
+    },
+    {
+     "frame": 45,
+     "commit_frame": 45,
+     "motion_value": 19534,
+     "energy": 168,
+     "concerto": 420
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Switch - Azure",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 59,
+   "earliest_frame_cancel": 41,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 6995,
+     "energy": 110,
+     "concerto": 220
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 25,
+     "concerto": 49
+    },
+    {
+     "frame": 50,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 25,
+     "concerto": 49
+    },
+    {
+     "frame": 59,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 25,
+     "concerto": 49
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Switch - Azure (Directional)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Switch - Feather",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 44,
+   "earliest_frame_cancel": 28,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 28,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    },
+    {
+     "frame": 36,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    },
+    {
+     "frame": 44,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 53,
+     "concerto": 106
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Switch - Feather (Directional)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Flow - Azure",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 59,
+   "earliest_frame_cancel": 41,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 6995,
+     "energy": 696,
+     "concerto": 600
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 155,
+     "concerto": 134
+    },
+    {
+     "frame": 50,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 155,
+     "concerto": 134
+    },
+    {
+     "frame": 59,
+     "commit_frame": 41,
+     "motion_value": 1555,
+     "energy": 155,
+     "concerto": 134
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Sword Stance Flow - Feather",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 44,
+   "earliest_frame_cancel": 28,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 28,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 387,
+     "concerto": 500
+    },
+    {
+     "frame": 36,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 387,
+     "concerto": 500
+    },
+    {
+     "frame": 44,
+     "commit_frame": 28,
+     "motion_value": 3356,
+     "energy": 387,
+     "concerto": 500
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Hush of a Thousand Voices",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 300,
+   "earliest_frame_cancel": 300,
+   "no_swap": 0,
+   "time_stop": 300,
+   "time_stop_start": 0,
+   "motion_stop": 300,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 252,
+     "commit_frame": 252,
+     "motion_value": 198810,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Shadow of Xuanling",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 12,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 33798,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "S1: Shadow of Xuanling - Unfaltering",
+   "genre": "none",
+   "group_label": "resonance skill",
+   "total_frames": 12,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 33798,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "S2: Shadow of Xuanling - Strung Notes",
+   "genre": "none",
+   "group_label": "basic attack",
+   "total_frames": 12,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 33798,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "S6: Shadow of Xuanling - Still as Withered Wood",
+   "genre": "none",
+   "group_label": "resonance skill",
+   "total_frames": 12,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 0,
+     "motion_value": 33798,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Havoc in Bloom 1",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 38,
+   "earliest_frame_cancel": 14,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 3979,
+     "energy": 45,
+     "concerto": 112
+    },
+    {
+     "frame": 20,
+     "commit_frame": 14,
+     "motion_value": 3979,
+     "energy": 45,
+     "concerto": 112
+    },
+    {
+     "frame": 26,
+     "commit_frame": 14,
+     "motion_value": 3979,
+     "energy": 45,
+     "concerto": 112
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Havoc in Bloom 2",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 69,
+   "earliest_frame_cancel": 60,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 8925,
+     "energy": 100,
+     "concerto": 250
+    },
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 6694,
+     "energy": 75,
+     "concerto": 188
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 6694,
+     "energy": 75,
+     "concerto": 188
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Havoc in Bloom 3",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 108,
+   "earliest_frame_cancel": 72,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 2398,
+     "energy": 16,
+     "concerto": 52
+    },
+    {
+     "frame": 15,
+     "commit_frame": 6,
+     "motion_value": 2398,
+     "energy": 16,
+     "concerto": 52
+    },
+    {
+     "frame": 24,
+     "commit_frame": 6,
+     "motion_value": 2398,
+     "energy": 16,
+     "concerto": 52
+    },
+    {
+     "frame": 33,
+     "commit_frame": 6,
+     "motion_value": 2398,
+     "energy": 16,
+     "concerto": 52
+    },
+    {
+     "frame": 42,
+     "commit_frame": 6,
+     "motion_value": 2398,
+     "energy": 16,
+     "concerto": 52
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 27969,
+     "energy": 187,
+     "concerto": 607
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 90,
+   "earliest_frame_cancel": 90,
+   "no_swap": 89,
+   "time_stop": 90,
+   "time_stop_start": 0,
+   "motion_stop": 70,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 42,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 30,
+     "motion_value": 10000,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 120000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

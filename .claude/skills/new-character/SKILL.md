@@ -38,6 +38,10 @@ Buffs the CLI can't infer (multiplier overrides, talent replacements, stacking c
 
 Note: that doc's *top* numbered workflow (manually visiting encore.moe, stripping HTML, running `.prompts/*.txt` through ChatGPT) predates the CLI automation in step 1 and is stale — use this skill's steps instead. The buff-pattern catalog further down the doc is still the reference.
 
+## 3b. Import frame data
+
+Run `npm run cli -- import frames --character <Name>` once the attack files are filled in. It writes the character's generated `frames.ts` (rotation timing, ADR 0047) and hooks it into `index.ts`. Work its review list with the `import-frames` skill. If wuwalab doesn't have the character yet, skip this; rotations still work with a typed duration.
+
 ## 4. Verify accuracy
 
 Follow `docs/accuracy-verification.md`. At minimum: cross-check base stats and a couple of talent MVs at max level against the source data, and sanity-check one full damage calculation in the live Calculator UI against known numbers if you have any (e.g. a showcase or reference build).
@@ -46,7 +50,7 @@ Follow `docs/accuracy-verification.md`. At minimum: cross-check base stats and a
 
 ```bash
 npm run build   # vue-tsc + vite build — catches type errors across the new files
-npm run test    # vitest
+npm run test    # vitest (the preset-length snapshot in tests/calculator/rotationTiming.test.ts picks up new presets: check and accept with -u)
 ```
 
 There's no per-character unit-test convention (unit tests target the shared calculator engine in `tests/calculator/`), so a clean build plus the manual verification in step 4 is the bar — add a Vitest case only if you added/changed shared calculator logic, not just character data.

@@ -1,0 +1,1018 @@
+{
+ "slug": "suisui",
+ "name": "SuiSui",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Tinkling Jade",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 78,
+   "earliest_frame_cancel": 60,
+   "no_swap": 60,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 58,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 2863,
+     "energy": 1000,
+     "concerto": 960
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro: Tinkling Jade (Enhanced)",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 78,
+   "earliest_frame_cancel": 60,
+   "no_swap": 60,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 58,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 2863,
+     "energy": 2300,
+     "concerto": 2760
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Rippling Waters",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Enrichment (Healing)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 342,
+     "base_cure": 627
+    }
+   ]
+  },
+  {
+   "name": "Enrichment - S4 (Healing)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 513,
+     "base_cure": 940
+    }
+   ]
+  },
+  {
+   "name": "Spring's Birth (Healing)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 34,
+     "base_cure": 62
+    }
+   ]
+  },
+  {
+   "name": "Spring's Birth - S4 (Healing)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 51,
+     "base_cure": 93
+    }
+   ]
+  },
+  {
+   "name": "Plume Step (Healing)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 570,
+     "base_cure": 1045
+    }
+   ]
+  },
+  {
+   "name": "Basic: Zephyr 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 24,
+   "earliest_frame_cancel": 2,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 2,
+     "motion_value": 6315,
+     "energy": 100,
+     "concerto": 318
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Zephyr 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 46,
+   "earliest_frame_cancel": 27,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 9,
+     "motion_value": 6100,
+     "energy": 96,
+     "concerto": 307
+    },
+    {
+     "frame": 30,
+     "commit_frame": 27,
+     "motion_value": 6100,
+     "energy": 96,
+     "concerto": 307
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Zephyr 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 51,
+   "earliest_frame_cancel": 35,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 16,
+     "motion_value": 4180,
+     "energy": 66,
+     "concerto": 211
+    },
+    {
+     "frame": 29,
+     "commit_frame": 23,
+     "motion_value": 4180,
+     "energy": 66,
+     "concerto": 211
+    },
+    {
+     "frame": 41,
+     "commit_frame": 35,
+     "motion_value": 5574,
+     "energy": 88,
+     "concerto": 281
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Zephyr 3 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 35,
+   "earliest_frame_cancel": 26,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 13,
+     "commit_frame": 13,
+     "motion_value": 5120,
+     "energy": 81,
+     "concerto": 258
+    },
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 5120,
+     "energy": 81,
+     "concerto": 258
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 6827,
+     "energy": 108,
+     "concerto": 344
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Zephyr 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 2,
+     "commit_frame": 0,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 8,
+     "commit_frame": 0,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 14,
+     "commit_frame": 0,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 20,
+     "commit_frame": 0,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 26,
+     "commit_frame": 0,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 41,
+     "commit_frame": 0,
+     "motion_value": 7953,
+     "energy": 125,
+     "concerto": 400
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Zephyr (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 45,
+   "earliest_frame_cancel": 37,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 7072,
+     "energy": 186,
+     "concerto": 761
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Drizzle 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 31,
+   "earliest_frame_cancel": 28,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 20,
+     "commit_frame": 17,
+     "motion_value": 1957,
+     "energy": 31,
+     "concerto": 99
+    },
+    {
+     "frame": 24,
+     "commit_frame": 17,
+     "motion_value": 1957,
+     "energy": 31,
+     "concerto": 99
+    },
+    {
+     "frame": 31,
+     "commit_frame": 28,
+     "motion_value": 1957,
+     "energy": 31,
+     "concerto": 99
+    },
+    {
+     "frame": 34,
+     "commit_frame": 28,
+     "motion_value": 1957,
+     "energy": 31,
+     "concerto": 99
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Drizzle 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 70,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 23,
+     "commit_frame": 23,
+     "motion_value": 3181,
+     "energy": 50,
+     "concerto": 160
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 3181,
+     "energy": 50,
+     "concerto": 160
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 40,
+     "commit_frame": 36,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 43,
+     "commit_frame": 36,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 47,
+     "commit_frame": 36,
+     "motion_value": 1591,
+     "energy": 25,
+     "concerto": 80
+    },
+    {
+     "frame": 51,
+     "commit_frame": 36,
+     "motion_value": 3181,
+     "energy": 50,
+     "concerto": 160
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Drizzle 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 66,
+   "earliest_frame_cancel": 56,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 16,
+     "commit_frame": 11,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 25,
+     "commit_frame": 20,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 34,
+     "commit_frame": 29,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 43,
+     "commit_frame": 38,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 47,
+     "commit_frame": 47,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 52,
+     "commit_frame": 47,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    },
+    {
+     "frame": 61,
+     "commit_frame": 56,
+     "motion_value": 1376,
+     "energy": 22,
+     "concerto": 70
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Drizzle 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 64,
+   "earliest_frame_cancel": 48,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 15905,
+     "energy": 250,
+     "concerto": 800
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Swallow's Cut",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 33,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 10765,
+     "energy": 282,
+     "concerto": 903
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Drizzle",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 97,
+   "earliest_frame_cancel": 82,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 17,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 20,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 23,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 26,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 29,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 32,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 35,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 38,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 41,
+     "commit_frame": 14,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 82,
+     "commit_frame": 82,
+     "motion_value": 11929,
+     "energy": 188,
+     "concerto": 600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Illuminating Dew",
+   "genre": "basic",
+   "group_label": "heavy attack",
+   "total_frames": 64,
+   "earliest_frame_cancel": 30,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 10498,
+     "energy": 275,
+     "concerto": 880
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Zephyr",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 55,
+   "earliest_frame_cancel": 55,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 360,
+   "hits": [
+    {
+     "frame": 25,
+     "commit_frame": 25,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 43,
+     "commit_frame": 43,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 49,
+     "commit_frame": 49,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 55,
+     "commit_frame": 55,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Awakening Spring",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 78,
+   "earliest_frame_cancel": 60,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 900,
+   "hits": [
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 2863,
+     "energy": 500,
+     "concerto": 960
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Awakening Spring (Enhanced)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 78,
+   "earliest_frame_cancel": 60,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 900,
+   "hits": [
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 2863,
+     "energy": 1800,
+     "concerto": 2760
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Drizzle",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 54,
+   "earliest_frame_cancel": 26,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 360,
+   "hits": [
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 30,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 35,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 40,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 45,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 50,
+     "commit_frame": 26,
+     "motion_value": 1193,
+     "energy": 19,
+     "concerto": 60
+    },
+    {
+     "frame": 57,
+     "commit_frame": 26,
+     "motion_value": 7158,
+     "energy": 113,
+     "concerto": 360
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Song of Thoroughfare",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 264,
+   "earliest_frame_cancel": 264,
+   "no_swap": 0,
+   "time_stop": 264,
+   "time_stop_start": 0,
+   "motion_stop": 264,
+   "motion_stop_start": 0,
+   "on_cast_energy": -17500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 90,
+   "earliest_frame_cancel": 90,
+   "no_swap": 90,
+   "time_stop": 90,
+   "time_stop_start": 0,
+   "motion_stop": 54,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 160000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

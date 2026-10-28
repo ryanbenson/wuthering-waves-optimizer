@@ -1,0 +1,2141 @@
+{
+ "slug": "chisa",
+ "name": "Chisa",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Reverberance Return",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 55,
+   "earliest_frame_cancel": 39,
+   "no_swap": 54,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 36,
+   "motion_stop_start": 5,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 9543,
+     "energy": 1000,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Unraveling Law Zero",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Reign of Silence 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 23,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 1671,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 1671,
+     "energy": 35,
+     "concerto": 70
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Reign of Silence 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 55,
+   "earliest_frame_cancel": 38,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 955,
+     "energy": 20,
+     "concerto": 40
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1909,
+     "energy": 40,
+     "concerto": 80
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 6681,
+     "energy": 140,
+     "concerto": 280
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Reign of Silence 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 57,
+   "earliest_frame_cancel": 40,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 2386,
+     "energy": 50,
+     "concerto": 100
+    },
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 4772,
+     "energy": 100,
+     "concerto": 200
+    },
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 16701,
+     "energy": 350,
+     "concerto": 700
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Rending Lunge",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 80,
+   "earliest_frame_cancel": 58,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 24,
+     "commit_frame": 24,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 58,
+     "commit_frame": 58,
+     "motion_value": 9066,
+     "energy": 191,
+     "concerto": 381
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Rending Lunge (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 84,
+   "earliest_frame_cancel": 61,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 24,
+     "commit_frame": 24,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1511,
+     "energy": 32,
+     "concerto": 64
+    },
+    {
+     "frame": 61,
+     "commit_frame": 61,
+     "motion_value": 9066,
+     "energy": 191,
+     "concerto": 381
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Death Snip",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 73,
+   "earliest_frame_cancel": 67,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 2981,
+     "energy": 42,
+     "concerto": 84
+    },
+    {
+     "frame": 54,
+     "commit_frame": 54,
+     "motion_value": 1491,
+     "energy": 21,
+     "concerto": 42
+    },
+    {
+     "frame": 65,
+     "commit_frame": 65,
+     "motion_value": 10434,
+     "energy": 146,
+     "concerto": 292
+    }
+   ],
+   "heals": [
+    {
+     "frame": 67,
+     "commit_frame": 67,
+     "motion_value": 5040,
+     "base_cure": 1140
+    }
+   ]
+  },
+  {
+   "name": "Basic: Death Snip With Spread (Auto)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 84,
+   "earliest_frame_cancel": 77,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 2981,
+     "energy": 42,
+     "concerto": 84
+    },
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 4778,
+     "energy": 67,
+     "concerto": 134
+    },
+    {
+     "frame": 64,
+     "commit_frame": 64,
+     "motion_value": 1491,
+     "energy": 21,
+     "concerto": 42
+    },
+    {
+     "frame": 75,
+     "commit_frame": 75,
+     "motion_value": 10434,
+     "energy": 146,
+     "concerto": 292
+    }
+   ],
+   "heals": [
+    {
+     "frame": 77,
+     "commit_frame": 77,
+     "motion_value": 5040,
+     "base_cure": 1140
+    }
+   ]
+  },
+  {
+   "name": "Basic: Death Snip With Spread",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 76,
+   "earliest_frame_cancel": 65,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 2981,
+     "energy": 42,
+     "concerto": 84
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 4778,
+     "energy": 67,
+     "concerto": 134
+    },
+    {
+     "frame": 55,
+     "commit_frame": 55,
+     "motion_value": 1491,
+     "energy": 21,
+     "concerto": 42
+    },
+    {
+     "frame": 65,
+     "commit_frame": 65,
+     "motion_value": 10434,
+     "energy": 146,
+     "concerto": 292
+    }
+   ],
+   "heals": [
+    {
+     "frame": 65,
+     "commit_frame": 65,
+     "motion_value": 5040,
+     "base_cure": 1140
+    }
+   ]
+  },
+  {
+   "name": "Basic: Thread Withdrawn",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 56,
+   "earliest_frame_cancel": 6,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 1015,
+     "energy": 22,
+     "concerto": 43
+    },
+    {
+     "frame": 15,
+     "commit_frame": 6,
+     "motion_value": 1015,
+     "energy": 22,
+     "concerto": 43
+    },
+    {
+     "frame": 48,
+     "commit_frame": 6,
+     "motion_value": 4735,
+     "energy": 100,
+     "concerto": 199
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Reign of Silence (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 47,
+   "earliest_frame_cancel": 33,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 7396,
+     "energy": 155,
+     "concerto": 310
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Reign of Silence",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 44,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 3579,
+     "energy": 75,
+     "concerto": 150
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 3579,
+     "energy": 75,
+     "concerto": 150
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Severed Facet (Mid-Air)",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 53,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 4474,
+     "energy": 94,
+     "concerto": 188
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 4474,
+     "energy": 94,
+     "concerto": 188
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Hanging Finality",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 77,
+   "earliest_frame_cancel": 70,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 1193,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 2386,
+     "energy": 50,
+     "concerto": 100
+    },
+    {
+     "frame": 64,
+     "commit_frame": 64,
+     "motion_value": 2386,
+     "energy": 50,
+     "concerto": 100
+    },
+    {
+     "frame": 70,
+     "commit_frame": 70,
+     "motion_value": 5965,
+     "energy": 125,
+     "concerto": 250
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 1: Eye of Unraveling",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 20,
+   "earliest_frame_cancel": 8,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 720,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 3579,
+     "energy": 75,
+     "concerto": 150
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 1: Eye of Unraveling (Mid-Air)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 21,
+   "earliest_frame_cancel": 8,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 720,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 3579,
+     "energy": 75,
+     "concerto": 150
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "S1: Unseen Snare Fixed DMG",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 61803,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 2: Serrated Loop",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 83,
+   "earliest_frame_cancel": 78,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 2: Serrated Loop (Half Hold)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 137,
+   "earliest_frame_cancel": 137,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 92,
+     "commit_frame": 92,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 98,
+     "commit_frame": 98,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 104,
+     "commit_frame": 104,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 110,
+     "commit_frame": 110,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 116,
+     "commit_frame": 116,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 122,
+     "commit_frame": 122,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 132,
+     "commit_frame": 132,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 137,
+     "commit_frame": 137,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 2: Serrated Loop (Hold)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 174,
+   "earliest_frame_cancel": 174,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 27,
+     "commit_frame": 27,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 1745,
+     "energy": 37,
+     "concerto": 74
+    },
+    {
+     "frame": 92,
+     "commit_frame": 92,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 98,
+     "commit_frame": 98,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 104,
+     "commit_frame": 104,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 110,
+     "commit_frame": 110,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 116,
+     "commit_frame": 116,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 122,
+     "commit_frame": 122,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 128,
+     "commit_frame": 128,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 132,
+     "commit_frame": 132,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 134,
+     "commit_frame": 134,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 137,
+     "commit_frame": 137,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 145,
+     "commit_frame": 145,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 149,
+     "commit_frame": 149,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 157,
+     "commit_frame": 157,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 162,
+     "commit_frame": 162,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 169,
+     "commit_frame": 169,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    },
+    {
+     "frame": 174,
+     "commit_frame": 174,
+     "motion_value": 746,
+     "energy": 16,
+     "concerto": 32
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Moment of Nihility",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 220,
+   "earliest_frame_cancel": 220,
+   "no_swap": 0,
+   "time_stop": 220,
+   "time_stop_start": 0,
+   "motion_stop": 170,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 160,
+     "commit_frame": 160,
+     "motion_value": 95429,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": [
+    {
+     "frame": 170,
+     "commit_frame": 170,
+     "motion_value": 11760,
+     "base_cure": 2660
+    }
+   ]
+  },
+  {
+   "name": "Forte: Sawring Blitz 1",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 31,
+   "earliest_frame_cancel": 24,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    },
+    {
+     "frame": 13,
+     "commit_frame": 13,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    },
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    },
+    {
+     "frame": 21,
+     "commit_frame": 24,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    },
+    {
+     "frame": 24,
+     "commit_frame": 13,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    },
+    {
+     "frame": 26,
+     "commit_frame": 19,
+     "motion_value": 1149,
+     "energy": 17,
+     "concerto": 33
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 52,
+   "earliest_frame_cancel": 39,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 23,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 43,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "forte",
+   "total_frames": 52,
+   "earliest_frame_cancel": 39,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 23,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 43,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 (After Plunge)",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 43,
+   "earliest_frame_cancel": 29,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 18,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 25,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 32,
+     "commit_frame": 25,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 35,
+     "commit_frame": 29,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 (Hold)",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 84,
+   "earliest_frame_cancel": 73,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 23,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 43,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 45,
+     "commit_frame": 45,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 51,
+     "commit_frame": 45,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 52,
+     "commit_frame": 52,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 57,
+     "commit_frame": 52,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 65,
+     "commit_frame": 60,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 71,
+     "commit_frame": 66,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 73,
+     "commit_frame": 73,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 78,
+     "commit_frame": 73,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 (Hold Dodge Counter)",
+   "genre": "counter",
+   "group_label": "forte",
+   "total_frames": 84,
+   "earliest_frame_cancel": 73,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 21,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 23,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 21,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 38,
+     "commit_frame": 33,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 39,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 43,
+     "commit_frame": 39,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 45,
+     "commit_frame": 45,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 51,
+     "commit_frame": 45,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 52,
+     "commit_frame": 52,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 57,
+     "commit_frame": 52,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 65,
+     "commit_frame": 60,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 71,
+     "commit_frame": 66,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 73,
+     "commit_frame": 73,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 78,
+     "commit_frame": 73,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 (Hold After Plunge)",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 65,
+   "earliest_frame_cancel": 53,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 18,
+     "commit_frame": 14,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 25,
+     "commit_frame": 25,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 32,
+     "commit_frame": 25,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 35,
+     "commit_frame": 29,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 37,
+     "commit_frame": 37,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 42,
+     "commit_frame": 42,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 42,
+     "commit_frame": 37,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 47,
+     "commit_frame": 47,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 48,
+     "commit_frame": 42,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 53,
+     "commit_frame": 47,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 57,
+     "commit_frame": 50,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 57,
+     "commit_frame": 53,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    },
+    {
+     "frame": 62,
+     "commit_frame": 50,
+     "motion_value": 1064,
+     "energy": 15,
+     "concerto": 30
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 3",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 67,
+   "earliest_frame_cancel": 56,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 41,
+     "commit_frame": 32,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 47,
+     "commit_frame": 38,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 62,
+     "commit_frame": 50,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 66,
+     "commit_frame": 56,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 3 (Hold)",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 99,
+   "earliest_frame_cancel": 96,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 41,
+     "commit_frame": 32,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 47,
+     "commit_frame": 38,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 62,
+     "commit_frame": 50,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 66,
+     "commit_frame": 56,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 73,
+     "commit_frame": 73,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 77,
+     "commit_frame": 73,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 84,
+     "commit_frame": 84,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 88,
+     "commit_frame": 84,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 96,
+     "commit_frame": 96,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    },
+    {
+     "frame": 99,
+     "commit_frame": 96,
+     "motion_value": 1598,
+     "energy": 23,
+     "concerto": 45
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Eradication",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 156,
+   "earliest_frame_cancel": 65,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 4500,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 5154,
+     "energy": 448,
+     "concerto": 96
+    },
+    {
+     "frame": 68,
+     "commit_frame": 65,
+     "motion_value": 20613,
+     "energy": 1792,
+     "concerto": 384
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 2 Discordance",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 160,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 4,
+     "commit_frame": 4,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    },
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    },
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Sawring Blitz 3 Falltone",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 45,
+   "earliest_frame_cancel": 9,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 2,
+     "commit_frame": 2,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    },
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    },
+    {
+     "frame": 9,
+     "commit_frame": 9,
+     "motion_value": 358,
+     "energy": 5,
+     "concerto": 10
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 94,
+   "earliest_frame_cancel": 94,
+   "no_swap": 94,
+   "time_stop": 94,
+   "time_stop_start": 0,
+   "motion_stop": 64,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 4,
+     "commit_frame": 4,
+     "motion_value": 17334,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 22666,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 120000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

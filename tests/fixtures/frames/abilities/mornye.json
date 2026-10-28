@@ -1,0 +1,941 @@
+{
+ "slug": "mornye",
+ "name": "Mornye",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Convergence",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 105,
+   "earliest_frame_cancel": 38,
+   "no_swap": 80,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 79,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 20279,
+     "energy": 1000,
+     "concerto": 0
+    },
+    {
+     "frame": 70,
+     "commit_frame": 38,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 97,
+     "commit_frame": 38,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 124,
+     "commit_frame": 38,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 151,
+     "commit_frame": 38,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 178,
+     "commit_frame": 38,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Recursion",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 25,
+   "earliest_frame_cancel": 25,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 1671,
+     "energy": 27,
+     "concerto": 84
+    },
+    {
+     "frame": 13,
+     "commit_frame": 13,
+     "motion_value": 2227,
+     "energy": 35,
+     "concerto": 112
+    },
+    {
+     "frame": 25,
+     "commit_frame": 25,
+     "motion_value": 1671,
+     "energy": 27,
+     "concerto": 84
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 49,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 40,
+     "commit_frame": 34,
+     "motion_value": 1790,
+     "energy": 29,
+     "concerto": 90
+    },
+    {
+     "frame": 49,
+     "commit_frame": 34,
+     "motion_value": 1790,
+     "energy": 29,
+     "concerto": 90
+    },
+    {
+     "frame": 58,
+     "commit_frame": 34,
+     "motion_value": 1790,
+     "energy": 29,
+     "concerto": 90
+    },
+    {
+     "frame": 67,
+     "commit_frame": 34,
+     "motion_value": 1790,
+     "energy": 29,
+     "concerto": 90
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 49,
+   "earliest_frame_cancel": 40,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 24,
+     "commit_frame": 24,
+     "motion_value": 4136,
+     "energy": 65,
+     "concerto": 208
+    },
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    },
+    {
+     "frame": 49,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    },
+    {
+     "frame": 58,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    },
+    {
+     "frame": 67,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    },
+    {
+     "frame": 76,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    },
+    {
+     "frame": 85,
+     "commit_frame": 40,
+     "motion_value": 1034,
+     "energy": 17,
+     "concerto": 52
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 116,
+   "earliest_frame_cancel": 51,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 51,
+     "commit_frame": 51,
+     "motion_value": 13520,
+     "energy": 213,
+     "concerto": 680
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 26,
+   "earliest_frame_cancel": 9,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 9,
+     "commit_frame": 9,
+     "motion_value": 16223,
+     "energy": 255,
+     "concerto": 816
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Ground State Calibration (Mid-air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 42,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 9861,
+     "energy": 155,
+     "concerto": 496
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Wide Field Observation Mode 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 21,
+   "earliest_frame_cancel": 14,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 26,
+     "commit_frame": 14,
+     "motion_value": 1392,
+     "energy": 22,
+     "concerto": 35
+    },
+    {
+     "frame": 34,
+     "commit_frame": 14,
+     "motion_value": 1392,
+     "energy": 22,
+     "concerto": 35
+    },
+    {
+     "frame": 42,
+     "commit_frame": 14,
+     "motion_value": 1392,
+     "energy": 22,
+     "concerto": 35
+    },
+    {
+     "frame": 49,
+     "commit_frame": 14,
+     "motion_value": 1392,
+     "energy": 22,
+     "concerto": 35
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Wide Field Observation Mode 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 39,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 33,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 49,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 65,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Wide Field Observation Mode 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 41,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 17,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 33,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 49,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    },
+    {
+     "frame": 65,
+     "commit_frame": 17,
+     "motion_value": 2585,
+     "energy": 41,
+     "concerto": 64
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Wide Field Observation Mode 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 41,
+   "earliest_frame_cancel": 13,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 31,
+     "commit_frame": 13,
+     "motion_value": 931,
+     "energy": 15,
+     "concerto": 23
+    },
+    {
+     "frame": 34,
+     "commit_frame": 13,
+     "motion_value": 931,
+     "energy": 15,
+     "concerto": 23
+    },
+    {
+     "frame": 41,
+     "commit_frame": 13,
+     "motion_value": 931,
+     "energy": 15,
+     "concerto": 23
+    },
+    {
+     "frame": 62,
+     "commit_frame": 13,
+     "motion_value": 3309,
+     "energy": 52,
+     "concerto": 82
+    },
+    {
+     "frame": 67,
+     "commit_frame": 13,
+     "motion_value": 931,
+     "energy": 15,
+     "concerto": 23
+    },
+    {
+     "frame": 100,
+     "commit_frame": 13,
+     "motion_value": 3309,
+     "energy": 52,
+     "concerto": 82
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Ground State Calibration",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 95,
+   "earliest_frame_cancel": 70,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 1110,
+     "energy": 24,
+     "concerto": 75
+    },
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 1110,
+     "energy": 24,
+     "concerto": 75
+    },
+    {
+     "frame": 70,
+     "commit_frame": 70,
+     "motion_value": 1480,
+     "energy": 31,
+     "concerto": 100
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Expectation Error",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 21,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 300,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 2494,
+     "base_cure": 94
+    }
+   ]
+  },
+  {
+   "name": "Skill: Optimal Solution (Parry)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 110,
+   "earliest_frame_cancel": 44,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 44,
+     "commit_frame": 44,
+     "motion_value": 17973,
+     "energy": 396,
+     "concerto": 904
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Distributed Array",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 60,
+   "earliest_frame_cancel": 36,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": 960,
+   "hits": [
+    {
+     "frame": 46,
+     "commit_frame": 22,
+     "motion_value": 3977,
+     "energy": 463,
+     "concerto": 0
+    },
+    {
+     "frame": 46,
+     "commit_frame": 22,
+     "motion_value": 3977,
+     "energy": 463,
+     "concerto": 0
+    },
+    {
+     "frame": 60,
+     "commit_frame": 36,
+     "motion_value": 3977,
+     "energy": 463,
+     "concerto": 0
+    },
+    {
+     "frame": 60,
+     "commit_frame": 36,
+     "motion_value": 3977,
+     "energy": 463,
+     "concerto": 0
+    }
+   ],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 11340,
+     "base_cure": 427
+    }
+   ]
+  },
+  {
+   "name": "Forte: Geopotential Shift",
+   "genre": "heavy",
+   "group_label": "forte",
+   "total_frames": 92,
+   "earliest_frame_cancel": 80,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 4414,
+     "energy": 93,
+     "concerto": 296
+    },
+    {
+     "frame": 58,
+     "commit_frame": 58,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 80,
+     "commit_frame": 80,
+     "motion_value": 9902,
+     "energy": 208,
+     "concerto": 665
+    },
+    {
+     "frame": 85,
+     "commit_frame": 58,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 112,
+     "commit_frame": 58,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 139,
+     "commit_frame": 58,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 166,
+     "commit_frame": 58,
+     "motion_value": 3977,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Inversion",
+   "genre": "heavy",
+   "group_label": "forte",
+   "total_frames": 76,
+   "earliest_frame_cancel": 76,
+   "no_swap": 76,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 76,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 76,
+     "commit_frame": 76,
+     "motion_value": 25846,
+     "energy": 325,
+     "concerto": 1196
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Syntony Field (Heal)",
+   "genre": "none",
+   "group_label": "forte",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 2024,
+     "base_cure": 76
+    }
+   ]
+  },
+  {
+   "name": "Proof of Boundedness (Heal)",
+   "genre": "none",
+   "group_label": "forte",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 15000,
+     "base_cure": 0
+    }
+   ]
+  },
+  {
+   "name": "Liberation: Critical Protocol",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 300,
+   "earliest_frame_cancel": 300,
+   "no_swap": 0,
+   "time_stop": 300,
+   "time_stop_start": 0,
+   "motion_stop": 300,
+   "motion_stop_start": 0,
+   "on_cast_energy": -17500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 272,
+     "commit_frame": 272,
+     "motion_value": 52233,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "High Syntony Field (Heal)",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 2835,
+     "base_cure": 106
+    }
+   ]
+  },
+  {
+   "name": "High Syntony Field (Heal) - S4",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 3685,
+     "base_cure": 138
+    }
+   ]
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 94,
+   "earliest_frame_cancel": 94,
+   "no_swap": 94,
+   "time_stop": 94,
+   "time_stop_start": 0,
+   "motion_stop": 64,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 4,
+     "commit_frame": 4,
+     "motion_value": 17334,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 22666,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 120000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Rupture Response - Particle Jet",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 29822,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

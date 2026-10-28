@@ -25,6 +25,8 @@ npm run cli -- generate weapon
 npm run cli -- generate echo-preset
 npm run cli -- generate enemies         # --mode fill|overwrite to skip the prompt
 npm run cli -- import echoes
+npm run cli -- import frames          # per-attack frame data from wuwalab (ADR 0047); --character <Name>
+npm run fixtures:wuwalab             # fetch the gitignored reference rotations the timing tests check against
 npm run cli -- backfill icons        # or: backfill icons --character <Key> for one character
 ```
 
@@ -87,7 +89,7 @@ Optimizer: main thread builds OptimizerContext
 
 ## Skills
 
-- `new-character`, `new-weapon`, `import-echoes` (`.claude/skills/`) — CLI scaffold + manual-review workflow for adding game content.
+- `new-character`, `new-weapon`, `import-echoes`, `import-frames` (`.claude/skills/`) — CLI scaffold + manual-review workflow for adding game content.
 - `pr-review` — review the local branch or a PR (`/pr-review [<PR#>|<branch>] [--post]`) against these rules; reports only Blockers, Should fix and Nitpicks as one body comment.
 
 ## Deeper reading
