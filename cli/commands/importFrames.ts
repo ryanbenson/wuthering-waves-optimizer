@@ -113,14 +113,9 @@ export async function runImportFrames(
 
     const folderPath = path.join(charactersDir, folder);
     const framesPath = path.join(folderPath, "frames.ts");
-    // index.ts imports frames.ts, so a broken generated file has to be reset
-    // before the character can load. It then has nothing to compare against.
-    let previous: Record<string, AttackFrames> | undefined;
-    if (fs.existsSync(framesPath)) {
-      const loaded = await importModule(framesPath).catch(() => null);
-      previous = loaded?.frames?.attacks;
-      if (!loaded) fs.writeFileSync(framesPath, renderCharacterFramesFile({ syncedAt, attacks: {} }));
-    }
+    const previous = fs.existsSync(framesPath)
+      ? ((await importModule(framesPath)).frames?.attacks as Record<string, AttackFrames> | undefined)
+      : undefined;
     const data = (await importModule(path.join(folderPath, "index.ts"))).getData();
 
     const attacks = collectAttacks(data);

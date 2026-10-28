@@ -13,7 +13,7 @@ export const frames: FrameDataFile = {
     HeavyAttackDMG: {"ability":"Heavy: Inkwash","total":51,"cancel":20,"hits":[[20,20,209,667]]},
     DodgeCounterDMG: {"ability":"Basic: Inkwash (Dodge Counter)","total":90,"cancel":41,"hits":[[30,30,245,784],[41,41,35,112],[53,41,35,112],[65,41,35,112]]},
     ThroughtheGrovesDMG: {"ability":"Skill: Through the Groves","total":81,"cancel":64,"cooldown":840,"onCast":{"concerto":1000},"hits":[[34,34,503,0],[49,49,503,0],[64,64,503,0]]},
-    "Undaunted ayfarerDMG": {"ability":"Skill: Undaunted Wayfarer (Hold)","total":44,"cancel":17,"cooldown":840,"onCast":{"concerto":1000},"hits":[[17,17,231,0],[25,0,231,0],[46,0,231,0],[67,0,231,0],[85,0,614,0]]},
+    UndauntedWayfarerDMG: {"ability":"Skill: Undaunted Wayfarer (Hold)","total":44,"cancel":17,"cooldown":840,"onCast":{"concerto":1000},"hits":[[17,17,231,0],[25,0,231,0],[46,0,231,0],[67,0,231,0],[85,0,614,0]]},
     SequenceNode3OBladeIWhoSaveNoMore: {"ability":"Outro: Sheath Fallen, New Shoots Revealed","total":65,"cancel":40,"onCast":{"concerto":-10000},"hits":[[82,40,0,0]],"offField":true},
     SunderingStrikeDMG: {"ability":"Liberation: Sundering Strike","total":230,"cancel":230,"timeStop":[0,230],"motionStop":[0,230],"cooldown":1500,"onCast":{"energy":-12500,"concerto":2000},"hits":[[210,210,0,0]]},
     ThusSpoketheBladeInkwashStage1DMG: {"ability":"Basic: Thus Spoke the Blade - Inkwash 1","total":39,"cancel":21,"hits":[[10,10,75,240],[21,21,75,240]]},

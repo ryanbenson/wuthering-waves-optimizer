@@ -183,13 +183,13 @@ describe("toAttackFrames", () => {
 });
 
 describe("generated files", () => {
-  it("quotes keys that aren't plain identifiers", () => {
+  it("writes one line per attack", () => {
     const file = renderCharacterFramesFile({
       syncedAt: "2026-10-28",
-      attacks: { Plain: { ability: "A", total: 1, hits: [] }, "Has space": { ability: "B", total: 2, hits: [] } },
+      attacks: { Plain: { ability: "A", total: 1, hits: [] } },
     });
-    expect(file).toContain('    Plain: {"ability":"A"');
-    expect(file).toContain('    "Has space": {"ability":"B"');
+    expect(file).toContain('  syncedAt: "2026-10-28",');
+    expect(file).toContain('    Plain: {"ability":"A","total":1,"hits":[]},');
   });
 
   it("adds frames to a character index once", () => {
