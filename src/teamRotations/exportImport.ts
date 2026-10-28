@@ -1,4 +1,5 @@
 import { slugify } from "../utils/strings";
+import { renameMistypedKeys } from "../migrations/versions/010_renameMistypedKeys";
 
 /**
  * The importable/exportable shape of a single team — everything in the
@@ -64,7 +65,8 @@ export function generateTeamExportFilename(teamName: string): string {
 export function parseTeamImportPayload(raw: string): TeamExportData {
   let parsed: unknown;
   try {
-    parsed = JSON.parse(raw);
+    // exports aren't on the app data-version timeline, so rename old keys here
+    parsed = JSON.parse(renameMistypedKeys(raw));
   } catch {
     throw new Error("That doesn't look like valid JSON.");
   }

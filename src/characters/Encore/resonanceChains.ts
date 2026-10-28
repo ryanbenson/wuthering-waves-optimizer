@@ -44,7 +44,7 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4AdventureLetsgo!",
+    key: "SequenceNode4AdventureLetsgo",
     name: "Sequence Node 4: Adventure? Let’s go!",
     details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Cosmos Rupture</span> increases the Fusion DMG Bonus of all team members by 20% for 30s.</span>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_AnkeM4_UI.webp`,

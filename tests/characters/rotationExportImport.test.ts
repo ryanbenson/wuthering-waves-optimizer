@@ -90,6 +90,11 @@ describe("parseRotationImportPayload", () => {
     expect(parsed.name).toBe("Imported Rotation");
   });
 
+  it("renames mistyped attack keys from older exports", () => {
+    const parsed = parseRotationImportPayload(JSON.stringify({ actions: [{ key: "PerloHelpDMG", type: "intro" }] }));
+    expect(parsed.actions).toEqual([{ key: "PeroHelpDMG", type: "intro" }]);
+  });
+
   it("throws on invalid JSON", () => {
     expect(() => parseRotationImportPayload("{not json")).toThrow(/valid JSON/);
   });

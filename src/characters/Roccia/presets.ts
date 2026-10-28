@@ -9,7 +9,7 @@ export const rotations: RotationPreset[] = [
       actions: [
         {
           order: 1,
-          key: "PerloHelpDMG",
+          key: "PeroHelpDMG",
           type: "intro",
           count: 1,
           buffs: [],

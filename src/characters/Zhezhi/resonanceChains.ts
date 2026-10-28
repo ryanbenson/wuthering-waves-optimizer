@@ -1,6 +1,6 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1Brushwork'Finish",
+    key: "SequenceNode1BrushworkFinish",
     name: "Sequence Node 1: Brushwork's Finish",
     details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, Resonance Energy is restored by 15 and Crit. Rate is increased by 10% for 27s.</span>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ZhezhiM2_UI.webp`,

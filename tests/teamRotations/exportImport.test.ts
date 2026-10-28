@@ -51,6 +51,28 @@ describe("parseTeamImportPayload", () => {
     expect(parsed).toEqual(sampleTeam);
   });
 
+  it("renames mistyped attack and buff keys from older exports", () => {
+    const parsed = parseTeamImportPayload(
+      JSON.stringify({
+        characterIds: ["Qiuyuan"],
+        actions: [
+          {
+            slot: 0,
+            key: "Undaunted ayfarerDMG",
+            advancedConfig: { teamBuffs: { "BellBorne eochelone": { isEnabled: true } } },
+          },
+        ],
+      }),
+    );
+    expect(parsed.actions).toEqual([
+      {
+        slot: 0,
+        key: "UndauntedWayfarerDMG",
+        advancedConfig: { teamBuffs: { BellBorneGeochelone: { isEnabled: true } } },
+      },
+    ]);
+  });
+
   it("pads characterIds to exactly 3 slots and fills in sensible defaults for a lenient hand-authored payload", () => {
     const parsed = parseTeamImportPayload(
       JSON.stringify({ characterIds: ["Carlotta"], actions: [] }),

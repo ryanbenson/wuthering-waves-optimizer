@@ -4,7 +4,7 @@ export const introAttacks = {
   icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuokeke/SP_IconLuokekeQTE.webp",
   attacks: [
     {
-      key: "PerloHelpDMG",
+      key: "PeroHelpDMG",
       label: "Pero, Help DMG",
       talents: {
         "1": "85.00%",

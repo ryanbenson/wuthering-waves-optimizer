@@ -21,7 +21,7 @@ export const skillAttacks = {
       },
     },
     {
-      key: "Undaunted ayfarerDMG",
+      key: "UndauntedWayfarerDMG",
       label: "Undaunted Wayfarer DMG",
       type: "Echo",
       talents: {
