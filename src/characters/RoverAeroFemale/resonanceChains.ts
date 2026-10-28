@@ -60,8 +60,8 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "Sequence Node 5: Life and Death Intertwine",
-    name: "Sequence Node 5: Life and Death Intertwine",
+    key: "SequenceNode5LifeandDeathIntertwine",
+    name: "SequenceNode5LifeandDeathIntertwine",
     details: `<span class="skilldescription">The DMG Multiplier of Resonance Liberation <span class="Highlight">Omega Storm</span> is increased by 20%.</span>`,
     hasStacks: false,
     modifiers: [

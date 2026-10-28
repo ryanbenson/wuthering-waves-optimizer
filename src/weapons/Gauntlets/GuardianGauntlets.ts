@@ -10,7 +10,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Resonance Liberation DMG Bonus by 12%/15%/18%/21%/24%.",
   passiveData: [
     {
-      key: "Guardian GauntletsResonanceLiberationDMGBonus",
+      key: "GuardianGauntletsResonanceLiberationDMGBonus",
       hasStacks: false,
       modifier: "ResonanceLiberationDMGBonus",
       modifierByRefinement: {

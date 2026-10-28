@@ -78,7 +78,7 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6Giv MeAFivestarRating",
+    key: "SequenceNode6GiveMeAFivestarRating",
     name: "Sequence Node 6: Give Me A Five-star Rating",
     details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight">Squeakie Express</span> increases all team members' ATK by 20% for 20s.</span>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM6_UI.webp`,

@@ -1,4 +1,5 @@
 import { slugify } from "../utils/strings";
+import { renameMistypedKeys } from "../migrations/versions/010_renameMistypedKeys";
 
 /**
  * The importable/exportable shape of a single character rotation — its own
@@ -95,7 +96,8 @@ export function generateRotationExportFilename(rotationName: string): string {
 export function parseRotationImportPayload(raw: string): RotationExportData {
   let parsed: unknown;
   try {
-    parsed = JSON.parse(raw);
+    // exports aren't on the app data-version timeline, so rename old keys here
+    parsed = JSON.parse(renameMistypedKeys(raw));
   } catch {
     throw new Error("That doesn't look like valid JSON.");
   }

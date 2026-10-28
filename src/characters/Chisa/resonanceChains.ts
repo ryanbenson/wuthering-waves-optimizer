@@ -41,7 +41,7 @@ Nearby Resonators in the team with <span class="Highlight">Thread of Bane</span>
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3Across the Confusion of the Long Night",
+    key: "SequenceNode3AcrosstheConfusionoftheLongNight",
     name: "Sequence Node 3: O Blade, I, Who Save No More",
     details: `<div>The DMG Multipliers of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span> and <span class="Highlight">Sawring - Eradication</span> are increased by 120%. This effect is mutually stackable with that of <span class="Highlight">Woven Myriad - Convergence</span>.<br>The bonus DMG Multiplier for <span class="Highlight">Sawring - Eradication</span> granted by <span class="Highlight">Sawring- Blitz</span> and <span class="Highlight">Chainsaw Mode - Dodge Counter</span> when <span class="Highlight">Ring of Chainsaw</span> is consumed is increased by 120%. This effect is mutually stackable with that of <span class="Highlight">Woven Myriad - Convergence</span>.<br>The Vibration Strength Reduction Rate of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span> and <span class="Highlight">Sawring - Eradication</span> is increased by 50%.</div>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_QianxiaoM3_UI.webp`,

@@ -1,6 +1,6 @@
 export const buffs = [
   {
-    key: "InherentSkillThunderous Determination",
+    key: "InherentSkillThunderousDetermination",
     name: "Inherent Skill: Thunderous Determination",
     details: `<div class="skilldescription">The DMG multiplier of Resonance Skill <span class="Highlight">Thunder Uprising</span> is increased by 40%, and its reduction efficiency of enemy Vibration Strength is enhanced.</div>`,
     hasStacks: false,

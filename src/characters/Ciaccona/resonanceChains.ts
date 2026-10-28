@@ -65,7 +65,7 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5EternalIdylltoLastinSummer",
+    key: "SequenceNode5EternalIdylltoLastingSummer",
     name: "Sequence Node 5: Eternal Idyll to Lasting Summer",
     details: `<span class="skilldescription">Gain 40% Resonance Liberation DMG Bonus;<br>DMG taken by Resonators within and around the range of Resonance Liberation <span class="Highlight">Singer's Triple Cadenza</span> is reduced by 30%.</span>`,
     icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XiakongM5_UI.webp`,

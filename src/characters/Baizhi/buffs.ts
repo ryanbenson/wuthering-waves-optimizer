@@ -1,7 +1,7 @@
 export const buffs = [
   {
-    key: "Inherent Skill: Harmonic Range",
-    name: "Inherent Skill: Harmonic Range",
+    key: "InherentSkillHarmonicRange",
+    name: "InherentSkillHarmonicRange",
     details: `<div class="skilldescription">When Baizhi casts Resonance Skill <span class="Highlight">Emergency Plan</span>, You'tan generates a field of <span class="Highlight">Euphonia</span> that lasts for 15s.<br> <br><span class="Title">Euphonia</span><br>ATK of the Resonators who picks up Euphonia is increased by 15% for 20s.</div>`,
     hasStacks: false,
     modifiers: [

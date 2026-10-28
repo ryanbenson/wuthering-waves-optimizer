@@ -474,4 +474,99 @@ describe("data migrations", () => {
       },
     });
   });
+
+  it("renames mistyped attack, buff and resonance chain keys on v10", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "9");
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Qiuyuan: {
+            rotations: [
+              {
+                id: "r1",
+                actions: [
+                  {
+                    key: "Undaunted ayfarerDMG",
+                    type: "skill",
+                    advancedConfig: {
+                      teamBuffs: { "BellBorne eochelone": { isEnabled: true } },
+                    },
+                  },
+                ],
+              },
+            ],
+            teamBuffs: { buffs: { "BellBorne eochelone": { isEnabled: true } } },
+          },
+          Lumi: {
+            resonanceChains: {
+              "SequenceNode6Giv MeAFivestarRating": { isEnabled: true },
+            },
+            builds: [
+              {
+                id: "b1",
+                resonanceChains: {
+                  "SequenceNode6Giv MeAFivestarRating": { isEnabled: true },
+                },
+              },
+            ],
+          },
+        },
+      }),
+    );
+    localStorage.setItem(
+      "teamRotations",
+      JSON.stringify({
+        teams: [
+          { id: "t1", actions: [{ slot: 0, key: "PerloHelpDMG", type: "intro" }] },
+        ],
+      }),
+    );
+
+    runMigrations();
+
+    const character = JSON.parse(localStorage.getItem("character")!);
+    const qiuyuan = character.characters.Qiuyuan;
+    expect(qiuyuan.rotations[0].actions[0].key).toBe("UndauntedWayfarerDMG");
+    expect(qiuyuan.rotations[0].actions[0].advancedConfig.teamBuffs).toEqual({
+      BellBorneGeochelone: { isEnabled: true },
+    });
+    expect(qiuyuan.teamBuffs.buffs).toEqual({ BellBorneGeochelone: { isEnabled: true } });
+    expect(character.characters.Lumi.resonanceChains).toEqual({
+      SequenceNode6GiveMeAFivestarRating: { isEnabled: true },
+    });
+    expect(character.characters.Lumi.builds[0].resonanceChains).toEqual({
+      SequenceNode6GiveMeAFivestarRating: { isEnabled: true },
+    });
+    const teams = JSON.parse(localStorage.getItem("teamRotations")!);
+    expect(teams.teams[0].actions[0].key).toBe("PeroHelpDMG");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(String(CURRENT_DATA_VERSION));
+  });
+
+  it("keeps an existing corrected key instead of overwriting it on v10", () => {
+    const input = JSON.stringify({
+      characters: {
+        Ciaccona: {
+          resonanceChains: {
+            SequenceNode5EternalIdylltoLastinSummer: { isEnabled: false },
+            SequenceNode5EternalIdylltoLastingSummer: { isEnabled: true },
+          },
+        },
+      },
+    });
+    expect(JSON.parse(applyMigrationTransforms(input, 9))).toEqual({
+      characters: {
+        Ciaccona: {
+          resonanceChains: {
+            SequenceNode5EternalIdylltoLastingSummer: { isEnabled: true },
+          },
+        },
+      },
+    });
+  });
+
+  it("leaves data without mistyped keys untouched on v10", () => {
+    const input = JSON.stringify({ characters: { Qiuyuan: { rotations: [{ actions: [{ key: "ThroughtheGrovesDMG" }] }] } } });
+    expect(applyMigrationTransforms(input, 9)).toBe(input);
+  });
 });

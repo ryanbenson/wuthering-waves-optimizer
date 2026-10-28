@@ -1038,7 +1038,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SequenceNode5EternalIdylltoLastinSummer",
+      key: "SequenceNode5EternalIdylltoLastingSummer",
       name: "Sequence Node 5: Eternal Idyll to Lasting Summer",
       details: `>DMG taken by Resonators within and around the range of Resonance Liberation <span class="Highlight">Singer's Triple Cadenza</span> is reduced by 30%.</span>`,
       hasStacks: false,
@@ -2801,7 +2801,7 @@ export const allEchoBuffs = [
     alwaysEnabled: false,
   },
   {
-    key: "BellBorne eochelone",
+    key: "BellBorneGeochelone",
     name: "Bell-Borne Geochelone",
     details: `<span class="description">Activate the protection of Bell-Borne Geochelone. Obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s
 
