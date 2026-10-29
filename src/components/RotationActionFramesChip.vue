@@ -1,8 +1,8 @@
 <template>
   <button
     type="button"
-    class="badge badge-sm font-mono cursor-pointer"
-    :class="timing?.missing ? 'badge-warning' : 'badge-outline'"
+    class="badge size-max font-mono cursor-pointer"
+    :class="timing?.missing ? 'badge-warning' : 'badge-info'"
     :title="title"
     :data-test-rotation-action-frames="actionId"
     @click.stop="emit('toggle')">

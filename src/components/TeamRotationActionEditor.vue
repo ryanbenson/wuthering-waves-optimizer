@@ -56,13 +56,14 @@
         @bulk-apply-action-buff="onBulkApplyActionBuff"
         @drag-reorder-start="onDragReorderStart"
         @drag-reorder-end="onDragReorderEnd">
-        <template v-if="team.characterIds[action.slot]" #extra-buttons>
+        <template v-if="team.characterIds[action.slot] && hasFrameData" #info-badges>
           <RotationActionFramesChip
-            v-if="hasFrameData"
             :action-id="action.id"
             :timing="frameTiming ?? null"
             :end="actionEnd"
             @toggle="showEndEditor = !showEndEditor" />
+        </template>
+        <template v-if="team.characterIds[action.slot]" #extra-buttons>
           <span
             class="badge badge-xs"
             :class="syncState === 'synced' ? 'badge-ghost' : 'badge-warning'"

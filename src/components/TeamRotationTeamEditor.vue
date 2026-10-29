@@ -153,8 +153,11 @@
             <span><b>{{ team.actions.length }}</b> action{{ team.actions.length === 1 ? "" : "s" }}</span>
             <span class="opacity-40">·</span>
             <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
-            <span class="opacity-40">·</span>
-            <span><b>{{ team.duration !== null && team.duration !== "" ? `${team.duration}s` : "—" }}</b> duration</span>
+            <!-- The frame-timing panel below shows both lengths when it's on. -->
+            <template v-if="!isFrameTimingOn">
+              <span class="opacity-40">·</span>
+              <span><b>{{ team.duration !== null && team.duration !== "" ? `${team.duration}s` : "—" }}</b> duration</span>
+            </template>
             <span class="opacity-40">·</span>
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>

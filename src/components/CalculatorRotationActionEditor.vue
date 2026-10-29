@@ -33,14 +33,14 @@
     @bulk-apply-action-buff="onBulkApplyActionBuff"
     @drag-reorder-start="onDragReorderStart"
     @drag-reorder-end="onDragReorderEnd">
-    <template #extra-buttons>
+    <template v-if="hasFrameData" #info-badges>
       <RotationActionFramesChip
-        v-if="hasFrameData"
         :action-id="action.id"
         :timing="frameTiming ?? null"
         :end="actionEnd"
         @toggle="showEndEditor = !showEndEditor" />
-      <template v-if="definitions">
+    </template>
+    <template v-if="definitions" #extra-buttons>
       <span
         class="badge badge-xs"
         :class="syncState === 'synced' ? 'badge-ghost' : 'badge-warning'"
@@ -75,7 +75,6 @@
         <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png" class="size-3" alt="" />
         {{ showEnemySettings ? "Hide" : "Configure" }} Enemy Settings
       </button>
-      </template>
     </template>
     <template v-if="showEndEditor || (definitions && (showAdvancedBuffs || showEnemySettings))" #extra-panel>
       <RotationActionEndEditor
