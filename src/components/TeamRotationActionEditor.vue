@@ -56,6 +56,13 @@
         @bulk-apply-action-buff="onBulkApplyActionBuff"
         @drag-reorder-start="onDragReorderStart"
         @drag-reorder-end="onDragReorderEnd">
+        <template v-if="team.characterIds[action.slot] && hasFrameData" #info-badges>
+          <RotationActionFramesChip
+            :action-id="action.id"
+            :timing="frameTiming ?? null"
+            :end="actionEnd"
+            @toggle="showEndEditor = !showEndEditor" />
+        </template>
         <template v-if="team.characterIds[action.slot]" #extra-buttons>
           <span
             class="badge badge-xs"
@@ -92,7 +99,14 @@
             {{ showEnemySettings ? "Hide" : "Configure" }} Enemy Settings
           </button>
         </template>
-        <template v-if="team.characterIds[action.slot] && (showAdvancedBuffs || showEnemySettings)" #extra-panel>
+        <template
+          v-if="team.characterIds[action.slot] && (showEndEditor || showAdvancedBuffs || showEnemySettings)"
+          #extra-panel>
+          <RotationActionEndEditor
+            v-if="showEndEditor"
+            :end="actionEnd"
+            :frames="attackFrames ?? null"
+            @update:end="onEndUpdate" />
           <div v-if="showAdvancedBuffs" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
             <div class="flex flex-wrap gap-2">
               <button
@@ -159,6 +173,10 @@ import { isV3UiEnabled } from "../utils/uiVersion";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
+import RotationActionEndEditor from "./RotationActionEndEditor.vue";
+import RotationActionFramesChip from "./RotationActionFramesChip.vue";
+import type { AttackFrames } from "../calculator/frameData";
+import { normalizeActionEnd, type ActionEnd, type ActionTimingSummary } from "../calculator/rotationTiming";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { TeamRotationAction } from "../calculator/teamRotation";
@@ -203,6 +221,11 @@ const props = defineProps<{
    * down from TeamRotationTeamEditor.vue, if available. */
   damageValue?: number | null;
   damageLabel?: string | null;
+  /** Frame data (ADR 0047): whether the team has any, this action's frames,
+   * and its computed length in the rotation. */
+  hasFrameData?: boolean;
+  attackFrames?: AttackFrames | null;
+  frameTiming?: ActionTimingSummary | null;
 }>();
 
 const emit = defineEmits<{
@@ -224,6 +247,14 @@ const isLiveResultBarEnabled = computed(
 
 const showAdvancedBuffs = ref(false);
 const showEnemySettings = ref(false);
+const showEndEditor = ref(false);
+
+const actionEnd = computed(() => normalizeActionEnd(props.action.end));
+
+function onEndUpdate(end: ActionEnd | null) {
+  // Explicit `undefined` clears it: handleActionUpdate merges { ...existing, ...payload }.
+  emit("update", { ...props.action, end: end ?? undefined });
+}
 
 const currentEnemyConfig = computed(() => resolveTeamEnemyConfig(props.teamEnemyConfig));
 const enemyOverrideCount = computed(() => countEnemyStacksOverrides(props.action.enemyStacksOverride));

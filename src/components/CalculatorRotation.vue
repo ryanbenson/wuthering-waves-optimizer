@@ -388,11 +388,21 @@
             <span><b>{{ actionsCount }}</b> action{{ actionsCount === 1 ? "" : "s" }}</span>
             <span class="opacity-40">·</span>
             <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
-            <span class="opacity-40">·</span>
-            <span><b>{{ durationValue !== null && durationValue !== "" ? `${durationValue}s` : "—" }}</b> duration</span>
+            <!-- The frame-timing panel below shows both lengths when it's on. -->
+            <template v-if="!isFrameTimingOn">
+              <span class="opacity-40">·</span>
+              <span><b>{{ durationValue !== null && durationValue !== "" ? `${durationValue}s` : "—" }}</b> duration</span>
+            </template>
             <span class="opacity-40">·</span>
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
+          <RotationFrameTiming
+            v-if="isFrameTimingOn"
+            class="mt-4"
+            :timing="rotationTiming"
+            :has-frame-data="hasFrameData"
+            :damage="rotationAvgDamage"
+            :typed-duration="durationValue" />
           <div
             v-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mt-4"
@@ -447,6 +457,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
+                :has-frame-data="isFrameTimingOn && hasFrameData"
+                :attack-frames="isFrameTimingOn ? framesFor(action) : null"
+                :frame-timing="isFrameTimingOn ? (actionTimingById[action.id] ?? null) : null"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
@@ -502,6 +515,8 @@ import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
+import RotationFrameTiming from "./RotationFrameTiming.vue";
+import { useRotationTiming } from "../composables/useRotationTiming";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
@@ -517,6 +532,7 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { isFrameTimingEnabled } from "../utils/labs";
 import {
   applyBulkAdvancedConfigOverride,
   hasAdvancedConfigOverrides,
@@ -531,6 +547,7 @@ import {
 import { applyBulkActionBuff } from "../calculator/rotationActionBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+import type { FrameDataFile } from "../calculator/frameData";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
 import { trackEvent } from "../utils/analytics";
 
@@ -615,6 +632,7 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
 
 const isOpenLocal = ref(false);
 // Rotation Flow (Labs) — detail-view usage (CalculatorRotations.vue's
@@ -798,6 +816,25 @@ const actionsSorted = computed(() =>
     (a, b) => Number(a.order ?? 0) - Number(b.order ?? 0),
   ),
 );
+
+// Frame-data length and DPS (ADR 0047), shown beside the typed duration.
+const {
+  hasFrameData,
+  timing: rotationTiming,
+  byActionId: actionTimingById,
+  framesFor,
+} = useRotationTiming(
+  actionsSorted,
+  computed(() => props.characterData as { frames?: FrameDataFile } | undefined),
+  echoValue,
+);
+
+const rotationAvgDamage = computed<number | null>(() => {
+  const rotations = (
+    props.allDamages as { rotations?: Array<{ id: string; damageAggregation?: { avgDamage?: number } }> } | null
+  )?.rotations;
+  return rotations?.find((r) => r.id === props.id)?.damageAggregation?.avgDamage ?? null;
+});
 
 const rangeActions = computed<DurationRangeAction[]>(() =>
   actionsSorted.value.map((action) => ({

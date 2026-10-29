@@ -68,6 +68,8 @@
         <div v-if="damageSubType" class="type badge badge-accent size-max">
           {{ damageSubType }} DMG
         </div>
+        <!-- Info badges from a wrapper (the frame-data chip), with the others rather than the controls. -->
+        <slot name="info-badges"></slot>
         <div
           v-if="isLiveResultBarEnabled && formattedDamageValue"
           class="type badge badge-ghost size-max"
