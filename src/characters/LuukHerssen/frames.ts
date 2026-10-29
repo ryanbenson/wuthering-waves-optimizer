@@ -17,6 +17,7 @@ export const frames: FrameDataFile = {
     MidairAttackStage2ScytheResctionDMG: {"ability":"Basic: Such is Light 2 Scythe - Resection (Mid-Air)","total":30,"cancel":30,"hits":[[13,13,75,135],[30,30,75,135]]},
     MidairAttackStage3ScytheResctionDMG: {"ability":"Basic: Such is Light 3 Scythe - Resection (Mid-Air)","total":66,"cancel":47,"hits":[[14,14,141,208],[47,47,141,208]]},
     MidairAttackStage4DMG: {"ability":"Basic: Such is Light 4 (Mid-Air)","total":60,"cancel":40,"hits":[[40,40,155,100]]},
+    GroundDodgeCounterDMG: {"ability":"Basic: Such is Light 2 (Dodge Counter)","total":56,"cancel":50,"hits":[[50,50,112,375]]},
     MidairDodgeCounterDMG: {"ability":"Basic: Such is Light 3 (Mid-Air Dodge Counter)","total":69,"cancel":37,"hits":[[37,37,230,750]]},
     GoldenRefluxDMG: {"ability":"Skill 1: Golden Reflux","total":68,"cancel":46,"cooldown":480,"hits":[[46,46,230,460]]},
     AureoleofExecutionRingDMG: {"ability":"Skill 2: Aureole of Execution - Ring","total":81,"cancel":46,"hits":[[15,15,96,120],[21,21,96,120],[27,27,96,120],[33,33,96,120],[39,39,96,120],[46,46,320,400]]},

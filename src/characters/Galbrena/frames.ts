@@ -18,6 +18,7 @@ export const frames: FrameDataFile = {
     ResonanceSkillEncroachDMG: {"ability":"Skill 1: Encroach","total":60,"cancel":17,"cooldown":300,"hits":[[12,12,198,67],[32,17,461,155]]},
     ResonanceSkillAscentofMaliceDMG: {"ability":"Skill 2: Ascent of Malice","total":39,"cancel":22,"cooldown":780,"onCast":{"concerto":1000},"hits":[[22,22,738,0],[70,22,738,0]]},
     HellfireAbsolutionDMG: {"ability":"Liberation: Hellfire Absolution","total":195,"cancel":156,"timeStop":[0,210],"motionStop":[0,210],"cooldown":1500,"onCast":{"energy":-12500,"concerto":2000},"hits":[[156,156,0,0],[174,156,0,0],[182,156,0,0],[191,156,0,0],[199,156,0,0],[208,156,0,0],[216,156,0,0],[224,156,0,0],[233,156,0,0],[241,156,0,0],[250,156,0,0],[258,156,0,0]]},
+    HellstrideDMG: {"ability":"Dash: Hellstride","total":24,"cancel":24,"hits":[[4,4,0,0]]},
     BasicAttackSeraphicExecutionStage1DMG: {"ability":"Basic: Seraphic Execution 1","total":18,"cancel":14,"hits":[[14,14,100,554]]},
     BasicAttackSeraphicExecutionStage2DMG: {"ability":"Basic: Seraphic Execution 2","total":42,"cancel":38,"hits":[[19,19,40,139],[28,28,40,139],[38,38,120,417]]},
     BasicAttackSeraphicExecutionStage3DMG: {"ability":"Basic: Seraphic Execution 3","total":72,"cancel":53,"hits":[[18,18,34,88],[24,18,34,88],[30,18,34,88],[53,53,232,615]]},

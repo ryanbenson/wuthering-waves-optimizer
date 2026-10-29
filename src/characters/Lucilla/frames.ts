@@ -11,6 +11,7 @@ export const frames: FrameDataFile = {
     BasicAttackStage3UnremarkableDMG: {"ability":"Basic: Snapshot 3 - Unremarkable","total":86,"cancel":30,"hits":[[30,30,359,574]]},
     BasicAttackStage3CommendableDMG: {"ability":"Basic: Snapshot 3 - Commendable","total":106,"cancel":50,"hits":[[50,50,423,677]]},
     DodgeCounterDMG: {"ability":"Basic: Snapshot 2 (Dodge Counter)","total":32,"cancel":24,"hits":[[14,14,122,288],[24,24,149,352]]},
+    CompensateDMG: {"ability":"Skill Compensate","total":60,"cancel":53,"cooldown":960,"hits":[[16,16,42,69],[22,16,42,69],[28,16,42,69],[53,53,931,308]]},
     SpotlightDMG: {"ability":"Skill: Spotlight","total":107,"cancel":107,"noSwap":101,"cooldown":960,"hits":[[16,16,42,69],[22,16,42,69],[28,16,42,69],[57,57,419,102],[70,70,419,102],[101,101,1394,2340],[143,101,558,136]],"shared":true},
     ClearAsDayDMG: {"ability":"Liberation: Clear As Day","total":266,"cancel":266,"timeStop":[3,266],"motionStop":[3,266],"cooldown":1500,"onCast":{"concerto":2000},"hits":[[204,204,0,0]]},
     BasicAttackTracingFormsStage1DMG: {"ability":"Basic: Tracing Forms 1","total":27,"cancel":19,"hits":[[8,8,43,83],[19,19,65,124]]},

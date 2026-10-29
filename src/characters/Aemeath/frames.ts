@@ -14,6 +14,7 @@ export const frames: FrameDataFile = {
     HeavyAttackAemeathChargedIIDMG: {"ability":"Heavy: Aemeath Charged 2 (Instant Response)","total":95,"cancel":81,"hits":[[44,44,21,42],[49,44,21,42],[60,60,21,42],[66,60,21,42],[81,81,334,667]]},
     MidAirAttackAemeathDMG: {"ability":"Basic: Aemeath (Mid-Air)","total":53,"cancel":42,"hits":[[42,42,155,310]]},
     DodgeCounterAemeathDMG: {"ability":"Basic: Aemeath 3 (Dodge Counter)","total":54,"cancel":27,"hits":[[4,4,32,64],[12,12,32,64],[18,18,32,64],[25,25,64,127],[27,27,159,318]]},
+    SequenceNode5VoyagetotheAstralShore: {"ability":"off-field","total":0,"hits":[],"offField":true},
     SyncStrikeArmamentMergeDMG: {"ability":"Skill: Sync Strike (Armament Merge)","total":79,"cancel":65,"hits":[[6,6,121,242],[44,44,49,97],[65,65,73,146]]},
     SyncStrikeCallofDawnDMG: {"ability":"Skill: Sync Strike (Call of Dawn)","total":72,"cancel":59,"hits":[[10,10,30,59],[52,52,30,59],[56,56,30,59],[59,59,206,411]]},
     BasicAttackMechStage1DMG: {"ability":"Basic: Mech 1","total":33,"cancel":12,"hits":[[12,12,42,84],[20,12,42,84],[28,12,42,84]]},

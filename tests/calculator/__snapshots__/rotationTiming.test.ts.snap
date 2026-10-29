@@ -160,9 +160,9 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   },
   "Galbrena / Galbrena": {
     "actions": 18,
-    "game": 893,
-    "missing": 1,
-    "real": 1088,
+    "game": 917,
+    "missing": 0,
+    "real": 1112,
   },
   "Hsin / Hsin Electro Flare Rotation": {
     "actions": 38,
@@ -280,9 +280,9 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   },
   "Roccia / Standard Rotation": {
     "actions": 8,
-    "game": 462,
+    "game": 442,
     "missing": 0,
-    "real": 662,
+    "real": 642,
   },
   "RoverAeroFemale / Standard": {
     "actions": 11,

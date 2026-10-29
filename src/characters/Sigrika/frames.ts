@@ -18,6 +18,7 @@ export const frames: FrameDataFile = {
     DodgeCounterDecipherDMG: {"ability":"Basic: Decipher (Dodge Counter)","total":66,"cancel":26,"hits":[[8,8,52,104],[16,16,52,104],[24,24,52,104],[66,26,104,207]]},
     BoomyBoomDMG: {"ability":"Skill 1: BOOMY BOOM!","total":56,"cancel":48,"cooldown":600,"hits":[[10,10,45,90],[16,16,45,90],[36,36,45,90],[48,48,90,180]]},
     BigBoomyBoomDMG: {"ability":"Skill 2: BIG BOOMY BOOM!","total":56,"cancel":54,"hits":[[6,6,25,49],[18,18,25,49],[30,30,25,49],[42,42,25,49],[54,54,145,290]]},
+    SoliskintotheAidDMG: {"ability":"Skill 3: Soliskin to the Aid","total":54,"cancel":50,"hits":[[6,6,24,47],[16,16,24,47],[24,24,24,47],[50,50,145,290]]},
     WhereTrustLeadsMeDMG: {"ability":"Liberation: Where Trust Leads Me!","total":228,"cancel":228,"timeStop":[0,228],"motionStop":[0,228],"cooldown":1500,"onCast":{"energy":-12500,"concerto":2000},"hits":[[176,176,0,0]]},
     HeavyAttackSchemataofRunesDMG: {"ability":"Forte: Schemata of Runes","total":76,"cancel":12,"hits":[[12,12,334,50]]},
     RunicOutburstDMG: {"ability":"Runic Outburst","total":68,"hits":[[20,0,200,140],[36,0,350,245],[68,0,450,315]],"offField":true},

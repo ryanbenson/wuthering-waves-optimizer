@@ -17,7 +17,7 @@ export const frames: FrameDataFile = {
     CommediaImprovvisoDMG: {"ability":"Liberation: Commedia Improvviso!","total":200,"cancel":200,"timeStop":[0,200],"motionStop":[0,112],"cooldown":1200,"onCast":{"energy":-12500,"concerto":2000},"hits":[[116,116,0,0],[125,116,0,0],[134,116,0,0]]},
     RealFantasyStage1DMG: {"ability":"Forte: Real Fantasy 1","total":63,"cancel":35,"hits":[[35,35,800,1000]]},
     RealFantasyStage2DMG: {"ability":"Forte: Real Fantasy 2","total":63,"cancel":34,"hits":[[34,34,800,1600]]},
-    RealFantasyStage3DMG: {"ability":"Forte: Real Fantasy 3","total":86,"cancel":34,"hits":[[34,34,800,2500]]},
+    RealFantasyStage3DMG: {"ability":"Forte: Real Fantasy 3 (Success)","total":66,"cancel":34,"hits":[[34,34,800,2500]]},
     SequenceNode6WhentheGoldenWingsFlyDMG: {"ability":"Forte: Reality Recreation","total":68,"cancel":34,"hits":[[34,34,120,0]]},
     PeroHelpDMG: {"ability":"Intro: Pero, Help","total":68,"cancel":52,"noSwap":84,"motionStop":[6,32],"onCast":{"concerto":1000},"hits":[[52,52,1000,0]]},
     TuneBreakDMG: {"ability":"Tune Break Skill","total":94,"cancel":94,"noSwap":94,"timeStop":[0,94],"motionStop":[0,70],"hits":[[72,72,0,0]]},

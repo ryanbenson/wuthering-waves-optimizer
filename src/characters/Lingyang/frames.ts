@@ -26,6 +26,7 @@ export const frames: FrameDataFile = {
     StormyKicksDMG: {"ability":"Basic: Stormy Kicks (Mid-Air)","total":128,"cancel":96,"hits":[[36,36,72,72],[44,44,72,72],[48,48,72,72],[54,54,72,72],[58,58,72,72],[66,66,72,72],[70,70,72,72],[76,76,72,72],[96,96,386,386]]},
     TailStrikeDMG: {"ability":"Basic: Tail Strike (Mid-Air)","total":94,"cancel":57,"hits":[[24,24,73,146],[57,57,73,146]]},
     InherentSkillDiligentPractice: {"ability":"Skill 3: Mountain Roamer (Charged)","total":46,"cancel":25,"hits":[[18,18,166,166],[25,25,100,100],[30,18,166,166]],"shared":true},
+    LionAwakensDMG: {"ability":"Intro: Lion Awakens","total":101,"cancel":83,"noSwap":90,"motionStop":[0,58],"onCast":{"concerto":1000},"hits":[[59,59,500,0],[83,83,500,0]]},
     OutroSkillDMG: {"ability":"Outro: Frosty Marks","total":0,"onCast":{"concerto":-10000},"hits":[[0,0,0,0]],"offField":true},
     TuneBreakDMG: {"ability":"Tune Break Skill","total":94,"cancel":72,"noSwap":94,"timeStop":[0,94],"motionStop":[0,70],"hits":[[72,72,0,0]]},
   },

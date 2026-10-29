@@ -16,6 +16,7 @@ export const frames: FrameDataFile = {
     MidairAttack1SwordShadowRecalledDMG: {"ability":"Basic: Plunging Attack 1","total":45,"cancel":35,"hits":[[32,32,133,186]]},
     MidairAttack2SwordShadowsRecalledDMG: {"ability":"Basic: Plunging Attack 2","total":51,"cancel":42,"hits":[[33,33,45,62],[41,33,45,62],[48,33,45,62]]},
     MidairAttack3SwordShadowsRecalledDMG: {"ability":"Basic: Plunging Attack 3","total":51,"cancel":43,"hits":[[32,32,45,62],[42,32,45,62],[52,32,45,62]]},
+    Sequence5HopeReshapedinStormsShield: {"ability":"off-field","total":0,"hits":[],"offField":true},
     SwordtoBearTheirNamesDMG: {"ability":"Skill 1: Sword to Bear Their Names","total":61,"cancel":4,"cooldown":840,"onCast":{"concerto":1000},"hits":[[4,4,380,0],[13,4,380,0],[22,4,380,0],[40,4,488,0]]},
     BladeofHowlingSquallDMG: {"ability":"Liberation: Blade of Howling Squall","total":301,"cancel":301,"timeStop":[0,301],"motionStop":[0,301],"cooldown":1500,"onCast":{"concerto":2000},"hits":[[253,253,0,0],[263,253,0,0],[273,253,0,0],[284,253,0,0],[294,253,0,0],[304,253,0,0],[314,253,0,0]]},
     BasicAttackStage1DMG: {"ability":"Basic: Tempest 1","total":21,"cancel":16,"hits":[[16,16,75,105]]},

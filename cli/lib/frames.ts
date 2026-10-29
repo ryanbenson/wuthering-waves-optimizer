@@ -210,7 +210,12 @@ export function matchAttacks(
       }
       const ability = byName.get(forced);
       if (ability) {
-        result.attacks[attack.key] = toAttackFrames(ability);
+        // A forced pick for one extra hit of a bigger cast is still a share of it.
+        const percents = parseTalentValue(topTalent(attack.talents))?.percents ?? [];
+        const values = damageValues(ability);
+        const shared =
+          percents.length > 0 && !sameMultiset(values, percents) && containsMultiset(values, percents);
+        result.attacks[attack.key] = toAttackFrames(ability, { shared });
       } else {
         result.notices.push(`${who}: override for ${attack.key} names "${forced}", which wuwalab no longer has.`);
         result.unmatched.push(attack.key);

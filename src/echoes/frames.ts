@@ -89,7 +89,7 @@ export const echoFrames: Record<string, Record<string, AttackFrames>> = {
   },
   SentryConstruct: {
     SentryConstructAttack: {"ability":"Sentry Construct","total":82,"cancel":31,"cooldown":1500,"hits":[[50,31,562,0]]},
-    SentryConstructUpgradedAttack: {"ability":"Sentry Construct","total":82,"cancel":31,"cooldown":1500,"hits":[[50,31,562,0]]},
+    SentryConstructUpgradedAttack: {"ability":"Sentry Construct (Enhanced)","total":190,"cancel":92,"cooldown":1500,"hits":[[111,92,562,0]]},
   },
   Lorelei: {
     LoreleiDMG: {"ability":"Lorelei","total":140,"cancel":30,"cooldown":1500,"hits":[[49,30,562,0]]},

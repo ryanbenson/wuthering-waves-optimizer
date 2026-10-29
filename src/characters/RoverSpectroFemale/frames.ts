@@ -17,6 +17,7 @@ export const frames: FrameDataFile = {
     VibrationManifestationMidAirAttackDMG: {"ability":"Basic: Vibration Manifestation (Mid-Air)","total":54,"cancel":39,"hits":[[39,39,51,100]]},
     ResonatingSlashesSkillDMG: {"ability":"Skill: Resonating Slashes","total":41,"cancel":16,"cooldown":360,"onCast":{"concerto":1000},"hits":[[16,16,1000,0]]},
     EchoingOrchestraSkillDMG: {"ability":"Liberation: Echoing Orchestra","total":129,"cancel":129,"timeStop":[0,129],"motionStop":[0,79],"cooldown":1200,"onCast":{"energy":-12500,"concerto":2000},"hits":[[78,78,0,0],[123,78,0,0]]},
+    SequenceNode4ResonatingLamella: {"ability":"off-field","total":0,"hits":[],"offField":true},
     ResonatingSpinDMG: {"ability":"Skill: Resonating Spin","total":58,"cancel":31,"cooldown":360,"onCast":{"concerto":2000},"hits":[[19,19,500,0],[31,31,500,0]]},
     ResonatingEchoesStage1DMG: {"ability":"Basic: Resonating Echoes","total":60,"cancel":36,"hits":[[9,9,50,300],[36,36,200,500]],"shared":true},
     ResonatingEchoesStage2DMG: {"ability":"Basic: Resonating Echoes","total":60,"cancel":36,"hits":[[9,9,50,300],[36,36,200,500]],"shared":true},

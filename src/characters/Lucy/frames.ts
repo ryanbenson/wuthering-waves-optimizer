@@ -23,6 +23,7 @@ export const frames: FrameDataFile = {
     HeavyAttackSingleThreadingDMG: {"ability":"Heavy: Single Threading","total":67,"cancel":38,"hits":[[8,8,34,135],[13,13,34,135],[19,19,34,135],[24,24,34,135],[38,38,34,135]]},
     HeavyAttackDualThreadingDMG: {"ability":"Heavy: Dual Threading","total":67,"cancel":48,"onCast":{"concerto":800},"hits":[[10,10,60,0],[15,15,60,0],[21,21,60,0],[26,26,60,0],[48,48,60,0]]},
     HeavyAttackMultithreadingDMG: {"ability":"Heavy: Multi-threading","total":61,"cancel":55,"onCast":{"concerto":800},"hits":[[38,38,75,0],[43,43,75,0],[49,49,75,0],[55,55,75,0]]},
+    SequenceNode5ABrokenPathtoHell: {"ability":"off-field","total":0,"hits":[],"offField":true},
     ResonanceSkillPayloadChargeDMG: {"ability":"Skill 1: Payload Charge","total":55,"cancel":46,"cooldown":900,"hits":[[16,16,100,160],[20,20,50,80],[30,30,200,320],[42,42,50,80],[46,46,100,160]],"shared":true},
     ResonanceSkillPulseInterferenceDMG: {"ability":"Skill 2: Pulse Interference","total":156,"cancel":128,"onCast":{"concerto":800},"hits":[[2,2,50,0],[12,12,50,0],[114,114,100,0],[121,114,100,0],[128,114,100,0],[128,128,100,0]]},
     ResonanceSkillDeadlockDMG: {"ability":"Skill 3: Deadlock","total":72,"cancel":72,"timeStop":[0,60],"motionStop":[0,36],"cooldown":840,"onCast":{"concerto":800},"hits":[[35,35,200,0],[64,64,800,0]]},

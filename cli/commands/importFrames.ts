@@ -10,7 +10,7 @@ import {
   wuwalabSlugFor,
   type OurAttack,
 } from "../lib/frames.js";
-import { frameOverrides } from "../lib/frameOverrides.js";
+import { echoFrameOverrides, frameOverrides } from "../lib/frameOverrides.js";
 import {
   directorySource,
   liveSource,
@@ -153,7 +153,7 @@ export async function runImportFrames(
         group: "echoAttacks",
         talents: action.talents,
       }));
-      const result = matchAttacks(echo.key, attacks, detail.abilities);
+      const result = matchAttacks(echo.key, attacks, detail.abilities, echoFrameOverrides[echo.key]);
       if (Object.keys(result.attacks).length) echoFrames[echo.key] = result.attacks;
       notices.push(...result.notices);
     }

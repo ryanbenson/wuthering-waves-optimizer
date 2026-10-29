@@ -17,6 +17,7 @@ export const frames: FrameDataFile = {
     MidairAttackDMG: {"ability":"Basic: Ground State Calibration (Mid-air)","total":42,"cancel":36,"hits":[[36,36,155,496]]},
     DodgeCounterDMG: {"ability":"Basic: Ground State Calibration (Dodge Counter)","total":26,"cancel":9,"hits":[[9,9,255,816]]},
     DodgeCounterWideFieldObservationModeDMG: {"ability":"Basic: Wide Field Observation Mode 2 (Dodge Counter)","total":41,"cancel":17,"hits":[[17,17,41,64],[33,17,41,64],[49,17,41,64],[65,17,41,64]]},
+    InherentSkillBoundedness: {"ability":"off-field","total":0,"hits":[],"offField":true},
     DistributedArrayHealing: {"ability":"Skill: Distributed Array","total":60,"cancel":36,"cooldown":960,"onCast":{"concerto":1000},"hits":[[46,22,463,0],[46,22,463,0],[60,36,463,0],[60,36,463,0]],"offField":true},
     ExpectationErrorHealing: {"ability":"Skill: Expectation Error","total":21,"cooldown":300,"hits":[]},
     OptimalSolutionDMG: {"ability":"Skill: Optimal Solution (Parry)","total":110,"cancel":44,"hits":[[44,44,396,904]]},

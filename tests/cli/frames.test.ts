@@ -159,6 +159,16 @@ describe("matchAttacks rules", () => {
     expect(result.notices[0]).toContain('"Gone"');
   });
 
+  it("keeps a forced pick for one hit of a bigger cast shared", () => {
+    const abilities = [ability("Combo", [3000, 5000]), ability("Single", [5000])];
+    const result = matchAttacks("X", [attack("Extra", "50.00%"), attack("Whole", "50.00%")], abilities, {
+      Extra: "Combo",
+      Whole: "Single",
+    });
+    expect(result.attacks.Extra.shared).toBe(true);
+    expect(result.attacks.Whole.shared).toBeUndefined();
+  });
+
   it("matches tune break by genre", () => {
     const abilities = [ability("Tune Break Skill", [160000], { genre: "tunebreak" })];
     const result = matchAttacks("X", [{ key: "TuneBreakDMG", group: "tuneBreakAttacks" }], abilities);
