@@ -100,7 +100,10 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["BasicAttackUmbralCanopyEngravedHeartDMG"],
+        modifySpecificTalents: [
+          "BasicAttackUmbralCanopyEngravedHeartDMG",
+          "BasicAttackUmbralCanopyEngravedHeartDMGHold",
+        ],
         modifierValue: 0.5,
       },
     ],
