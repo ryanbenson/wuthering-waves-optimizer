@@ -165,6 +165,15 @@ describe("matchAttacks rules", () => {
     expect(result.attacks.TuneBreakDMG.ability).toBe("Tune Break Skill");
   });
 
+  it("skips wuwalab's empty, generic tune break", () => {
+    const abilities = [
+      ability("Tune Break Skill", [], { genre: "tunebreak", total_frames: 0 }),
+      ability("Tune Break Skill - X", [10000], { genre: "tunebreak" }),
+    ];
+    const result = matchAttacks("X", [{ key: "TuneBreakDMG", group: "tuneBreakAttacks" }], abilities);
+    expect(result.attacks.TuneBreakDMG.ability).toBe("Tune Break Skill - X");
+  });
+
   it("reports what it can't place", () => {
     const result = matchAttacks("X", [attack("Lonely", "12.34%")], [ability("A", [5000])]);
     expect(result.unmatched).toEqual(["Lonely"]);

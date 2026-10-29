@@ -11,9 +11,15 @@ import { OFF_FIELD, type FrameOverrides } from "./frames.js";
  * confirmed on wuwalab which ability it is.
  */
 export const frameOverrides: Record<string, FrameOverrides> = {
-  // Damage that rides on other actions rather than being cast.
-  Aemeath: { SeraphicDuetBonusDMGPerInstance: OFF_FIELD },
+  Aemeath: {
+    // Damage that rides on other actions rather than being cast.
+    SeraphicDuetBonusDMGPerInstance: OFF_FIELD,
+    // Same frames and motion values as "Skill: Form Switch (Mech)"; ours is the basic attack.
+    BasicAttackMechStage1DMG: "Basic: Mech 1",
+  },
   Cantarella: { DiffusionDMG: OFF_FIELD },
+  // Same motion values as "Avatar: Cartethyia (Mid-Air)", which has a cooldown; ours is the plain plunge.
+  Cartethyia: { MidairAttackDMG: "Basic: Plunging Attack" },
   Danjin: { CrimsonErosion1: OFF_FIELD, CrimsonErosion2: OFF_FIELD },
   Hsin: { HeartOfThunderDelayedDMG: OFF_FIELD },
   Mortefi: { SequenceNodeFuneraryQuartet: OFF_FIELD },

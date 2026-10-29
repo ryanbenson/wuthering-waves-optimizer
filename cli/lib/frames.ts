@@ -245,7 +245,9 @@ export function matchAttacks(
     }
 
     if (attack.group === "tuneBreakAttacks") {
-      const tuneBreak = abilities.find((ability) => ability.genre === "tunebreak");
+      // wuwalab also lists an empty, generic "Tune Break Skill" (0 frames, no
+      // hits) next to each character's own; skip it.
+      const tuneBreak = abilities.find((ability) => ability.genre === "tunebreak" && ability.hits.length > 0);
       if (tuneBreak) {
         result.attacks[attack.key] = toAttackFrames(tuneBreak);
         continue;
