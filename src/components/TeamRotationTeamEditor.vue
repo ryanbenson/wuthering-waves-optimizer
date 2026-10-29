@@ -158,6 +158,14 @@
             <span class="opacity-40">·</span>
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
+          <RotationFrameTiming
+            v-if="isFrameTimingOn"
+            class="mb-3"
+            is-team
+            :timing="teamTiming"
+            :has-frame-data="teamHasFrameData"
+            :damage="result.total.avgDamage"
+            :typed-duration="team.duration" />
           <div
             v-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mb-3"
@@ -241,6 +249,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
+                :has-frame-data="isFrameTimingOn && teamHasFrameData"
+                :attack-frames="isFrameTimingOn ? teamFramesFor(action) : null"
+                :frame-timing="isFrameTimingOn ? (teamTimingById[action.id] ?? null) : null"
                 @update="handleActionUpdate"
                 @update:sequence="handleSequenceUpdate"
                 @remove="handleActionRemove"
@@ -370,6 +381,11 @@ import AppHoverZoomAvatar from "./AppHoverZoomAvatar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
+import RotationFrameTiming from "./RotationFrameTiming.vue";
+import { useTeamRotationTiming } from "../composables/useRotationTiming";
+import type { FrameDataFile } from "../calculator/frameData";
+import type { TimingSlot } from "../calculator/rotationTiming";
+import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useSettingsStore } from "../stores/settings";
@@ -812,6 +828,7 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
 
 const totalHits = computed(
   () =>
@@ -982,6 +999,28 @@ const mainEchoRankForSlot = computed(() => {
   }
   return out;
 });
+
+// Frame-data length and DPS (ADR 0047), shown beside the typed duration.
+const timingSlots = computed<Array<TimingSlot | null>>(() =>
+  [0, 1, 2].map((slot) => {
+    const characterId = team.value?.characterIds[slot];
+    if (!characterId) return null;
+    return {
+      characterId,
+      data: chosenChars.value[slot] as { frames?: FrameDataFile } | undefined,
+      mainEcho: mainEchoForSlot.value[slot] ?? null,
+    };
+  }),
+);
+const {
+  hasFrameData: teamHasFrameData,
+  timing: teamTiming,
+  byActionId: teamTimingById,
+  framesFor: teamFramesFor,
+} = useTeamRotationTiming(
+  computed(() => (team.value?.actions ?? []) as Array<Record<string, unknown>>),
+  timingSlots,
+);
 
 const primaryCharacterElement = computed(
   () => (slotContexts.value[0]?.chosenChar as { basic?: { element?: string } } | undefined)?.basic

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   actionLength,
+  buildTeamTimingActions,
   buildTimingActions,
   computeRotationTiming,
   damagePerSecond,
@@ -11,6 +12,7 @@ import {
 } from "@/calculator/rotationTiming";
 import { allCharactersList, getCharByName } from "@/characters/characters";
 import { frames as suomingFrames } from "@/characters/Suoming/frames";
+import { rotations as suomingRotations } from "@/characters/Suoming/presets";
 import { echoFrames } from "@/echoes/frames";
 import { abilityFrames } from "../fixtures/frames/wuwalabReference";
 
@@ -223,6 +225,57 @@ describe("buildTimingActions", () => {
       {},
     );
     expect(seen).toEqual(["Suoming", "Hsin"]);
+  });
+});
+
+describe("buildTeamTimingActions", () => {
+  const slots = [
+    { characterId: "Suoming", data: { frames: suomingFrames }, mainEcho: "ReminiscenceSuhsintheInevitable" },
+    null,
+    { characterId: "Hsin", data: null, mainEcho: null },
+  ];
+
+  it("runs actions in team order and looks each one up through its slot", () => {
+    const actions = buildTeamTimingActions(
+      [
+        { id: "c", slot: 2, order: 3, type: "basic", key: "BasicAttackUnfurledCanopyStage1DMG" },
+        { id: "a", slot: 0, order: 1, type: "basic", key: "BasicAttackUnfurledCanopyStage1DMG" },
+        { id: "b", slot: 0, order: 2, type: "echoAttacks", key: "CastDMG", mainEcho: null },
+      ],
+      slots,
+      echoFrames,
+    );
+    expect(actions.map((action) => action.id)).toEqual(["a", "b", "c"]);
+    expect(actions.map((action) => action.characterId)).toEqual(["Suoming", "Suoming", "Hsin"]);
+    expect(actions[0].frames?.ability).toBe("Basic: Unfurled Canopy 1");
+    // No echo of its own, so the slot's main echo.
+    expect(actions[1].frames?.ability).toBe("Reminiscence: Suhsin the Inevitable");
+    // Hsin's slot has no frame data loaded.
+    expect(actions[2].frames).toBeNull();
+  });
+
+  it("counts an action on an empty slot as missing", () => {
+    const timing = computeRotationTiming(
+      buildTeamTimingActions([{ id: "x", slot: 1, order: 1, type: "basic", key: "Anything" }], slots, echoFrames),
+    );
+    expect(timing.missing).toEqual(["x"]);
+  });
+
+  it("times an imported character rotation the same as on the character page", () => {
+    const preset = suomingRotations[0].data as { echo: string; actions: Array<Record<string, unknown>> };
+    const teamActions = preset.actions.map((action, index) => ({ ...action, id: String(index), slot: 0 }));
+    const team = computeRotationTiming(buildTeamTimingActions(teamActions, slots, echoFrames));
+    const own = computeRotationTiming(
+      buildTimingActions(
+        teamActions,
+        () => ({ frames: suomingFrames }),
+        echoFrames,
+        preset.echo,
+      ),
+    );
+    // 790 is the reviewed length in the preset snapshot below.
+    expect(own.gameFrames).toBe(790);
+    expect(team.gameFrames).toBe(own.gameFrames);
   });
 });
 

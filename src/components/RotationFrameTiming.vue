@@ -35,7 +35,8 @@
       </div>
     </template>
     <span v-else class="text-xs opacity-70" data-test-rotation-frame-none>
-      No frame data for this character yet, so set the rotation length yourself to see DPS.
+      No frame data for {{ isTeam ? "these characters" : "this character" }} yet, so set the rotation length yourself
+      to see DPS.
     </span>
   </div>
 </template>
@@ -52,6 +53,8 @@ const props = defineProps<{
   damage: number | null;
   /** The optional length the user typed, in seconds. */
   typedDuration: string | number | null | undefined;
+  /** A team rotation, for the wording when no slot has frame data. */
+  isTeam?: boolean;
 }>();
 
 const typedSeconds = computed(() => {

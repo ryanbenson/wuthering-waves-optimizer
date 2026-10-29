@@ -34,16 +34,12 @@
     @drag-reorder-start="onDragReorderStart"
     @drag-reorder-end="onDragReorderEnd">
     <template #extra-buttons>
-      <button
+      <RotationActionFramesChip
         v-if="hasFrameData"
-        type="button"
-        class="badge badge-sm font-mono cursor-pointer"
-        :class="frameTiming?.missing ? 'badge-warning' : 'badge-outline'"
-        :title="frameChipTitle"
-        :data-test-rotation-action-frames="action.id"
-        @click.stop="showEndEditor = !showEndEditor">
-        {{ frameChipText }}
-      </button>
+        :action-id="action.id"
+        :timing="frameTiming ?? null"
+        :end="actionEnd"
+        @toggle="showEndEditor = !showEndEditor" />
       <template v-if="definitions">
       <span
         class="badge badge-xs"
@@ -154,13 +150,9 @@ import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
 import RotationActionEndEditor from "./RotationActionEndEditor.vue";
+import RotationActionFramesChip from "./RotationActionFramesChip.vue";
 import type { AttackFrames } from "../calculator/frameData";
-import {
-  framesToSeconds,
-  normalizeActionEnd,
-  type ActionEnd,
-  type ActionTimingSummary,
-} from "../calculator/rotationTiming";
+import { normalizeActionEnd, type ActionEnd, type ActionTimingSummary } from "../calculator/rotationTiming";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import {
   buildAdvancedConfigSnapshot,
@@ -243,21 +235,6 @@ const showEndEditor = ref(false);
 const actionRef = ref<{ toggleEdit: () => void } | null>(null);
 
 const actionEnd = computed(() => normalizeActionEnd(props.action.end));
-
-const frameChipText = computed(() => {
-  const timing = props.frameTiming;
-  if (!timing || timing.missing) return "no frames";
-  const suffix = actionEnd.value && actionEnd.value.type !== "full" ? ` · ${actionEnd.value.type}` : "";
-  const stopped = timing.realFrames - timing.gameFrames;
-  const stop = stopped > 0 ? ` (+${stopped}f time stop)` : "";
-  return `${timing.gameFrames}f · ${framesToSeconds(timing.gameFrames).toFixed(2)}s${stop}${suffix}`;
-});
-
-const frameChipTitle = computed(() =>
-  props.frameTiming?.missing
-    ? "No frame data for this action, so it counts as 0s. Click to set how it ends."
-    : "Time this action takes in the rotation (game time). Click to set how it ends.",
-);
 
 function onEndUpdate(end: ActionEnd | null) {
   // Explicit `undefined` clears it: the parent merges { ...existing, ...payload }.

@@ -394,6 +394,7 @@
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
           <RotationFrameTiming
+            v-if="isFrameTimingOn"
             class="mt-4"
             :timing="rotationTiming"
             :has-frame-data="hasFrameData"
@@ -453,9 +454,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
-                :has-frame-data="hasFrameData"
-                :attack-frames="framesFor(action)"
-                :frame-timing="actionTimingById[action.id] ?? null"
+                :has-frame-data="isFrameTimingOn && hasFrameData"
+                :attack-frames="isFrameTimingOn ? framesFor(action) : null"
+                :frame-timing="isFrameTimingOn ? (actionTimingById[action.id] ?? null) : null"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
@@ -528,6 +529,7 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { isFrameTimingEnabled } from "../utils/labs";
 import {
   applyBulkAdvancedConfigOverride,
   hasAdvancedConfigOverrides,
@@ -627,6 +629,7 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
 
 const isOpenLocal = ref(false);
 // Rotation Flow (Labs) — detail-view usage (CalculatorRotations.vue's

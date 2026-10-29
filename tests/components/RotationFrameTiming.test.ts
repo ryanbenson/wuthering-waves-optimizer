@@ -4,6 +4,7 @@ import { render, fireEvent } from "@testing-library/vue";
 import RotationFrameTiming from "../../src/components/RotationFrameTiming.vue";
 import RotationActionEndEditor from "../../src/components/RotationActionEndEditor.vue";
 import CalculatorRotationActionEditor from "../../src/components/CalculatorRotationActionEditor.vue";
+import TeamRotationActionEditor from "../../src/components/TeamRotationActionEditor.vue";
 import { useSettingsStore } from "../../src/stores/settings";
 import type { AttackFrames } from "../../src/calculator/frameData";
 import type { RotationTiming } from "../../src/calculator/rotationTiming";
@@ -120,5 +121,43 @@ describe("CalculatorRotationActionEditor frame chip", () => {
     missing.unmount();
     const none = renderEditor({ hasFrameData: false });
     expect(none.container.querySelector("[data-test-rotation-action-frames='a1']")).toBeNull();
+  });
+});
+
+describe("TeamRotationActionEditor frame chip", () => {
+  beforeEach(() => setActivePinia(createPinia()));
+
+  it("shows the action's length and saves its end through the team update", async () => {
+    const { container, emitted } = render(TeamRotationActionEditor, {
+      props: {
+        action: { id: "t1", slot: 1, order: 1, count: 1, type: "basic", key: "X" },
+        team: { characterIds: ["Suoming", "Hsin", null] },
+        chosenChars: { 0: {}, 1: {}, 2: {} },
+        mainEchoForSlot: {},
+        mainEchoRankForSlot: {},
+        teamEnemyConfig: {},
+        hasFrameData: true,
+        attackFrames: FRAMES,
+        frameTiming: { gameFrames: 68, realFrames: 68, missing: false },
+      },
+      global: { stubs: { AppRichSelect: true }, directives: { tooltip: () => {} } },
+    });
+    const chip = container.querySelector("[data-test-rotation-action-frames='t1']") as HTMLElement;
+    expect(chip.textContent).toContain("68f · 1.13s");
+    await fireEvent.click(chip);
+    const select = container.querySelector("[data-test-rotation-action-end-type]") as HTMLSelectElement;
+    select.value = "swap";
+    await fireEvent.change(select);
+    const update = emitted().update[0] as [Record<string, unknown>];
+    expect(update[0]).toMatchObject({ id: "t1", slot: 1, end: { type: "swap" } });
+  });
+});
+
+describe("RotationFrameTiming team wording", () => {
+  it("talks about the team's characters when none has frame data", () => {
+    const { container } = render(RotationFrameTiming, {
+      props: { timing: timing(), hasFrameData: false, damage: 1_000, typedDuration: null, isTeam: true },
+    });
+    expect(container.querySelector("[data-test-rotation-frame-none]")?.textContent).toContain("these characters");
   });
 });

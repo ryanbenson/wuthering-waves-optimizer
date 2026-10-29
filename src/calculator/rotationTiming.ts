@@ -239,6 +239,35 @@ export function buildTimingActions(
     });
 }
 
+/** What a team slot contributes to timing: who is in it, their loaded data
+ * (carrying `frames`) and their main echo. */
+export interface TimingSlot {
+  characterId: string;
+  data: { frames?: FrameDataFile } | null | undefined;
+  mainEcho: string | null;
+}
+
+/**
+ * `buildTimingActions` for a team rotation: actions name a `slot`, not a
+ * character, and run in `order` across all three slots. Echo actions without
+ * their own echo use their slot's main echo; actions on an empty slot count
+ * as missing.
+ */
+export function buildTeamTimingActions(
+  actions: any[],
+  slots: Array<TimingSlot | null>,
+  echoFrames: Record<string, Record<string, AttackFrames>>,
+): TimingAction[] {
+  const dataById = new Map(slots.filter((slot): slot is TimingSlot => !!slot).map((slot) => [slot.characterId, slot.data]));
+  const withCharacters = [...actions]
+    .sort((a, b) => Number(a.order) - Number(b.order))
+    .map((action) => {
+      const slot = slots[action.slot] ?? null;
+      return { ...action, characterId: slot?.characterId ?? null, mainEcho: action.mainEcho ?? slot?.mainEcho ?? null };
+    });
+  return buildTimingActions(withCharacters, (characterId) => (characterId ? dataById.get(characterId) : null), echoFrames);
+}
+
 export function framesToSeconds(frames: number): number {
   return frames / FRAMES_PER_SECOND;
 }

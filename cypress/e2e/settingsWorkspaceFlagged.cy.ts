@@ -30,7 +30,8 @@ describe("Settings Workspace (v3 UI)", () => {
     cy.contains("button", "Delete").should("be.visible");
 
     cy.get('[data-test-settings-nav="labs"]').click();
-    cy.get("[data-test-settings-labs-empty]").should("contain.text", "No experiments running right now");
+    cy.contains("Rotation timing from frame data").should("be.visible");
+    cy.get("[data-test-settings-labs-empty]").should("contain.text", "More experiments will land here");
   });
 
   it("switches sections via the phone section menu", () => {
@@ -90,7 +91,7 @@ describe("Settings page (classic UI)", () => {
     cy.get("[data-test-hide-wont-build-characters]").should("exist");
 
     cy.get("[data-test-settings-labs]").click();
-    cy.contains("No labs are currently running").should("be.visible");
+    cy.contains("Rotation timing from frame data").should("be.visible");
 
     cy.get("[data-test-settings-export]").click();
     cy.get("[data-test-settings-export-copy]").should("be.visible");
