@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     BasicAttackStagecraftFormStage1DMG: {"ability":"Basic: Stagecraft Form Stage 1","total":16,"cancel":3,"hits":[[9,3,69,137]]},
     BasicAttackStagecraftFormStage2DMG: {"ability":"Basic: Stagecraft Form Stage 2","total":33,"cancel":4,"hits":[[16,4,64,127],[24,4,64,127]]},
@@ -32,6 +32,6 @@ export const frames: FrameDataFile = {
     ErosionFieldDMGPerTick: {"ability":"Erosion Field","total":1838,"cancel":1838,"hits":[[158,158,0,0],[398,398,0,0],[638,638,0,0],[878,878,0,0],[1118,1118,0,0],[1358,1358,0,0],[1598,1598,0,0],[1838,1838,0,0]],"offField":true,"shared":true},
     ItsBeenAWhileDMG: {"ability":"Intro: It's Been A While!","total":53,"cancel":28,"noSwap":47,"motionStop":[5,46],"onCast":{"concerto":1000},"hits":[[28,28,1000,0]]},
     KnockKnockDMG: {"ability":"Intro 2: Knock Knock","total":81,"cancel":49,"noSwap":75,"motionStop":[5,43],"onCast":{"concerto":1000},"hits":[[73,49,334,0],[80,49,334,0],[87,49,334,0]]},
-    TuneBreakDMG: {"ability":"Tune Break Skill - Stagecraft Form","total":90,"cancel":90,"noSwap":90,"timeStop":[0,90],"motionStop":[0,54],"hits":[[56,56,0,0]]},
+    TuneBreakDMG: {"ability":"Tune Break Skill","total":90,"cancel":90,"noSwap":90,"timeStop":[0,90],"motionStop":[0,54],"hits":[[56,56,0,0]]},
   },
 };

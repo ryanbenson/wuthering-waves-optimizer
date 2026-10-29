@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     VibrationManifestationBasicAttack1DMG: {"ability":"Basic: Vibration Manifestation 1","total":21,"cancel":10,"hits":[[10,10,50,200]]},
     VibrationManifestationStage2DMG: {"ability":"Basic: Vibration Manifestation 2","total":25,"cancel":12,"hits":[[12,12,100,400]]},

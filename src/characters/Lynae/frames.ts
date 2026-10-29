@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     BasicAttackStage1DMG: {"ability":"Basic: Chroma Drift 1","total":31,"cancel":19,"hits":[[16,16,128,459]]},
     BasicAttackStage2DMG: {"ability":"Basic: Chroma Drift 2","total":66,"cancel":39,"hits":[[15,15,78,279],[29,29,78,279],[39,39,78,279]]},

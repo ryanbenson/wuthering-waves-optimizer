@@ -17,7 +17,7 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   "Aemeath / Basic Rotation (Tune Break)": {
     "actions": 29,
     "game": 779,
-    "missing": 1,
+    "missing": 0,
     "real": 1629,
   },
   "Augusta / 12s Rot (preferably pre-stacking ascendancy to get faster griffin time)": {
@@ -131,7 +131,7 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   "Ciaccona / Ciaconna Prydwen Rotation": {
     "actions": 12,
     "game": 2520,
-    "missing": 1,
+    "missing": 0,
     "real": 2740,
   },
   "Danjin / Danjin rotation": {
@@ -239,14 +239,14 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   "Lynae / subDPS Rotation": {
     "actions": 13,
     "game": 774,
-    "missing": 1,
+    "missing": 0,
     "real": 1014,
   },
   "Mornye / Support Rotation": {
     "actions": 19,
-    "game": 376,
-    "missing": 1,
-    "real": 676,
+    "game": 451,
+    "missing": 0,
+    "real": 751,
   },
   "Mortefi / Untitled Rotation": {
     "actions": 38,
@@ -262,21 +262,21 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   },
   "Phrolova / Standard Rotation": {
     "actions": 26,
-    "game": 1797,
-    "missing": 1,
-    "real": 1797,
+    "game": 1885,
+    "missing": 0,
+    "real": 1885,
   },
   "Qingxiao / Qingxiao S0R1": {
     "actions": 16,
-    "game": 797,
-    "missing": 1,
-    "real": 1277,
+    "game": 921,
+    "missing": 0,
+    "real": 1401,
   },
   "Qiuyuan / Qiuyun Prydwen Rotation": {
     "actions": 9,
-    "game": 456,
+    "game": 443,
     "missing": 0,
-    "real": 686,
+    "real": 673,
   },
   "Roccia / Standard Rotation": {
     "actions": 8,
@@ -341,19 +341,19 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
   "Sigrika / Standard rotation": {
     "actions": 16,
     "game": 516,
-    "missing": 1,
+    "missing": 0,
     "real": 836,
   },
   "Suisui / Loop Rotation": {
     "actions": 10,
     "game": 363,
-    "missing": 1,
+    "missing": 0,
     "real": 363,
   },
   "Suisui / No Intro Rotation": {
     "actions": 13,
     "game": 490,
-    "missing": 1,
+    "missing": 0,
     "real": 490,
   },
   "Suoming / Standard DPS Rotation": {

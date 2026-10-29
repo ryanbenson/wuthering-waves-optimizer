@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     Stage1DMG: {"ability":"Basic: Movement of Life and Death 1","total":44,"cancel":35,"hits":[[18,18,84,168],[35,35,84,168]]},
     Stage2DMG: {"ability":"Basic: Movement of Life and Death 2","total":36,"cancel":12,"hits":[[12,12,150,300]]},
@@ -16,9 +16,9 @@ export const frames: FrameDataFile = {
     WhispersinaFleetingDreamDMG: {"ability":"Skill 1: Whispers in a Fleeting Dream","total":34,"cancel":18,"cooldown":720,"onCast":{"concerto":1000},"hits":[[10,10,667,0],[48,18,667,0]]},
     BasicAttackHecateStage1DMG: {"ability":"Basic: Hecate 1","total":40,"cancel":10,"hits":[[10,10,0,0]]},
     BasicAttackHecateStage2DMG: {"ability":"Basic: Hecate 2","total":49,"cancel":22,"hits":[[4,4,0,0],[22,22,0,0]]},
-    EnhancedAttackHecateStringsDMG: {"ability":"Basic: Hecate - Strings","total":91,"cancel":91,"hits":[[26,26,0,0],[56,56,0,0]]},
-    EnhancedAttackHecateWindsDMG: {"ability":"Basic: Hecate - Winds","total":70,"cancel":70,"hits":[[26,26,0,0],[56,56,0,0]]},
-    EnhancedAttackHecateCadenzaDMG: {"ability":"Basic: Hecate - Cadenza","total":70,"cancel":70,"hits":[[26,26,0,0],[56,56,0,0]]},
+    EnhancedAttackHecateStringsDMG: {"ability":"Basic: Hecate - Strings","total":97,"cancel":56,"hits":[[26,26,0,0],[56,56,0,0]]},
+    EnhancedAttackHecateWindsDMG: {"ability":"Basic: Hecate - Winds (Off-Field)","total":71,"cancel":56,"hits":[[26,26,0,0],[56,56,0,0]]},
+    EnhancedAttackHecateCadenzaDMG: {"ability":"Basic: Hecate - Cadenza","total":71,"cancel":56,"hits":[[26,26,0,0],[56,56,0,0]]},
     CurtainCallHecateDMG: {"ability":"Liberation: Curtain Call","total":83,"cancel":42,"hits":[[42,42,293,585]]},
     MovementOfFateAndFinalityDMG: {"ability":"Basic: Movement of Fate and Finality","total":92,"cancel":2,"hits":[[8,2,24,75],[14,2,24,75],[20,2,24,75],[26,2,24,75],[53,2,75,234],[60,2,75,234],[67,2,75,234]]},
     MurmursInAHauntingDreamDMG: {"ability":"Skill 2: Murmurs in a Haunting Dream","total":79,"cancel":38,"hits":[[10,10,15,50],[16,16,15,50],[22,22,15,50],[28,28,15,50],[38,38,30,100],[81,38,205,700]]},

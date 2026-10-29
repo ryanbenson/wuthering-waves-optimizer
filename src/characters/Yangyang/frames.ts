@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     FeatherasBladeStage1DMG: {"ability":"Basic: Feather as Blade 1","total":21,"cancel":10,"hits":[[10,10,75,240]]},
     FeatherasBladeStage2DMG: {"ability":"Basic: Feather as Blade 2","total":27,"cancel":13,"hits":[[13,13,100,320]]},

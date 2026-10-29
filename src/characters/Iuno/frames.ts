@@ -4,7 +4,7 @@
 import type { FrameDataFile } from "../../calculator/frameData";
 
 export const frames: FrameDataFile = {
-  syncedAt: "2026-10-28",
+  syncedAt: "2026-10-29",
   attacks: {
     MoonringBasicAttack1DMG: {"ability":"Basic: Moon Ring 1","total":29,"cancel":16,"hits":[[16,16,123,123]]},
     MoonringBasicAttack2DMG: {"ability":"Basic: Moon Ring 2","total":51,"cancel":42,"hits":[[25,25,65,65],[32,32,65,65],[42,42,67,67]]},
