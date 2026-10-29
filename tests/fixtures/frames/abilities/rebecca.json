@@ -1,0 +1,1740 @@
+{
+ "slug": "rebecca",
+ "name": "Rebecca",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Yo, It's Big Boomin' Time!",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 96,
+   "earliest_frame_cancel": 72,
+   "no_swap": 96,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 93,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 44,
+     "commit_frame": 44,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 52,
+     "commit_frame": 52,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 54,
+     "commit_frame": 54,
+     "motion_value": 2704,
+     "energy": 100,
+     "concerto": 0
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 4056,
+     "energy": 150,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 6760,
+     "energy": 250,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Intro 2: Hey, Leadhead, Come 'n' Get Me!",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 89,
+   "earliest_frame_cancel": 59,
+   "no_swap": 63,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 61,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 1014,
+     "energy": 50,
+     "concerto": 0
+    },
+    {
+     "frame": 53,
+     "commit_frame": 53,
+     "motion_value": 3042,
+     "energy": 150,
+     "concerto": 0
+    },
+    {
+     "frame": 54,
+     "commit_frame": 54,
+     "motion_value": 4056,
+     "energy": 200,
+     "concerto": 0
+    },
+    {
+     "frame": 55,
+     "commit_frame": 55,
+     "motion_value": 4056,
+     "energy": 200,
+     "concerto": 0
+    },
+    {
+     "frame": 57,
+     "commit_frame": 57,
+     "motion_value": 4056,
+     "energy": 200,
+     "concerto": 0
+    },
+    {
+     "frame": 59,
+     "commit_frame": 59,
+     "motion_value": 4056,
+     "energy": 200,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Preem Choom",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Outro: Turret",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 840,
+   "earliest_frame_cancel": 840,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 24,
+     "commit_frame": 24,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 84,
+     "commit_frame": 84,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 96,
+     "commit_frame": 96,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 108,
+     "commit_frame": 108,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 120,
+     "commit_frame": 120,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 132,
+     "commit_frame": 132,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 144,
+     "commit_frame": 144,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 156,
+     "commit_frame": 156,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 168,
+     "commit_frame": 168,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 180,
+     "commit_frame": 180,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 192,
+     "commit_frame": 192,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 204,
+     "commit_frame": 204,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 216,
+     "commit_frame": 216,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 228,
+     "commit_frame": 228,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 240,
+     "commit_frame": 240,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 252,
+     "commit_frame": 252,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 264,
+     "commit_frame": 264,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 276,
+     "commit_frame": 276,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 288,
+     "commit_frame": 288,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 300,
+     "commit_frame": 300,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 312,
+     "commit_frame": 312,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 324,
+     "commit_frame": 324,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 336,
+     "commit_frame": 336,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 348,
+     "commit_frame": 348,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 360,
+     "commit_frame": 360,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 372,
+     "commit_frame": 372,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 384,
+     "commit_frame": 384,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 396,
+     "commit_frame": 396,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 408,
+     "commit_frame": 408,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 420,
+     "commit_frame": 420,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 432,
+     "commit_frame": 432,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 444,
+     "commit_frame": 444,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 456,
+     "commit_frame": 456,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 468,
+     "commit_frame": 468,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 480,
+     "commit_frame": 480,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 492,
+     "commit_frame": 492,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 504,
+     "commit_frame": 504,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 516,
+     "commit_frame": 516,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 528,
+     "commit_frame": 528,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 540,
+     "commit_frame": 540,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 552,
+     "commit_frame": 552,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 564,
+     "commit_frame": 564,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 576,
+     "commit_frame": 576,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 588,
+     "commit_frame": 588,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 600,
+     "commit_frame": 600,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 612,
+     "commit_frame": 612,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 624,
+     "commit_frame": 624,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 636,
+     "commit_frame": 636,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 648,
+     "commit_frame": 648,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 660,
+     "commit_frame": 660,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 672,
+     "commit_frame": 672,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 684,
+     "commit_frame": 684,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 696,
+     "commit_frame": 696,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 708,
+     "commit_frame": 708,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 720,
+     "commit_frame": 720,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 732,
+     "commit_frame": 732,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 744,
+     "commit_frame": 744,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 756,
+     "commit_frame": 756,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 768,
+     "commit_frame": 768,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 780,
+     "commit_frame": 780,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 792,
+     "commit_frame": 792,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 804,
+     "commit_frame": 804,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 816,
+     "commit_frame": 816,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 828,
+     "commit_frame": 828,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 840,
+     "commit_frame": 840,
+     "motion_value": 250,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Turret (Lucy)",
+   "genre": "none",
+   "group_label": "intro / outro",
+   "total_frames": 240,
+   "earliest_frame_cancel": 240,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 24,
+     "commit_frame": 24,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 84,
+     "commit_frame": 84,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 96,
+     "commit_frame": 96,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 108,
+     "commit_frame": 108,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 120,
+     "commit_frame": 120,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 132,
+     "commit_frame": 132,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 144,
+     "commit_frame": 144,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 156,
+     "commit_frame": 156,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 168,
+     "commit_frame": 168,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 180,
+     "commit_frame": 180,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 192,
+     "commit_frame": 192,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 204,
+     "commit_frame": 204,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 216,
+     "commit_frame": 216,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 228,
+     "commit_frame": 228,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 240,
+     "commit_frame": 240,
+     "motion_value": 875,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Huntress 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 26,
+   "earliest_frame_cancel": 22,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 3676,
+     "energy": 55,
+     "concerto": 109
+    },
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 3676,
+     "energy": 55,
+     "concerto": 109
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Huntress 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 40,
+   "earliest_frame_cancel": 30,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 1913,
+     "energy": 29,
+     "concerto": 57
+    },
+    {
+     "frame": 13,
+     "commit_frame": 12,
+     "motion_value": 1913,
+     "energy": 29,
+     "concerto": 57
+    },
+    {
+     "frame": 14,
+     "commit_frame": 12,
+     "motion_value": 1913,
+     "energy": 29,
+     "concerto": 57
+    },
+    {
+     "frame": 16,
+     "commit_frame": 12,
+     "motion_value": 1913,
+     "energy": 29,
+     "concerto": 57
+    },
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 1913,
+     "energy": 29,
+     "concerto": 57
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Huntress 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 42,
+   "earliest_frame_cancel": 18,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 10985,
+     "energy": 163,
+     "concerto": 325
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Huntress (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 42,
+   "earliest_frame_cancel": 18,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 10985,
+     "energy": 163,
+     "concerto": 325
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Huntress (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 43,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 13604,
+     "energy": 202,
+     "concerto": 403
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 1: Huntress",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 32,
+   "earliest_frame_cancel": 32,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 1: Huntress (Loop)",
+   "genre": "none",
+   "group_label": "heavy attack",
+   "total_frames": 6,
+   "earliest_frame_cancel": 6,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 2: Eat Lead!",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 36,
+   "earliest_frame_cancel": 13,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 6084,
+     "energy": 90,
+     "concerto": 180
+    },
+    {
+     "frame": 13,
+     "commit_frame": 13,
+     "motion_value": 6084,
+     "energy": 90,
+     "concerto": 180
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 1: It's Big Boomin' Time!",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 87,
+   "earliest_frame_cancel": 60,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 60,
+   "hits": [
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 3549,
+     "energy": 53,
+     "concerto": 105
+    },
+    {
+     "frame": 40,
+     "commit_frame": 40,
+     "motion_value": 3549,
+     "energy": 53,
+     "concerto": 105
+    },
+    {
+     "frame": 42,
+     "commit_frame": 42,
+     "motion_value": 3549,
+     "energy": 53,
+     "concerto": 105
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 3549,
+     "energy": 53,
+     "concerto": 105
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Rat-tat-tat!",
+   "genre": "heavy",
+   "group_label": "forte",
+   "total_frames": 110,
+   "earliest_frame_cancel": 84,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 1989,
+     "energy": 75,
+     "concerto": 100
+    },
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 1989,
+     "energy": 75,
+     "concerto": 100
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 1989,
+     "energy": 75,
+     "concerto": 100
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 1989,
+     "energy": 75,
+     "concerto": 100
+    },
+    {
+     "frame": 84,
+     "commit_frame": 84,
+     "motion_value": 31810,
+     "energy": 1200,
+     "concerto": 1600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Guts 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 56,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 14,
+     "commit_frame": 14,
+     "motion_value": 6169,
+     "energy": 92,
+     "concerto": 183
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 6169,
+     "energy": 92,
+     "concerto": 183
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Guts 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 11,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 11,
+     "commit_frame": 11,
+     "motion_value": 8450,
+     "energy": 125,
+     "concerto": 250
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Guts 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 85,
+   "earliest_frame_cancel": 58,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 13,
+     "commit_frame": 13,
+     "motion_value": 3377,
+     "energy": 50,
+     "concerto": 100
+    },
+    {
+     "frame": 23,
+     "commit_frame": 23,
+     "motion_value": 3377,
+     "energy": 50,
+     "concerto": 100
+    },
+    {
+     "frame": 58,
+     "commit_frame": 58,
+     "motion_value": 15757,
+     "energy": 234,
+     "concerto": 467
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Guts (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 15757,
+     "energy": 234,
+     "concerto": 467
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Guts (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 57,
+   "earliest_frame_cancel": 34,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 34,
+     "commit_frame": 34,
+     "motion_value": 10478,
+     "energy": 155,
+     "concerto": 310
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy 3: Guts",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 68,
+   "earliest_frame_cancel": 50,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 20279,
+     "energy": 300,
+     "concerto": 600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill 2: Come 'n' Get Me!",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 110,
+   "earliest_frame_cancel": 70,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": 60,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 36,
+     "commit_frame": 36,
+     "motion_value": 474,
+     "energy": 7,
+     "concerto": 14
+    },
+    {
+     "frame": 62,
+     "commit_frame": 62,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 64,
+     "commit_frame": 64,
+     "motion_value": 2366,
+     "energy": 35,
+     "concerto": 70
+    },
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 13722,
+     "energy": 203,
+     "concerto": 406
+    },
+    {
+     "frame": 68,
+     "commit_frame": 68,
+     "motion_value": 1183,
+     "energy": 18,
+     "concerto": 35
+    },
+    {
+     "frame": 70,
+     "commit_frame": 70,
+     "motion_value": 1183,
+     "energy": 18,
+     "concerto": 35
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Bang-bang-bang!",
+   "genre": "heavy",
+   "group_label": "forte",
+   "total_frames": 90,
+   "earliest_frame_cancel": 64,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 64,
+     "commit_frame": 64,
+     "motion_value": 27834,
+     "energy": 1500,
+     "concerto": 2000
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "S6: Maybe, Just Maybe...",
+   "genre": "none",
+   "group_label": "forte",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 90000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tactical Dodge: Huntress",
+   "genre": "dash",
+   "group_label": "dash",
+   "total_frames": 36,
+   "earliest_frame_cancel": 30,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 10,
+     "commit_frame": 10,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    },
+    {
+     "frame": 30,
+     "commit_frame": 30,
+     "motion_value": 1690,
+     "energy": 25,
+     "concerto": 50
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tactical Dodge: Guts",
+   "genre": "dash",
+   "group_label": "dash",
+   "total_frames": 40,
+   "earliest_frame_cancel": 6,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 10140,
+     "energy": 150,
+     "concerto": 300
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Party 'til Dawn!",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 180,
+   "earliest_frame_cancel": 180,
+   "no_swap": 0,
+   "time_stop": 180,
+   "time_stop_start": 0,
+   "motion_stop": 180,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Mk. 31 HMG",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 2430,
+     "energy": 0,
+     "concerto": 56
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Mk. 31 HMG 1st Enh.",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 4860,
+     "energy": 0,
+     "concerto": 112
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Mk. 31 HMG 2nd Enh.",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 7290,
+     "energy": 0,
+     "concerto": 167
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: BOOM! Fireworks!",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 133,
+   "earliest_frame_cancel": 133,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 6362,
+     "energy": 200,
+     "concerto": 100
+    },
+    {
+     "frame": 79,
+     "commit_frame": 79,
+     "motion_value": 57258,
+     "energy": 1800,
+     "concerto": 900
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 96,
+   "earliest_frame_cancel": 96,
+   "no_swap": 96,
+   "time_stop": 96,
+   "time_stop_start": 0,
+   "motion_stop": 70,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 160000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Hack Response - Meltdown",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 235889,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

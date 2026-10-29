@@ -1,0 +1,590 @@
+{
+ "slug": "shorekeeper",
+ "name": "Shorekeeper",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Enlightenment",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 85,
+   "earliest_frame_cancel": 44,
+   "no_swap": 65,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 34,
+   "motion_stop_start": 6,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 83,
+     "commit_frame": 44,
+     "motion_value": 4530,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 85,
+     "commit_frame": 44,
+     "motion_value": 4530,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 87,
+     "commit_frame": 44,
+     "motion_value": 4530,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 90,
+     "commit_frame": 44,
+     "motion_value": 4530,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 92,
+     "commit_frame": 44,
+     "motion_value": 4530,
+     "energy": 200,
+     "concerto": 200
+    }
+   ],
+   "heals": [
+    {
+     "frame": 38,
+     "commit_frame": 38,
+     "motion_value": 120,
+     "base_cure": 259
+    }
+   ]
+  },
+  {
+   "name": "Intro 2: Discernment",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 215,
+   "earliest_frame_cancel": 143,
+   "no_swap": 0,
+   "time_stop": 140,
+   "time_stop_start": 6,
+   "motion_stop": 140,
+   "motion_stop_start": 6,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 2000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 143,
+     "commit_frame": 143,
+     "motion_value": 1964,
+     "energy": 334,
+     "concerto": 0
+    },
+    {
+     "frame": 155,
+     "commit_frame": 143,
+     "motion_value": 1964,
+     "energy": 334,
+     "concerto": 0
+    },
+    {
+     "frame": 167,
+     "commit_frame": 143,
+     "motion_value": 1964,
+     "energy": 334,
+     "concerto": 0
+    }
+   ],
+   "heals": [
+    {
+     "frame": 144,
+     "commit_frame": 144,
+     "motion_value": 132,
+     "base_cure": 289
+    }
+   ]
+  },
+  {
+   "name": "Outro: Binary Butterfly",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 23,
+   "earliest_frame_cancel": 15,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 3178,
+     "energy": 50,
+     "concerto": 160
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 20,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    },
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 2386,
+     "energy": 38,
+     "concerto": 120
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus 2 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 33,
+   "earliest_frame_cancel": 20,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 8748,
+     "energy": 138,
+     "concerto": 440
+    },
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 8748,
+     "energy": 138,
+     "concerto": 440
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 47,
+   "earliest_frame_cancel": 20,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 2332,
+     "energy": 37,
+     "concerto": 118
+    },
+    {
+     "frame": 29,
+     "commit_frame": 20,
+     "motion_value": 2332,
+     "energy": 37,
+     "concerto": 118
+    },
+    {
+     "frame": 38,
+     "commit_frame": 20,
+     "motion_value": 2332,
+     "energy": 37,
+     "concerto": 118
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 51,
+   "earliest_frame_cancel": 25,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 25,
+     "commit_frame": 25,
+     "motion_value": 7272,
+     "energy": 115,
+     "concerto": 366
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Origin Calculus (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 50,
+   "earliest_frame_cancel": 46,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 7396,
+     "energy": 155,
+     "concerto": 500
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Chaos Theory",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 39,
+   "earliest_frame_cancel": 17,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 2000,
+   "cooldown": 960,
+   "hits": [
+    {
+     "frame": 55,
+     "commit_frame": 17,
+     "motion_value": 3131,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 57,
+     "commit_frame": 17,
+     "motion_value": 3131,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 60,
+     "commit_frame": 17,
+     "motion_value": 3131,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 62,
+     "commit_frame": 17,
+     "motion_value": 3131,
+     "energy": 200,
+     "concerto": 200
+    },
+    {
+     "frame": 65,
+     "commit_frame": 17,
+     "motion_value": 3131,
+     "energy": 200,
+     "concerto": 200
+    }
+   ],
+   "heals": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 597,
+     "base_cure": 1313
+    }
+   ]
+  },
+  {
+   "name": "Liberation: End Loop",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 207,
+   "earliest_frame_cancel": 207,
+   "no_swap": 0,
+   "time_stop": 207,
+   "time_stop_start": 0,
+   "motion_stop": 207,
+   "motion_stop_start": 0,
+   "on_cast_energy": -17500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Stellarealm (Healing)",
+   "genre": "none",
+   "group_label": "resonance liberation",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 239,
+     "base_cure": 438
+    }
+   ]
+  },
+  {
+   "name": "Forte: Illation",
+   "genre": "heavy",
+   "group_label": "forte",
+   "total_frames": 48,
+   "earliest_frame_cancel": 5,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 600,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 5,
+     "motion_value": 1897,
+     "energy": 40,
+     "concerto": 0
+    },
+    {
+     "frame": 34,
+     "commit_frame": 5,
+     "motion_value": 1897,
+     "energy": 40,
+     "concerto": 0
+    },
+    {
+     "frame": 46,
+     "commit_frame": 5,
+     "motion_value": 1897,
+     "energy": 40,
+     "concerto": 0
+    },
+    {
+     "frame": 58,
+     "commit_frame": 5,
+     "motion_value": 1897,
+     "energy": 40,
+     "concerto": 0
+    },
+    {
+     "frame": 64,
+     "commit_frame": 5,
+     "motion_value": 1897,
+     "energy": 40,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Transmutation",
+   "genre": "basic",
+   "group_label": "forte",
+   "total_frames": 50,
+   "earliest_frame_cancel": 46,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 600,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 46,
+     "commit_frame": 46,
+     "motion_value": 7396,
+     "energy": 155,
+     "concerto": 500
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Flare Star Butterfly",
+   "genre": "none",
+   "group_label": "forte",
+   "total_frames": 36,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 36,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Flare Star Butterflies",
+   "genre": "none",
+   "group_label": "forte",
+   "total_frames": 56,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 42,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    },
+    {
+     "frame": 45,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    },
+    {
+     "frame": 48,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    },
+    {
+     "frame": 53,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    },
+    {
+     "frame": 56,
+     "commit_frame": 0,
+     "motion_value": 3729,
+     "energy": 59,
+     "concerto": 100
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 90,
+   "earliest_frame_cancel": 90,
+   "no_swap": 90,
+   "time_stop": 90,
+   "time_stop_start": 0,
+   "motion_stop": 54,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 160000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}

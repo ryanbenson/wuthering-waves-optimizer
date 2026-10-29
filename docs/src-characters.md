@@ -17,6 +17,7 @@ All playable characters and their data (stats, attacks, buffs, resonance chains,
   - **`buffs.ts`**: Character’s own buffs (self-buffs, e.g. from skills or passives). Every character also has 8 "Stat Bonus" entries (`key` starting with `StatBonus`, e.g. `StatBonusATK3`) — permanently-unlocked ascension/inherent-skill stat tiers rather than a combat condition; `CalculatorCharacterBuffs.vue` renders these separately as a toggle grid, and `isStatBonusBuff` (`../statBonusBuffs.ts`) is the shared predicate used to identify them (e.g. `buildCharacterContext.ts`'s always-enabled-only view keeps these but drops every other self-buff). If two buffs (or a buff and a resonance chain node) can never both be active in-game, give each one a `mutuallyExclusiveWith` entry pointing at the other — see `src/characters/mutuallyExclusiveBuffs.ts` and ADR [0031](./adr/0031-mutually-exclusive-buffs.md).
   - **`resonanceChains.ts`**: Resonance chain effects and their modifiers. Same `mutuallyExclusiveWith` mechanism applies here, including across into `buffs.ts` (see ADR [0031](./adr/0031-mutually-exclusive-buffs.md)).
   - **`presets.ts`**: Rotation presets (`rotations`) for the character.
+  - **`frames.ts`** (generated, characters wuwalab covers): per-attack frame data keyed by our attack key, written by `npm run cli -- import frames` and returned as `frames` from `getData()`. Never edit it by hand: re-run the import, or add a `cli/lib/frameOverrides.ts` entry ([ADR 0047](adr/0047-frame-data-rotation-timing.md), skill `import-frames`).
 
 ## Type definitions (highlights)
 

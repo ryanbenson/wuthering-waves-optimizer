@@ -3,6 +3,7 @@ import { Command } from "commander";
 import { runGenerateCharacter } from "./commands/generateCharacter.js";
 import { runGenerateWeapon } from "./commands/generateWeapon.js";
 import { runImportEchoes } from "./commands/importEchoes.js";
+import { runImportFrames } from "./commands/importFrames.js";
 import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
 import { runGenerateEnemies, type EnemyGeneratorMode } from "./commands/generateEnemies.js";
 import { runBackfillIcons } from "./commands/backfillIcons.js";
@@ -105,6 +106,26 @@ importCommand
       await runImportEchoes({
         beta: commandOptions.beta,
         groups: commandOptions.group,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+importCommand
+  .command("frames")
+  .description("Import per-attack frame data from wuwalab into each character's frames.ts and src/echoes/frames.ts")
+  .option("--character <names...>", "Only these character folders (e.g. --character Suoming Hsin)")
+  .option("--no-echoes", "Skip echo frames")
+  .option("--from <dir>", "Read a saved copy of the wuwalab API from this folder instead of fetching")
+  .action(async (commandOptions: { character?: string[]; echoes?: boolean; from?: string }) => {
+    try {
+      await runImportFrames({
+        characters: commandOptions.character,
+        echoes: commandOptions.echoes,
+        from: commandOptions.from,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

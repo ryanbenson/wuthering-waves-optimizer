@@ -9,9 +9,11 @@ import { buffs } from "./buffs.ts";
 import { resonanceChains } from "./resonanceChains.ts";
 import { outroAttacks } from "./outroAttacks.ts";
 import { tuneBreakAttacks } from "./tuneBreakAttacks.ts";
+import { frames } from "./frames.ts";
 
 export function getData() {
   return {
+    frames,
     basic: getCharacterBasicInfo(),
     character,
     getCharacterStatsByLevel,

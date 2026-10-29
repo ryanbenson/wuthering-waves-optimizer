@@ -1,0 +1,870 @@
+{
+ "slug": "zani",
+ "name": "Zani",
+ "fetchedAt": "2026-10-28",
+ "abilities": [
+  {
+   "name": "Intro: Immediate Execution",
+   "genre": "intro",
+   "group_label": "intro / outro",
+   "total_frames": 90,
+   "earliest_frame_cancel": 78,
+   "no_swap": 80,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 80,
+   "motion_stop_start": 4,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 2424,
+     "energy": 120,
+     "concerto": 0
+    },
+    {
+     "frame": 26,
+     "commit_frame": 20,
+     "motion_value": 2424,
+     "energy": 120,
+     "concerto": 0
+    },
+    {
+     "frame": 32,
+     "commit_frame": 20,
+     "motion_value": 2424,
+     "energy": 120,
+     "concerto": 0
+    },
+    {
+     "frame": 38,
+     "commit_frame": 20,
+     "motion_value": 2424,
+     "energy": 120,
+     "concerto": 0
+    },
+    {
+     "frame": 44,
+     "commit_frame": 20,
+     "motion_value": 2424,
+     "energy": 120,
+     "concerto": 0
+    },
+    {
+     "frame": 78,
+     "commit_frame": 78,
+     "motion_value": 8080,
+     "energy": 400,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Outro: Beacon for the Future",
+   "genre": "outro",
+   "group_label": "intro / outro",
+   "total_frames": 0,
+   "earliest_frame_cancel": 0,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": -10000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 0,
+     "commit_frame": 0,
+     "motion_value": 15000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation 1",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 24,
+   "earliest_frame_cancel": 16,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 16,
+     "commit_frame": 16,
+     "motion_value": 5885,
+     "energy": 93,
+     "concerto": 185
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation 2",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 32,
+   "earliest_frame_cancel": 18,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 7953,
+     "energy": 125,
+     "concerto": 250
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation 3",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 57,
+   "earliest_frame_cancel": 51,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 4242,
+     "energy": 67,
+     "concerto": 134
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 4242,
+     "energy": 67,
+     "concerto": 134
+    },
+    {
+     "frame": 51,
+     "commit_frame": 51,
+     "motion_value": 4242,
+     "energy": 67,
+     "concerto": 134
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation 3 (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 57,
+   "earliest_frame_cancel": 51,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 7423,
+     "energy": 117,
+     "concerto": 234
+    },
+    {
+     "frame": 33,
+     "commit_frame": 33,
+     "motion_value": 7423,
+     "energy": 117,
+     "concerto": 234
+    },
+    {
+     "frame": 51,
+     "commit_frame": 51,
+     "motion_value": 7423,
+     "energy": 117,
+     "concerto": 234
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation 4",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 103,
+   "earliest_frame_cancel": 77,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 6760,
+     "energy": 107,
+     "concerto": 213
+    },
+    {
+     "frame": 42,
+     "commit_frame": 42,
+     "motion_value": 6760,
+     "energy": 107,
+     "concerto": 213
+    },
+    {
+     "frame": 69,
+     "commit_frame": 69,
+     "motion_value": 6760,
+     "energy": 107,
+     "concerto": 213
+    },
+    {
+     "frame": 77,
+     "commit_frame": 77,
+     "motion_value": 6760,
+     "energy": 107,
+     "concerto": 213
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Routine Negotiation (Mid-Air)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 60,
+   "earliest_frame_cancel": 48,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 48,
+     "commit_frame": 48,
+     "motion_value": 10498,
+     "energy": 165,
+     "concerto": 330
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Breakthrough",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 110,
+   "earliest_frame_cancel": 110,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 26,
+     "commit_frame": 26,
+     "motion_value": 6150,
+     "energy": 97,
+     "concerto": 194
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 60,
+     "commit_frame": 60,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 70,
+     "commit_frame": 70,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 80,
+     "commit_frame": 80,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 90,
+     "commit_frame": 90,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 100,
+     "commit_frame": 100,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    },
+    {
+     "frame": 110,
+     "commit_frame": 110,
+     "motion_value": 1758,
+     "energy": 28,
+     "concerto": 56
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Heavy: Routine Negotiation",
+   "genre": "heavy",
+   "group_label": "heavy attack",
+   "total_frames": 63,
+   "earliest_frame_cancel": 47,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 4108,
+     "energy": 65,
+     "concerto": 130
+    },
+    {
+     "frame": 35,
+     "commit_frame": 35,
+     "motion_value": 4108,
+     "energy": 65,
+     "concerto": 130
+    },
+    {
+     "frame": 41,
+     "commit_frame": 41,
+     "motion_value": 4108,
+     "energy": 65,
+     "concerto": 130
+    },
+    {
+     "frame": 47,
+     "commit_frame": 47,
+     "motion_value": 4108,
+     "energy": 65,
+     "concerto": 130
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Standard Defense Protocol",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 18,
+   "earliest_frame_cancel": 8,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 500,
+   "cooldown": 300,
+   "hits": [
+    {
+     "frame": 8,
+     "commit_frame": 8,
+     "motion_value": 6394,
+     "energy": 567,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Forte: Targeted Action",
+   "genre": "skill",
+   "group_label": "forte",
+   "total_frames": 134,
+   "earliest_frame_cancel": 128,
+   "no_swap": 38,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 66,
+     "commit_frame": 66,
+     "motion_value": 8619,
+     "energy": 174,
+     "concerto": 300
+    },
+    {
+     "frame": 117,
+     "commit_frame": 117,
+     "motion_value": 2873,
+     "energy": 58,
+     "concerto": 100
+    },
+    {
+     "frame": 128,
+     "commit_frame": 128,
+     "motion_value": 17237,
+     "energy": 347,
+     "concerto": 600
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Skill: Scorching Light (Tap)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 30,
+   "earliest_frame_cancel": 30,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Skill: Scorching Light (Hold)",
+   "genre": "skill",
+   "group_label": "resonance skill",
+   "total_frames": 78,
+   "earliest_frame_cancel": 78,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [],
+   "heals": []
+  },
+  {
+   "name": "Basic: Heavy Slash Daybreak",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 31,
+   "earliest_frame_cancel": 31,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 20,
+     "commit_frame": 20,
+     "motion_value": 4971,
+     "energy": 57,
+     "concerto": 75
+    },
+    {
+     "frame": 29,
+     "commit_frame": 29,
+     "motion_value": 11929,
+     "energy": 135,
+     "concerto": 180
+    },
+    {
+     "frame": 31,
+     "commit_frame": 31,
+     "motion_value": 2983,
+     "energy": 34,
+     "concerto": 45
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Heavy Slash Dawning",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 79,
+   "earliest_frame_cancel": 71,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 18,
+     "commit_frame": 18,
+     "motion_value": 14843,
+     "energy": 179,
+     "concerto": 210
+    },
+    {
+     "frame": 28,
+     "commit_frame": 28,
+     "motion_value": 3393,
+     "energy": 41,
+     "concerto": 48
+    },
+    {
+     "frame": 56,
+     "commit_frame": 56,
+     "motion_value": 14843,
+     "energy": 179,
+     "concerto": 210
+    },
+    {
+     "frame": 67,
+     "commit_frame": 67,
+     "motion_value": 4665,
+     "energy": 57,
+     "concerto": 66
+    },
+    {
+     "frame": 71,
+     "commit_frame": 71,
+     "motion_value": 4665,
+     "energy": 57,
+     "concerto": 66
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Heavy Slash Dawning (Dodge Counter)",
+   "genre": "counter",
+   "group_label": "basic attack",
+   "total_frames": 77,
+   "earliest_frame_cancel": 69,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 12,
+     "commit_frame": 12,
+     "motion_value": 14843,
+     "energy": 179,
+     "concerto": 210
+    },
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 3393,
+     "energy": 41,
+     "concerto": 48
+    },
+    {
+     "frame": 50,
+     "commit_frame": 50,
+     "motion_value": 14843,
+     "energy": 179,
+     "concerto": 210
+    },
+    {
+     "frame": 63,
+     "commit_frame": 63,
+     "motion_value": 4665,
+     "energy": 57,
+     "concerto": 66
+    },
+    {
+     "frame": 69,
+     "commit_frame": 69,
+     "motion_value": 4665,
+     "energy": 57,
+     "concerto": 66
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Heavy Slash Nightfall",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 151,
+   "earliest_frame_cancel": 133,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 22,
+     "commit_frame": 22,
+     "motion_value": 5170,
+     "energy": 117,
+     "concerto": 156
+    },
+    {
+     "frame": 32,
+     "commit_frame": 32,
+     "motion_value": 1591,
+     "energy": 36,
+     "concerto": 48
+    },
+    {
+     "frame": 51,
+     "commit_frame": 51,
+     "motion_value": 5170,
+     "energy": 117,
+     "concerto": 156
+    },
+    {
+     "frame": 61,
+     "commit_frame": 61,
+     "motion_value": 1591,
+     "energy": 36,
+     "concerto": 48
+    },
+    {
+     "frame": 80,
+     "commit_frame": 80,
+     "motion_value": 7953,
+     "energy": 180,
+     "concerto": 240
+    },
+    {
+     "frame": 90,
+     "commit_frame": 90,
+     "motion_value": 796,
+     "energy": 18,
+     "concerto": 24
+    },
+    {
+     "frame": 94,
+     "commit_frame": 94,
+     "motion_value": 796,
+     "energy": 18,
+     "concerto": 24
+    },
+    {
+     "frame": 118,
+     "commit_frame": 118,
+     "motion_value": 2784,
+     "energy": 63,
+     "concerto": 84
+    },
+    {
+     "frame": 133,
+     "commit_frame": 133,
+     "motion_value": 13917,
+     "energy": 315,
+     "concerto": 420
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Basic: Heavy Slash Nightfall (Half)",
+   "genre": "basic",
+   "group_label": "basic attack",
+   "total_frames": 76,
+   "earliest_frame_cancel": 58,
+   "no_swap": 0,
+   "time_stop": 0,
+   "time_stop_start": 0,
+   "motion_stop": 0,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 6,
+     "commit_frame": 6,
+     "motion_value": 7953,
+     "energy": 180,
+     "concerto": 240
+    },
+    {
+     "frame": 15,
+     "commit_frame": 15,
+     "motion_value": 796,
+     "energy": 18,
+     "concerto": 24
+    },
+    {
+     "frame": 19,
+     "commit_frame": 19,
+     "motion_value": 796,
+     "energy": 18,
+     "concerto": 24
+    },
+    {
+     "frame": 43,
+     "commit_frame": 43,
+     "motion_value": 2784,
+     "energy": 63,
+     "concerto": 84
+    },
+    {
+     "frame": 58,
+     "commit_frame": 58,
+     "motion_value": 13917,
+     "energy": 315,
+     "concerto": 420
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: Rekindle",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 200,
+   "earliest_frame_cancel": 200,
+   "no_swap": 0,
+   "time_stop": 200,
+   "time_stop_start": 0,
+   "motion_stop": 200,
+   "motion_stop_start": 0,
+   "on_cast_energy": -12500,
+   "on_cast_concerto": 2000,
+   "cooldown": 1500,
+   "hits": [
+    {
+     "frame": 120,
+     "commit_frame": 120,
+     "motion_value": 31852,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Liberation: The Last Stand",
+   "genre": "liberation",
+   "group_label": "resonance liberation",
+   "total_frames": 134,
+   "earliest_frame_cancel": 134,
+   "no_swap": 0,
+   "time_stop": 134,
+   "time_stop_start": 0,
+   "motion_stop": 134,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 1000,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 44,
+     "commit_frame": 44,
+     "motion_value": 19112,
+     "energy": 0,
+     "concerto": 0
+    },
+    {
+     "frame": 128,
+     "commit_frame": 128,
+     "motion_value": 108296,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  },
+  {
+   "name": "Tune Break Skill",
+   "genre": "tunebreak",
+   "group_label": "tune break skill",
+   "total_frames": 94,
+   "earliest_frame_cancel": 94,
+   "no_swap": 94,
+   "time_stop": 94,
+   "time_stop_start": 0,
+   "motion_stop": 70,
+   "motion_stop_start": 0,
+   "on_cast_energy": 0,
+   "on_cast_concerto": 0,
+   "cooldown": null,
+   "hits": [
+    {
+     "frame": 72,
+     "commit_frame": 72,
+     "motion_value": 160000,
+     "energy": 0,
+     "concerto": 0
+    }
+   ],
+   "heals": []
+  }
+ ]
+}
