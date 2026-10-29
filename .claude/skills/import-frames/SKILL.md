@@ -23,7 +23,7 @@ Frame data comes from wuwalab (https://wuwalab.com), used with permission and cr
 
 wuwalab's `motion_value` is our highest-level talent multiplier ×100, so attacks are matched on that multiset of numbers, not names. In order:
 
-1. An override in `frameOverrides`.
+1. An override in `frameOverrides` (`echoFrameOverrides` for echoes, keyed by echo key). A forced ability that contains our hits plus others stays `shared`.
 2. Same motion values. Ties go to the matching attack group, then to shared name words (`Stage4` ↔ "… 4", `Hold` ↔ "(Hold)").
 3. Healing by base value plus percent.
 4. Tune break by genre.
@@ -36,7 +36,7 @@ wuwalab's `motion_value` is our highest-level talent multiplier ×100, so attack
   - If it's an ability there, add `<AttackKey>: "<exact wuwalab ability name>"` to `frameOverrides`.
   - If it's a proc that never takes field time of its own (bonus or delayed damage, a status tick, a coordinated attack), use `OFF_FIELD`.
   - Sequence-node extras with no ability of their own can stay unmatched. Rotations just flag them.
-- `<Name>: X matched "A" over "B" (same motion values, different frames). Check the pick.` — open both on wuwalab. If the pick is wrong, add an override naming the right one. A right pick needs nothing; the notice repeats on every run.
+- `<Name>: X matched "A" over "B" (same motion values, different frames). Check the pick.` — open both on wuwalab. If the pick is wrong, add an override naming the right one. If it's right, pin it with an override anyway so the notice stops and a wuwalab update can't flip it.
 - `<Name>: X changed (total a→b, …)` — wuwalab corrected the frames. Usually fine. It will move preset lengths (below).
 - `<Name>: override for X names "…", which wuwalab no longer has` — they renamed an ability. Update the override.
 
