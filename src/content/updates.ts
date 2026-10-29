@@ -35,6 +35,13 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-10-29",
+    dateLabel: "October 29, 2026",
+    items: [
+      "Adds missing attack to Suoming's S6",
+    ],
+  },
+  {
     date: "2026-10-27",
     dateLabel: "October 27, 2026",
     items: [
