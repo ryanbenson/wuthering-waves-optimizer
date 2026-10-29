@@ -33,7 +33,18 @@
     @bulk-apply-action-buff="onBulkApplyActionBuff"
     @drag-reorder-start="onDragReorderStart"
     @drag-reorder-end="onDragReorderEnd">
-    <template v-if="definitions" #extra-buttons>
+    <template #extra-buttons>
+      <button
+        v-if="hasFrameData"
+        type="button"
+        class="badge badge-sm font-mono cursor-pointer"
+        :class="frameTiming?.missing ? 'badge-warning' : 'badge-outline'"
+        :title="frameChipTitle"
+        :data-test-rotation-action-frames="action.id"
+        @click.stop="showEndEditor = !showEndEditor">
+        {{ frameChipText }}
+      </button>
+      <template v-if="definitions">
       <span
         class="badge badge-xs"
         :class="syncState === 'synced' ? 'badge-ghost' : 'badge-warning'"
@@ -68,8 +79,15 @@
         <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png" class="size-3" alt="" />
         {{ showEnemySettings ? "Hide" : "Configure" }} Enemy Settings
       </button>
+      </template>
     </template>
-    <template v-if="definitions && (showAdvancedBuffs || showEnemySettings)" #extra-panel>
+    <template v-if="showEndEditor || (definitions && (showAdvancedBuffs || showEnemySettings))" #extra-panel>
+      <RotationActionEndEditor
+        v-if="showEndEditor"
+        :end="actionEnd"
+        :frames="attackFrames ?? null"
+        @update:end="onEndUpdate" />
+      <template v-if="definitions">
       <div v-if="showAdvancedBuffs" class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
         <div class="flex flex-wrap gap-2">
           <button
@@ -123,6 +141,7 @@
           @reset-field="onResetEnemyStacksField"
           @bulk-apply="onEnemyStacksBulkApply" />
       </div>
+      </template>
     </template>
   </CalculatorRotationAction>
 </template>
@@ -134,6 +153,14 @@ import { isV3UiEnabled } from "../utils/uiVersion";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import RotationEnemyStacksPanel from "./RotationEnemyStacksPanel.vue";
+import RotationActionEndEditor from "./RotationActionEndEditor.vue";
+import type { AttackFrames } from "../calculator/frameData";
+import {
+  framesToSeconds,
+  normalizeActionEnd,
+  type ActionEnd,
+  type ActionTimingSummary,
+} from "../calculator/rotationTiming";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import {
   buildAdvancedConfigSnapshot,
@@ -184,6 +211,11 @@ const props = defineProps<{
    * down from CalculatorRotation.vue's allDamages wiring, if available. */
   damageValue?: number | null;
   damageLabel?: string | null;
+  /** Frame data (ADR 0047): whether this character has any, this action's
+   * frames, and its computed length in the rotation. */
+  hasFrameData?: boolean;
+  attackFrames?: AttackFrames | null;
+  frameTiming?: ActionTimingSummary | null;
 }>();
 
 const emit = defineEmits<{
@@ -207,7 +239,30 @@ const isLiveResultBarEnabled = computed(
 
 const showAdvancedBuffs = ref(false);
 const showEnemySettings = ref(false);
+const showEndEditor = ref(false);
 const actionRef = ref<{ toggleEdit: () => void } | null>(null);
+
+const actionEnd = computed(() => normalizeActionEnd(props.action.end));
+
+const frameChipText = computed(() => {
+  const timing = props.frameTiming;
+  if (!timing || timing.missing) return "no frames";
+  const suffix = actionEnd.value && actionEnd.value.type !== "full" ? ` · ${actionEnd.value.type}` : "";
+  const stopped = timing.realFrames - timing.gameFrames;
+  const stop = stopped > 0 ? ` (+${stopped}f time stop)` : "";
+  return `${timing.gameFrames}f · ${framesToSeconds(timing.gameFrames).toFixed(2)}s${stop}${suffix}`;
+});
+
+const frameChipTitle = computed(() =>
+  props.frameTiming?.missing
+    ? "No frame data for this action, so it counts as 0s. Click to set how it ends."
+    : "Time this action takes in the rotation (game time). Click to set how it ends.",
+);
+
+function onEndUpdate(end: ActionEnd | null) {
+  // Explicit `undefined` clears it: the parent merges { ...existing, ...payload }.
+  emit("action-update", { ...props.action, end: end ?? undefined });
+}
 
 const currentEnemyConfig = computed(() => resolveTeamEnemyConfig(props.characterBuildData));
 const enemyOverrideCount = computed(() => countEnemyStacksOverrides(props.action.enemyStacksOverride));

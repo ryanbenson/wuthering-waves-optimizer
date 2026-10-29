@@ -393,6 +393,12 @@
             <span class="opacity-40">·</span>
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
+          <RotationFrameTiming
+            class="mt-4"
+            :timing="rotationTiming"
+            :has-frame-data="hasFrameData"
+            :damage="rotationAvgDamage"
+            :typed-duration="durationValue" />
           <div
             v-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mt-4"
@@ -447,6 +453,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
+                :has-frame-data="hasFrameData"
+                :attack-frames="framesFor(action)"
+                :frame-timing="actionTimingById[action.id] ?? null"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
@@ -502,6 +511,8 @@ import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
+import RotationFrameTiming from "./RotationFrameTiming.vue";
+import { useRotationTiming } from "../composables/useRotationTiming";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import { useCharacterActionList } from "../composables/useCharacterActionList";
@@ -531,6 +542,7 @@ import {
 import { applyBulkActionBuff } from "../calculator/rotationActionBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+import type { FrameDataFile } from "../calculator/frameData";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
 import { trackEvent } from "../utils/analytics";
 
@@ -798,6 +810,25 @@ const actionsSorted = computed(() =>
     (a, b) => Number(a.order ?? 0) - Number(b.order ?? 0),
   ),
 );
+
+// Frame-data length and DPS (ADR 0047), shown beside the typed duration.
+const {
+  hasFrameData,
+  timing: rotationTiming,
+  byActionId: actionTimingById,
+  framesFor,
+} = useRotationTiming(
+  actionsSorted,
+  computed(() => props.characterData as { frames?: FrameDataFile } | undefined),
+  echoValue,
+);
+
+const rotationAvgDamage = computed<number | null>(() => {
+  const rotations = (
+    props.allDamages as { rotations?: Array<{ id: string; damageAggregation?: { avgDamage?: number } }> } | null
+  )?.rotations;
+  return rotations?.find((r) => r.id === props.id)?.damageAggregation?.avgDamage ?? null;
+});
 
 const rangeActions = computed<DurationRangeAction[]>(() =>
   actionsSorted.value.map((action) => ({

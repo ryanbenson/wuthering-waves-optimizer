@@ -27,6 +27,32 @@ export interface ActionEnd {
    * `cancel` it defaults to the ability's earliest cancel, for `dash`/`jump`
    * to the same, and for `swap` to `DEFAULT_SWAP_FRAME`. */
   frame?: number;
+  /** Extra frames to wait afterwards (walking back into range, waiting on a
+   * cooldown). Rarely needed. */
+  wait?: number;
+}
+
+const END_TYPES = new Set<ActionEnd["type"]>(["full", "cancel", "dash", "jump", "swap"]);
+
+function frameCount(value: unknown): number | undefined {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? Math.round(n) : undefined;
+}
+
+/**
+ * Reads a persisted (or imported) action's `end`. Anything unrecognised
+ * becomes null, which plays the action out.
+ */
+export function normalizeActionEnd(raw: unknown): ActionEnd | null {
+  if (!raw || typeof raw !== "object") return null;
+  const { type, frame, wait } = raw as Record<string, unknown>;
+  if (!END_TYPES.has(type as ActionEnd["type"])) return null;
+  const end: ActionEnd = { type: type as ActionEnd["type"] };
+  const at = frameCount(frame);
+  if (at !== undefined && type !== "full") end.frame = at;
+  const extra = frameCount(wait);
+  if (extra) end.wait = extra;
+  return end;
 }
 
 export interface TimingAction {
@@ -83,6 +109,15 @@ export function frozenFrames(frames: AttackFrames, from: number, to: number): nu
  * on both clocks. `exitFrame` is ability-relative and decides which hits land.
  */
 export function actionLength(
+  frames: AttackFrames,
+  end: ActionEnd | null | undefined,
+): { exitFrame: number; gameFrames: number; realFrames: number } {
+  const length = exitLength(frames, end);
+  const wait = end?.wait ?? 0;
+  return { ...length, gameFrames: length.gameFrames + wait, realFrames: length.realFrames + wait };
+}
+
+function exitLength(
   frames: AttackFrames,
   end: ActionEnd | null | undefined,
 ): { exitFrame: number; gameFrames: number; realFrames: number } {
@@ -182,12 +217,15 @@ export function buildTimingActions(
   actions: any[],
   characterData: (characterId: string | null) => { frames?: FrameDataFile } | null | undefined,
   echoFrames: Record<string, Record<string, AttackFrames>>,
+  /** Echo used by echo actions that don't name their own (a character
+   * rotation's main echo). */
+  defaultEcho: string | null = null,
 ): TimingAction[] {
   return actions
     .filter((action) => !action?.isDisabled)
     .map((action) => {
       const characterId: string | null = action.characterId ?? null;
-      const base = { id: action.id, characterId, count: action.count, end: action.end ?? null };
+      const base = { id: action.id, characterId, count: action.count, end: normalizeActionEnd(action.end) };
       if (action.type === "wait") {
         return { ...base, frames: null, waitFrames: Number(action.frames) || 0 };
       }
@@ -195,7 +233,7 @@ export function buildTimingActions(
         return { ...base, frames: null, noFieldTime: true };
       }
       if (action.type === "echoAttacks") {
-        return { ...base, frames: echoFrames[action.mainEcho]?.[action.key] ?? null };
+        return { ...base, frames: echoFrames[action.mainEcho ?? defaultEcho]?.[action.key] ?? null };
       }
       return { ...base, frames: characterData(characterId)?.frames?.attacks[action.key] ?? null };
     });
@@ -203,4 +241,28 @@ export function buildTimingActions(
 
 export function framesToSeconds(frames: number): number {
   return frames / FRAMES_PER_SECOND;
+}
+
+/** Damage per second on the game clock, or 0 when the length is unknown. */
+export function damagePerSecond(damage: number, gameFrames: number): number {
+  return gameFrames > 0 ? damage / framesToSeconds(gameFrames) : 0;
+}
+
+export interface ActionTimingSummary {
+  gameFrames: number;
+  realFrames: number;
+  missing: boolean;
+}
+
+/** Sums each action's repeats (`count`) into one entry per action id. */
+export function summarizeByActionId(timing: RotationTiming): Record<string, ActionTimingSummary> {
+  const byId: Record<string, ActionTimingSummary> = {};
+  for (const action of timing.actions) {
+    if (action.id == null) continue;
+    const entry = (byId[action.id] ??= { gameFrames: 0, realFrames: 0, missing: false });
+    entry.gameFrames += action.gameFrames;
+    entry.realFrames += action.realFrames;
+    entry.missing ||= action.missing;
+  }
+  return byId;
 }

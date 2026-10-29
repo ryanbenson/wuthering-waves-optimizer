@@ -3,7 +3,10 @@ import {
   actionLength,
   buildTimingActions,
   computeRotationTiming,
+  damagePerSecond,
   DASH_CANCEL_FRAMES,
+  normalizeActionEnd,
+  summarizeByActionId,
   type TimingAction,
 } from "@/calculator/rotationTiming";
 import { allCharactersList, getCharByName } from "@/characters/characters";
@@ -120,6 +123,15 @@ describe("rotation timing rules", () => {
     expect(lengthOf([{ frames: suoming("Basic: Unfurled Canopy 1"), count: 3 }]).gameFrames).toBe(117);
   });
 
+  it("adds a wait after the action on both clocks", () => {
+    const timing = lengthOf([
+      { frames: suoming("Basic: Unfurled Canopy 2"), end: { type: "cancel", frame: 42, wait: 20 } },
+      { frames: suoming("Basic: Unfurled Canopy 1"), count: 2, end: { type: "full", wait: 5 } },
+    ]);
+    expect(timing.gameFrames).toBe(42 + 20 + 2 * (39 + 5));
+    expect(timing.realFrames).toBe(timing.gameFrames);
+  });
+
   it("flags actions without frame data and counts them as 0", () => {
     const timing = lengthOf([
       { id: "a", frames: suoming("Basic: Unfurled Canopy 1") },
@@ -132,7 +144,50 @@ describe("rotation timing rules", () => {
   });
 });
 
+describe("per-action summary and DPS", () => {
+  it("sums an action's repeats under its id", () => {
+    const byId = summarizeByActionId(
+      lengthOf([
+        { id: "a", frames: suoming("Basic: Unfurled Canopy 1"), count: 2 },
+        { id: "b", frames: null },
+      ]),
+    );
+    expect(byId.a).toEqual({ gameFrames: 78, realFrames: 78, missing: false });
+    expect(byId.b.missing).toBe(true);
+  });
+
+  it("divides by game seconds and returns 0 for an empty rotation", () => {
+    expect(damagePerSecond(120_000, 120)).toBe(60_000);
+    expect(damagePerSecond(120_000, 0)).toBe(0);
+  });
+});
+
+describe("normalizeActionEnd", () => {
+  it("keeps valid ends and rounds their frames", () => {
+    expect(normalizeActionEnd({ type: "swap", frame: 12.4 })).toEqual({ type: "swap", frame: 12 });
+    expect(normalizeActionEnd({ type: "cancel", frame: "40", wait: 15 })).toEqual({ type: "cancel", frame: 40, wait: 15 });
+  });
+
+  it("drops anything it doesn't recognise", () => {
+    expect(normalizeActionEnd(undefined)).toBeNull();
+    expect(normalizeActionEnd("swap")).toBeNull();
+    expect(normalizeActionEnd({ type: "teleport", frame: 5 })).toBeNull();
+    expect(normalizeActionEnd({ type: "cancel", frame: -3, wait: "x" })).toEqual({ type: "cancel" });
+    expect(normalizeActionEnd({ type: "full", frame: 30, wait: 0 })).toEqual({ type: "full" });
+  });
+});
+
 describe("buildTimingActions", () => {
+  it("falls back to the rotation's echo for echo actions without their own", () => {
+    const [action] = buildTimingActions(
+      [{ id: "1", type: "echoAttacks", key: "CastDMG", mainEcho: null }],
+      () => null,
+      echoFrames,
+      "ReminiscenceSuhsintheInevitable",
+    );
+    expect(action.frames?.ability).toBe("Reminiscence: Suhsin the Inevitable");
+  });
+
   it("looks frames up by attack group and skips disabled actions", () => {
     const actions = buildTimingActions(
       [
