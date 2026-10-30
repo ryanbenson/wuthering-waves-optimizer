@@ -170,8 +170,15 @@
             :has-frame-data="teamHasFrameData"
             :damage="result.total.avgDamage"
             :typed-duration="team.duration" />
+          <!-- With frame data the strip runs on game time (ADR 0049). -->
+          <RotationTimelineStrip
+            v-if="isLiveResultBarEnabled && timelineStrip"
+            class="mb-3"
+            :strip="timelineStrip"
+            :slot-names="team.characterIds"
+            @select="scrollToAction" />
           <div
-            v-if="isLiveResultBarEnabled && damageStripBars.length"
+            v-else-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mb-3"
             data-test-team-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
@@ -387,6 +394,8 @@ import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBr
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
+import RotationTimelineStrip from "./RotationTimelineStrip.vue";
+import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
 import { rotationLength, type RotationLength, type TimingSlot } from "../calculator/rotationTiming";
@@ -1026,6 +1035,27 @@ const {
   computed(() => (team.value?.actions ?? []) as Array<Record<string, unknown>>),
   timingSlots,
 );
+const timelineStrip = computed<TimelineStrip | null>(() => {
+  if (!isFrameTimingOn.value || !teamHasFrameData.value) return null;
+  const actionsById = new Map(((team.value?.actions ?? []) as TeamRotationAction[]).map((action) => [action.id, action]));
+  const strip = buildTimelineStrip(
+    teamTiming.value,
+    result.value.actionResults.map((entry) => {
+      const id = entry.attack?.id as string;
+      const action = actionsById.get(id);
+      return {
+        id,
+        value: actionDamageById.value[id] ?? 0,
+        label: entry.attack?.label,
+        isDamage: entry.attack?.type !== "Healing" && entry.attack?.type !== "Shield",
+        slot: action ? Number(action.slot) : undefined,
+        end: (action as { end?: unknown } | undefined)?.end,
+      };
+    }),
+  );
+  return strip.blocks.length ? strip : null;
+});
+
 // For the header's and damages panel's DPS (ADR 0048).
 const teamFrameLength = computed<RotationLength | null>(() =>
   isFrameTimingOn.value && teamHasFrameData.value ? rotationLength(teamTiming.value) : null,

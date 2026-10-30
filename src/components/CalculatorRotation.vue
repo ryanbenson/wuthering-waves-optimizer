@@ -403,8 +403,14 @@
             :has-frame-data="hasFrameData"
             :damage="rotationAvgDamage"
             :typed-duration="durationValue" />
+          <!-- With frame data the strip runs on game time (ADR 0049). -->
+          <RotationTimelineStrip
+            v-if="isLiveResultBarEnabled && timelineStrip"
+            class="mt-4"
+            :strip="timelineStrip"
+            @select="scrollToAction" />
           <div
-            v-if="isLiveResultBarEnabled && damageStripBars.length"
+            v-else-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mt-4"
             data-test-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
@@ -516,6 +522,8 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
+import RotationTimelineStrip from "./RotationTimelineStrip.vue";
+import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useRotationTiming } from "../composables/useRotationTiming";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
@@ -723,6 +731,8 @@ const customizedActionsCount = computed(
 // timing in the data model to plot honestly.
 type RotationDamageAttack = {
   id: string;
+  label?: string;
+  type?: string;
   damage?: {
     totalDamage?: number;
     avgDamage?: number;
@@ -828,6 +838,21 @@ const {
   computed(() => props.characterData as { frames?: FrameDataFile } | undefined),
   echoValue,
 );
+
+const timelineStrip = computed<TimelineStrip | null>(() => {
+  if (!isFrameTimingOn.value || !hasFrameData.value) return null;
+  const strip = buildTimelineStrip(
+    rotationTiming.value,
+    rotationDamageAttacks.value.map((attack) => ({
+      id: attack.id,
+      value: actionDamageById.value[attack.id] ?? 0,
+      label: attack.label,
+      isDamage: attack.type !== "Healing" && attack.type !== "Shield",
+      end: actionsSorted.value.find((action) => action.id === attack.id)?.end,
+    })),
+  );
+  return strip.blocks.length ? strip : null;
+});
 
 const rotationAvgDamage = computed<number | null>(() => {
   const rotations = (

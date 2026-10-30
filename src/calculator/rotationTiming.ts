@@ -324,6 +324,13 @@ export function damagePerSecond(damage: number, gameFrames: number): number {
   return gameFrames > 0 ? damage / framesToSeconds(gameFrames) : 0;
 }
 
+/** Where an action's damage lands on the game clock: midway between its
+ * first and last landed hit, or its start when it has none. */
+export function landingFrame(timed: TimedAction): number {
+  if (!timed.hits.length) return timed.start;
+  return (timed.hits[0].frame + timed.hits[timed.hits.length - 1].frame) / 2;
+}
+
 export interface ActionTimingSummary {
   gameFrames: number;
   realFrames: number;
