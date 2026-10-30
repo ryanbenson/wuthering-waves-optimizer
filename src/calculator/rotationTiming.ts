@@ -34,6 +34,15 @@ export interface ActionEnd {
 
 const END_TYPES = new Set<ActionEnd["type"]>(["full", "cancel", "dash", "jump", "swap"]);
 
+/** What each end type is called in the UI (the end editor, the frames chip, the timeline strip). */
+export const ACTION_END_LABELS: Record<ActionEnd["type"], string> = {
+  full: "Plays out",
+  cancel: "Cancel",
+  dash: "Dash cancel",
+  jump: "Jump cancel",
+  swap: "Swap out",
+};
+
 function frameCount(value: unknown): number | undefined {
   const n = Number(value);
   return Number.isFinite(n) && n >= 0 ? Math.round(n) : undefined;

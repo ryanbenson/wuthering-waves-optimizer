@@ -34,6 +34,10 @@
           </span>
         </div>
       </div>
+      <p class="text-xs opacity-70" data-test-rotation-frame-hint>
+        Click an action's frame badge (<span class="badge badge-info badge-xs font-mono">0.62s · Plays out ▾</span>)
+        to set how it ends: plays out, cancel, dash, jump or swap out.
+      </p>
       <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs opacity-70">
         <span v-if="timeStopFrames > 0">
           {{ seconds(timing.realFrames) }}s with time stop ({{ timeStopFrames }}f stopped)

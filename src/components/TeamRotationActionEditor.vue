@@ -61,6 +61,7 @@
             :action-id="action.id"
             :timing="frameTiming ?? null"
             :end="actionEnd"
+            :open="showEndEditor"
             @toggle="showEndEditor = !showEndEditor" />
         </template>
         <template v-if="team.characterIds[action.slot]" #extra-buttons>

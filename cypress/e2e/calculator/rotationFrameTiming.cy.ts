@@ -31,11 +31,16 @@ function swapOutOfIntroAndReset() {
   cy.get('[data-test-rotation-action-by-attack-key="IntroSkillFurledCanopyFlashRiftDMG"]')
     .find("[data-test-rotation-action-frames]")
     .should("contain.text", "103f")
+    .and("contain.text", "Plays out")
     .click();
   cy.get("[data-test-rotation-action-end-type]").select("swap");
   cy.get("[data-test-rotation-action-end-frame]").type("90");
   cy.get("[data-test-rotation-action-end-frame]").blur();
   cy.get("[data-test-rotation-frame-length]").should("contain.text", "777f");
+  cy.get('[data-test-rotation-action-by-attack-key="IntroSkillFurledCanopyFlashRiftDMG"]')
+    .find("[data-test-rotation-action-frames]")
+    .should("contain.text", "90f")
+    .and("contain.text", "Swap out");
 
   cy.get("[data-test-rotation-action-end-reset]").click();
   cy.get("[data-test-rotation-frame-length]").should("contain.text", "790f");
