@@ -26,6 +26,7 @@ describe("RotationFrameTiming", () => {
     expect(container.querySelector("[data-test-rotation-typed-dps]")?.textContent).toBe((50_000).toLocaleString());
     expect(getByText(/300f stopped/)).toBeTruthy();
     expect(getByText("wuwalab").getAttribute("href")).toBe("https://wuwalab.com");
+    expect(container.querySelector("[data-test-rotation-frame-hint]")?.textContent).toContain("to set how it ends");
   });
 
   it("leaves the typed DPS empty when no length is typed and flags missing frames", () => {
@@ -100,12 +101,25 @@ describe("CalculatorRotationActionEditor frame chip", () => {
       action: { id: "a1", order: 1, count: 1, type: "basic", key: "X", end: { type: "cancel" } },
     });
     const chip = container.querySelector("[data-test-rotation-action-frames='a1']") as HTMLElement;
-    expect(chip.textContent).toContain("37f · 0.62s · cancel");
+    expect(chip.textContent).toContain("37f · 0.62s");
+    expect(chip.querySelector("[data-test-rotation-action-frames-end]")?.textContent).toBe("· Cancel");
+    expect(chip.getAttribute("aria-expanded")).toBe("false");
     await fireEvent.click(chip);
+    expect(chip.getAttribute("aria-expanded")).toBe("true");
     const reset = container.querySelector("[data-test-rotation-action-end-reset]") as HTMLElement;
     await fireEvent.click(reset);
     const update = emitted()["action-update"][0] as [Record<string, unknown>];
     expect(update[0]).toHaveProperty("end", undefined);
+  });
+
+  it("names a played-out action's end and its wait, so the chip reads as a control", () => {
+    const { container } = renderEditor({
+      frameTiming: { gameFrames: 98, realFrames: 98, missing: false },
+      action: { id: "a1", order: 1, count: 1, type: "basic", key: "X", end: { type: "full", wait: 30 } },
+    });
+    const chip = container.querySelector("[data-test-rotation-action-frames='a1']") as HTMLElement;
+    expect(chip.querySelector("[data-test-rotation-action-frames-end]")?.textContent).toBe("· Plays out +30f");
+    expect(chip.getAttribute("aria-label")).toContain("Click to change how this action ends");
   });
 
   it("notes the time stop an action skips", () => {
