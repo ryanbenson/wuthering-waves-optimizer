@@ -190,7 +190,7 @@ legacy path untouched:
 
     **Superseded 2026-10-29:** with the `frameTiming` Labs flag on and frame
     data for the rotation, the strip is a game-time timeline instead
-    (`RotationTimelineStrip.vue`, ADR [0049](./0049-rotation-timeline-strip.md)).
+    (`RotationTimelineChart.vue` and `TeamRotationLanesChart.vue`, ADR [0049](./0049-rotation-timeline-strip.md)).
     This ordered strip is still the fallback.
 
 13. **Duration moved next to the name field**, in the always-visible header

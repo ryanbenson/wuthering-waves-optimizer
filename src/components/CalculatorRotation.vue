@@ -403,8 +403,8 @@
             :has-frame-data="hasFrameData"
             :damage="rotationAvgDamage"
             :typed-duration="durationValue" />
-          <!-- With frame data the strip runs on game time (ADR 0049). -->
-          <RotationTimelineStrip
+          <!-- With frame data the charts run on game time (ADR 0049). -->
+          <RotationTimelineChart
             v-if="isLiveResultBarEnabled && timelineStrip"
             class="mt-4"
             :strip="timelineStrip"
@@ -522,7 +522,7 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
-import RotationTimelineStrip from "./RotationTimelineStrip.vue";
+import RotationTimelineChart from "./RotationTimelineChart.vue";
 import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useRotationTiming } from "../composables/useRotationTiming";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
@@ -843,13 +843,19 @@ const timelineStrip = computed<TimelineStrip | null>(() => {
   if (!isFrameTimingOn.value || !hasFrameData.value) return null;
   const strip = buildTimelineStrip(
     rotationTiming.value,
-    rotationDamageAttacks.value.map((attack) => ({
-      id: attack.id,
-      value: actionDamageById.value[attack.id] ?? 0,
-      label: attack.label,
-      isDamage: attack.type !== "Healing" && attack.type !== "Shield",
-      end: actionsSorted.value.find((action) => action.id === attack.id)?.end,
-    })),
+    rotationDamageAttacks.value.map((attack) => {
+      const action = actionsSorted.value.find((entry) => entry.id === attack.id);
+      return {
+        id: attack.id,
+        value: actionDamageById.value[attack.id] ?? 0,
+        label: attack.label,
+        // The ability the action comes from (intro, outro, forteCircuit, …),
+        // not the damage type: an Outro can deal Basic Attack DMG.
+        type: action?.type as string | undefined,
+        isDamage: attack.type !== "Healing" && attack.type !== "Shield",
+        end: action?.end,
+      };
+    }),
   );
   return strip.blocks.length ? strip : null;
 });

@@ -93,7 +93,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in two sheets | accepted | | calculator, components |
 | [0047](./0047-frame-data-rotation-timing.md) | Frame data from wuwalab and a timing engine for rotations | accepted | | calculator, characters, cli, data |
 | [0048](./0048-frame-timing-in-results.md) | Frame-data timing in rotation results and charts | accepted | | calculator, components, labs |
-| [0049](./0049-rotation-timeline-strip.md) | Rotation editors' damage strip on a game-time axis | accepted | | calculator, components, labs |
+| [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | | calculator, components, labs |
 
 ## When to write a new ADR
 

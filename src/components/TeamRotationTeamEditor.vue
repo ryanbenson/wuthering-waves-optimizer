@@ -170,12 +170,12 @@
             :has-frame-data="teamHasFrameData"
             :damage="result.total.avgDamage"
             :typed-duration="team.duration" />
-          <!-- With frame data the strip runs on game time (ADR 0049). -->
-          <RotationTimelineStrip
+          <!-- With frame data the charts run on game time (ADR 0049). -->
+          <TeamRotationLanesChart
             v-if="isLiveResultBarEnabled && timelineStrip"
             class="mb-3"
             :strip="timelineStrip"
-            :slot-names="team.characterIds"
+            :slot-names="team.characterIds.map((id: string | null) => (id ? displayName(id) : null))"
             @select="scrollToAction" />
           <div
             v-else-if="isLiveResultBarEnabled && damageStripBars.length"
@@ -394,7 +394,7 @@ import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBr
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
-import RotationTimelineStrip from "./RotationTimelineStrip.vue";
+import TeamRotationLanesChart from "./TeamRotationLanesChart.vue";
 import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTimelineStrip";
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
@@ -1047,6 +1047,8 @@ const timelineStrip = computed<TimelineStrip | null>(() => {
         id,
         value: actionDamageById.value[id] ?? 0,
         label: entry.attack?.label,
+        // The ability the action comes from, not the damage type.
+        type: (action as { type?: string } | undefined)?.type,
         isDamage: entry.attack?.type !== "Healing" && entry.attack?.type !== "Shield",
         slot: action ? Number(action.slot) : undefined,
         end: (action as { end?: unknown } | undefined)?.end,
