@@ -47,18 +47,29 @@ function characterExists(key: string): boolean {
 
 export interface GenerateCharacterOptions {
   mergeModifiers?: boolean;
+  /** Use Encore's beta dataset; prompts when undefined. */
+  beta?: boolean;
+  /** Character ID to generate; skips the search prompt when set. */
+  id?: number;
 }
 
 export async function runGenerateCharacter(
   options: GenerateCharacterOptions = {},
 ): Promise<void> {
+  const beta =
+    options.beta ??
+    (await confirm({
+      message: "Use the Beta API (may include unreleased characters)?",
+      default: false,
+    }));
+
   const characters = await withSpinner(
-    "Fetching character list from Encore API",
-    () => fetchCharacterList(),
+    `Fetching ${beta ? "beta " : ""}character list from Encore API`,
+    () => fetchCharacterList({ beta }),
     (result) => `Loaded ${result.length} characters`,
   );
 
-  const selectedId = await search({
+  const selectedId = options.id ?? await search({
     message: "Select a character to generate",
     source: async (input) => {
       const query = (input ?? "").trim().toLowerCase();
@@ -85,7 +96,7 @@ export async function runGenerateCharacter(
 
   const detail = await withSpinner(
     `Fetching character sheet for ID ${selectedId}`,
-    () => fetchCharacterDetail(selectedId),
+    () => fetchCharacterDetail(selectedId, { beta }),
     (result) => {
       const label =
         getSuggestedCharacterName(result, listItem) || `ID ${result.Id}`;

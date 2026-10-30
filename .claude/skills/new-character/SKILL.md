@@ -14,6 +14,8 @@ npm run cli -- generate character
 # or: make character
 ```
 
+For a character that's only on the beta server, add `--beta` (`--no-beta` skips the prompt for live). `--id <characterId>` skips the search prompt, which also lets the command run non-interactively.
+
 This fetches the character sheet from the Encore API (internal tooling only — never surface that source in user-facing UI/copy, per `CLAUDE.md`), scaffolds `src/characters/<Key>/`, and registers the character in `src/characters/characters.ts`. If the API's name is ambiguous it will prompt you to confirm it.
 
 Regenerating an existing character to pick up API changes while keeping your hand-written entries: `make generate-character ARGS="--merge-modifiers"` (updates key/name/details from the API, keeps other properties on existing buff/RC entries).

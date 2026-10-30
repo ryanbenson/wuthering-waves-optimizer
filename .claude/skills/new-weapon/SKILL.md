@@ -12,7 +12,7 @@ npm run cli -- generate weapon
 # or: make weapon
 ```
 
-Fetches the weapon sheet from the Encore API (internal tooling only — don't surface that source in user-facing UI/copy, per `CLAUDE.md`), writes `src/weapons/<TypePlural>/<Key>.ts` with base stats already filled in, and registers it in `src/weapons/weapons.ts`. If the API's name is ambiguous it will prompt you to confirm it.
+Fetches the weapon sheet from the Encore API (internal tooling only — don't surface that source in user-facing UI/copy, per `CLAUDE.md`), writes `src/weapons/<TypePlural>/<Key>.ts` with base stats already filled in, and registers it in `src/weapons/weapons.ts`. If the API's name is ambiguous it will prompt you to confirm it. The weapon API always reads the beta dataset, so unreleased weapons are listed. `--id <weaponId>` skips the search prompt. The registry entry gets `mainStat` from the weapon's secondary stat.
 
 ## 2. Fill in `passiveData` by hand
 
