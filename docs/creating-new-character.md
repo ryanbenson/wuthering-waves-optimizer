@@ -32,6 +32,8 @@ For that case, add an optional `realisticMaxStacks` alongside `maxStacks` set to
 
 `realisticMaxStacks` only does anything on buffs with `hasStacks: true`. For an `inputBase: true` team buff (a teammate's own Energy Regen/CritRate typed in manually — e.g. Shorekeeper's `SophisticatedStellarealmCritRate`), there's no stack count or hard cap to target instead, so use the sibling field `realisticBaseAttrValue` — it renders a "Suggested (N)" button next to that input. Treat it as a reasonable assumption rather than a verified fact (a teammate's real stat varies with their own build), and only set it on `inputBase` buffs.
 
+An `inputBase` team buff can also have `hasStacks: true` when each stack scales off the entered stat — e.g. Lily's `DreamAroma`, "each stack increases ATK by 0.1% for every 1% of Lily's Energy Regen above 190%, up to 7%". Put the per-stack cap in `perStackMaximumValue` (it's applied to each stack before multiplying by the stack count) and the total cap in `maximumValue`. Self-buff `AdditionalBase` modifiers take the same `perStackMaximumValue` field.
+
 ### Base talent multiplier
 
 When you need to add a multiplier to the base talent value (e.g. Changli R5)
