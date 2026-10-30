@@ -91,9 +91,10 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0044](./0044-echo-tuning-odds.md) | Echo tuning odds: one exact engine for the Odds dialog, the planner and "Finish these first" | accepted | | echoes, components, composables |
 | [0045](./0045-v3-side-rail-navigation.md) | v3 navigation: a side rail, a section row, a phone bottom bar and a Scanners page | accepted | | components, navigation |
 | [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in two sheets | accepted | | calculator, components |
-| [0047](./0047-frame-data-rotation-timing.md) | Frame data from wuwalab and a timing engine for rotations | accepted | | calculator, characters, cli, data |
+| [0047](./0047-frame-data-rotation-timing.md) | Frame data from wuwalab and a timing engine for rotations | accepted | [0050](./0050-swapped-out-hits-still-land.md) (hits on a swap) | calculator, characters, cli, data |
 | [0048](./0048-frame-timing-in-results.md) | Frame-data timing in rotation results and charts | accepted | | calculator, components, labs |
-| [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | | calculator, components, labs |
+| [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | [0050](./0050-swapped-out-hits-still-land.md) (swap limit) | calculator, components, labs |
+| [0050](./0050-swapped-out-hits-still-land.md) | A swapped-out character's hits all land | accepted | | calculator |
 
 ## When to write a new ADR
 

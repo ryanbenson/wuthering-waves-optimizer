@@ -115,7 +115,8 @@ export function frozenFrames(frames: AttackFrames, from: number, to: number): nu
 
 /**
  * Where the character leaves the ability and how long until the next action,
- * on both clocks. `exitFrame` is ability-relative and decides which hits land.
+ * on both clocks. `exitFrame` is ability-relative and, for a cancel, dash or
+ * jump, decides which hits land (a swap keeps them all, ADR 0050).
  */
 export function actionLength(
   frames: AttackFrames,
@@ -192,8 +193,11 @@ export function computeRotationTiming(actions: TimingAction[]): RotationTiming {
       const length = actionLength(frames, action.end);
       const fieldTime = !frames.offField && !(continuesShared && i === 0);
       const start = continuesShared && i === 0 ? lastShared!.start : clock;
+      // A swapped-out character keeps attacking off field, so every hit
+      // lands (ADR 0050). Any other early exit drops hits not yet committed.
+      const isSwap = action.end?.type === "swap";
       const hits = frames.hits
-        .filter(([, commit]) => commit <= length.exitFrame)
+        .filter(([, commit]) => isSwap || commit <= length.exitFrame)
         .map(([frame, , energy, concerto]) => ({
           frame: start + hitGameFrame(frames, frame),
           energy,

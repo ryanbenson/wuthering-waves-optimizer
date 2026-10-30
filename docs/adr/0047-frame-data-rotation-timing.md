@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-10-28
 tags: [calculator, characters, cli, data]
+superseded_by: [50]
 ---
 
 # 47. Frame data from wuwalab and a timing engine for rotations
@@ -23,6 +24,9 @@ The research, designs and plan are in a published Artifact ("Frame-Timed Rotatio
   - A cancel happens at a chosen frame. A dash cancel adds 22 frames and a jump 3.
   - A swap happens at a chosen frame (10 by default) but never before NoSwap.
   - Hits committed before the exit still land after it.
+
+    **Superseded 2026-10-30:** that now applies to cancels only. On a swap every hit lands, since the character finishes the attack off field (ADR [0050](./0050-swapped-out-hits-still-land.md)).
+
   - Outros, off-field effects, echo set procs, negative status ticks and utility actions take no field time.
   - Two consecutive `shared` actions of one ability count its time once.
 - **DPS uses the game clock, which skips time stop.** All five reference rotations, and wuwalab's DPS, use it. Their loops are all about 25 seconds, which matches the community's rule of thumb. Real time (with time stop) is kept for the breakdown. Counting it would freeze 37–49% of a run, a different share per team, and reorder teams against the numbers players use.
