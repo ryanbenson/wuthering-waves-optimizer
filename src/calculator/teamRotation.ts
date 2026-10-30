@@ -10,6 +10,7 @@ import {
 import { resolveCharactersForBuild } from "./buildOverride";
 import {
   framesToSeconds,
+  landingFrame,
   teamRotationTiming,
   type RotationLength,
   type RotationTiming,
@@ -379,11 +380,6 @@ export function calcRotationTimeline(
 
 /** Game frame an action's damage lands: midway between its first and last
  * landed hit, or its start when it has none (no frame data, or a proc). */
-function landingFrame(timed: TimedAction): number {
-  if (!timed.hits.length) return timed.start;
-  return (timed.hits[0].frame + timed.hits[timed.hits.length - 1].frame) / 2;
-}
-
 /**
  * The timeline from frame data (ADR 0048) instead of an even spread: each
  * damage action lands at its real game time. An action repeated `count`

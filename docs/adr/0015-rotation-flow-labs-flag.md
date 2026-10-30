@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-08-27
 tags: [calculator, components, composables, stores]
+superseded_by: [49]
 ---
 
 # 15. Rotation Flow (Labs-flagged, shares the `liveResultBar` flag)
@@ -186,6 +187,11 @@ legacy path untouched:
     (round 1's honest-about-limitations framing) became "Damage by action,
     in rotation order — bar height shows which hits matter most" — states
     what the strip does rather than what it doesn't.
+
+    **Superseded 2026-10-29:** with the `frameTiming` Labs flag on and frame
+    data for the rotation, the strip is a game-time timeline instead
+    (`RotationTimelineChart.vue` and `TeamRotationLanesChart.vue`, ADR [0049](./0049-rotation-timeline-strip.md)).
+    This ordered strip is still the fallback.
 
 13. **Duration moved next to the name field**, in the always-visible header
     row (a compact `input-sm w-16`), rather than living only inside the

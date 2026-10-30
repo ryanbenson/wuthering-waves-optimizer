@@ -68,7 +68,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0042](./0042-ci-commits-scanner-pictures.md) | CI commits Wavescan's pictures to echo pull requests | accepted | | scanner, data, ci |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
-| [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, composables, stores |
+| [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0049](./0049-rotation-timeline-strip.md) (damage strip, with frame data) | calculator, components, composables, stores |
 | [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`) | calculator, components, weapons, characters |
 | [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
 | [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width) | calculator, components, stores |
@@ -93,6 +93,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0046](./0046-phone-command-bar-sheet.md) | Phone Command Bar: one row, the rest in two sheets | accepted | | calculator, components |
 | [0047](./0047-frame-data-rotation-timing.md) | Frame data from wuwalab and a timing engine for rotations | accepted | | calculator, characters, cli, data |
 | [0048](./0048-frame-timing-in-results.md) | Frame-data timing in rotation results and charts | accepted | | calculator, components, labs |
+| [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | | calculator, components, labs |
 
 ## When to write a new ADR
 
