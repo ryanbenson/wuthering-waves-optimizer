@@ -11,12 +11,17 @@
         Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
         Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
       </h4>
-      <h4 class="text" v-if="duration" data-test-team-rotation-dps>
-        <span class="font-bold">DPS ({{ duration }}s)</span>
-        Normal: {{ displayDamage(result.dps.normal) }} /
-        Average: {{ displayDamage(result.dps.avg) }} /
-        Crit: {{ displayDamage(result.dps.crit) }}
+      <h4
+        v-for="reading in dpsReadings"
+        :key="reading.source"
+        class="text"
+        :data-test-team-rotation-dps="reading.source === 'typed' ? '' : reading.source">
+        <span class="font-bold">{{ reading.label }}</span>
+        Normal: {{ displayDamage(reading.dps.normal) }} /
+        Average: {{ displayDamage(reading.dps.avg) }} /
+        Crit: {{ displayDamage(reading.dps.crit) }}
       </h4>
+      <FrameDataNote v-if="frameLength && frameLength.gameFrames > 0" :missing="frameLength.missing" />
       <h4 v-if="result.total.healing" class="text calculation__damage__item--healing">
         <span class="font-bold">Total Healing</span>
         {{ displayDamage(result.total.healing) }}
@@ -91,12 +96,15 @@ import {
 } from "../utils/chartPreferences";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import TeamRotationDamageChart from "./TeamRotationDamageChart.vue";
-import type {
-  DamageAggregation,
-  RotationDps,
-  TeamRotationActionResult,
-  TeamRotationCharacterResult,
+import FrameDataNote from "./FrameDataNote.vue";
+import {
+  rotationDpsReadings,
+  type DamageAggregation,
+  type RotationDps,
+  type TeamRotationActionResult,
+  type TeamRotationCharacterResult,
 } from "../calculator/teamRotation";
+import type { RotationLength } from "../calculator/rotationTiming";
 
 const props = defineProps<{
   result: {
@@ -106,7 +114,14 @@ const props = defineProps<{
     dps: RotationDps;
   };
   duration: number | string | null;
+  /** Length from frame data, or null while the frameTiming lab is off. */
+  frameLength?: RotationLength | null;
 }>();
+
+// Frame data first, then the typed duration (ADR 0048).
+const dpsReadings = computed(() =>
+  rotationDpsReadings(props.result.total, props.duration, props.frameLength ?? null),
+);
 
 const emit = defineEmits<{
   "selected-attack": [attackKey: string, damage: Record<string, any>, label: string, characterId: string];

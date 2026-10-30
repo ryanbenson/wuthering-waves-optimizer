@@ -3,6 +3,8 @@ import {
   actionLength,
   buildTeamTimingActions,
   buildTimingActions,
+  characterRotationTiming,
+  rotationLength,
   computeRotationTiming,
   damagePerSecond,
   DASH_CANCEL_FRAMES,
@@ -311,5 +313,26 @@ describe("preset rotation lengths", () => {
     // summon and the six Blight Rain ticks take no field time.
     expect(timing.missing).toEqual([]);
     expect(timing.gameFrames).toBe(103 + 3 + 42 + 39 + 68 + 70 + 115 + 39 + 68 + 68 + 175);
+  });
+});
+
+describe("characterRotationTiming", () => {
+  it("is null for a character without frame data", () => {
+    expect(characterRotationTiming([{ id: "a", order: 1, type: "basic", key: "X" }], {}, echoFrames, null)).toBeNull();
+  });
+
+  it("times actions in their order and sums up to a RotationLength", () => {
+    const timing = characterRotationTiming(
+      [
+        { id: "b", order: 2, type: "basic", key: "BasicAttackUnfurledCanopyStage2DMG" },
+        { id: "a", order: 1, type: "basic", key: "BasicAttackUnfurledCanopyStage1DMG" },
+        { id: "c", order: 3, type: "basic", key: "NotAnAttack" },
+      ],
+      { frames: suomingFrames },
+      echoFrames,
+      null,
+    );
+    expect(timing?.actions.map((action) => action.id)).toEqual(["a", "b", "c"]);
+    expect(rotationLength(timing!)).toEqual({ gameFrames: 39 + 68, realFrames: 39 + 68, missing: 1 });
   });
 });

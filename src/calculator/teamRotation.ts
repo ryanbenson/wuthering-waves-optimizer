@@ -7,6 +7,17 @@ import {
   addDamageAggregation,
   type DamageAggregation,
 } from "./characterRotation";
+import { resolveCharactersForBuild } from "./buildOverride";
+import {
+  framesToSeconds,
+  teamRotationTiming,
+  type RotationLength,
+  type RotationTiming,
+  type TimedAction,
+  type TimingSlot,
+} from "./rotationTiming";
+import { getCharByName } from "../characters/characters";
+import { echoFrames } from "../echoes/frames";
 
 // Re-exported for existing consumers — the implementation lives in
 // characterRotation.ts (see its own comment) so calcTeamRotationDamage can
@@ -135,6 +146,59 @@ export function calcRotationDps(
   };
 }
 
+/** One way of measuring a rotation's DPS (ADR 0048). */
+export interface DpsReading {
+  /** `frames`: the length from frame data (game clock). `typed`: the
+   * duration the user typed. */
+  source: "frames" | "typed";
+  seconds: number;
+  dps: RotationDps;
+  label: string;
+  /** Actions without frame data (frame readings only). */
+  missing: number;
+}
+
+/**
+ * Every DPS a rotation can show, frame data first: the frame-data reading
+ * when `frameLength` is given (callers pass null while the `frameTiming` lab
+ * is off) and has any length, then the typed one when a duration is set.
+ */
+export function rotationDpsReadings(
+  damageAggregation: DamageAggregation,
+  typedDuration: number | string | null | undefined,
+  frameLength: RotationLength | null | undefined,
+): DpsReading[] {
+  const readings: DpsReading[] = [];
+  if (frameLength && frameLength.gameFrames > 0) {
+    const seconds = framesToSeconds(frameLength.gameFrames);
+    readings.push({
+      source: "frames",
+      seconds,
+      dps: calcRotationDps(damageAggregation, seconds),
+      label: `DPS from frame data (${seconds.toFixed(2)}s)`,
+      missing: frameLength.missing,
+    });
+  }
+  const typed = Number(typedDuration);
+  if (typed > 0) {
+    readings.push({
+      source: "typed",
+      seconds: typed,
+      dps: calcRotationDps(damageAggregation, typed),
+      label: `DPS (${typedDuration}s)`,
+      missing: 0,
+    });
+  }
+  return readings;
+}
+
+/** The one DPS for places with room for a single number (leaderboards, the
+ * sticky header): the typed duration when there is one, since the user chose
+ * it, otherwise frame data. */
+export function headlineDps(readings: DpsReading[]): DpsReading | null {
+  return readings.find((reading) => reading.source === "typed") ?? readings[0] ?? null;
+}
+
 export interface TeamRotationActionResult {
   characterId: string;
   slot: 0 | 1 | 2;
@@ -168,6 +232,8 @@ export async function calcTeamRotationDamage(
   actionResults: TeamRotationActionResult[];
   total: DamageAggregation;
   dps: RotationDps;
+  /** The team's timing from frame data, or null when no slot has any. */
+  timing: RotationTiming | null;
 }> {
   const perCharacter: Record<string, TeamRotationCharacterResult> = {};
   const actionResults: TeamRotationActionResult[] = [];
@@ -221,7 +287,25 @@ export async function calcTeamRotationDamage(
     actionResults,
     total,
     dps: calcRotationDps(total, team.duration),
+    timing: await calcTeamTiming(team, characters),
   };
+}
+
+/** Each slot's character data (with `frames`) and its build's main echo, for
+ * `teamRotationTiming`. */
+async function calcTeamTiming(team: TeamRotationInput, characters: Record<string, any>): Promise<RotationTiming | null> {
+  const slots: Array<TimingSlot | null> = await Promise.all(
+    team.characterIds.map(async (characterId, slot) => {
+      if (!characterId) return null;
+      const build = resolveCharactersForBuild(characters, characterId, team.buildIds?.[slot] ?? null)[characterId];
+      return {
+        characterId,
+        data: await getCharByName(characterId),
+        mainEcho: build?.mainEcho?.echo ?? null,
+      };
+    }),
+  );
+  return teamRotationTiming(team.actions, slots, echoFrames);
 }
 
 export interface StrongestHit {
@@ -291,4 +375,56 @@ export function calcRotationTimeline(
     critDamage: actionResult.attack?.damage?.critDamage ?? 0,
     label: actionResult.attack?.label ?? "Action",
   }));
+}
+
+/** Game frame an action's damage lands: midway between its first and last
+ * landed hit, or its start when it has none (no frame data, or a proc). */
+function landingFrame(timed: TimedAction): number {
+  if (!timed.hits.length) return timed.start;
+  return (timed.hits[0].frame + timed.hits[timed.hits.length - 1].frame) / 2;
+}
+
+/**
+ * The timeline from frame data (ADR 0048) instead of an even spread: each
+ * damage action lands at its real game time. An action repeated `count`
+ * times has one timing entry per repeat, and its damage (which already
+ * covers every repeat) is split evenly across them. Sorted by time.
+ */
+export function calcFrameTimeline(
+  actionResults: TeamRotationActionResult[],
+  timing: RotationTiming,
+): TimelinePoint[] {
+  const repeatsById = new Map<string, TimedAction[]>();
+  for (const timed of timing.actions) {
+    if (timed.id == null) continue;
+    const repeats = repeatsById.get(timed.id) ?? [];
+    repeats.push(timed);
+    repeatsById.set(timed.id, repeats);
+  }
+
+  const points: TimelinePoint[] = [];
+  for (const actionResult of actionResults.filter(isDamageAction)) {
+    const repeats = repeatsById.get(actionResult.attack?.id) ?? [];
+    const share = repeats.length ? 1 / repeats.length : 1;
+    const times = repeats.length ? repeats.map(landingFrame) : [0];
+    for (const frame of times) {
+      points.push({
+        time: framesToSeconds(frame),
+        characterId: actionResult.characterId,
+        order: actionResult.order,
+        normalDamage: (actionResult.attack?.damage?.totalDamage ?? 0) * share,
+        avgDamage: (actionResult.attack?.damage?.avgDamage ?? 0) * share,
+        critDamage: (actionResult.attack?.damage?.critDamage ?? 0) * share,
+        label: actionResult.attack?.label ?? "Action",
+      });
+    }
+  }
+  // Stable, so actions landing on the same frame keep rotation order.
+  return points.sort((a, b) => a.time - b.time);
+}
+
+/** How long a frame-data chart's x-axis runs: the rotation's game length,
+ * or later if a committed hit lands after the last action ends. */
+export function frameTimelineDuration(timing: RotationTiming, points: TimelinePoint[]): number {
+  return Math.max(framesToSeconds(timing.gameFrames), ...points.map((point) => point.time));
 }

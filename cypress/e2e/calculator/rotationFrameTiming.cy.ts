@@ -56,6 +56,19 @@ describe("Calculator rotation frame timing", () => {
     swapOutOfIntroAndReset();
   });
 
+  it("shows both DPS readings in the damage breakdown (ADR 0048)", () => {
+    visitWithFrameTiming(true);
+    openSuomingPreset();
+
+    cy.get("[data-test-damages-list-rotation]")
+      .first()
+      .within(() => {
+        cy.get('[data-test-rotation-dps="frames"]').should("contain.text", "DPS from frame data (13.17s)");
+        cy.get('[data-test-rotation-dps="typed"]').should("contain.text", "DPS (13s)");
+        cy.contains("a", "wuwalab").should("have.attr", "href", "https://wuwalab.com");
+      });
+  });
+
   it("stays hidden while the Labs flag is off", () => {
     visitWithFrameTiming(false);
     openSuomingPreset();
@@ -63,6 +76,8 @@ describe("Calculator rotation frame timing", () => {
     cy.get('[data-test-rotation-action-by-attack-key="IntroSkillFurledCanopyFlashRiftDMG"]').should("exist");
     cy.get("[data-test-rotation-frame-timing]").should("not.exist");
     cy.get("[data-test-rotation-action-frames]").should("not.exist");
+    cy.get('[data-test-rotation-dps="frames"]').should("not.exist");
+    cy.get('[data-test-rotation-dps="typed"]').should("contain.text", "DPS (13s)");
   });
 });
 
@@ -87,5 +102,15 @@ describe("Team rotation frame timing", () => {
     cy.get("[data-test-rotation-frame-dps]").invoke("text").should("not.equal", "—");
 
     swapOutOfIntroAndReset();
+
+    // No typed duration, so the header's one DPS comes from frame data.
+    cy.get("[data-test-team-rotation-header-dps]").first().should("contain.text", "(frame data)");
+
+    // The summary page: frame-data DPS, and charts timed from frame data.
+    cy.get("[data-test-team-rotation-summary-view-summary]").first().click();
+    cy.get('[data-test-team-rotation-summary-dps-reading="frames"]').should("contain.text", "13.17s");
+    cy.get('[data-test-team-rotation-summary-dps-reading="typed"]').should("not.exist");
+    cy.get("[data-test-team-rotation-summary-frame-timeline]").should("be.visible");
+    cy.get("[data-test-team-rotation-timeline-chart] canvas").should("exist");
   });
 });

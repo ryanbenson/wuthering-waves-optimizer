@@ -28,11 +28,20 @@
         <div class="text-sm">Average: {{ displayDamage(result.total.avgDamage ?? 0).toLocaleString() }}</div>
         <div class="text-sm">Crit: {{ displayDamage(result.total.critDamage ?? 0).toLocaleString() }}</div>
       </div>
-      <div class="card bg-base-200 p-3" data-test-team-rotation-summary-dps>
-        <div class="text-xs opacity-70 mb-1">Average DPS</div>
-        <div class="text-sm">Normal: {{ displayDamage(result.dps.normal).toLocaleString() }}</div>
-        <div class="text-sm">Average: {{ displayDamage(result.dps.avg).toLocaleString() }}</div>
-        <div class="text-sm">Crit: {{ displayDamage(result.dps.crit).toLocaleString() }}</div>
+      <div class="card bg-base-200 p-3 gap-2" data-test-team-rotation-summary-dps>
+        <template v-if="dpsReadings.length">
+          <div v-for="reading in dpsReadings" :key="reading.source" :data-test-team-rotation-summary-dps-reading="reading.source">
+            <div class="text-xs opacity-70 mb-1">{{ reading.label }}</div>
+            <div class="text-sm">Normal: {{ displayDamage(reading.dps.normal).toLocaleString() }}</div>
+            <div class="text-sm">Average: {{ displayDamage(reading.dps.avg).toLocaleString() }}</div>
+            <div class="text-sm">Crit: {{ displayDamage(reading.dps.crit).toLocaleString() }}</div>
+          </div>
+          <FrameDataNote v-if="frameLength && frameLength.gameFrames > 0" :missing="frameLength.missing" />
+        </template>
+        <template v-else>
+          <div class="text-xs opacity-70 mb-1">DPS</div>
+          <div class="text-sm opacity-70">Set the team's duration to see DPS.</div>
+        </template>
       </div>
       <div class="card bg-base-200 p-3" data-test-team-rotation-summary-strongest-hit>
         <div class="text-xs opacity-70 mb-1">Strongest Hit</div>
@@ -70,10 +79,14 @@
       </div>
     </div>
 
+    <p v-if="frameTimeline" class="text-xs opacity-70 mb-2" data-test-team-rotation-summary-frame-timeline>
+      Charts are timed from frame data, so each action sits where it lands in the rotation.
+      <FrameDataNote :missing="frameTimeline.timing.missing.length" />
+    </p>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Damage Over Time</h3>
-        <TeamRotationTimelineChart :points="timeline" :duration="team.duration" />
+        <TeamRotationTimelineChart :points="timeline" :duration="chartDuration" />
       </div>
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Damage Over Time by Character</h3>
@@ -185,6 +198,9 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
+import { isFrameTimingEnabled } from "../utils/labs";
+import { rotationLength, type RotationTiming } from "../calculator/rotationTiming";
+import FrameDataNote from "./FrameDataNote.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { getWeaponByName } from "../weapons/weapons";
 import enemiesCatalog, { type Enemy } from "../enemies/index";
@@ -204,6 +220,9 @@ import {
   calcTeamRotationDamage,
   calcStrongestHit,
   calcRotationTimeline,
+  calcFrameTimeline,
+  frameTimelineDuration,
+  rotationDpsReadings,
   type TeamRotationActionResult,
   type TeamRotationCharacterResult,
   type TimelinePoint,
@@ -253,17 +272,39 @@ const result = ref<{
   actionResults: TeamRotationActionResult[];
   total: { normalDamage: number | null; avgDamage: number | null; critDamage: number | null; healing: number | null; shield: number | null };
   dps: { normal: number; avg: number; crit: number };
+  timing: RotationTiming | null;
 }>({
   perCharacter: {},
   actionResults: [],
   total: { normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 },
   dps: { normal: 0, avg: 0, crit: 0 },
+  timing: null,
 });
 
 const strongestHit = computed(() => calcStrongestHit(result.value.actionResults));
-const timeline = computed<TimelinePoint[]>(() =>
-  calcRotationTimeline(result.value.actionResults, team.value?.duration ?? null),
+
+// Frame data (ADR 0048), only while the frameTiming lab is on and the team
+// has any: DPS readings, and the charts' timeline.
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+const frameTiming = computed(() => {
+  const timing = result.value.timing;
+  return isFrameTimingOn.value && timing && timing.gameFrames > 0 ? timing : null;
+});
+const frameLength = computed(() => (frameTiming.value ? rotationLength(frameTiming.value) : null));
+const dpsReadings = computed(() =>
+  rotationDpsReadings(result.value.total, team.value?.duration ?? null, frameLength.value),
 );
+
+const frameTimeline = computed(() => {
+  const timing = frameTiming.value;
+  if (!timing) return null;
+  const points = calcFrameTimeline(result.value.actionResults, timing);
+  return { timing, points, duration: frameTimelineDuration(timing, points) };
+});
+const timeline = computed<TimelinePoint[]>(
+  () => frameTimeline.value?.points ?? calcRotationTimeline(result.value.actionResults, team.value?.duration ?? null),
+);
+const chartDuration = computed(() => frameTimeline.value?.duration ?? team.value?.duration ?? null);
 
 const slotStats = computed(() => {
   const stats: Record<number, { totalHp: number; totalDef: number; totalAtk: number; critRate: number; critDMG: number; energyRegen: number } | null> = {};

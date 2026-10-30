@@ -44,6 +44,7 @@
               displayDamage(rotation.damageAggregation.shield).toLocaleString()
             }}</span>
           </div>
+          <FrameDataNote v-if="hasFrameReading(rotation)" :missing="rotation.frameLength?.missing ?? 0" />
         </div>
 
         <template v-if="!rotation.attacks?.length">
@@ -125,9 +126,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { displayDamage } from "../utils/numbers";
-import { calcRotationDps } from "../calculator/teamRotation";
+import { rotationDpsReadings } from "../calculator/teamRotation";
+import type { RotationLength } from "../calculator/rotationTiming";
+import { useSettingsStore } from "../stores/settings";
+import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
+import FrameDataNote from "./FrameDataNote.vue";
 
 defineOptions({ name: "CalculatorLiveResultRotations" });
 
@@ -143,8 +148,16 @@ const emit = defineEmits<{
   "selected-attack": [attackKey: string, damage: Record<string, any>, label: string];
 }>();
 
-function rotationDps(rotation: { damageAggregation: any; duration: unknown }) {
-  return calcRotationDps(rotation.damageAggregation, rotation.duration as any);
+const settingsStore = useSettingsStore();
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+
+// Frame data first (while the lab is on), then the typed duration (ADR 0048).
+function dpsReadings(rotation: { damageAggregation: any; duration: unknown; frameLength?: RotationLength | null }) {
+  return rotationDpsReadings(
+    rotation.damageAggregation,
+    rotation.duration as any,
+    isFrameTimingOn.value ? rotation.frameLength : null,
+  );
 }
 
 const sortedDamageRotations = computed(() => {
@@ -170,7 +183,7 @@ function formatAggregateDamage(value: number): string {
   return displayDamage(value).toLocaleString();
 }
 
-function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unknown }) {
+function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unknown; frameLength?: RotationLength | null }) {
   const agg = rotation.damageAggregation;
   const blocks = [
     {
@@ -183,19 +196,22 @@ function rotationSummaryBlocks(rotation: { damageAggregation: any; duration: unk
       ],
     },
   ];
-  if (rotation.duration) {
-    const dps = rotationDps(rotation);
+  for (const reading of dpsReadings(rotation)) {
     blocks.push({
-      key: "dps",
-      label: `DPS (${rotation.duration}s)`,
+      key: reading.source === "typed" ? "dps" : "dps-frames",
+      label: reading.label,
       cells: [
-        { label: "Normal", value: formatAggregateDamage(dps.normal) },
-        { label: "Average", value: formatAggregateDamage(dps.avg) },
-        { label: "Crit", value: formatAggregateDamage(dps.crit) },
+        { label: "Normal", value: formatAggregateDamage(reading.dps.normal) },
+        { label: "Average", value: formatAggregateDamage(reading.dps.avg) },
+        { label: "Crit", value: formatAggregateDamage(reading.dps.crit) },
       ],
     });
   }
   return blocks;
+}
+
+function hasFrameReading(rotation: { damageAggregation: any; duration: unknown; frameLength?: RotationLength | null }) {
+  return dpsReadings(rotation).some((reading) => reading.source === "frames");
 }
 </script>
 
