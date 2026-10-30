@@ -8,12 +8,16 @@ import { calcTeamRotationDamage } from "../../src/calculator/teamRotation";
 
 const ACTIVE_TEAM_ID_KEY = "teamRotationsActiveTeamId";
 
-vi.mock("../../src/calculator/teamRotation", () => ({
+// Only the damage calc is faked; the pure DPS helpers (headlineDps,
+// rotationDpsReadings) stay real.
+vi.mock("../../src/calculator/teamRotation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../src/calculator/teamRotation")>()),
   calcTeamRotationDamage: vi.fn().mockResolvedValue({
     perCharacter: {},
     actionResults: [],
     total: { normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 },
     dps: { normal: 0, avg: 0, crit: 0 },
+    timing: null,
   }),
   calcStrongestHit: vi.fn().mockReturnValue({ normal: 0, avg: 0, crit: 0 }),
 }));

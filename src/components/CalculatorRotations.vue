@@ -162,6 +162,7 @@
         :stat-label="leaderboardMetric === 'normal' ? 'Normal' : leaderboardMetric === 'crit' ? 'Crit' : 'Avg'"
         :actions-count="rotation.actions.length"
         :duration="rotation.duration"
+        :frame-seconds="frameSecondsById[rotation.id] ?? null"
         :echo="rotation.echo"
         @open="openRotationId = rotation.id"
         @toggle-favorite="toggleFavoriteRotation(rotation.id)"
@@ -222,6 +223,9 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { isFrameTimingEnabled } from "../utils/labs";
+import { headlineDps, rotationDpsReadings } from "../calculator/teamRotation";
+import { framesToSeconds, type RotationLength } from "../calculator/rotationTiming";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -261,6 +265,14 @@ type RotationDamageAttack = {
     healAmount?: number;
     shieldAmount?: number;
   };
+};
+
+type RotationDamageEntry = {
+  id: string;
+  damageAggregation?: Record<string, number>;
+  attacks?: RotationDamageAttack[];
+  /** Attached by Calculator.vue from frame data (ADR 0048). */
+  frameLength?: RotationLength | null;
 };
 
 type RotationStats = {
@@ -362,6 +374,23 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+
+function frameLengthOf(entry: RotationDamageEntry | undefined): RotationLength | null {
+  return isFrameTimingOn.value ? (entry?.frameLength ?? null) : null;
+}
+
+// A row's length: the typed duration, else the frame-data one while the lab
+// is on, same rule as its DPS.
+const frameSecondsById = computed<Record<string, number>>(() => {
+  const map: Record<string, number> = {};
+  const entries = ((props.allDamages as { rotations?: RotationDamageEntry[] } | null)?.rotations) ?? [];
+  for (const entry of entries) {
+    const length = frameLengthOf(entry);
+    if (length && length.gameFrames > 0) map[entry.id] = framesToSeconds(length.gameFrames);
+  }
+  return map;
+});
 
 // Rotation Flow (Labs) list/summary — sort-driven ranking replaces manual
 // drag order, matching TeamRotations.vue's list; drag-reorder is legacy-only.
@@ -381,8 +410,7 @@ const leaderboardMetric = computed<"normal" | "avg" | "crit">(() =>
 const rotationStatsById = computed<Record<string, RotationStats>>(() => {
   const map: Record<string, RotationStats> = {};
   const rotationsDamage =
-    ((props.allDamages as { rotations?: Array<{ id: string; damageAggregation?: Record<string, number>; attacks?: RotationDamageAttack[] }> } | null)
-      ?.rotations) ?? [];
+    ((props.allDamages as { rotations?: RotationDamageEntry[] } | null)?.rotations) ?? [];
   for (const entry of rotationsDamage) {
     const agg = entry.damageAggregation ?? {};
     let hitNormal = 0;
@@ -394,10 +422,18 @@ const rotationStatsById = computed<Record<string, RotationStats>>(() => {
       hitCrit = Math.max(hitCrit, attack.damage?.critDamage ?? 0);
     }
     const rotation = rotations.value.find((r) => r.id === entry.id);
-    const duration = rotation && Number(rotation.duration) > 0 ? Number(rotation.duration) : 0;
     const normal = agg.normalDamage ?? 0;
     const avg = agg.avgDamage ?? 0;
     const crit = agg.critDamage ?? 0;
+    // One DPS per rotation: the typed duration, else frame data while the
+    // frameTiming lab is on (ADR 0048).
+    const headline = headlineDps(
+      rotationDpsReadings(
+        { normalDamage: normal, avgDamage: avg, critDamage: crit, healing: 0, shield: 0 },
+        rotation?.duration,
+        frameLengthOf(entry),
+      ),
+    );
     map[entry.id] = {
       normal,
       avg,
@@ -407,9 +443,9 @@ const rotationStatsById = computed<Record<string, RotationStats>>(() => {
       hitNormal,
       hitAvg,
       hitCrit,
-      dpsNormal: duration ? normal / duration : 0,
-      dpsAvg: duration ? avg / duration : 0,
-      dpsCrit: duration ? crit / duration : 0,
+      dpsNormal: headline?.dps.normal ?? 0,
+      dpsAvg: headline?.dps.avg ?? 0,
+      dpsCrit: headline?.dps.crit ?? 0,
     };
   }
   return map;

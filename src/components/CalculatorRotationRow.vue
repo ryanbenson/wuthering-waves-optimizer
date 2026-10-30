@@ -16,6 +16,9 @@
         <div class="text-xs opacity-70 flex flex-wrap gap-x-2">
           <span>{{ actionsCount }} action{{ actionsCount === 1 ? "" : "s" }}</span>
           <span v-if="duration">{{ duration }}s rotation</span>
+          <span v-else-if="frameSeconds" data-test-rotations-row-frame-length>
+            {{ frameSeconds.toFixed(2) }}s rotation (frame data)
+          </span>
         </div>
         <!-- <768px: sits under the actions/duration line above, in the same
         column, instead of competing with the name for width on the row's
@@ -67,6 +70,8 @@ const props = withDefaults(
     statLabel?: string | null;
     actionsCount: number;
     duration?: string | number | null;
+    /** Length from frame data, shown when no duration is typed (ADR 0048). */
+    frameSeconds?: number | null;
     echo?: string | null;
   }>(),
   {
@@ -75,6 +80,7 @@ const props = withDefaults(
     statValue: null,
     statLabel: null,
     duration: null,
+    frameSeconds: null,
     echo: null,
   },
 );

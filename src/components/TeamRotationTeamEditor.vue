@@ -6,6 +6,7 @@
       :action-count="team.actions.length"
       :duration="team.duration"
       :result="result"
+      :frame-length="teamFrameLength"
       @view-damages="openDamages"
       @view-summary="emit('view-summary')" />
 
@@ -365,6 +366,7 @@
             v-else
             :result="result"
             :duration="team.duration"
+            :frame-length="teamFrameLength"
             @selected-attack="onSelectedAttack" />
         </div>
       </div>
@@ -387,7 +389,7 @@ import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import RotationFrameTiming from "./RotationFrameTiming.vue";
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
-import type { TimingSlot } from "../calculator/rotationTiming";
+import { rotationLength, type RotationLength, type TimingSlot } from "../calculator/rotationTiming";
 import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
@@ -1023,6 +1025,10 @@ const {
 } = useTeamRotationTiming(
   computed(() => (team.value?.actions ?? []) as Array<Record<string, unknown>>),
   timingSlots,
+);
+// For the header's and damages panel's DPS (ADR 0048).
+const teamFrameLength = computed<RotationLength | null>(() =>
+  isFrameTimingOn.value && teamHasFrameData.value ? rotationLength(teamTiming.value) : null,
 );
 
 const primaryCharacterElement = computed(

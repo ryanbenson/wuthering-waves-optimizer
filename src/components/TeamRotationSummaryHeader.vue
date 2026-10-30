@@ -30,7 +30,9 @@
         Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
         Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
       </span>
-      <span v-if="duration" class="opacity-70 shrink-0">{{ displayDamage(result.dps.normal) }} DPS</span>
+      <span v-if="headline" class="opacity-70 shrink-0" :title="headline.label" data-test-team-rotation-header-dps>
+        {{ displayDamage(headline.dps.normal) }} DPS{{ headline.source === "frames" ? " (frame data)" : "" }}
+      </span>
       <div class="flex-1 min-w-[100px] max-w-xs">
         <TeamRotationDamageBar :per-character="result.perCharacter" compact />
       </div>
@@ -76,7 +78,10 @@
           Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
           Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
         </span>
-        <span v-if="duration"><span class="font-bold">DPS:</span> {{ displayDamage(result.dps.normal) }}</span>
+        <span v-if="headline" :title="headline.label" data-test-team-rotation-header-dps>
+          <span class="font-bold">DPS{{ headline.source === "frames" ? " (frame data)" : "" }}:</span>
+          {{ displayDamage(headline.dps.normal) }}
+        </span>
         <span class="opacity-70">{{ actionCount }} action{{ actionCount === 1 ? "" : "s" }}</span>
       </div>
       <TeamRotationDamageBar :per-character="result.perCharacter" />
@@ -85,12 +90,19 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import TeamRotationDamageBar from "./TeamRotationDamageBar.vue";
 import { displayDamage } from "../utils/numbers";
-import type { DamageAggregation, RotationDps, TeamRotationCharacterResult } from "../calculator/teamRotation";
+import {
+  headlineDps,
+  rotationDpsReadings,
+  type DamageAggregation,
+  type RotationDps,
+  type TeamRotationCharacterResult,
+} from "../calculator/teamRotation";
+import type { RotationLength } from "../calculator/rotationTiming";
 
-defineProps<{
+const props = defineProps<{
   teamName: string;
   characterIds: Array<string | null>;
   actionCount: number;
@@ -100,7 +112,14 @@ defineProps<{
     total: DamageAggregation;
     dps: RotationDps;
   };
+  /** Length from frame data, or null while the frameTiming lab is off. */
+  frameLength?: RotationLength | null;
 }>();
+
+// The typed duration's DPS, else frame data's (ADR 0048).
+const headline = computed(() =>
+  headlineDps(rotationDpsReadings(props.result.total, props.duration, props.frameLength ?? null)),
+);
 
 const emit = defineEmits<{
   "view-damages": [];

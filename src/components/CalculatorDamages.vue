@@ -585,15 +585,22 @@
         Average: {{ displayDamage(rotation.damageAggregation.avgDamage) }} /
         Crit: {{ displayDamage(rotation.damageAggregation.critDamage) }}
       </h4>
-      <h4 class="text" v-if="rotation.duration">
-        <span class="font-bold">DPS ({{ rotation.duration }}s)</span>
+      <h4
+        v-for="reading in dpsReadings(rotation)"
+        :key="reading.source"
+        class="text"
+        :data-test-rotation-dps="reading.source">
+        <span class="font-bold">{{ reading.label }}</span>
         Normal:
-        {{ displayDamage(rotationDps(rotation).normal) }}
+        {{ displayDamage(reading.dps.normal) }}
         / Average:
-        {{ displayDamage(rotationDps(rotation).avg) }}
+        {{ displayDamage(reading.dps.avg) }}
         / Crit:
-        {{ displayDamage(rotationDps(rotation).crit) }}
+        {{ displayDamage(reading.dps.crit) }}
       </h4>
+      <FrameDataNote
+        v-if="dpsReadings(rotation).some((reading) => reading.source === 'frames')"
+        :missing="rotation.frameLength?.missing ?? 0" />
       <h4
         v-if="rotation.damageAggregation.healing"
         class="text calculation__damage__item--healing">
@@ -685,9 +692,12 @@
 import { computed, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
-import { calcRotationDps } from "../calculator/teamRotation";
+import { rotationDpsReadings } from "../calculator/teamRotation";
+import { useSettingsStore } from "../stores/settings";
+import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
+import FrameDataNote from "./FrameDataNote.vue";
 
 type DamageMap = Record<string, any>;
 
@@ -731,8 +741,16 @@ const echoName = computed(() => echoData.value?.name ?? null);
 const echoDetails = computed(() => echoData.value?.details ?? null);
 const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
 
-function rotationDps(rotation: { damageAggregation: any; duration: unknown }) {
-  return calcRotationDps(rotation.damageAggregation, rotation.duration as any);
+const settingsStore = useSettingsStore();
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+
+// Frame data first (while the lab is on), then the typed duration (ADR 0048).
+function dpsReadings(rotation: { damageAggregation: any; duration: unknown; frameLength?: any }) {
+  return rotationDpsReadings(
+    rotation.damageAggregation,
+    rotation.duration as any,
+    isFrameTimingOn.value ? rotation.frameLength : null,
+  );
 }
 
 const sortedDamageRotations = computed(() => {

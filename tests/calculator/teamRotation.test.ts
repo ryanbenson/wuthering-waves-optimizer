@@ -4,6 +4,10 @@ import {
   calcRotationDps,
   calcStrongestHit,
   calcRotationTimeline,
+  calcFrameTimeline,
+  frameTimelineDuration,
+  headlineDps,
+  rotationDpsReadings,
   convertRotationActionsForSlot,
   computeTeamImportBase,
   type TeamRotationAction,
@@ -15,6 +19,8 @@ import { resolveRotationActionToAttackData } from "../../src/calculator/resolveR
 import { calcDamages } from "../../src/calculator/attacks";
 import { calcCharacterRotationDamage } from "../../src/calculator/characterRotation";
 import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext";
+import type { RotationTiming } from "../../src/calculator/rotationTiming";
+import { rotations as suomingRotations } from "../../src/characters/Suoming/presets";
 
 const enemyConfig: TeamEnemyConfig = {
   enemyLevel: 90,
@@ -543,5 +549,119 @@ describe("importing a Character Rotation's per-action buffs into a Team Rotation
     expect(teamPlain.attack.damage.totalDamage).toBeCloseTo(sourcePlain.damage.totalDamage);
     expect(teamOverridden.attack.damage.totalDamage).toBeCloseTo(sourceOverridden.damage.totalDamage);
     expect(teamOverridden.attack.damage.totalDamage).toBeGreaterThan(teamPlain.attack.damage.totalDamage);
+  });
+});
+
+// ADR 0048: frame data in the results views.
+describe("rotationDpsReadings", () => {
+  const total = { normalDamage: 1200, avgDamage: 1500, critDamage: 2400, healing: 0, shield: 0 };
+
+  it("lists frame data first, then the typed duration", () => {
+    const readings = rotationDpsReadings(total, "12", { gameFrames: 600, realFrames: 900, missing: 1 });
+    expect(readings.map((reading) => reading.source)).toEqual(["frames", "typed"]);
+    expect(readings[0]).toMatchObject({ seconds: 10, label: "DPS from frame data (10.00s)", missing: 1 });
+    expect(readings[0].dps).toEqual({ normal: 120, avg: 150, crit: 240 });
+    expect(readings[1]).toMatchObject({ seconds: 12, label: "DPS (12s)" });
+    expect(readings[1].dps.avg).toBe(125);
+  });
+
+  it("skips a missing, zero or non-numeric length instead of dividing by it", () => {
+    expect(rotationDpsReadings(total, null, null)).toEqual([]);
+    expect(rotationDpsReadings(total, "", { gameFrames: 0, realFrames: 0, missing: 3 })).toEqual([]);
+    expect(rotationDpsReadings(total, "abc", null)).toEqual([]);
+  });
+
+  it("headlines the typed duration over frame data, and frame data when it's all there is", () => {
+    const frames = { gameFrames: 600, realFrames: 600, missing: 0 };
+    expect(headlineDps(rotationDpsReadings(total, 12, frames))?.source).toBe("typed");
+    expect(headlineDps(rotationDpsReadings(total, null, frames))?.source).toBe("frames");
+    expect(headlineDps([])).toBeNull();
+  });
+});
+
+describe("calcFrameTimeline", () => {
+  function result(id: string, order: number, totalDamage: number, type = "basic") {
+    return {
+      characterId: "Suoming",
+      slot: 0 as const,
+      order,
+      attack: { id, type, label: id, damage: { totalDamage, avgDamage: totalDamage, critDamage: totalDamage } },
+    };
+  }
+
+  function timing(actions: RotationTiming["actions"], gameFrames: number): RotationTiming {
+    return { actions, gameFrames, realFrames: gameFrames, missing: [] };
+  }
+
+  const hit = (frame: number) => ({ frame, energy: 0, concerto: 0 });
+
+  it("places each action midway between its first and last landed hits", () => {
+    const points = calcFrameTimeline(
+      [result("a", 1, 100), result("b", 2, 50)],
+      timing(
+        [
+          { id: "a", start: 0, gameFrames: 60, realFrames: 60, hits: [hit(30), hit(90)], missing: false },
+          { id: "b", start: 60, gameFrames: 60, realFrames: 60, hits: [], missing: false },
+        ],
+        120,
+      ),
+    );
+    // a lands at frame 60 (1s); b has no hits, so it sits at its start (1s too).
+    expect(points.map((point) => [point.label, point.time])).toEqual([
+      ["a", 1],
+      ["b", 1],
+    ]);
+  });
+
+  it("splits a repeated action's damage across its repeats", () => {
+    const points = calcFrameTimeline(
+      [result("a", 1, 90)],
+      timing(
+        [0, 1, 2].map((i) => ({ id: "a", start: i * 60, gameFrames: 60, realFrames: 60, hits: [hit(i * 60 + 30)], missing: false })),
+        180,
+      ),
+    );
+    expect(points.map((point) => point.time)).toEqual([0.5, 1.5, 2.5]);
+    expect(points.map((point) => point.normalDamage)).toEqual([30, 30, 30]);
+  });
+
+  it("sorts by landing time, leaves out healing, and runs the axis to the latest hit", () => {
+    const points = calcFrameTimeline(
+      [result("late", 1, 10), result("early", 2, 10), result("heal", 3, 10, "Healing")],
+      timing(
+        [
+          { id: "late", start: 0, gameFrames: 30, realFrames: 30, hits: [hit(200)], missing: false },
+          { id: "early", start: 30, gameFrames: 30, realFrames: 30, hits: [hit(40)], missing: false },
+          { id: "heal", start: 60, gameFrames: 0, realFrames: 0, hits: [], missing: false },
+        ],
+        60,
+      ),
+    );
+    expect(points.map((point) => point.label)).toEqual(["early", "late"]);
+    // The rotation is 1s, but the late hit lands at 200 frames.
+    expect(frameTimelineDuration(timing([], 60), points)).toBeCloseTo(200 / 60);
+  });
+});
+
+describe("calcTeamRotationDamage timing", () => {
+  it("returns the team's frame-data timing, matching the character page for an imported preset", async () => {
+    const preset = suomingRotations[0].data as { actions: Array<Record<string, unknown>> };
+    const actions = preset.actions.map((action, index) => ({ ...action, id: `s${index}`, slot: 0 })) as TeamRotationAction[];
+    const result = await calcTeamRotationDamage(
+      { characterIds: ["Suoming", null, null], actions, duration: null },
+      { Suoming: {} },
+      enemyConfig,
+    );
+    // 790 is the reviewed length in rotationTiming.test.ts's preset snapshot.
+    expect(result.timing?.gameFrames).toBe(790);
+  });
+
+  it("is null when no teammate has frame data", async () => {
+    const result = await calcTeamRotationDamage(
+      { characterIds: ["Calcharo", null, null], actions: [{ id: "a", slot: 0, order: 0, type: "basic", key: "Part1Damage", count: 1 }], duration: 10 },
+      { Calcharo: {} },
+      enemyConfig,
+    );
+    expect(result.timing).toBeNull();
   });
 });

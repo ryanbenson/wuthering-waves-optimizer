@@ -552,6 +552,8 @@ import {
 } from "../calculator/attacks";
 import { buildOptimizerRotationData } from "../calculator/rotationData";
 import { calcCharacterRotationDamage } from "../calculator/characterRotation";
+import { characterRotationTiming, rotationLength } from "../calculator/rotationTiming";
+import { echoFrames } from "../echoes/frames";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
   getOptimizerLoadoutHash,
@@ -1076,16 +1078,18 @@ export default defineComponent({
         // other's in-flight mutation of that shared object.
         const rotationResults = [];
         for (const rotation of rotationsList.value) {
-          rotationResults.push(
-            await calcCharacterRotationDamage(
-              rotation,
-              { chosenChar: chosenChar.value, characterLevel: characterLevel.value, context },
-              character.value,
-              characters.value,
-              enemyConfig,
-              inventoryStore.echoes,
-            ),
+          const result = await calcCharacterRotationDamage(
+            rotation,
+            { chosenChar: chosenChar.value, characterLevel: characterLevel.value, context },
+            character.value,
+            characters.value,
+            enemyConfig,
+            inventoryStore.echoes,
           );
+          // Frame-data length (ADR 0048) for the results views' DPS; they
+          // only show it while the frameTiming lab is on.
+          const timing = characterRotationTiming(rotation.actions, chosenChar.value, echoFrames, rotation.mainEcho);
+          rotationResults.push({ ...result, frameLength: timing ? rotationLength(timing) : null });
           // A newer call landed while this one was still awaiting a
           // per-action rebuilt context — stop and let it own the result
           // instead of finishing this stale computation.

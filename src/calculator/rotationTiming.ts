@@ -268,6 +268,44 @@ export function buildTeamTimingActions(
   return buildTimingActions(withCharacters, (characterId) => (characterId ? dataById.get(characterId) : null), echoFrames);
 }
 
+function byOrder(actions: any[]): any[] {
+  return [...actions].sort((a, b) => Number(a.order) - Number(b.order));
+}
+
+/** Timing for one character rotation, or null when the character has no
+ * frame data at all. */
+export function characterRotationTiming(
+  actions: any[],
+  characterData: { frames?: FrameDataFile } | null | undefined,
+  echoFrames: Record<string, Record<string, AttackFrames>>,
+  mainEcho: string | null,
+): RotationTiming | null {
+  if (!characterData?.frames) return null;
+  return computeRotationTiming(buildTimingActions(byOrder(actions), () => characterData, echoFrames, mainEcho));
+}
+
+/** Timing for a team rotation, or null when no slot has frame data. */
+export function teamRotationTiming(
+  actions: any[],
+  slots: Array<TimingSlot | null>,
+  echoFrames: Record<string, Record<string, AttackFrames>>,
+): RotationTiming | null {
+  if (!slots.some((slot) => slot?.data?.frames)) return null;
+  return computeRotationTiming(buildTeamTimingActions(actions, slots, echoFrames));
+}
+
+/** The totals of a rotation's timing, small enough to carry on a damage result. */
+export interface RotationLength {
+  gameFrames: number;
+  realFrames: number;
+  /** Actions without frame data, counted as 0. */
+  missing: number;
+}
+
+export function rotationLength(timing: RotationTiming): RotationLength {
+  return { gameFrames: timing.gameFrames, realFrames: timing.realFrames, missing: timing.missing.length };
+}
+
 export function framesToSeconds(frames: number): number {
   return frames / FRAMES_PER_SECOND;
 }

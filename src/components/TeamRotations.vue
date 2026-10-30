@@ -427,6 +427,9 @@
               <div class="text-xs opacity-70 flex flex-wrap gap-x-3 gap-y-1">
                 <span>{{ team.actions.length }} action{{ team.actions.length === 1 ? "" : "s" }}</span>
                 <span v-if="team.duration">{{ team.duration }}s rotation</span>
+                <span v-else-if="frameSecondsOf(team.id)" data-test-team-rotations-frame-length>
+                  {{ frameSecondsOf(team.id)!.toFixed(2) }}s rotation (frame data)
+                </span>
               </div>
               <div class="text-sm" data-test-team-rotations-total-dmg>
                 <span class="font-bold">Total DMG:</span>
@@ -482,6 +485,9 @@
                 <div class="text-xs opacity-70 flex flex-wrap gap-x-2">
                   <span>{{ team.actions.length }} action{{ team.actions.length === 1 ? "" : "s" }}</span>
                   <span v-if="team.duration">{{ team.duration }}s rotation</span>
+                <span v-else-if="frameSecondsOf(team.id)" data-test-team-rotations-frame-length>
+                  {{ frameSecondsOf(team.id)!.toFixed(2) }}s rotation (frame data)
+                </span>
                 </div>
               </div>
               <div class="text-sm shrink-0" data-test-team-rotations-total-dmg>
@@ -577,7 +583,10 @@ import { useInventoryStore } from "../stores/inventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
-import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRotation";
+import { calcTeamRotationDamage, calcStrongestHit, headlineDps, rotationDpsReadings } from "../calculator/teamRotation";
+import { framesToSeconds, rotationLength, type RotationLength } from "../calculator/rotationTiming";
+import { useSettingsStore } from "../stores/settings";
+import { isFrameTimingEnabled } from "../utils/labs";
 import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import { displayDamage } from "../utils/numbers";
 import type { TeamExportData } from "../teamRotations/exportImport";
@@ -862,9 +871,10 @@ interface TeamSummaryStats {
   normal: number;
   avg: number;
   crit: number;
-  dpsNormal: number;
-  dpsAvg: number;
-  dpsCrit: number;
+  /** From frame data, whether or not the frameTiming lab is on; DPS is
+   * worked out at display time (teamDps) so toggling the lab needs no
+   * recompute. */
+  frameLength: RotationLength | null;
   hitNormal: number;
   hitAvg: number;
   hitCrit: number;
@@ -873,6 +883,30 @@ interface TeamSummaryStats {
 }
 
 const teamStats = ref<Record<string, TeamSummaryStats>>({});
+
+const settingsStore = useSettingsStore();
+const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+
+function frameLengthOf(stats: TeamSummaryStats | undefined): RotationLength | null {
+  return isFrameTimingOn.value ? (stats?.frameLength ?? null) : null;
+}
+
+// A team's one DPS: its typed duration's, else frame data's while the lab is
+// on (ADR 0048). Null with neither, so a new team with no length never
+// "wins" the leaderboard on an Infinity.
+function teamDps(stats: TeamSummaryStats, team: any) {
+  const readings = rotationDpsReadings(
+    { normalDamage: stats.normal, avgDamage: stats.avg, critDamage: stats.crit, healing: 0, shield: 0 },
+    team.duration,
+    frameLengthOf(stats),
+  );
+  return headlineDps(readings)?.dps ?? null;
+}
+
+function frameSecondsOf(teamId: string): number | null {
+  const length = frameLengthOf(teamStats.value[teamId]);
+  return length && length.gameFrames > 0 ? framesToSeconds(length.gameFrames) : null;
+}
 let statsComputeToken = 0;
 
 // The character data a slot's calculation actually reads: its (build-
@@ -924,20 +958,11 @@ async function computeStatsForTeam(team: any): Promise<TeamSummaryStats> {
     inventoryEchoes.value,
   );
   const strongest = calcStrongestHit(result.actionResults);
-  // calcRotationDps divides by team.duration with no zero/NaN guard —
-  // a team with no duration set (the default for a new team) would
-  // otherwise report Infinity DPS and "win" the leaderboard despite
-  // having the lowest actual damage. Treat "no duration" as "no DPS
-  // to report" instead, same as every other DPS display in the app
-  // already gates on `duration` being truthy.
-  const hasDuration = Number(team.duration) > 0;
   return {
     normal: result.total.normalDamage ?? 0,
     avg: result.total.avgDamage ?? 0,
     crit: result.total.critDamage ?? 0,
-    dpsNormal: hasDuration ? result.dps.normal : 0,
-    dpsAvg: hasDuration ? result.dps.avg : 0,
-    dpsCrit: hasDuration ? result.dps.crit : 0,
+    frameLength: result.timing ? rotationLength(result.timing) : null,
     hitNormal: strongest.normal,
     hitAvg: strongest.avg,
     hitCrit: strongest.crit,
@@ -1057,12 +1082,12 @@ function teamTotalDamage(teamId: string, variant: "normal" | "avg" | "crit"): st
 // always matches what the list below actually shows. All find the max
 // among teams with real (non-zero) values, so an all-zero roster (e.g. no
 // actions configured yet) shows nothing rather than an arbitrary team.
-function strongestTeamBy(getValue: (stats: TeamSummaryStats) => number) {
+function strongestTeamBy(getValue: (stats: TeamSummaryStats, team: any) => number) {
   let best: { team: any; value: number } | null = null;
   for (const team of filteredTeams.value as any[]) {
     const stats = teamStats.value[team.id];
     if (!stats) continue;
-    const value = getValue(stats);
+    const value = getValue(stats, team);
     if (value > 0 && (!best || value > best.value)) {
       best = { team, value };
     }
@@ -1074,13 +1099,11 @@ const strongestTeamByDamage = computed(() =>
   strongestTeamBy((stats) => stats[leaderboardMetric.value]),
 );
 const bestDpsTeam = computed(() =>
-  strongestTeamBy((stats) =>
-    leaderboardMetric.value === "normal"
-      ? stats.dpsNormal
-      : leaderboardMetric.value === "crit"
-        ? stats.dpsCrit
-        : stats.dpsAvg,
-  ),
+  strongestTeamBy((stats, team) => {
+    const dps = teamDps(stats, team);
+    if (!dps) return 0;
+    return leaderboardMetric.value === "normal" ? dps.normal : leaderboardMetric.value === "crit" ? dps.crit : dps.avg;
+  }),
 );
 const strongestHitTeam = computed(() =>
   strongestTeamBy((stats) =>
