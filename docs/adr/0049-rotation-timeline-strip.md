@@ -3,6 +3,7 @@ status: accepted
 date: 2026-10-29
 tags: [calculator, components, labs]
 supersedes: [15]
+superseded_by: [50]
 ---
 
 # 49. Rotation editors' charts on a game-time axis
@@ -41,6 +42,9 @@ Behind the same `frameTiming` Labs flag, and only when the rotation has frame da
   - The helper is pure and unit-tested; the components share the readout, share bars and width handling.
 - Cons:
   - Damage doesn't account for an early exit: hits after a cancel or swap frame drop out of the timing, but the action's damage is unchanged. Fixing that belongs in the damage pipeline, not here.
+
+    **Superseded 2026-10-30:** swaps no longer drop hits (ADR [0050](./0050-swapped-out-hits-still-land.md)). Cancels still can, but almost never at the earliest cancel frame.
+
   - Repeated off-field actions and shared-ability parts still land at one moment (ADR 0048's limits). Actions landing at the same moment share a point on the Pace chart.
   - The ordered strip remains for rotations without frame data, so the editors have two chart styles.
   - Label fitting uses an estimated text width, so a label can be a little shorter than the room allows.

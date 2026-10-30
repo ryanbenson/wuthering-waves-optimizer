@@ -51,7 +51,7 @@
     <div v-else class="text-xs text-warning">No frame data for this action, so it counts as 0s.</div>
     <div class="text-xs opacity-60">
       Dash cancels add {{ DASH_CANCEL_FRAMES }}f and jump cancels {{ JUMP_CANCEL_FRAMES }}f. A swap never happens
-      before the "swap from" frame.
+      before the "swap from" frame, and the character still finishes the attack after you swap.
     </div>
   </div>
 </template>

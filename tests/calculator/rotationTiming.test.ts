@@ -90,10 +90,16 @@ describe("rotation timing rules", () => {
     expect(lengthOf([{ frames: suoming("Basic: Unfurled Canopy 3"), end: { type: "swap" } }]).gameFrames).toBe(10);
   });
 
-  it("still lands hits committed before a swap, after the character has left", () => {
-    const timing = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 90 } }]);
-    expect(timing.gameFrames).toBe(90);
-    expect(timing.actions[0].hits.map((hit) => hit.frame)).toEqual([61, 67, 85, 91, 97, 103]);
+  it("lands every hit of a swapped-out action at its own frame, after the character has left", () => {
+    // Swapping out at 10f, long before any hit commits: the character keeps
+    // attacking off field, so nothing is lost and field time is still 10f.
+    const early = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 10 } }]);
+    const full = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift") }]);
+    expect(early.gameFrames).toBeLessThan(full.gameFrames);
+    expect(early.actions[0].hits.map((hit) => hit.frame)).toEqual(full.actions[0].hits.map((hit) => hit.frame));
+    const late = lengthOf([{ frames: suoming("Intro: Furled Canopy - Flash Rift"), end: { type: "swap", frame: 90 } }]);
+    expect(late.gameFrames).toBe(90);
+    expect(late.actions[0].hits.map((hit) => hit.frame)).toEqual([61, 67, 85, 91, 97, 103]);
   });
 
   it("drops hits not yet committed when the action is cancelled early", () => {

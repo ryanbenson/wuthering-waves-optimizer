@@ -8,10 +8,11 @@
  * the ability.
  */
 
-/** One hit: `[frame, commitFrame, energy, concerto]`. A hit whose commit frame
- * is at or before the point the character leaves still lands, even if its
- * own frame comes later (that is what makes swap cancels work). Energy and
- * concerto are the game's raw values (×100 of what the UI shows). */
+/** One hit: `[frame, commitFrame, energy, concerto]`. When an action is
+ * cancelled (or dash/jump cancelled), a hit whose commit frame is at or
+ * before the cancel still lands, even if its own frame comes later. A swap
+ * keeps every hit: the character finishes the attack off field (ADR 0050).
+ * Energy and concerto are the game's raw values (×100 of what the UI shows). */
 export type FrameHit = [frame: number, commitFrame: number, energy: number, concerto: number];
 
 export interface AttackFrames {
