@@ -119,6 +119,7 @@ const rectifiersList = {
 
 const pistolsList = {
   five: [
+    { key: "Lullaby", name: "Lullaby", mainStat: "EnergyRegen" },
     { key: "LuxUmbra", name: "Lux & Umbra", mainStat: "CritDMG" },
     { key: "PhasicHomogenizer", name: "Phasic Homogenizer", mainStat: "CritDMG" },
     { key: "SkullThrasher", name: "Skull Thrasher", mainStat: "CritDMG" },
@@ -144,8 +145,12 @@ const pistolsList = {
     { key: "PistolsOfNight", name: "Pistols Of Night", mainStat: "ATK" },
     { key: "PistolsOfVoyager", name: "Pistols Of Voyager", mainStat: "ATK" },
   ],
-  two: [{ key: "TyroPistols", name: "Tyro Pistols", mainStat: "ATK" }],
-  one: [{ key: "TrainingPistols", name: "Training Pistols", mainStat: "ATK" }],
+  two: [
+    { key: "TyroPistols", name: "Tyro Pistols", mainStat: "ATK" },
+  ],
+  one: [
+    { key: "TrainingPistols", name: "Training Pistols", mainStat: "ATK" },
+  ],
 };
 
 const gauntletsList = {

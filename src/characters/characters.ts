@@ -30,6 +30,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Jingran", name: "Jingran" },
     { key: "Jinhsi", name: "Jinhsi" },
     { key: "Jiyan", name: "Jiyan" },
+    { key: "Lily", name: "Lily" },
     { key: "Lingyang", name: "Lingyang" },
     { key: "Lucilla", name: "Lucilla" },
     { key: "Lucy", name: "Lucy" },
@@ -230,6 +231,13 @@ export const allCharactersList = [
     element: "Aero",
     rarity: 5,
     weapon: "Broadblade",
+  },
+  {
+    key: "Lily",
+    name: "Lily",
+    element: "Spectro",
+    rarity: 5,
+    weapon: "Pistol",
   },
   {
     key: "Lingyang",

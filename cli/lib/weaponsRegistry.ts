@@ -2,7 +2,8 @@ import fs from "fs";
 
 interface PickerEntry {
   key: string;
-  name: string;
+  /** The entry's source text, kept verbatim so fields like `mainStat` survive a rewrite. */
+  text: string;
 }
 
 export interface WeaponRegistryEntry {
@@ -10,6 +11,8 @@ export interface WeaponRegistryEntry {
   name: string;
   typePlural: string;
   rarity: 1 | 2 | 3 | 4 | 5;
+  /** Secondary stat modifier, e.g. "CritRate" — powers the weapon browser's stat filter. */
+  mainStat?: string;
 }
 
 const RARITY_KEYS = ["five", "four", "three", "two", "one"] as const;
@@ -47,15 +50,16 @@ function parsePickerEntries(
   const nextRarity = RARITY_KEYS[rarityIndex + 1];
   const pattern = nextRarity
     ? new RegExp(`${rarity}:\\s*\\[([\\s\\S]*?)\\],\\s*${nextRarity}:`)
-    : new RegExp(`${rarity}:\\s*\\[([\\s\\S]*?)\\],?\\s*\\};`);
+    : // parseWeaponList's body stops before the closing `};`
+      new RegExp(`${rarity}:\\s*\\[([\\s\\S]*?)\\],?\\s*$`);
   const match = listContent.match(pattern);
   if (!match) {
     return [];
   }
 
-  return [
-    ...match[1].matchAll(/\{\s*key:\s*"([^"]+)",\s*name:\s*"([^"]+)"\s*\}/g),
-  ].map(([, key, name]) => ({ key, name }));
+  return [...match[1].matchAll(/\{\s*key:\s*"([^"]+)"[^}]*\}/g)].map(
+    ([text, key]) => ({ key, text }),
+  );
 }
 
 function parseWeaponList(content: string, listName: string): string {
@@ -69,8 +73,15 @@ function parseWeaponList(content: string, listName: string): string {
   return match[1];
 }
 
-function formatPickerEntry(entry: PickerEntry): string {
-  return `    { key: "${entry.key}", name: "${entry.name}" },`;
+function formatPickerEntry(entry: WeaponRegistryEntry): string {
+  const mainStat = entry.mainStat ? `, mainStat: "${entry.mainStat}"` : "";
+  return `{ key: "${entry.key}", name: "${entry.name}"${mainStat} }`;
+}
+
+/** Inserts alphabetically by key without re-sorting the hand-ordered entries around it. */
+function insertPickerEntry(entries: PickerEntry[], entry: PickerEntry): void {
+  const index = entries.findIndex((item) => item.key.localeCompare(entry.key) > 0);
+  entries.splice(index === -1 ? entries.length : index, 0, entry);
 }
 
 function formatWeaponListBlock(
@@ -80,11 +91,11 @@ function formatWeaponListBlock(
 ): string {
   const exportPrefix = isExported ? "export " : "";
   const sections = RARITY_KEYS.map((rarity) => {
-    const entries = entriesByRarity[rarity]
-      .slice()
-      .sort((a, b) => a.key.localeCompare(b.key));
+    const entries = entriesByRarity[rarity];
     const body =
-      entries.length > 0 ? `\n${entries.map(formatPickerEntry).join("\n")}\n  ` : " ";
+      entries.length > 0
+        ? `\n${entries.map((entry) => `    ${entry.text},`).join("\n")}\n  `
+        : " ";
     return `  ${rarity}: [${body}],`;
   }).join("\n");
 
@@ -126,7 +137,10 @@ export function patchWeaponsRegistry(
     ]),
   ) as Record<RarityKey, PickerEntry[]>;
 
-  entriesByRarity[rarityKey].push({ key: entry.key, name: entry.name });
+  insertPickerEntry(entriesByRarity[rarityKey], {
+    key: entry.key,
+    text: formatPickerEntry(entry),
+  });
 
   const updatedListBlock = formatWeaponListBlock(
     listName,

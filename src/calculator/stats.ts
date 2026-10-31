@@ -1196,6 +1196,15 @@ export const computeSelfBuffs = (
   return data;
 };
 
+/**
+ * Whole steps of `step` in `amount`, for "every X% of a stat" buffs. The
+ * tolerance absorbs float error at exact boundaries — e.g. (2.6 - 1.9) / 0.007
+ * is 99.99999999999999, and 2.3 * 100 is 229.99999999999997 — which would
+ * otherwise drop the last step.
+ */
+export const countStatSteps = (amount: number, step: number): number =>
+  Math.floor(amount / step + 1e-9);
+
 // Separate function to calculate ONLY AdditionalBase modifiers
 // These modifiers depend on final stats (like CritRate), so they need to be calculated
 // after resonance chains and self buffs have been applied
@@ -1243,7 +1252,7 @@ const applyAdditionalBaseModifiers = (
         break;
     }
     const additionalAmount = currentAmount * scale - base * scale;
-    let steps = Math.floor(additionalAmount / modifierItem.modifierStep);
+    let steps = countStatSteps(additionalAmount, modifierItem.modifierStep);
     // caps how many steps count toward the effect (e.g. "up to 25000 HP over the
     // threshold counts"), independent of any maximumValue cap on the final buffValue
     if (modifierItem.maxSteps !== undefined && steps > modifierItem.maxSteps) {

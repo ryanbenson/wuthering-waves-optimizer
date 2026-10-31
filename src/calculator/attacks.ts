@@ -547,6 +547,10 @@ export const calculateAttackDamage = (
       context.equipment.echoStats?.[`CritRate:${attack.type}`] ?? 0;
   }
   let weaponBuffCritRateForType = context.equipment.weapon.weaponPassiveStats?.[`CritRate:${attackType}`] ?? 0;
+  // e.g. Lily's Silvered Dream raises the active Resonator's Echo Skill Crit. Rate
+  const teamBuffCritRateForType = excludeTeamBuffs
+    ? 0
+    : (context.buffs.teamBuffsData?.[`CritRate:${attackType}`] ?? 0);
   // need to divide by 100 since the echo data is flul numbers
   // but we're injecting it to the calcs which is decimal based
   echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
@@ -592,6 +596,7 @@ export const calculateAttackDamage = (
     specificSkillExtraCritRateResonanceChains +
     echoSpecificAttackTypeCritRate +
     weaponBuffCritRateForType +
+    teamBuffCritRateForType +
     specificSkillExtraCritRateTeamBuffs;
   if (excludeTeamBuffs) {
     instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
