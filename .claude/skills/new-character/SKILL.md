@@ -34,11 +34,36 @@ Work through every item before moving on. If the checklist was empty, still skim
 
 **Optional:** a curated default substat-priority weight profile for the new character in `src/characters/substatPriorities.ts` (issue #451's Substat Score feature) — not required, the new character falls back to a neutral weight profile until curated. Only add one if you have a credible source (e.g. matching the existing entries' Tacet Lab provenance); never guess. If you do, only use keys from `subStats` in `src/echoes/stats.ts` — "Healing Bonus" in particular is an echo *main* stat, not a valid substat weight key.
 
+## 2b. Read the kit text against what was imported
+
+The CLI copies numbers and keys faithfully, but it guesses at meaning. Read every skill, inherent, outro and chain description and check the generated data says the same thing:
+
+- **Scaling stat.** Each attack's `attribute` must match the multiplier text ("ATK" / "HP" / "DEF"). The API's DamageList can disagree with the skill: Lily's Intro Skill came in as ATK when it scales off HP.
+- **Leftover placeholders and typos** in `details` and names (e.g. `{7}s`, "peforms"). Fix them in the text.
+- **Keys.** Generated keys come from names. If a name has punctuation or spaces, make the key plain alphanumeric now: once it ships, renaming it needs a migration (`src/migrations/`).
+- **Off-field and conditional effects.** A buff that's removed when the character swaps in, or only reaches certain hits, needs that limit spelled out in `details` and usually `alwaysEnabled: false`.
+
 ## 3. Hand-write custom modifiers using the pattern catalog
 
 Buffs the CLI can't infer (multiplier overrides, talent replacements, stacking conditions, stat-based scaling) need to be written by hand. `docs/creating-new-character.md` has a catalog of the common modifier shapes with real examples — base talent multiplier, additive multiplier, talent override, base talent addition, specific-skill multiplier, stat-based additional buffs, etc. Find the closest existing pattern there or in a similar character's `buffs.ts`/`resonanceChains.ts` before inventing a new modifier key.
 
 Note: that doc's *top* numbered workflow (manually visiting encore.moe, stripping HTML, running `.prompts/*.txt` through ChatGPT) predates the CLI automation in step 1 and is stale — use this skill's steps instead. The buff-pattern catalog further down the doc is still the reference.
+
+### Check the calculator can represent it
+
+Before writing a buff with an unusual shape (stacks that each scale off a stat, a new `Type:Attack` modifier, a team buff that keys off the teammate's stat), find where `src/calculator/stats.ts`, `src/calculator/attacks.ts` or `src/buffs/teamBuffs.ts` reads that field. If nothing does, the buff silently does nothing. Fix the engine first, in its own commit, with a unit test under `tests/calculator/` or `tests/buffs/`, and document the new field in `docs/creating-new-character.md`. Then write the data.
+
+### Ask only where the text is ambiguous
+
+Stop and ask the user when the kit text supports more than one reading and the choice changes numbers. Past examples: is a cap per stack or in total, should a conditional crit buff be on by default, is "+400% DMG" on a chain a DMG Bonus or a multiplier override. Put all the questions in one ask, with your recommended reading first. Don't ask about anything the text states plainly.
+
+## 3a. Team buffs
+
+Anything the character gives teammates (outro, team-wide inherent effects, team-facing chains) also goes in the character's group in `buffsByCharacter` in `src/buffs/index.ts`, usually under the same key as the self-buff in `buffs.ts`. See `docs/src-buffs.md`.
+
+- A team buff that scales off the character's own stat (Energy Regen, Crit Rate) uses `inputBase: true`, so the user types the teammate's stat in. Set `realisticBaseAttrValue` to a sensible suggestion, such as the value where every scaled buff hits its cap.
+- Stacked buffs where each stack scales: `hasStacks` plus `inputBase`, with `perStackMaximumValue` and `maximumValue` (see `docs/creating-new-character.md`).
+- Signature-weapon team buffs go in `allWeaponTeamBuffs`; the `new-weapon` skill covers them.
 
 ## 3b. Import frame data
 
@@ -59,4 +84,6 @@ There's no per-character unit-test convention (unit tests target the shared calc
 
 ## 6. Commit and PR
 
-Follow `docs/conventions.md` for branch naming and commit style.
+Follow `docs/conventions.md` for branch naming and commit style. Keep engine fixes, CLI fixes and character data in separate commits.
+
+If the character isn't live yet, it must not reach `master`, which deploys on every push (`CLAUDE.md`, "No unreleased content in production"). Put **Do not merge before X.Y is live** at the top of the PR description and leave merging to the user. Vercel branch previews are private to the repo owner, so pushing the branch is fine. When a later beta changes the kit, update the same branch: rerun the import with `--merge-modifiers` and recheck sections 2b–3a.
