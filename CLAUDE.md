@@ -90,6 +90,7 @@ Optimizer: main thread builds OptimizerContext
 ## Skills
 
 - `new-character`, `new-weapon`, `import-echoes`, `import-frames` (`.claude/skills/`) — CLI scaffold + manual-review workflow for adding game content.
+- `new-version` — a whole version's new characters and signature weapons in one held branch; sequences the two skills above.
 - `pr-review` — review the local branch or a PR (`/pr-review [<PR#>|<branch>] [--post]`) against these rules; reports only Blockers, Should fix and Nitpicks as one body comment.
 
 ## Deeper reading

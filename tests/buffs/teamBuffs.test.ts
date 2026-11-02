@@ -87,6 +87,76 @@ describe("resolveTeamBuffInstance", () => {
     expect(result.data.ATK).toBe(0);
   });
 
+  it("doesn't lose the last step to float error at an exact boundary", () => {
+    // Lily's Silvered Dream: +0.1% Echo Skill Crit. Rate per 0.7% Energy Regen above 190%, up to 10%
+    const def: TeamBuffDef = {
+      key: "SilveredDreamEchoCrit",
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+      modifiers: [
+        { modifier: "CritRate:Echo", modifierValue: 0.001, modifierStep: 0.007, maximumValue: 0.1, minStatValue: 190 },
+      ],
+    };
+    const result = resolveTeamBuffInstance(def, { isEnabled: true, baseAttrValue: 260 }, "Jinhsi", {}, {});
+    // (260 - 190) / 100 / 0.007 is 99.99999999999999 in floats; must count as 100 steps
+    expect(result.data["CritRate:Echo"]).toBeCloseTo(0.1);
+  });
+
+  describe("inputBase with stacks", () => {
+    // Lily's Dream Aroma: each stack gives +0.1% ATK per 1% Energy Regen above 190%, up to 7%, max 4 stacks
+    const dreamAroma: TeamBuffDef = {
+      key: "DreamAroma",
+      hasStacks: true,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.001,
+          modifierStep: 0.01,
+          minStatValue: 190,
+          perStackMaximumValue: 0.07,
+          maximumValue: 0.28,
+        },
+      ],
+    };
+
+    it("scales each stack off the entered stat", () => {
+      const result = resolveTeamBuffInstance(
+        dreamAroma,
+        { isEnabled: true, stacks: 2, baseAttrValue: 230 },
+        "Jinhsi",
+        {},
+        {},
+      );
+      // 40 steps * 0.1% = 4% per stack, * 2 stacks
+      expect(result.data.ATK).toBeCloseTo(0.08);
+    });
+
+    it("caps each stack before multiplying", () => {
+      const result = resolveTeamBuffInstance(
+        dreamAroma,
+        { isEnabled: true, stacks: 3, baseAttrValue: 300 },
+        "Jinhsi",
+        {},
+        {},
+      );
+      // 110 steps would be 11% per stack, capped at 7%, * 3 stacks
+      expect(result.data.ATK).toBeCloseTo(0.21);
+    });
+
+    it("gives nothing at or below the threshold", () => {
+      const result = resolveTeamBuffInstance(
+        dreamAroma,
+        { isEnabled: true, stacks: 4, baseAttrValue: 150 },
+        "Jinhsi",
+        {},
+        {},
+      );
+      expect(result.data.ATK).toBe(0);
+    });
+  });
+
   it("skips modifiers whose key includes AdditionalBase", () => {
     const def: TeamBuffDef = {
       key: "SomeBuff",

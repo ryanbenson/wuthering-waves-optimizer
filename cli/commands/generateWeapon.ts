@@ -42,14 +42,21 @@ function weaponExists(key: string, typePlural: string): boolean {
   );
 }
 
-export async function runGenerateWeapon(): Promise<void> {
+export interface GenerateWeaponOptions {
+  /** Weapon ID to generate; skips the search prompt when set. */
+  id?: number;
+}
+
+export async function runGenerateWeapon(
+  options: GenerateWeaponOptions = {},
+): Promise<void> {
   const weapons = await withSpinner(
     "Fetching weapon list from Encore API",
     () => fetchWeaponList(),
     (result) => `Loaded ${result.length} weapons`,
   );
 
-  const selectedId = await search({
+  const selectedId = options.id ?? await search({
     message: "Select a weapon to generate",
     source: async (input) => {
       const query = (input ?? "").trim().toLowerCase();
@@ -145,6 +152,7 @@ export async function runGenerateWeapon(): Promise<void> {
       name,
       typePlural,
       rarity,
+      mainStat: stats["1"]?.modifier,
     });
 
     progress.succeed(

@@ -120,8 +120,12 @@ async function fetchJson<T>(url: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export async function fetchCharacterList(): Promise<ApiCharacterListItem[]> {
-  const data = await fetchJson<CharacterListResponse>(CHARACTER_LIST_URL);
+export async function fetchCharacterList(
+  options: { beta?: boolean } = {},
+): Promise<ApiCharacterListItem[]> {
+  const data = await fetchJson<CharacterListResponse>(
+    withBetaParam(CHARACTER_LIST_URL, options.beta ?? false),
+  );
   // API returns oldest-first; reverse so newest characters appear first.
   return [...data.roleList].reverse();
 }
@@ -196,9 +200,10 @@ export function getCharacterName(detail: ApiCharacterDetail): string {
 
 export async function fetchCharacterDetail(
   id: number,
+  options: { beta?: boolean } = {},
 ): Promise<ApiCharacterDetail> {
   const data = await fetchJson<ApiCharacterDetail & { roleList?: unknown }>(
-    `${CHARACTER_API_BASE}/${id}`,
+    withBetaParam(`${CHARACTER_API_BASE}/${id}`, options.beta ?? false),
   );
 
   if (data.roleList !== undefined) {
