@@ -35,6 +35,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-02",
+    dateLabel: "November 2, 2026",
+    items: [
+      "Your stats now show how much comes from your build and how much from buffs. Each stat has a bar: gray is your build (the same number as your build card) and colored is what your buffs add on top",
+      "Click a stat in the full breakdown to see where it comes from: your build plus your buffs equals what you have now, with each source listed",
+    ],
+  },
+  {
     date: "2026-10-29",
     dateLabel: "October 29, 2026",
     items: [
