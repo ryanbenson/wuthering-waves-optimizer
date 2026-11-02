@@ -35,10 +35,37 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-02",
+    dateLabel: "November 2, 2026",
+    items: [
+      "Your stats now show how much comes from your build and how much from buffs. Each stat has a bar: gray is your build (the same number as your build card) and colored is what your buffs add on top",
+      "Click a stat in the full breakdown to see where it comes from: your build plus your buffs equals what you have now, with each source listed",
+    ],
+  },
+  {
+    date: "2026-10-30",
+    dateLabel: "October 30, 2026",
+    items: [
+      "Labs: with Rotation timing from frame data on, rotations get new charts. A character rotation shows your damage adding up over time and its biggest hits, and a team rotation shows each character in their own row, with when they swap in and out and their share of the damage",
+      "Labs: when you swap out of an attack, the rest of its hits now count. Before, frame-data timing could leave them out",
+    ],
+  },
+  {
     date: "2026-10-29",
     dateLabel: "October 29, 2026",
     items: [
       "Adds missing attack to Suoming's S6",
+      "New in Labs: Rotation timing from frame data (turn it on in Settings → Labs). Rotations work out how long they take from each attack's real animation length, and show the DPS from that next to the duration you typed",
+      "Labs: each action in a rotation has a badge that says how it ends (plays out, cancel, dash, jump or swap, plus an optional wait). Click it to change it, and the timing updates",
+      "Labs: frame-data timing works for team rotations too, and rotation results and leaderboards show the frame-data DPS",
+      "Frame data comes from wuwalab, now listed on the Credits page",
+    ],
+  },
+  {
+    date: "2026-10-28",
+    dateLabel: "October 28, 2026",
+    items: [
+      "Fixed a few misspelled attack and buff names. Your saved builds and rotations update automatically, and nothing changes in your numbers",
     ],
   },
   {

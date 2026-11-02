@@ -1,5 +1,16 @@
 <template>
   <div class="live-result-overview">
+    <div
+      v-if="buildStats"
+      class="flex items-center gap-3 px-1.5 pb-1.5 text-xs text-base-content/70"
+      data-test-live-result-overview-legend>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-1 rounded-sm bg-base-content/40"></span>Your build
+      </span>
+      <span class="flex items-center gap-1.5">
+        <span class="w-3.5 h-1 rounded-sm bg-accent"></span>Buffs
+      </span>
+    </div>
     <div v-for="group in groups" :key="group.label" class="stat-group">
       <div class="stat-group__label">{{ group.label }}</div>
       <table class="table w-full">
@@ -11,6 +22,7 @@
             :icon="row.icon"
             :label="row.label"
             :value="row.value"
+            :share="row.share"
             :pinned="pinnedKeys.includes(row.key)"
             @toggle-pin="(key) => emit('toggle-pin', key)"
             @stat-selected="(stat) => emit('stat-selected', stat)"></CalculatorLiveResultStatRow>
@@ -25,12 +37,16 @@ import { computed } from "vue";
 import CalculatorLiveResultStatRow from "./CalculatorLiveResultStatRow.vue";
 import { STAT_GROUPS } from "../calculator/pinnedStats";
 import { useLiveResultStatRows, type LiveResultStatSource } from "../composables/useLiveResultStatRows";
+import type { LiveStatValues } from "../calculator/buildOnlyStats";
 
 defineOptions({ name: "CalculatorLiveResultOverview" });
 
 const props = defineProps<
   LiveResultStatSource & {
     pinnedKeys: string[];
+    /** Build-only stats for the build-vs-live bar (ADR 0051); null until
+     *  computed, which hides the bars. */
+    buildStats?: LiveStatValues | null;
   }
 >();
 
@@ -39,7 +55,10 @@ const emit = defineEmits<{
   "stat-selected": [stat: string];
 }>();
 
-const allRows = useLiveResultStatRows(() => props);
+const allRows = useLiveResultStatRows(
+  () => props,
+  () => props.buildStats ?? null,
+);
 
 // STAT_GROUPS declares keys, not row data — join against allRows so a
 // character missing the elementDmgBonus row (no elementFilter resolved yet)

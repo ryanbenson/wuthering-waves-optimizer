@@ -5,8 +5,12 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
+    <CalculatorStatsBreakdownV3
+      v-if="stat && statSplit"
+      :stat="stat"
+      :split="statSplit"></CalculatorStatsBreakdownV3>
     <CalculatorStatsBreakdown
-      v-if="stat"
+      v-else-if="stat"
       :character="character"
       :stat="stat"
       :character-level="characterLevel"
@@ -57,6 +61,8 @@
 
 <script setup lang="ts">
 import CalculatorStatsBreakdown from "./CalculatorStatsBreakdown.vue";
+import CalculatorStatsBreakdownV3 from "./CalculatorStatsBreakdownV3.vue";
+import type { StatSplit } from "../calculator/statSplit";
 import CalculatorDamageBreakdown from "./CalculatorDamageBreakdown.vue";
 
 type BreakdownObjectProps = Record<string, unknown>;
@@ -98,6 +104,10 @@ interface Props {
   charResonanceChainsData: BreakdownObjectProps;
   echoStats: BreakdownObjectProps;
   echoSetAdditionalBaseBuffsData?: BreakdownObjectProps;
+  /** V3 only: the build-vs-live split for `stat` (ADR 0051). When null —
+   *  classic UI, Team Rotations, or build stats still loading — the classic
+   *  breakdown renders instead. */
+  statSplit?: StatSplit | null;
   character: string;
   characterLevel?: string;
   attackKey?: string | null;

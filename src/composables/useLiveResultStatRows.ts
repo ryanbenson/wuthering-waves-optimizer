@@ -1,5 +1,6 @@
 import { computed, type ComputedRef } from "vue";
-import { displayPercentage, displayInt } from "../utils/numbers";
+import { formatLiveStatValue, statShare, type StatShare } from "../calculator/statSplit";
+import type { LiveStatValues } from "../calculator/buildOnlyStats";
 
 // Same asset host + filenames CalculatorStats.vue already uses for these
 // rows — kept in sync manually since there's no shared icon registry.
@@ -17,25 +18,7 @@ const ELEMENT_META: Record<
   Havoc: { prop: "havoc", icon: `${ASSET_BASE}/havocdmgbonus.png`, label: "Havoc DMG Bonus" },
 };
 
-export interface LiveResultStatSource {
-  totalHp: number;
-  totalAtk: number;
-  totalDef: number;
-  totalCritRate: number;
-  totalCritDmg: number;
-  energyRegen: number;
-  basicAttackDmgBonus: number;
-  heavyAttackDmgBonus: number;
-  resonanceSkillDmgBonus: number;
-  resonanceLiberationDmgBonus: number;
-  healingBonus: number;
-  tuneBreakBoost: number;
-  glacio: number;
-  fusion: number;
-  electro: number;
-  aero: number;
-  spectro: number;
-  havoc: number;
+export interface LiveResultStatSource extends LiveStatValues {
   elementFilter?: string | null;
 }
 
@@ -46,7 +29,52 @@ export interface LiveResultStatRow {
   icon: string;
   label: string;
   value: string;
+  /** Build-vs-live split for the two-tone bar (ADR 0051); null when no
+   *  build stats were given yet or there's nothing to draw. */
+  share: StatShare | null;
 }
+
+type RawRow = { key: string; icon: string; label: string; raw: (s: LiveStatValues) => number };
+
+const RAW_ROWS: RawRow[] = [
+  { key: "totalHp", icon: `${ASSET_BASE}/hp.png`, label: "HP", raw: (s) => s.totalHp },
+  { key: "totalAtk", icon: `${ASSET_BASE}/atk.png`, label: "ATK", raw: (s) => s.totalAtk },
+  { key: "totalDef", icon: `${ASSET_BASE}/def.png`, label: "DEF", raw: (s) => s.totalDef },
+  { key: "totalCritRate", icon: `${ASSET_BASE}/critrate.png`, label: "Crit Rate", raw: (s) => s.totalCritRate },
+  { key: "totalCritDMG", icon: `${ASSET_BASE}/critdamage.png`, label: "Crit DMG", raw: (s) => s.totalCritDmg },
+  { key: "energyRegen", icon: `${ASSET_BASE}/energyregen.png`, label: "Energy Regen", raw: (s) => s.energyRegen },
+  {
+    key: "basicAttackDmgBonus",
+    icon: `${ASSET_BASE}/basicatkdmgbonus.png`,
+    label: "Basic Attack DMG Bonus",
+    raw: (s) => s.basicAttackDmgBonus,
+  },
+  {
+    key: "heavyAttackDmgBonus",
+    icon: `${ASSET_BASE}/heavyatkdmgbonus.png`,
+    label: "Heavy Attack DMG Bonus",
+    raw: (s) => s.heavyAttackDmgBonus,
+  },
+  {
+    key: "resonanceSkillDmgBonus",
+    icon: `${ASSET_BASE}/skilldmgbonus.png`,
+    label: "Resonance Skill DMG Bonus",
+    raw: (s) => s.resonanceSkillDmgBonus,
+  },
+  {
+    key: "resonanceLiberationDmgBonus",
+    icon: `${ASSET_BASE}/liberationdmgbonus.png`,
+    label: "Resonance Liberation DMG Bonus",
+    raw: (s) => s.resonanceLiberationDmgBonus,
+  },
+  { key: "healingBonus", icon: `${ASSET_BASE}/healingbonus.png`, label: "Healing Bonus", raw: (s) => s.healingBonus },
+  {
+    key: "tuneBreakBoost",
+    icon: `${ASSET_BASE}/tunebreakboost.png`,
+    label: "Tune Break Boost",
+    raw: (s) => s.tuneBreakBoost || 0,
+  },
+];
 
 /**
  * Builds the 13 pinnable stat rows (icon/label/formatted value) from the
@@ -55,82 +83,37 @@ export interface LiveResultStatRow {
  * chip strip and the grouped Overview tab read from one source. Formatting
  * per stat intentionally mirrors CalculatorStats.vue's existing (slightly
  * inconsistent — some multiply by 100, Tune Break Boost uses displayInt not
- * displayPercentage) expressions exactly; this is a display-layer reuse, not
- * a place to "fix" those game-math formatting choices.
+ * displayPercentage) expressions exactly, via `formatLiveStatValue`; this is a
+ * display-layer reuse, not a place to "fix" those game-math formatting
+ * choices.
+ *
+ * `buildSource` (optional) is the same shape for the character's build-only
+ * stats (`computeBuildOnlyStats`); when given, each row gets a `share` for the
+ * build-vs-live bar.
  */
 export function useLiveResultStatRows(
   source: () => LiveResultStatSource,
+  buildSource: () => LiveStatValues | null | undefined = () => null,
 ): ComputedRef<LiveResultStatRow[]> {
   return computed(() => {
     const s = source();
-    const rows: LiveResultStatRow[] = [
-      { key: "totalHp", icon: `${ASSET_BASE}/hp.png`, label: "HP", value: displayInt(s.totalHp) },
-      { key: "totalAtk", icon: `${ASSET_BASE}/atk.png`, label: "ATK", value: displayInt(s.totalAtk) },
-      { key: "totalDef", icon: `${ASSET_BASE}/def.png`, label: "DEF", value: displayInt(s.totalDef) },
-      {
-        key: "totalCritRate",
-        icon: `${ASSET_BASE}/critrate.png`,
-        label: "Crit Rate",
-        value: displayPercentage(s.totalCritRate * 100),
-      },
-      {
-        key: "totalCritDMG",
-        icon: `${ASSET_BASE}/critdamage.png`,
-        label: "Crit DMG",
-        value: displayPercentage(s.totalCritDmg * 100),
-      },
-      {
-        key: "energyRegen",
-        icon: `${ASSET_BASE}/energyregen.png`,
-        label: "Energy Regen",
-        value: displayPercentage(s.energyRegen * 100),
-      },
-      {
-        key: "basicAttackDmgBonus",
-        icon: `${ASSET_BASE}/basicatkdmgbonus.png`,
-        label: "Basic Attack DMG Bonus",
-        value: displayPercentage(s.basicAttackDmgBonus),
-      },
-      {
-        key: "heavyAttackDmgBonus",
-        icon: `${ASSET_BASE}/heavyatkdmgbonus.png`,
-        label: "Heavy Attack DMG Bonus",
-        value: displayPercentage(s.heavyAttackDmgBonus),
-      },
-      {
-        key: "resonanceSkillDmgBonus",
-        icon: `${ASSET_BASE}/skilldmgbonus.png`,
-        label: "Resonance Skill DMG Bonus",
-        value: displayPercentage(s.resonanceSkillDmgBonus),
-      },
-      {
-        key: "resonanceLiberationDmgBonus",
-        icon: `${ASSET_BASE}/liberationdmgbonus.png`,
-        label: "Resonance Liberation DMG Bonus",
-        value: displayPercentage(s.resonanceLiberationDmgBonus),
-      },
-      {
-        key: "healingBonus",
-        icon: `${ASSET_BASE}/healingbonus.png`,
-        label: "Healing Bonus",
-        value: displayPercentage(s.healingBonus * 100),
-      },
-      {
-        key: "tuneBreakBoost",
-        icon: `${ASSET_BASE}/tunebreakboost.png`,
-        label: "Tune Break Boost",
-        value: displayInt((s.tuneBreakBoost || 0) * 100),
-      },
-    ];
+    const b = buildSource();
+    const toRow = (key: string, icon: string, label: string, live: number, build: number | null) => ({
+      key,
+      icon,
+      label,
+      value: formatLiveStatValue(key, live),
+      share: build === null ? null : statShare(key, build, live),
+    });
+    const rows: LiveResultStatRow[] = RAW_ROWS.map((row) =>
+      toRow(row.key, row.icon, row.label, row.raw(s), b ? row.raw(b) : null),
+    );
 
     const element = s.elementFilter ? ELEMENT_META[s.elementFilter] : null;
     if (element) {
-      rows.push({
-        key: "elementDmgBonus",
-        icon: element.icon,
-        label: element.label,
-        value: displayPercentage(s[element.prop]),
-      });
+      rows.push(
+        toRow("elementDmgBonus", element.icon, element.label, s[element.prop], b ? b[element.prop] : null),
+      );
     }
 
     return rows;

@@ -58,3 +58,38 @@ describe("CalculatorLiveResultStatRow", () => {
     expect(emitted()["toggle-pin"]).toBeUndefined();
   });
 });
+
+describe("CalculatorLiveResultStatRow — build-vs-live bar (ADR 0051)", () => {
+  const buffedShare = { build: 0.57, buffs: 0.43, hasBuffs: true, buildText: "2,000", buffsText: "+1,500" };
+
+  it("renders no bar or split text without a share", () => {
+    const { container } = renderRow();
+    expect(container.querySelector("[data-test-live-result-stat-row-bar]")).toBeNull();
+    expect(container.querySelector("[data-test-live-result-stat-row-split]")).toBeNull();
+  });
+
+  it("renders the two-tone bar and the build + buffs text when buffed", () => {
+    const { container } = renderRow({ statKey: "totalAtk", label: "ATK", value: "3,500", share: buffedShare });
+    const bar = container.querySelector("[data-test-live-result-stat-row-bar]")!;
+    expect(bar).not.toBeNull();
+    expect(bar.getAttribute("aria-hidden")).toBe("true");
+    expect(
+      (container.querySelector("[data-test-live-result-stat-row-bar-buffs]") as HTMLElement).style.width,
+    ).toBe("43%");
+    expect(container.querySelector("[data-test-live-result-stat-row-split]")?.textContent).toBe("2,000 +1,500");
+  });
+
+  it("shows the bar but no split text when buffs add nothing", () => {
+    const { container } = renderRow({
+      share: { build: 1, buffs: 0, hasBuffs: false, buildText: "213.8%", buffsText: "" },
+    });
+    expect(container.querySelector("[data-test-live-result-stat-row-bar]")).not.toBeNull();
+    expect(container.querySelector("[data-test-live-result-stat-row-split]")).toBeNull();
+  });
+
+  it("clicking the bar row also opens the stat", async () => {
+    const { container, emitted } = renderRow({ label: "ATK", share: buffedShare });
+    await fireEvent.click(container.querySelector("[data-test-live-result-stat-row-bar]")!);
+    expect(emitted()["stat-selected"]).toEqual([["ATK"]]);
+  });
+});

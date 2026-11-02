@@ -1,14 +1,22 @@
 <template>
   <tr
     class="live-result-stat-row"
+    :class="{ 'live-result-stat-row--split': share }"
     data-test-live-result-stat-row
     :data-test-live-result-stat-row-key="statKey"
+    v-tooltip="splitTooltip"
     @click="emit('stat-selected', label)">
     <td class="w-6">
       <img :src="icon" class="size-4" />
     </td>
     <td class="stat-name">{{ label }}</td>
-    <td class="text-right font-mono font-bold tabular-nums">{{ value }}</td>
+    <td class="text-right whitespace-nowrap">
+      <span
+        v-if="share?.hasBuffs"
+        class="mr-1.5 text-[11px] text-base-content/70 font-mono tabular-nums"
+        data-test-live-result-stat-row-split>{{ share.buildText }} {{ share.buffsText }}</span>
+      <span class="font-mono font-bold tabular-nums">{{ value }}</span>
+    </td>
     <td class="w-5">
       <button
         type="button"
@@ -35,18 +43,51 @@
       </button>
     </td>
   </tr>
+  <!-- Build-vs-live bar (ADR 0051): its own row so it can span the label and
+  value columns. Decorative — the numbers are in the split text/tooltip. -->
+  <tr
+    v-if="share"
+    class="live-result-stat-row__bar-row"
+    aria-hidden="true"
+    data-test-live-result-stat-row-bar
+    @click="emit('stat-selected', label)">
+    <td></td>
+    <td colspan="2">
+      <div class="flex h-[3px] rounded-sm overflow-hidden bg-base-content/10">
+        <span
+          class="bg-base-content/40"
+          :style="{ width: `${share.build * 100}%` }"></span>
+        <span
+          class="bg-accent"
+          :style="{ width: `${share.buffs * 100}%` }"
+          data-test-live-result-stat-row-bar-buffs></span>
+      </div>
+    </td>
+    <td></td>
+  </tr>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import type { StatShare } from "../calculator/statSplit";
+
 defineOptions({ name: "CalculatorLiveResultStatRow" });
 
-defineProps<{
+const props = defineProps<{
   statKey: string;
   icon: string;
   label: string;
   value: string;
   pinned: boolean;
+  /** Build-vs-live split; null/undefined hides the bar. */
+  share?: StatShare | null;
 }>();
+
+const splitTooltip = computed(() =>
+  props.share?.hasBuffs
+    ? `Build ${props.share.buildText} · Buffs ${props.share.buffsText}`
+    : null,
+);
 
 const emit = defineEmits<{
   "toggle-pin": [statKey: string];
@@ -68,6 +109,17 @@ const emit = defineEmits<{
     padding: 0;
   }
 }
+.live-result-stat-row--split td {
+  padding-bottom: 1px;
+}
+.live-result-stat-row__bar-row {
+  cursor: pointer;
+
+  td {
+    padding: 0 6px 4px;
+  }
+}
+
 .pin-toggle {
   width: 18px;
   height: 18px;

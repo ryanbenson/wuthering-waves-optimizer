@@ -153,11 +153,20 @@
           v-for="chip in statChips"
           :key="chip.key"
           type="button"
-          class="flex flex-col items-start leading-tight text-left"
-          v-tooltip="'View full breakdown'"
+          class="flex flex-col items-stretch leading-tight text-left"
+          v-tooltip="chip.tooltip"
+          :data-test-live-result-bar-stat="chip.key"
           @click="emit('stat-selected', chip.label)">
           <span class="text-[10px] uppercase tracking-wide opacity-60">{{ chip.label }}</span>
           <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
+          <span
+            v-if="chip.share"
+            class="flex h-[3px] mt-0.5 rounded-sm overflow-hidden bg-base-content/10"
+            aria-hidden="true"
+            data-test-live-result-bar-stat-split>
+            <span class="bg-base-content/40" :style="{ width: `${chip.share.build * 100}%` }"></span>
+            <span class="bg-accent" :style="{ width: `${chip.share.buffs * 100}%` }"></span>
+          </span>
         </button>
       </div>
 
@@ -363,6 +372,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import WorkspaceLevelStepper from "./characterWorkspace/WorkspaceLevelStepper.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
+import { statShare, type StatShare } from "../calculator/statSplit";
 import {
   LIVE_RESULT_BAR_STAT_META,
   resolveLiveResultBarTarget,
@@ -387,6 +397,9 @@ const props = defineProps<{
   damageType: LiveResultBarDamageType;
   statKeys: string[];
   stats: Record<string, number>;
+  /** Build-only values under the same keys as `stats`, for the
+   *  build-vs-live bar under each chip (ADR 0051); null hides the bars. */
+  buildStats?: Record<string, number> | null;
   allDamages: Record<string, any> | null | undefined;
   isDetailOpen: boolean;
   isLoading?: boolean;
@@ -498,8 +511,21 @@ const statChips = computed(() =>
       key,
       label: LIVE_RESULT_BAR_STAT_META[key].label,
       display: formatStatValue(key, props.stats[key] ?? 0),
+      ...chipSplit(key),
     })),
 );
+
+function chipSplit(key: string): { share: StatShare | null; tooltip: string } {
+  const share = props.buildStats
+    ? statShare(key, props.buildStats[key] ?? 0, props.stats[key] ?? 0)
+    : null;
+  return {
+    share,
+    tooltip: share?.hasBuffs
+      ? `Build ${share.buildText} · Buffs ${share.buffsText} — view full breakdown`
+      : "View full breakdown",
+  };
+}
 
 const resolved = computed(() =>
   resolveLiveResultBarTarget(

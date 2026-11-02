@@ -326,8 +326,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { getWeaponByName } from "../weapons/weapons";
-import { buildCharacterCalculationContext } from "../calculator/buildCharacterContext";
-import { computeTotalTuneBreakBoost } from "../calculator/stats";
+import { computeBuildOnlyStats } from "../calculator/buildOnlyStats";
 import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
@@ -560,18 +559,13 @@ watch(
       buildCardTuneBreakBoost.value = 0;
       return;
     }
-    const built = await buildCharacterCalculationContext(
+    const built = await computeBuildOnlyStats(
       nextCharacter,
       characters.value,
-      { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
       inventoryStore.echoes,
-      { alwaysEnabledOnly: true },
     );
     buildCardStats.value = built.finalStats;
-    buildCardTuneBreakBoost.value = computeTotalTuneBreakBoost({
-      baseTuneBreakBoost: built.chosenChar?.basic?.tuneBreakBoost ?? 0,
-      echoStats: built.echoStats,
-    });
+    buildCardTuneBreakBoost.value = built.tuneBreakBoost;
   },
   { immediate: true, deep: true },
 );

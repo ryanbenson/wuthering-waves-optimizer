@@ -36,6 +36,7 @@
       v-model:damage-type="liveResultBarDamageType"
       :stat-keys="liveResultBarStatKeys"
       :stats="liveResultBarStatValues"
+      :build-stats="liveResultBarBuildStatValues"
       :all-damages="allDamages.value"
       :is-detail-open="isLiveResultDetailOpen"
       :is-loading="isLoading"
@@ -375,6 +376,7 @@
       :is-pinned="isLiveResultDetailPinned"
       :target="liveResultBarTarget"
       :default-pinned-stats="liveResultBarStatKeys"
+      :build-stats="buildStatValues"
       @stat-selected="handleStatSelected"
       @selected-attack="handleSelectedAttack"
       @toggle-pin="
@@ -468,6 +470,7 @@
       :char-resonance-chains-data="charResonanceChainsData"
       :echo-stats="echoStats"
       :echo-set-additional-base-buffs-data="echoSetAdditionalBaseBuffsData"
+      :stat-split="selectedStatSplit"
       :attack-key="selectedAttackKey"
       :damage="selectedAttackDamage"
       :attack-label="selectedAttackLabel"
@@ -568,6 +571,12 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { computeBuildOnlyStats } from "../calculator/buildOnlyStats";
+import {
+  liveStatValueFor,
+  resolveStatSelection,
+  splitStat,
+} from "../calculator/statSplit";
 import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { trackEvent } from "../utils/analytics";
 import { useRoute } from "vue-router";
@@ -646,6 +655,9 @@ export default defineComponent({
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
     const echoSetAdditionalBaseBuffsData = ref({});
+    // Self buffs as the stat pipeline actually summed them — charBuffsData is
+    // the UI breakdown copy. Only read by the V3 build-vs-live split.
+    const appliedCharBuffsData = ref({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
@@ -770,6 +782,7 @@ export default defineComponent({
       totalCritDMG: totalCritDMG.value,
       energyRegen: energyRegen.value,
     }));
+
 
     const character = ref("");
     const totalAtk = ref(0);
@@ -1265,6 +1278,7 @@ export default defineComponent({
       });
       echoSetAdditionalBaseBuffsData.value =
         result.echoSetAdditionalBaseBuffsData ?? {};
+      appliedCharBuffsData.value = result.appliedSelfBuffsData ?? {};
       return result;
     };
 
@@ -2284,8 +2298,139 @@ export default defineComponent({
 
     function getRotationData(character, rotationId) {}
 
+    // V3 build-vs-live split (ADR 0051): the character's build-only stats —
+    // the same numbers the build card shows — recomputed from stored build
+    // data whenever the build changes. Toggling an ordinary buff doesn't
+    // change the build, so this stays off the per-toggle hot path.
+    const buildOnlyStats = ref(null);
+    let buildOnlyStatsRequestId = 0;
+    const equippedEchoesForBuild = () => {
+      const slots = characters.value?.[character.value]?.echoes ?? {};
+      return Object.values(slots).map((slot) =>
+        slot?.echoId ? (inventoryStore.getEchoById?.(slot.echoId) ?? null) : null,
+      );
+    };
+    watch(
+      () => [
+        isLiveResultBarEnabled.value,
+        character.value,
+        characters.value?.[character.value],
+        equippedEchoesForBuild(),
+      ],
+      async ([isEnabled, nextCharacter]) => {
+        const requestId = ++buildOnlyStatsRequestId;
+        if (!isEnabled || !nextCharacter) {
+          buildOnlyStats.value = null;
+          return;
+        }
+        try {
+          const built = await computeBuildOnlyStats(
+            nextCharacter,
+            characters.value,
+            inventoryStore.echoes,
+          );
+          // A newer build change (or character switch) superseded this one.
+          if (requestId !== buildOnlyStatsRequestId) return;
+          buildOnlyStats.value = { character: nextCharacter, ...built };
+        } catch (error) {
+          if (requestId !== buildOnlyStatsRequestId) return;
+          console.error("Failed to compute build-only stats", error);
+          buildOnlyStats.value = null;
+        }
+      },
+      { immediate: true, deep: true },
+    );
+    // Never show one character's build against another's live stats.
+    const currentBuildOnlyStats = computed(() =>
+      buildOnlyStats.value?.character === character.value
+        ? buildOnlyStats.value
+        : null,
+    );
+    const buildStatValues = computed(
+      () => currentBuildOnlyStats.value?.values ?? null,
+    );
+    const liveResultBarBuildStatValues = computed(() => {
+      const values = buildStatValues.value;
+      if (!values) return null;
+      return {
+        totalHp: values.totalHp,
+        totalAtk: values.totalAtk,
+        totalDef: values.totalDef,
+        totalCritRate: values.totalCritRate,
+        totalCritDMG: values.totalCritDmg,
+        energyRegen: values.energyRegen,
+      };
+    });
+    const liveStatValues = computed(() => ({
+      totalHp: totalHp.value,
+      totalAtk: totalAtk.value,
+      totalDef: totalDef.value,
+      totalCritRate: totalCritRate.value,
+      totalCritDmg: totalCritDMG.value,
+      energyRegen: energyRegen.value,
+      basicAttackDmgBonus: BasicAttackDMGBonus.value,
+      heavyAttackDmgBonus: HeavyAttackDMGBonus.value,
+      resonanceSkillDmgBonus: ResonanceSkillDMGBonus.value,
+      resonanceLiberationDmgBonus: ResonanceLiberationDMGBonus.value,
+      healingBonus: healingBonus.value,
+      tuneBreakBoost: tuneBreakBoost.value,
+      glacio: Glacio.value,
+      fusion: Fusion.value,
+      electro: Electro.value,
+      aero: Aero.value,
+      spectro: Spectro.value,
+      havoc: Havoc.value,
+    }));
+    // Same inputs computeAllBuffsWithBreakdown/updateStats used for the live
+    // numbers, in the shape statSplit.ts attributes per source.
+    const liveStatSourceInputs = () => ({
+      baseHp: baseHp.value,
+      baseAtk: baseAtk.value,
+      baseDef: baseDef.value,
+      weaponData: weaponData?.value ?? {},
+      selfBuffs: appliedCharBuffsData.value ?? {},
+      resonanceChains: charResonanceChainsData?.value ?? {},
+      echoStats: echoStats?.value ?? {},
+      echoSetAdditionalBase: echoSetAdditionalBaseBuffsData.value ?? {},
+      customBuffs: customBuffs?.value ?? {},
+      teamBuffs: teamBuffsData?.value ?? {},
+      tuneBreakBoost: {
+        base: chosenChar?.value?.basic?.tuneBreakBoost ?? 0,
+        selfBuffs: charBuffsData?.value?.tuneBreakBoost ?? 0,
+        resonanceChains: charResonanceChainsData?.value?.tuneBreakBoost ?? 0,
+        teamBuffs: teamBuffsData?.value?.tuneBreakBoost ?? 0,
+        echoes: echoStats?.value?.tuneBreakBoost ?? 0,
+      },
+    });
+    // Only built while a stat detail is open in V3 — classic keeps its own
+    // breakdown untouched.
+    const selectedStatSplit = computed(() => {
+      if (!isLiveResultBarEnabled.value || !selectedStat.value) return null;
+      const build = currentBuildOnlyStats.value;
+      const selection = resolveStatSelection(selectedStat.value);
+      if (!build || !selection) return null;
+      const { statKey, element } = selection;
+      return splitStat(
+        statKey,
+        {
+          build: {
+            inputs: build.inputs,
+            value: liveStatValueFor(build.values, statKey, element),
+          },
+          live: {
+            inputs: liveStatSourceInputs(),
+            value: liveStatValueFor(liveStatValues.value, statKey, element),
+          },
+        },
+        element,
+      );
+    });
+
     return {
       allDamages,
+      buildStatValues,
+      liveResultBarBuildStatValues,
+      selectedStatSplit,
       calculatorSections: CALCULATOR_SECTIONS,
       character,
       characters,
