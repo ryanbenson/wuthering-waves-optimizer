@@ -101,6 +101,14 @@ export interface CharacterCalculationContext {
   talentData: { basic: number; skill: number; forte: number; liberation: number; intro: number };
   charBuffsData: Record<string, unknown>;
   charResonanceChainsData: Record<string, unknown>;
+  /**
+   * Self buffs as the final stat pass actually summed them (see
+   * `calculateFinalStatsFromBuffs`'s `appliedSelfBuffsData`), and the echo set
+   * AdditionalBase part folded into them. Used by `statSplit.ts` to attribute
+   * each stat to its sources.
+   */
+  appliedCharBuffsData: Record<string, unknown>;
+  echoSetAdditionalBaseBuffsData: Record<string, unknown>;
   teamBuffsData: Record<string, unknown>;
   customBuffs: Record<string, unknown>;
   finalStats: Record<string, any>;
@@ -381,7 +389,13 @@ export async function buildCharacterCalculationContext(
 
   const resonanceChainDefs: any[] = chosenChar?.resonanceChains ?? [];
 
-  const { finalStats, selfBuffsData, resonanceChainsBuffsData } = calculateAllStats({
+  const {
+    finalStats,
+    selfBuffsData,
+    resonanceChainsBuffsData,
+    appliedSelfBuffsData,
+    echoSetAdditionalBaseBuffsData,
+  } = calculateAllStats({
     baseHp,
     baseAtk,
     baseDef,
@@ -502,6 +516,8 @@ export async function buildCharacterCalculationContext(
     talentData,
     charBuffsData: selfBuffsData,
     charResonanceChainsData: resonanceChainsBuffsData,
+    appliedCharBuffsData: appliedSelfBuffsData ?? {},
+    echoSetAdditionalBaseBuffsData: echoSetAdditionalBaseBuffsData ?? {},
     teamBuffsData,
     customBuffs,
     finalStats,

@@ -1810,6 +1810,7 @@ export const calculateFinalStatsFromBuffs = (context: {
   additionalBaseBuffsData: any;
   critOverflowBuffsData: any;
   echoSetAdditionalBaseBuffsData: any;
+  appliedSelfBuffsData: any;
 } => {
   const {
     baseHp,
@@ -2022,6 +2023,12 @@ export const calculateFinalStatsFromBuffs = (context: {
     additionalBaseBuffsData: mergedAdditionalBaseBuffsData,
     critOverflowBuffsData,
     echoSetAdditionalBaseBuffsData,
+    // The self buffs exactly as the final pass above summed them (selfBuffsData
+    // plus AdditionalBase/echo-set AdditionalBase/CritOverflow). The
+    // `selfBuffsData` field is the UI breakdown copy, which spreads
+    // AdditionalBase keys over the originals rather than adding them, so it
+    // isn't safe for re-deriving the final numbers (see statSplit.ts).
+    appliedSelfBuffsData: mergedSelfBuffs,
   };
 };
 
@@ -2088,6 +2095,7 @@ export const calculateAllStats = (context: {
   additionalBaseBuffsData: any;
   critOverflowBuffsData: any;
   echoSetAdditionalBaseBuffsData: any;
+  appliedSelfBuffsData: any;
 } => {
   const {
     resonanceChainsConfig,

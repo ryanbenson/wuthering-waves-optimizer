@@ -126,6 +126,14 @@
                 @click="emit('stat-selected', chip.label)">
                 <span class="text-[10px] uppercase tracking-wide opacity-60 truncate max-w-full">{{ chip.label }}</span>
                 <span class="font-mono font-bold text-sm tabular-nums">{{ chip.display }}</span>
+                <span
+                  v-if="chip.share"
+                  class="flex self-stretch h-[3px] mt-1 rounded-sm overflow-hidden bg-base-content/10"
+                  aria-hidden="true"
+                  data-test-command-sheet-stat-split>
+                  <span class="bg-base-content/40" :style="{ width: `${chip.share.build * 100}%` }"></span>
+                  <span class="bg-accent" :style="{ width: `${chip.share.buffs * 100}%` }"></span>
+                </span>
               </button>
             </div>
 
@@ -151,6 +159,7 @@ import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
 import WorkspaceLevelStepper from "./characterWorkspace/WorkspaceLevelStepper.vue";
 import type { AppRichSelectOption } from "./AppRichSelect.vue";
 import { useCharacterStore } from "../stores/character";
+import type { StatShare } from "../calculator/statSplit";
 
 defineOptions({ name: "CalculatorCommandSheet" });
 
@@ -165,7 +174,7 @@ const props = defineProps<{
   damageType: string;
   stanceOptions: AppRichSelectOption[];
   activeStance: string | null | undefined;
-  statChips: Array<{ key: string; label: string; display: string }>;
+  statChips: Array<{ key: string; label: string; display: string; share?: StatShare | null }>;
 }>();
 
 const emit = defineEmits<{

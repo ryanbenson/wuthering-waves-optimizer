@@ -95,6 +95,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0048](./0048-frame-timing-in-results.md) | Frame-data timing in rotation results and charts | accepted | | calculator, components, labs |
 | [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | [0050](./0050-swapped-out-hits-still-land.md) (swap limit) | calculator, components, labs |
 | [0050](./0050-swapped-out-hits-still-land.md) | A swapped-out character's hits all land | accepted | | calculator |
+| [0051](./0051-build-vs-live-stats.md) | v3 stats show build vs live (buffs) | accepted | | calculator, components |
 
 ## When to write a new ADR
 

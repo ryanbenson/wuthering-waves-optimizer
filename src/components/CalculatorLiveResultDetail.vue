@@ -160,6 +160,7 @@
         :tune-break-boost="tuneBreakBoost"
         :element-filter="elementFilter"
         :pinned-keys="pinnedKeys"
+        :build-stats="buildStats"
         @toggle-pin="togglePin"
         @stat-selected="emit('stat-selected', $event)"></CalculatorLiveResultOverview>
 
@@ -193,6 +194,7 @@ import CalculatorLiveResultRotations from "./CalculatorLiveResultRotations.vue";
 import { useSettingsStore } from "../stores/settings";
 import { usePinnedStats } from "../composables/usePinnedStats";
 import { useLiveResultStatRows } from "../composables/useLiveResultStatRows";
+import type { LiveStatValues } from "../calculator/buildOnlyStats";
 
 defineOptions({ name: "CalculatorLiveResultDetail" });
 
@@ -236,6 +238,8 @@ const props = defineProps<{
    *  DEFAULT_LIVE_RESULT_BAR_STATS — used until the user pins/unpins
    *  anything for this character. */
   defaultPinnedStats: string[];
+  /** Build-only stats for the build-vs-live bars (ADR 0051). */
+  buildStats?: LiveStatValues | null;
 }>();
 
 const emit = defineEmits<{
