@@ -99,17 +99,17 @@ describe("Team Rotations summary and status", () => {
       .should("contain.text", "Team 1");
   });
 
-  it("never shows Infinity DPS for a team with no duration set", () => {
-    // Team 1: no duration set (the default for a new team).
+  it("never shows Infinity DPS for a team with no duration or frame data", () => {
+    // Team 1: no duration set (the default for a new team), and Jiyan has no frame data.
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
-    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
-    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Jiyan");
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Jiyan");
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect(
       '[data-test-rotation-action-skill-input="none"]',
-      "BasicAttackStage1DMG",
+      "Part1DMG",
     );
     cy.get("[data-test-team-rotation-back]").click();
 

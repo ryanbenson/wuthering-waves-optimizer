@@ -128,8 +128,6 @@ import { computed } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { rotationDpsReadings } from "../calculator/teamRotation";
 import type { RotationLength } from "../calculator/rotationTiming";
-import { useSettingsStore } from "../stores/settings";
-import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 import FrameDataNote from "./FrameDataNote.vue";
@@ -148,15 +146,12 @@ const emit = defineEmits<{
   "selected-attack": [attackKey: string, damage: Record<string, any>, label: string];
 }>();
 
-const settingsStore = useSettingsStore();
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
-
-// Frame data first (while the lab is on), then the typed duration (ADR 0048).
+// Frame data first, then the typed duration (ADR 0048).
 function dpsReadings(rotation: { damageAggregation: any; duration: unknown; frameLength?: RotationLength | null }) {
   return rotationDpsReadings(
     rotation.damageAggregation,
     rotation.duration as any,
-    isFrameTimingOn.value ? rotation.frameLength : null,
+    rotation.frameLength,
   );
 }
 

@@ -1,15 +1,11 @@
 // Frame-data rotation timing (ADR 0047): the length and DPS worked out from
-// wuwalab's frame data, shown beside the optional typed duration. Behind the
-// `frameTiming` Settings > Labs flag.
+// wuwalab's frame data, shown beside the optional typed duration.
 
-// Classic UI, like cypress/support/e2e.ts's default, plus the lab.
-function visitWithFrameTiming(isEnabled: boolean) {
+// Classic UI, like cypress/support/e2e.ts's default.
+function visitClassicUi() {
   cy.visit("/", {
     onBeforeLoad(win) {
-      win.localStorage.setItem(
-        "settings",
-        JSON.stringify({ config: { useClassicUi: true }, labs: { frameTiming: { isEnabled } } }),
-      );
+      win.localStorage.setItem("settings", JSON.stringify({ config: { useClassicUi: true } }));
     },
   });
 }
@@ -48,7 +44,7 @@ function swapOutOfIntroAndReset() {
 
 describe("Calculator rotation frame timing", () => {
   it("shows the frame-data length beside the typed one and updates when an action ends early", () => {
-    visitWithFrameTiming(true);
+    visitClassicUi();
     openSuomingPreset();
 
     cy.get("[data-test-rotation-frame-length]").should("contain.text", "13.17s").and("contain.text", "790f");
@@ -62,7 +58,7 @@ describe("Calculator rotation frame timing", () => {
   });
 
   it("shows both DPS readings in the damage breakdown (ADR 0048)", () => {
-    visitWithFrameTiming(true);
+    visitClassicUi();
     openSuomingPreset();
 
     cy.get("[data-test-damages-list-rotation]")
@@ -74,21 +70,24 @@ describe("Calculator rotation frame timing", () => {
       });
   });
 
-  it("stays hidden while the Labs flag is off", () => {
-    visitWithFrameTiming(false);
+  it("ignores a saved frameTiming lab setting from when this was a lab", () => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem(
+          "settings",
+          JSON.stringify({ config: { useClassicUi: true }, labs: { frameTiming: { isEnabled: false } } }),
+        );
+      },
+    });
     openSuomingPreset();
 
-    cy.get('[data-test-rotation-action-by-attack-key="IntroSkillFurledCanopyFlashRiftDMG"]').should("exist");
-    cy.get("[data-test-rotation-frame-timing]").should("not.exist");
-    cy.get("[data-test-rotation-action-frames]").should("not.exist");
-    cy.get('[data-test-rotation-dps="frames"]').should("not.exist");
-    cy.get('[data-test-rotation-dps="typed"]').should("contain.text", "DPS (13s)");
+    cy.get("[data-test-rotation-frame-length]").should("contain.text", "790f");
   });
 });
 
 describe("Team rotation frame timing", () => {
   it("times an imported character rotation and updates when an action ends early", () => {
-    visitWithFrameTiming(true);
+    visitClassicUi();
     cy.richSelect("[data-test-character-select]", "Suoming");
     cy.get(".character__self-buffs").should("be.visible");
 

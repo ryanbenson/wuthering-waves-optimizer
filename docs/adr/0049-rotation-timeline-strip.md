@@ -16,7 +16,7 @@ A first version put every action on one time axis as a block (width = field time
 
 ## Decision
 
-Behind the same `frameTiming` Labs flag, and only when the rotation has frame data, the editors show these charts. Otherwise the ordered strip stays as it was. The pure helper `src/calculator/rotationTimelineStrip.ts` turns the timing and per-action damage into blocks, a running total, turns on field and shares. The components only do layout.
+Behind the same `frameTiming` Labs flag (**superseded 2026-11-06:** the flag was removed), and only when the rotation has frame data, the editors show these charts. Otherwise the ordered strip stays as it was. The pure helper `src/calculator/rotationTimelineStrip.ts` turns the timing and per-action damage into blocks, a running total, turns on field and shares. The components only do layout.
 
 - **Single character (`RotationTimelineChart.vue`):**
   - **Pace** (default): the running damage total on game time (time stop skipped, the same clock as frame-data DPS). It steps up where each repeat lands, using the same landing rule and repeat split as ADR 0048. The three biggest hits are named where they land. A thin "Doing" band under it shows what you were doing, colored by kind of action. Anyone can read "steep here is the burst".

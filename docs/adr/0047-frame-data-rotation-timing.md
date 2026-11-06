@@ -44,6 +44,8 @@ The research, designs and plan are in a published Artifact ("Frame-Timed Rotatio
   - The engine reproduces 85% of the gaps in the reference rotations to the frame. Every other gap has a recorded reason, mostly waits after a swap that the frame data doesn't record.
   - The data and the engine are additive. Nothing in the UI reads them yet, so this ships with no behavior change.
     **Updated 2026-10-29:** the character and team rotation pages now show the frame-data length and DPS beside the typed duration, and each action can set how it ends, behind the `frameTiming` Settings > Labs flag (see "Frame-data timing" in `docs/src-components.md`). Results views and the team summary's charts followed in ADR [0048](./0048-frame-timing-in-results.md).
+
+    **Updated 2026-11-06:** the `frameTiming` flag was removed and frame timing is always on.
 - Cons:
   - A frame-data length runs 2–6% shorter than an author's own timeline (19% for a quick-swap team), because of those post-swap waits. DPS from frame data will read slightly high until we decide on a per-swap allowance.
   - Eleven characters have no data on wuwalab yet (Aalto, Calcharo, Chixia, Jianxin, Jiyan, Lumi, Havoc Rover, Xiangli Yao, Yinlin, Youhu, Yuanwu), and echoes only have frames where wuwalab has entered them.

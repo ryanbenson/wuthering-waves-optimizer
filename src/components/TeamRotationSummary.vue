@@ -198,7 +198,6 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
-import { isFrameTimingEnabled } from "../utils/labs";
 import { rotationLength, type RotationTiming } from "../calculator/rotationTiming";
 import FrameDataNote from "./FrameDataNote.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
@@ -283,12 +282,11 @@ const result = ref<{
 
 const strongestHit = computed(() => calcStrongestHit(result.value.actionResults));
 
-// Frame data (ADR 0048), only while the frameTiming lab is on and the team
-// has any: DPS readings, and the charts' timeline.
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
+// Frame data (ADR 0048), when the team has any: DPS readings, and the charts'
+// timeline.
 const frameTiming = computed(() => {
   const timing = result.value.timing;
-  return isFrameTimingOn.value && timing && timing.gameFrames > 0 ? timing : null;
+  return timing && timing.gameFrames > 0 ? timing : null;
 });
 const frameLength = computed(() => (frameTiming.value ? rotationLength(frameTiming.value) : null));
 const dpsReadings = computed(() =>

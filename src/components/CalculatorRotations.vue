@@ -223,7 +223,6 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import { isFrameTimingEnabled } from "../utils/labs";
 import { headlineDps, rotationDpsReadings } from "../calculator/teamRotation";
 import { framesToSeconds, type RotationLength } from "../calculator/rotationTiming";
 import {
@@ -374,19 +373,14 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
 
-function frameLengthOf(entry: RotationDamageEntry | undefined): RotationLength | null {
-  return isFrameTimingOn.value ? (entry?.frameLength ?? null) : null;
-}
-
-// A row's length: the typed duration, else the frame-data one while the lab
-// is on, same rule as its DPS.
+// A row's length: the typed duration, else the frame-data one, same rule as
+// its DPS.
 const frameSecondsById = computed<Record<string, number>>(() => {
   const map: Record<string, number> = {};
   const entries = ((props.allDamages as { rotations?: RotationDamageEntry[] } | null)?.rotations) ?? [];
   for (const entry of entries) {
-    const length = frameLengthOf(entry);
+    const length = entry.frameLength;
     if (length && length.gameFrames > 0) map[entry.id] = framesToSeconds(length.gameFrames);
   }
   return map;
@@ -425,13 +419,12 @@ const rotationStatsById = computed<Record<string, RotationStats>>(() => {
     const normal = agg.normalDamage ?? 0;
     const avg = agg.avgDamage ?? 0;
     const crit = agg.critDamage ?? 0;
-    // One DPS per rotation: the typed duration, else frame data while the
-    // frameTiming lab is on (ADR 0048).
+    // One DPS per rotation: the typed duration, else frame data (ADR 0048).
     const headline = headlineDps(
       rotationDpsReadings(
         { normalDamage: normal, avgDamage: avg, critDamage: crit, healing: 0, shield: 0 },
         rotation?.duration,
-        frameLengthOf(entry),
+        entry?.frameLength,
       ),
     );
     map[entry.id] = {

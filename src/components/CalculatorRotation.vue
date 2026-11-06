@@ -388,8 +388,8 @@
             <span><b>{{ actionsCount }}</b> action{{ actionsCount === 1 ? "" : "s" }}</span>
             <span class="opacity-40">·</span>
             <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
-            <!-- The frame-timing panel below shows both lengths when it's on. -->
-            <template v-if="!isFrameTimingOn">
+            <!-- With frame data, the timing panel below shows both lengths. -->
+            <template v-if="!hasFrameData">
               <span class="opacity-40">·</span>
               <span><b>{{ durationValue !== null && durationValue !== "" ? `${durationValue}s` : "—" }}</b> duration</span>
             </template>
@@ -397,7 +397,6 @@
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
           <RotationFrameTiming
-            v-if="isFrameTimingOn"
             class="mt-4"
             :timing="rotationTiming"
             :has-frame-data="hasFrameData"
@@ -463,9 +462,9 @@
                 :can-reorder="canReorderActions"
                 :damage-value="actionDamageById[action.id] ?? null"
                 damage-label="Avg"
-                :has-frame-data="isFrameTimingOn && hasFrameData"
-                :attack-frames="isFrameTimingOn ? framesFor(action) : null"
-                :frame-timing="isFrameTimingOn ? (actionTimingById[action.id] ?? null) : null"
+                :has-frame-data="hasFrameData"
+                :attack-frames="framesFor(action)"
+                :frame-timing="actionTimingById[action.id] ?? null"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
@@ -540,7 +539,6 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
-import { isFrameTimingEnabled } from "../utils/labs";
 import {
   applyBulkAdvancedConfigOverride,
   hasAdvancedConfigOverrides,
@@ -640,7 +638,6 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
 
 const isOpenLocal = ref(false);
 // Rotation Flow (Labs) — detail-view usage (CalculatorRotations.vue's
@@ -840,7 +837,7 @@ const {
 );
 
 const timelineStrip = computed<TimelineStrip | null>(() => {
-  if (!isFrameTimingOn.value || !hasFrameData.value) return null;
+  if (!hasFrameData.value) return null;
   const strip = buildTimelineStrip(
     rotationTiming.value,
     rotationDamageAttacks.value.map((attack) => {

@@ -114,7 +114,7 @@ const props = defineProps<{
     dps: RotationDps;
   };
   duration: number | string | null;
-  /** Length from frame data, or null while the frameTiming lab is off. */
+  /** Length from frame data, or null without any. */
   frameLength?: RotationLength | null;
 }>();
 

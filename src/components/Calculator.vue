@@ -1097,8 +1097,7 @@ export default defineComponent({
             enemyConfig,
             inventoryStore.echoes,
           );
-          // Frame-data length (ADR 0048) for the results views' DPS; they
-          // only show it while the frameTiming lab is on.
+          // Frame-data length (ADR 0048) for the results views' DPS.
           const timing = characterRotationTiming(rotation.actions, chosenChar.value, echoFrames, rotation.mainEcho);
           rotationResults.push({ ...result, frameLength: timing ? rotationLength(timing) : null });
           // A newer call landed while this one was still awaiting a

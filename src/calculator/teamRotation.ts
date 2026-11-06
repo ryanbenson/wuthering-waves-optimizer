@@ -161,8 +161,7 @@ export interface DpsReading {
 
 /**
  * Every DPS a rotation can show, frame data first: the frame-data reading
- * when `frameLength` is given (callers pass null while the `frameTiming` lab
- * is off) and has any length, then the typed one when a duration is set.
+ * when `frameLength` is given and has any length, then the typed one when a duration is set.
  */
 export function rotationDpsReadings(
   damageAggregation: DamageAggregation,
