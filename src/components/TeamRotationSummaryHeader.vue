@@ -128,7 +128,7 @@ const props = defineProps<{
     total: DamageAggregation;
     dps: RotationDps;
   };
-  /** Length from frame data, or null while the frameTiming lab is off. */
+  /** Length from frame data, or null without any. */
   frameLength?: RotationLength | null;
   /** The teamOptimizer lab's button (ADR 0052). */
   showOptimize?: boolean;

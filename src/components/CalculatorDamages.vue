@@ -693,8 +693,6 @@ import { computed, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import { rotationDpsReadings } from "../calculator/teamRotation";
-import { useSettingsStore } from "../stores/settings";
-import { isFrameTimingEnabled } from "../utils/labs";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 import FrameDataNote from "./FrameDataNote.vue";
@@ -741,15 +739,12 @@ const echoName = computed(() => echoData.value?.name ?? null);
 const echoDetails = computed(() => echoData.value?.details ?? null);
 const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
 
-const settingsStore = useSettingsStore();
-const isFrameTimingOn = computed(() => isFrameTimingEnabled(settingsStore));
-
-// Frame data first (while the lab is on), then the typed duration (ADR 0048).
+// Frame data first, then the typed duration (ADR 0048).
 function dpsReadings(rotation: { damageAggregation: any; duration: unknown; frameLength?: any }) {
   return rotationDpsReadings(
     rotation.damageAggregation,
     rotation.duration as any,
-    isFrameTimingOn.value ? rotation.frameLength : null,
+    rotation.frameLength,
   );
 }
 

@@ -5,8 +5,6 @@
  */
 type SettingsLike = { labs?: Record<string, { isEnabled?: boolean } | undefined> | null };
 
-/** Frame-data rotation length and DPS (ADR 0047). */
-export const FRAME_TIMING_LAB = "frameTiming";
 /** Optimize all three of a team's builds at once (ADR 0052). */
 export const TEAM_OPTIMIZER_LAB = "teamOptimizer";
 
@@ -14,10 +12,6 @@ export const TEAM_OPTIMIZER_LAB = "teamOptimizer";
 // StoreGeneric fails TS's weak-type check against an all-optional type.
 export function isLabEnabled(settings: object, key: string): boolean {
   return (settings as SettingsLike).labs?.[key]?.isEnabled === true;
-}
-
-export function isFrameTimingEnabled(settings: object): boolean {
-  return isLabEnabled(settings, FRAME_TIMING_LAB);
 }
 
 export function isTeamOptimizerEnabled(settings: object): boolean {

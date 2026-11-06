@@ -14,6 +14,8 @@ ADR 0047 added a timing engine fed by wuwalab frame data. The rotation editors (
 
 All of this is behind the same `frameTiming` lab. With it off, every view behaves as before.
 
+**Superseded 2026-11-06:** the flag was removed and all of this is always on. Ignore the mentions of the lab below.
+
 - **One rule for which DPS to show, in one pure helper.** `rotationDpsReadings(damage, typedDuration, frameLength)` (`src/calculator/teamRotation.ts`) returns every DPS a rotation has: frame data first ("DPS from frame data (13.17s)"), then the typed duration ("DPS (14s)", the label it always had). A missing, zero or non-numeric length gives no reading rather than a division by it.
   - **Views with room show both:** the character breakdown (classic `CalculatorDamages.vue` and 3.0 `CalculatorLiveResultRotations.vue`), the team damages panel and the team summary's DPS card. These carry the "Frame data: wuwalab" credit (`FrameDataNote.vue`) and say how many actions had no frame data.
   - **Views with room for one number use `headlineDps`:** the typed duration when there is one, because the user chose it, otherwise frame data. These are the team editor's sticky header, the "Best DPS" leaderboards and rankings on both rotation lists, and the list rows' "Xs rotation" text, which notes "(frame data)" when it isn't the typed length.

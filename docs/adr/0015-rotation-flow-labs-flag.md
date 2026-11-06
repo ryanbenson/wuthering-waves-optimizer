@@ -188,7 +188,7 @@ legacy path untouched:
     in rotation order — bar height shows which hits matter most" — states
     what the strip does rather than what it doesn't.
 
-    **Superseded 2026-10-29:** with the `frameTiming` Labs flag on and frame
+    **Superseded 2026-10-29:** with frame
     data for the rotation, the strip is a game-time timeline instead
     (`RotationTimelineChart.vue` and `TeamRotationLanesChart.vue`, ADR [0049](./0049-rotation-timeline-strip.md)).
     This ordered strip is still the fallback.

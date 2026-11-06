@@ -84,22 +84,23 @@ describe("Team Rotation Summary", () => {
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
   });
 
-  it("shows an empty-state message for the timeline charts when there's no duration", () => {
-    cy.richSelect("[data-test-character-select]", "Carlotta");
+  it("shows an empty-state message for the timeline charts with no duration or frame data", () => {
+    // Jiyan has no frame data, so the charts have no length to run on.
+    cy.richSelect("[data-test-character-select]", "Jiyan");
     cy.get(".character__self-buffs").should("be.visible");
 
     cy.visit("/teams");
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
 
-    cy.selectTeamRotationSlotCharacter(0, "Carlotta");
-    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+    cy.selectTeamRotationSlotCharacter(0, "Jiyan");
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Jiyan");
 
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect(
       '[data-test-rotation-action-skill-input="none"]',
-      "BasicAttackStage1DMG",
+      "Part1DMG",
     );
 
     cy.get("[data-test-team-rotation-summary-view-summary]").first().click();

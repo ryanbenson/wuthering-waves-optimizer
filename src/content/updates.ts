@@ -39,6 +39,7 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 6, 2026",
     items: [
       "Fixed the optimizer scoring some builds too low when a character's buffs scale with their own stats, like Mornye's with Energy Regen. It used the stats of what the character was wearing, so a build could score higher after you equipped it. Results for these characters may change, and may pick different builds",
+      "Rotation timing from frame data is now on for everyone, out of Labs. Character and team rotations show how long they take and the DPS from each action's frame data (thanks to wuwalab), next to the DPS from your typed duration. Set how each action ends (cancel, dash, swap) from its frame chip, and rotations with frame data get the new timeline charts. Feedback is welcome in the Discord",
     ],
   },
   {
