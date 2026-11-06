@@ -113,6 +113,7 @@ export const NAV_ICONS = {
   echoRating: outline("M6 8a6 6 0 1012 0 6 6 0 10-12 0z", "M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"),
   tuningOdds: outline("M4 17l6-6 4 4 6-8", "M14 7h6v6"),
   formulas: outline("M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"),
+  guides: outline("M4 19.5A2.5 2.5 0 016.5 17H20", "M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"),
   credits: outline(
     "M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z",
   ),
@@ -204,6 +205,17 @@ export const INVENTORY_SECTIONS: NavSections = {
   ],
 };
 
+/**
+ * The calculator screen named by a `?section=` link (guides and the Info overview link
+ * straight to a screen), or null when it isn't one. Phone-only and missing values fall
+ * back to the default screen.
+ */
+export function getCalculatorSectionFromQuery(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const item = CALCULATOR_SECTIONS.groups.flatMap((group) => group.items).find((i) => i.key === value);
+  return item && !item.phoneOnly ? item.key : null;
+}
+
 /** Info's pages, keyed by their route path. */
 export const INFO_SECTIONS: NavSections = {
   testName: "info",
@@ -212,6 +224,7 @@ export const INFO_SECTIONS: NavSections = {
       label: "Info",
       items: [
         { key: "/info", label: "Overview", icon: NAV_ICONS.overview, testId: "overview" },
+        { key: "/info/guides", label: "Guides", icon: NAV_ICONS.guides, testId: "guides" },
         { key: "/info/cv-echo-rating", label: "CV & Echo Rating", icon: NAV_ICONS.echoRating, testId: "cv-echo-rating" },
         { key: "/info/tuning-odds", label: "Tuning Planner", icon: NAV_ICONS.tuningOdds, testId: "tuning-odds" },
         { key: "/info/formulas", label: "Formulas", icon: NAV_ICONS.formulas, testId: "formulas" },

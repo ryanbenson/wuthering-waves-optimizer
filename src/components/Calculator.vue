@@ -577,11 +577,11 @@ import {
 } from "../calculator/statSplit";
 import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { trackEvent } from "../utils/analytics";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
-import { CALCULATOR_SECTIONS } from "./navigation/navSections";
+import { CALCULATOR_SECTIONS, getCalculatorSectionFromQuery } from "./navigation/navSections";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import CalculatorCommandBar from "./CalculatorCommandBar.vue";
 import WorkspaceCharacterBrowser from "./characterWorkspace/WorkspaceCharacterBrowser.vue";
@@ -1351,6 +1351,16 @@ export default defineComponent({
         });
       }
     };
+
+    // Guides and the Info overview link to a screen with ?section=; the query is dropped
+    // so it can't go stale once you move to another screen.
+    const route = useRoute();
+    const router = useRouter();
+    const linkedSection = getCalculatorSectionFromQuery(route?.query.section);
+    if (linkedSection) {
+      changeScreen(linkedSection);
+      void router?.replace({ query: { ...route.query, section: undefined } });
+    }
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
