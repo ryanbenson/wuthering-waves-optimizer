@@ -23,7 +23,7 @@
               need to pull in your echoes for this to work.
             </li>
 
-            <li>
+            <li v-if="!isV3">
               If you do not have the echo set, or main echo bonuses enabled in
               your Echoes screen, this will not automatically enable it for you.
               You'll need to enable those, otherwise you may see a difference in
@@ -33,19 +33,10 @@
             </li>
 
             <li>
-              When you're processing many loadouts, and/or using rotations, you
-              may notice a performance hit as your screen may lag, or you may
-              run into your browser saying "this page has stopped working". This
-              can happen when it's trying to process a large amount of loadouts
-              as it's using your browser pretty heavily. This will be resolved
-              in an upcoming update.
-              <strong>If you run into this</strong>
-              try reducing how many loadoats it would process by reducing the
+              More echo sets and main echoes mean many more loadouts to check.
+              <strong>If a search is slow</strong>
+              try reducing how many loadouts it would process by reducing the
               sets selected, etc.
-              <strong>
-                This is being actively worked on to support millions of loadout
-                combinations.
-              </strong>
             </li>
           </ul>
         </div>
@@ -70,7 +61,7 @@
             </li>
             <li>
               Click
-              <strong>Optimize</strong>
+              <strong>{{ isV3 ? "Run Optimizer" : "Optimize" }}</strong>
               and it will look through all of your echoes in your inventory that
               match your criteria, and it will find all possible loadouts, then
               figure out the best loadouts given your target.
@@ -95,35 +86,30 @@
         <p class="mt-2">
           <strong>Filling your inventory</strong>
           <br />
-          There is no way as of now to automatically pull in your echoes from
-          the game. You have to do it manually. The best way is to export your
-          data from the WuWa bot which will give you those 5 echoes, and using
-          the
-          <strong>Import echoes</strong>
-          feature to pull those into your inventory. You could just repeat this
-          process multiple times. Or you can manually add echoes one by one.
+          You don't have to type your echoes in. See the
+          <RouterLink to="/scanners" class="link link-primary">scanners</RouterLink>
+          for the four ways to pull them in from the game, or add echoes by hand
+          from your inventory.
         </p>
       </div>
-      <div class="mt-2">
-        <strong>Upcoming improvements</strong>
-        <ul>
-          <li>
-            Performance and scaling improvements to support hundreds of
-            thousands to millions of loadout combinations without affecting the
-            browser.
-          </li>
-          <li>
-            Ability to update character echo set / main echo buffs to match your
-            optimizer settings.
-          </li>
-        </ul>
-      </div>
+      <p v-if="isV3" class="mt-2">
+        <RouterLink to="/info/guides/best-loadout" class="link link-primary" data-test-optimizer-guide-full>
+          Read the full guide with current pictures
+        </RouterLink>
+      </p>
     </div>
   </dialog>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
+
 defineOptions({ name: "CalculatorOptimizerGuide" });
+
+const settingsStore = useSettingsStore() as any;
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
 function triggerOpenModal() {
   const modalEl = document.getElementById(
