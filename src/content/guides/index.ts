@@ -135,7 +135,7 @@ export const GUIDES: Guide[] = [
             items: [
               { title: "Create", text: "Start an empty rotation and add your attacks in order." },
               { title: "List Presets", text: "In the **...** menu. Start from a rotation made for this character, then adjust it." },
-              { title: "Import", text: "In the **...** menu. Paste a rotation someone shared." },
+              { title: "Import", text: "In the **...** menu. Bring in a rotation someone shared." },
             ],
           },
           { type: "image", image: GUIDE_IMAGES.rotations },
@@ -148,8 +148,8 @@ export const GUIDES: Guide[] = [
           {
             type: "keyed",
             items: [
-              { title: "Actions", text: "Each action is one attack and how many times it hits." },
-              { title: "Buffs per action", text: "Turn buffs on or off for one action, like a buff that only lasts part of the rotation." },
+              { title: "Actions", text: "Each action is one attack and how many times it's used. Use **Add Action**, type an action's name, or **Paste a whole rotation**." },
+              { title: "Buffs per action", text: "**Manage Buffs** changes the buffs for one action, like a buff that only lasts part of the rotation." },
               { title: "Duration", text: "Type how long the rotation takes in seconds to get its DPS." },
             ],
           },
@@ -169,13 +169,13 @@ export const GUIDES: Guide[] = [
         id: "start",
         heading: "Set up a team",
         blocks: [
-          { type: "note", text: "**Set up each character first.** A team uses the builds you made in the Calculator, so the character needs a build before you add them." },
+          { type: "note", text: "**Set up each character first.** A team uses each character's build from the Calculator." },
           {
             type: "steps",
             items: [
               { title: "Create a team", text: "Choose **New Team**, or **List Presets** in the **...** menu to start from a ready-made team." },
               { title: "Pick up to 3 characters", text: "**Configure Character** takes you to that character in the Calculator if you need to change their build." },
-              { title: "Add actions", text: "Add each action and pick who does it, or use **Import Rotation** to bring in a character's saved rotation." },
+              { title: "Add actions", text: "Pick who each action is for and add it, or use **Import Rotation** to bring in a character's saved or preset rotation." },
               { title: "Set the duration", text: "Type how long the rotation takes to get the team's DPS." },
             ],
           },
@@ -230,10 +230,10 @@ export const GUIDES: Guide[] = [
             type: "image",
             image: GUIDE_IMAGES.optimizerSetup,
             markers: [
-              { x: 3, y: 39.6 },
-              { x: 3, y: 84 },
-              { x: 34.4, y: 39.6 },
-              { x: 66.2, y: 39.6 },
+              { x: 3, y: 36.6 },
+              { x: 3, y: 80.5 },
+              { x: 34.4, y: 36.6 },
+              { x: 66.2, y: 36.6 },
               { x: 85.3, y: 30.8 },
             ],
           },
@@ -258,8 +258,8 @@ export const GUIDES: Guide[] = [
             type: "image",
             image: GUIDE_IMAGES.optimizerResults,
             markers: [
-              { x: 2, y: 29.8 },
-              { x: 90.5, y: 32 },
+              { x: 3, y: 26.2 },
+              { x: 98, y: 34.9 },
               { x: 86.8, y: 68.7 },
             ],
           },

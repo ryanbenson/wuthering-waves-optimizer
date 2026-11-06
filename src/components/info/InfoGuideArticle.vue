@@ -8,7 +8,7 @@
         v-for="section in guide.sections"
         :key="section.id"
         :to="{ hash: `#${section.id}` }"
-        class="flex items-center min-h-9 hover:text-base-content">
+        class="flex items-center min-h-9 text-base-content/80 hover:text-base-content">
         {{ section.heading }}
       </RouterLink>
     </nav>

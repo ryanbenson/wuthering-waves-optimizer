@@ -22,7 +22,7 @@
         v-for="entry in results"
         :key="entry.to"
         :to="entry.to"
-        class="guides__entry flex flex-col gap-0.5 min-h-11 px-3 py-2 bg-base-200 rounded-lg hover:bg-base-300"
+        class="guides__entry flex flex-col gap-0.5 min-h-11 px-3 py-2 bg-base-200 text-base-content/80 rounded-lg hover:bg-base-300"
         data-test-guides-result>
         <span class="font-semibold text-base-content">{{ entry.title }}</span>
         <span class="text-sm">{{ entry.summary }}</span>
@@ -36,7 +36,7 @@
           <li v-for="(step, index) in GUIDE_START_PATH" :key="step.to" class="min-w-0">
             <RouterLink
               :to="step.to"
-              class="guides__entry flex flex-col h-full bg-base-200 rounded-2xl overflow-hidden border border-transparent hover:border-primary/60 transition-colors">
+              class="guides__entry flex flex-col h-full bg-base-200 text-base-content/80 rounded-2xl overflow-hidden border border-transparent hover:border-primary/60 transition-colors">
               <span class="block h-40 overflow-hidden bg-base-300">
                 <img
                   :src="guideImageUrl(step.image.file)"

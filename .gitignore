@@ -159,6 +159,7 @@ dist
 
 # Cypress
 cypress/screenshots
+guide-images
 cypress/downloads
 
 # AI
