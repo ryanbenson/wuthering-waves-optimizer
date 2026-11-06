@@ -7,6 +7,8 @@ type SettingsLike = { labs?: Record<string, { isEnabled?: boolean } | undefined>
 
 /** Frame-data rotation length and DPS (ADR 0047). */
 export const FRAME_TIMING_LAB = "frameTiming";
+/** Optimize all three of a team's builds at once (ADR 0052). */
+export const TEAM_OPTIMIZER_LAB = "teamOptimizer";
 
 // `object`, not SettingsLike, for the same reason as uiVersion.ts: Pinia's
 // StoreGeneric fails TS's weak-type check against an all-optional type.
@@ -16,4 +18,8 @@ export function isLabEnabled(settings: object, key: string): boolean {
 
 export function isFrameTimingEnabled(settings: object): boolean {
   return isLabEnabled(settings, FRAME_TIMING_LAB);
+}
+
+export function isTeamOptimizerEnabled(settings: object): boolean {
+  return isLabEnabled(settings, TEAM_OPTIMIZER_LAB);
 }

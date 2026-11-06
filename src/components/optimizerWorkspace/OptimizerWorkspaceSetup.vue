@@ -62,7 +62,7 @@
       </div>
     </dialog>
 
-    <div class="run-bar-sticky">
+    <div v-if="!embedded" class="run-bar-sticky">
       <OptimizerWorkspaceRunBar
         :echo-set-count="setFilters.length"
         :main-echo-count="mainEchoes.length"
@@ -73,7 +73,7 @@
         @jump="jumpToSection"></OptimizerWorkspaceRunBar>
     </div>
 
-    <div class="grid gap-4 lg:grid-cols-3">
+    <div class="grid gap-4" :class="embedded ? '' : 'lg:grid-cols-3'">
       <!-- Echo sets + main echo -->
       <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
         <div ref="setsSection" class="scroll-mt-20">
@@ -142,7 +142,7 @@
       </div>
 
       <!-- Target -->
-      <div ref="targetSection" class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 scroll-mt-20">
+      <div v-if="!embedded" ref="targetSection" class="bg-base-200 rounded-xl p-4 flex flex-col gap-3 scroll-mt-20">
         <div>
           <div class="text-xs font-bold uppercase tracking-wider opacity-50">
             Optimize for
@@ -309,7 +309,17 @@ import {
 
 defineOptions({ name: "OptimizerWorkspaceSetup" });
 
-const props = defineProps<{ character: string }>();
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    /** Team optimizer's drawer: no run bar or target, since the team run owns those. */
+    embedded?: boolean;
+    /** Embedded only: the team optimizer's current choices, used instead of the saved ones. */
+    initialSets?: string[];
+    initialMainEchoes?: string[];
+  }>(),
+  { embedded: false, initialSets: () => [], initialMainEchoes: () => [] },
+);
 
 const emit = defineEmits<{
   "optimizer:optimize": [
@@ -322,6 +332,15 @@ const emit = defineEmits<{
     damageType: string,
     ignoreOtherResonantorEchoes: boolean,
     loadoutFormat: OptimizerLoadoutFormat,
+  ];
+  "settings-updated": [
+    settings: {
+      sets: string[];
+      mainEchoes: string[];
+      minStats: OptimizerMinStatRow[];
+      ignoreOtherResonatorEchoes: boolean;
+      loadoutFormat: OptimizerLoadoutFormat;
+    },
   ];
 }>();
 
@@ -492,6 +511,13 @@ function handleUpdatedDamageType(dt: string) {
 }
 
 async function syncOptimizerConfig() {
+  emit("settings-updated", {
+    sets: [...setFilters.value],
+    mainEchoes: [...mainEchoes.value],
+    minStats: JSON.parse(JSON.stringify(minStats.value)),
+    ignoreOtherResonatorEchoes: ignoreOtherResonantorEchoes.value,
+    loadoutFormat: loadoutFormat.value,
+  });
   await characterStore.setCharacterData(props.character, {
     optimizer: {
       mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
@@ -591,8 +617,8 @@ onMounted(() => {
       loadoutFormat?: OptimizerLoadoutFormat | string;
     };
   };
-  mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
-  setFilters.value = ch.optimizer?.echoSets ?? [];
+  mainEchoes.value = props.embedded ? [...props.initialMainEchoes] : (ch.optimizer?.mainEchoes ?? []);
+  setFilters.value = props.embedded ? [...props.initialSets] : (ch.optimizer?.echoSets ?? []);
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value = ch.optimizer?.ignoreOtherResonantorEchoes ?? false;

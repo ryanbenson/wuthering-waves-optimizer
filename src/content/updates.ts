@@ -35,6 +35,13 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-06",
+    dateLabel: "November 6, 2026",
+    items: [
+      "Fixed the optimizer scoring some builds too low when a character's buffs scale with their own stats, like Mornye's with Energy Regen. It used the stats of what the character was wearing, so a build could score higher after you equipped it. Results for these characters may change, and may pick different builds",
+    ],
+  },
+  {
     date: "2026-11-02",
     dateLabel: "November 2, 2026",
     items: [
