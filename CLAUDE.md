@@ -28,6 +28,7 @@ npm run cli -- import echoes
 npm run cli -- import frames          # per-attack frame data from wuwalab (ADR 0047); --character <Name>
 npm run fixtures:wuwalab             # fetch the gitignored reference rotations the timing tests check against
 npm run cli -- backfill icons        # or: backfill icons --character <Key> for one character
+npm run guides:screenshots           # recapture the guide images into guide-images/ (needs `npm run dev`); upload to the assets repo's wt-info/
 ```
 
 ## Layout (where to look)
