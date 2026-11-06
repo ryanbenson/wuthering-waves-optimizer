@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
-import { FRAME_TIMING_LAB } from "../utils/labs";
+import { FRAME_TIMING_LAB, TEAM_OPTIMIZER_LAB } from "../utils/labs";
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",
@@ -84,6 +84,12 @@ const labsFeatures = ref<LabFeature[]>([
     label: "Rotation timing from frame data",
     details:
       "Works out how long a character or team rotation takes from each action's frame data (thanks to wuwalab) and shows that DPS next to the one from your typed duration. Set how each action ends (cancel, dash, swap) from its frame chip.",
+  },
+  {
+    key: TEAM_OPTIMIZER_LAB,
+    label: "Team optimizer",
+    details:
+      "Adds an Optimize team button to Team Rotations. It finds the best builds for all of a team's characters at once, for that team's rotation, without using an echo twice. Results save as new builds, so your current ones stay untouched.",
   },
 ]);
 </script>

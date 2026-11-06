@@ -40,6 +40,7 @@ import {
   buildOptimizerCalculationContext,
   computeOverrideBuffVariants,
   scoreOptimizerRotation,
+  hasRequiredSetBonuses,
   type OverrideBuffVariant,
 } from "../calculator/optimizer";
 import type { OptimizerRotationData } from "../calculator/rotationData";
@@ -60,6 +61,10 @@ interface ProcessorConfig {
   damageType: string;
   rotationData?: OptimizerRotationData;
   topN: number;
+  /** Team optimizer: drop per-attack detail from results (ADR 0052). */
+  slimResults: boolean;
+  /** Team optimizer: skip loadouts missing any of these set bonuses (ADR 0052). */
+  requiredSetBonusLabels: string[];
   /** Loadout-independent; computed once on init */
   selfBuffsData: any;
   /** Loadout-independent; computed once on init */
@@ -84,6 +89,8 @@ interface ProcessorMessage {
     damageType?: string;
     rotationData?: any;
     topN?: number;
+    slimResults?: boolean;
+    requiredSetBonusLabels?: string[];
   };
 }
 
@@ -167,6 +174,8 @@ function processLoadout(
   selfBuffsData: any,
   resonanceChainsBuffsData: any,
   overrideBuffVariants: Map<string, OverrideBuffVariant>,
+  slimResults: boolean = false,
+  requiredSetBonusLabels: string[] = [],
 ): any | null {
   try {
     const normalizedLoadout = normalizeOptimizerLoadout(loadout);
@@ -180,6 +189,10 @@ function processLoadout(
       mainEchoStats,
     );
     const { finalStats, combinedEchoBuffs } = loadoutStats;
+
+    if (!hasRequiredSetBonuses(loadoutStats, requiredSetBonusLabels)) {
+      return null;
+    }
 
     // Check min stats
     if (minStats.length > 0) {
@@ -356,7 +369,7 @@ function processLoadout(
     return {
       loadout: loadoutArr,
       targetValue: finalTargetValue,
-      context: resultContext,
+      context: slimResults ? { finalStats } : resultContext,
     };
   } catch (error: any) {
     console.error("Error in processLoadout:", error);
@@ -387,6 +400,10 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
           damageType: data.damageType ?? "Average",
           rotationData,
           topN: typeof data.topN === "number" && data.topN > 0 ? data.topN : 5,
+          slimResults: data.slimResults === true,
+          requiredSetBonusLabels: Array.isArray(data.requiredSetBonusLabels)
+            ? data.requiredSetBonusLabels
+            : [],
           // Echo-independent buffs — compute once per run
           resonanceChainsBuffsData: computeResonanceChainsBuffs(
             context.activeCharacterResonanceChains ?? {},
@@ -459,6 +476,8 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         damageType,
         rotationData,
         topN,
+        slimResults,
+        requiredSetBonusLabels,
         selfBuffsData,
         resonanceChainsBuffsData,
         overrideBuffVariants,
@@ -485,6 +504,8 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
               selfBuffsData,
               resonanceChainsBuffsData,
               overrideBuffVariants,
+              slimResults,
+              requiredSetBonusLabels,
             );
 
             if (result && tryInsertLocalHeap(result, topN)) {

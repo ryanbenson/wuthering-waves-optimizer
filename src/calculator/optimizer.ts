@@ -559,6 +559,23 @@ export function computeLoadoutFinalStats(
 }
 
 /**
+ * True when a loadout's active set bonuses include every required one. The team
+ * optimizer uses this so a support keeps a set whose team buff teammates count
+ * on (ADR 0052). An empty list allows everything.
+ */
+export function hasRequiredSetBonuses(
+  loadoutStats: Pick<OptimizerLoadoutStats, "setBonusOnePiece" | "setBonusOne" | "setBonusTwo">,
+  requiredLabels: string[],
+): boolean {
+  return requiredLabels.every(
+    (label) =>
+      loadoutStats.setBonusOnePiece === label ||
+      loadoutStats.setBonusOne === label ||
+      loadoutStats.setBonusTwo === label,
+  );
+}
+
+/**
  * The one call site for `getCalculationContext`'s 50+ positional args, used
  * by both the `Attack` and `Rotation` optimizer targets (previously
  * duplicated verbatim between them, and again between `optimize()` and
