@@ -37,6 +37,7 @@ Three designs were mocked up in a published Artifact ("Team Optimizer Exploratio
 ## Guidance
 
 - **Do** add new per-loadout filters to `processor.worker.ts` so they apply during the search, not after, or the kept lists can run out of valid rows.
+- **Do** score damage with `loadoutStats.loadoutBuffData`, not `context.charBuffsData`. The context's copy holds buffs that scale off a stat at the worn build's value. Testing this feature found the normal optimizer had the same problem: a Mornye with no echoes scored every loadout at her base Energy Regen, up to 48% below the Team page.
 - **Do** keep `weaponPassiveDefs` and `refinement` in `buildOptimizerContextForCharacter`. Without them, per-action overrides silently lose weapon passives (up to 17.5% off in the spike).
 - **Don't** show a score from the search directly. Show the verified one.
 - **Don't** rank by DPS. With frame timing on, a team's duration depends on each build's main echo.

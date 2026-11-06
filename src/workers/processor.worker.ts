@@ -299,6 +299,7 @@ function processLoadout(
         context,
         finalStats,
         combinedEchoBuffs,
+        loadoutStats.loadoutBuffData,
       );
 
       const attacks = processAttacks(

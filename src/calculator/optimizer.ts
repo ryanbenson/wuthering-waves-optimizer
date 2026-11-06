@@ -469,6 +469,14 @@ export interface OptimizerLoadoutStats {
   setBonusOnePiece: string | null;
   setBonusOne: string | null;
   setBonusTwo: string | null;
+  /**
+   * Self and resonance chain buffs resolved at this loadout's own stats. Buffs
+   * that scale off a stat (AdditionalBase, like Mornye's off Energy Regen) differ
+   * per loadout, and `getCalculationContext`/`processAttacks` read them from here
+   * as well as from `finalStats`, so damage has to be scored with these rather
+   * than `context.charBuffsData`, which reflects whatever the character is wearing.
+   */
+  loadoutBuffData: { selfBuffsData: any; resonanceChainsBuffsData: any; teamBuffsData: any };
 }
 
 /** Sums multiple `{ stat: value }` buff objects into one, key by key. */
@@ -521,7 +529,11 @@ export function computeLoadoutFinalStats(
     setBonusTwoBuffs,
   );
 
-  const { finalStats } = calculateFinalStatsFromBuffs({
+  const {
+    finalStats,
+    selfBuffsData: loadoutSelfBuffsData,
+    resonanceChainsBuffsData: loadoutResonanceChainsBuffsData,
+  } = calculateFinalStatsFromBuffs({
     baseHp: context.baseHp,
     baseAtk: context.baseAtk,
     baseDef: context.baseDef,
@@ -555,6 +567,11 @@ export function computeLoadoutFinalStats(
     setBonusOnePiece,
     setBonusOne,
     setBonusTwo,
+    loadoutBuffData: {
+      selfBuffsData: loadoutSelfBuffsData,
+      resonanceChainsBuffsData: loadoutResonanceChainsBuffsData,
+      teamBuffsData: context.teamBuffsData,
+    },
   };
 }
 
@@ -585,8 +602,9 @@ export function buildOptimizerCalculationContext(
   context: OptimizerContext,
   finalStats: any,
   combinedEchoBuffs: any,
-  // An override action's own resolved buff data — defaults to the
-  // character's un-overridden context.*Data for the plain-action call site.
+  // The buff data resolved for this loadout (and override action, if any).
+  // Defaults to context.*Data, which reflects what the character is wearing, not
+  // the loadout being scored, so every damage scoring call site should pass it.
   // getCalculationContext/processAttacks re-derive specific-talent-buff
   // bonuses from these directly (not just from the already-flattened
   // finalStats numbers), so passing the character's default data here for an
@@ -814,7 +832,12 @@ export function scoreOptimizerRotation(
   };
 
   if (rotationData.plainAttacks.length) {
-    const optimizerContext = buildOptimizerCalculationContext(context, finalStats, combinedEchoBuffs);
+    const optimizerContext = buildOptimizerCalculationContext(
+      context,
+      finalStats,
+      combinedEchoBuffs,
+      loadoutStats.loadoutBuffData,
+    );
     const attacks = processAttacks(
       rotationData.plainAttacks,
       optimizerContext,
@@ -856,7 +879,11 @@ export function scoreOptimizerRotation(
         resolveSetBonusStats(setBonusTwoDef, variant.echoSetPassivesConfig, context.talentData),
       );
 
-      const { finalStats: overrideFinalStats } = calculateFinalStatsFromBuffs({
+      const {
+        finalStats: overrideFinalStats,
+        selfBuffsData: overrideSelfBuffsData,
+        resonanceChainsBuffsData: overrideResonanceChainsBuffsData,
+      } = calculateFinalStatsFromBuffs({
         baseHp: context.baseHp,
         baseAtk: context.baseAtk,
         baseDef: context.baseDef,
@@ -898,8 +925,9 @@ export function scoreOptimizerRotation(
         overrideFinalStats,
         overrideCombinedEchoBuffs,
         {
-          selfBuffsData: variant.selfBuffsData,
-          resonanceChainsBuffsData: variant.resonanceChainsBuffsData,
+          // Resolved at this loadout's stats, like `loadoutBuffData` above.
+          selfBuffsData: overrideSelfBuffsData,
+          resonanceChainsBuffsData: overrideResonanceChainsBuffsData,
           teamBuffsData: variant.teamBuffsData,
         },
       );
@@ -1123,6 +1151,7 @@ export function optimize(
         context,
         finalStats,
         combinedEchoBuffs,
+        loadoutStats.loadoutBuffData,
       );
       const attacks = processAttacks(
         [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
