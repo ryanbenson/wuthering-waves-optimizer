@@ -150,7 +150,8 @@ export const GUIDES: Guide[] = [
             items: [
               { title: "Actions", text: "Each action is one attack and how many times it's used. Use **Add Action**, type an action's name, or **Paste a whole rotation**." },
               { title: "Buffs per action", text: "**Manage Buffs** changes the buffs for one action, like a buff that only lasts part of the rotation." },
-              { title: "Duration", text: "Type how long the rotation takes in seconds to get its DPS." },
+              { title: "Timing", text: "Each action's frame chip shows how long it takes. Click it to set how the action ends (cancel, dash, jump or swap), and the rotation's length and DPS update." },
+              { title: "Duration", text: "Optional. Type how long the rotation takes in seconds to get a DPS from your own timing as well." },
             ],
           },
           { type: "text", text: "You can also point the [Optimizer](/info/guides/best-loadout) at a rotation, so it finds the best echoes for the whole sequence." },
@@ -176,7 +177,7 @@ export const GUIDES: Guide[] = [
               { title: "Create a team", text: "Choose **New Team**, or **List Presets** in the **...** menu to start from a ready-made team." },
               { title: "Pick up to 3 characters", text: "**Configure Character** takes you to that character in the Calculator if you need to change their build." },
               { title: "Add actions", text: "Pick who each action is for and add it, or use **Import Rotation** to bring in a character's saved or preset rotation." },
-              { title: "Set the duration", text: "Type how long the rotation takes to get the team's DPS." },
+              { title: "Check the timing", text: "The team's length and DPS come from each action's frame data. Set how an action ends from its frame chip, or type your own duration to compare." },
             ],
           },
           { type: "image", image: GUIDE_IMAGES.team },

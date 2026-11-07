@@ -1,5 +1,5 @@
 /**
- * Guides are plain data (ADR 0052) so one copy can back the Guides pages and the in-app
+ * Guides are plain data (ADR 0053) so one copy can back the Guides pages and the in-app
  * help. Text fields support `**bold**` and `[label](/path)`, see inline.ts.
  */
 

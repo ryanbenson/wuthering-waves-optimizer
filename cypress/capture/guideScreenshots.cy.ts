@@ -99,8 +99,12 @@ describe("guide screenshots", () => {
     cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-presets]").click();
     cy.get("[data-test-team-rotations-preset-import]").first().click();
-    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.get("[data-test-team-rotation-import-modal] [data-test-team-rotation-import-append]").first().click();
+    // Give each character a rotation, so the chart shows the whole team.
+    [0, 1, 2].forEach((slot) => {
+      cy.get(`[data-test-team-rotation-import-rotation-open="${slot}"]`).click();
+      cy.get("[data-test-team-rotation-import-modal] [data-test-team-rotation-import-append]").first().click();
+      cy.wait(500);
+    });
     cy.get("[data-test-team-rotation-duration]").clear().type("25");
     // Long enough for the "imported" toasts to clear.
     cy.wait(7000);

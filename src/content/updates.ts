@@ -5,7 +5,7 @@
 import { GUIDE_IMAGES } from "./guides/images";
 import type { GuideImage } from "./guides/types";
 
-/** What a bullet is. Hand-written and optional: history stays untagged (ADR 0052). */
+/** What a bullet is. Hand-written and optional: history stays untagged (ADR 0053). */
 export type UpdateTag = "feature" | "content" | "labs" | "fix";
 
 export interface UpdateItemDetails {

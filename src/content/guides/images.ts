@@ -22,7 +22,7 @@ export const GUIDE_IMAGES = {
   optimizerTop5: { file: "guide-optimizer-top5.webp", alt: "The top 5 loadouts, each with its gain over the current build", width: 2600, height: 680 },
   buildScore: { file: "guide-build-score.webp", alt: "Build score, total Crit Value and rolls on priority substats", width: 1380, height: 1180 },
   statBar: { file: "guide-stat-bar.webp", alt: "A row of stats, each with a bar split between build and buffs", width: 640, height: 130 },
-  rotations: { file: "guide-rotations.webp", alt: "A rotation with its damage summary and list of actions", ...FULL },
+  rotations: { file: "guide-rotations.webp", alt: "A rotation with its length, DPS and damage over time", ...FULL },
   team: { file: "guide-team.webp", alt: "A team rotation with three characters and its total damage", ...FULL },
   buildCard: { file: "guide-build-card.webp", alt: "The Build Card screen with a finished card", ...FULL },
   tuning: { file: "guide-tuning.webp", alt: "The Tuning Planner with Crit Rate and Crit DMG picked", ...FULL },

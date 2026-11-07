@@ -4,7 +4,7 @@
       class="relative overflow-hidden rounded-xl border border-base-content/10 bg-base-300"
       :style="{ aspectRatio: `${image.width} / ${image.height}` }"
       data-test-guide-screenshot>
-      <!-- Dark captures on purpose: they sit in this neutral frame in every theme (ADR 0052). -->
+      <!-- Dark captures on purpose: they sit in this neutral frame in every theme (ADR 0053). -->
       <img
         v-if="!failed"
         :src="guideImageUrl(image.file)"

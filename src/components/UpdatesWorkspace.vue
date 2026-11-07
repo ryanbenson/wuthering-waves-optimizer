@@ -86,7 +86,7 @@
  * rejected in design review, see
  * docs/adr/0023-updates-page-search-and-grouping-redesign.md. New bullets
  * can carry a hand-written tag and picture, but history has no tags to
- * filter on (ADR 0052).
+ * filter on (ADR 0053).
  *
  * Collapsed months use native <details>/<summary> so their content stays
  * in the DOM (visibility-only toggle) rather than being lazy-rendered -

@@ -25,7 +25,7 @@ review, based on this page's traffic (~1% of sessions):
   keyword-based tagging ("Fixes…" → Fix) would misfire often enough to make
   a filter untrustworthy.
 
-  **Revised 2026-11-06 (ADR [0052](./0052-visual-info-pages-and-guides.md)):**
+  **Revised 2026-11-06 (ADR [0053](./0053-visual-info-pages-and-guides.md)):**
   new bullets can carry an optional hand-written tag and picture. There's still
   no filter, for the reason above: most of the history has no tags.
 - **"New since your last visit" tracking** (a stored last-seen timestamp
