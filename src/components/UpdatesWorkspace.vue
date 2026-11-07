@@ -38,44 +38,20 @@
       <p v-if="!monthGroups.length" class="text-sm opacity-60" data-test-updates-no-results>
         No updates match “{{ searchQuery }}”.
       </p>
-      <div v-for="group in monthGroups" :key="group.key" class="flex flex-col gap-2" :data-test-updates-month="group.key">
+      <div v-for="group in monthGroups" :key="group.key" class="flex flex-col gap-3" :data-test-updates-month="group.key">
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
           {{ group.label }}
         </div>
-        <div
-          v-for="entry in group.entries"
-          :key="entry.date"
-          class="bg-base-200 rounded-xl p-3"
-          :data-test-updates-day="entry.date">
-          <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
-          <ul class="flex flex-col gap-0.5">
-            <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-              <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
-              <span>{{ item }}</span>
-            </li>
-          </ul>
-        </div>
+        <UpdatesDay v-for="entry in group.entries" :key="entry.date" :entry="entry" />
       </div>
     </template>
 
     <template v-else>
-      <div v-for="group in recentMonths" :key="group.key" class="flex flex-col gap-2">
+      <div v-for="group in recentMonths" :key="group.key" class="flex flex-col gap-3">
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50">
           {{ group.label }}
         </div>
-        <div
-          v-for="entry in group.entries"
-          :key="entry.date"
-          class="bg-base-200 rounded-xl p-3"
-          :data-test-updates-day="entry.date">
-          <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
-          <ul class="flex flex-col gap-0.5">
-            <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-              <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
-              <span>{{ item }}</span>
-            </li>
-          </ul>
-        </div>
+        <UpdatesDay v-for="entry in group.entries" :key="entry.date" :entry="entry" />
       </div>
 
       <details
@@ -93,20 +69,8 @@
              `details:not([open]) > *:not(summary) { display: none }` rule
              and leave the content visible even while collapsed. -->
         <div class="p-3 pt-0">
-          <div class="flex flex-col gap-2">
-            <div
-              v-for="entry in earlierEntries"
-              :key="entry.date"
-              class="bg-base-100 rounded-lg p-3"
-              :data-test-updates-day="entry.date">
-              <div class="font-semibold text-sm mb-1">{{ entry.dateLabel }}</div>
-              <ul class="flex flex-col gap-0.5">
-                <li v-for="(item, i) in entry.items" :key="i" class="text-sm flex gap-2">
-                  <span class="w-1 h-1 rounded-full bg-current opacity-40 mt-2 shrink-0" aria-hidden="true"></span>
-                  <span>{{ item }}</span>
-                </li>
-              </ul>
-            </div>
+          <div class="flex flex-col gap-3">
+            <UpdatesDay v-for="entry in earlierEntries" :key="entry.date" :entry="entry" />
           </div>
         </div>
       </details>
@@ -117,10 +81,12 @@
 <script setup lang="ts">
 /**
  * v3.0 Updates page: full-text search + month grouping over the shared
- * changelog data (src/content/updates.ts). Deliberately does NOT do
- * per-entry category tags or "new since last visit" tracking - both were
- * considered and rejected in design review, see
- * docs/adr/0023-updates-page-search-and-grouping-redesign.md.
+ * changelog data (src/content/updates.ts). Deliberately has no category
+ * filter or "new since last visit" tracking - both were considered and
+ * rejected in design review, see
+ * docs/adr/0023-updates-page-search-and-grouping-redesign.md. New bullets
+ * can carry a hand-written tag and picture, but history has no tags to
+ * filter on (ADR 0054).
  *
  * Collapsed months use native <details>/<summary> so their content stays
  * in the DOM (visibility-only toggle) rather than being lazy-rendered -
@@ -128,6 +94,7 @@
  */
 import { computed, ref } from "vue";
 import { updateEntries, type UpdateEntry } from "../content/updates";
+import UpdatesDay from "./updates/UpdatesDay.vue";
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",

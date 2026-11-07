@@ -24,6 +24,10 @@ review, based on this page's traffic (~1% of sessions):
   sometimes describing both a fix and a feature), and even automatic
   keyword-based tagging ("Fixes…" → Fix) would misfire often enough to make
   a filter untrustworthy.
+
+  **Revised 2026-11-06 (ADR [0054](./0054-visual-info-pages-and-guides.md)):**
+  new bullets can carry an optional hand-written tag and picture. There's still
+  no filter, for the reason above: most of the history has no tags.
 - **"New since your last visit" tracking** (a stored last-seen timestamp
   driving a hero callout and an unread badge in the global nav — see ADR
   [0021](./0021-utility-nav-dropdown-redesign.md)). Judged not worth the

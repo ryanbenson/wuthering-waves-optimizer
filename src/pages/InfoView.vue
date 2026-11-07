@@ -3,7 +3,7 @@
     cur-page="info"
     :disable-mobile-nav="true"
     :sections="isLiveResultBarEnabled ? INFO_SECTIONS : null"
-    :active-section="route.path"
+    :active-section="activeSection"
     @select-section="router.push($event)"></Nav>
 
   <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) off: legacy single
@@ -192,7 +192,7 @@
 
   <!-- Labs flag on: nested route content; its pages are in the nav's tab row
        (INFO_SECTIONS, ADR 0045). -->
-  <div v-else class="page-info page-info--v3">
+  <div v-else class="page-info page-info--v3" :class="{ 'page-info--wide': isWide }">
     <RouterView />
   </div>
 </template>
@@ -212,6 +212,13 @@ const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
+
+// A guide article keeps the Guides tab active.
+const activeSection = computed(() =>
+  route.path.startsWith("/info/guides") ? "/info/guides" : route.path,
+);
+// The tuning planner's layout is designed for the narrower column.
+const isWide = computed(() => route.name !== "InfoTuningOdds");
 
 // Sets a page-specific title/description for /info (and every /info/* path
 // when the liveResultBar flag is off, since that path renders this same
@@ -233,6 +240,13 @@ useDocumentTitle(
 
   &.page-info--v3 {
     max-width: 920px;
+    @media (max-width: 768px) {
+      padding: 1.25rem 1rem;
+    }
+  }
+
+  &.page-info--wide {
+    max-width: 1180px;
   }
 }
 </style>

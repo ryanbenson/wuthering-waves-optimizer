@@ -28,6 +28,7 @@
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run",
     "cli": "tsx cli/index.ts",
     "scanner:icons": "tsx scripts/scanner-icons.ts",
+    "guides:screenshots": "ELECTRON_EXTRA_LAUNCH_ARGS=--force-device-scale-factor=2 cypress run --config-file cypress/capture/cypress.capture.config.ts && tsx scripts/guide-images.ts",
     "fixtures:wuwalab": "tsx scripts/fixtures-wuwalab.ts",
     "scanner:keygen": "tsx scripts/scanner-data-keygen.ts"
   },
