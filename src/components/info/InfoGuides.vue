@@ -22,10 +22,13 @@
         v-for="entry in results"
         :key="entry.to"
         :to="entry.to"
-        class="guides__entry flex flex-col gap-0.5 min-h-11 px-3 py-2 bg-base-200 text-base-content/80 rounded-lg hover:bg-base-300"
+        class="guides__entry flex items-center justify-between gap-3 min-h-11 px-3 py-2 bg-base-200 border border-base-content/10 rounded-lg hover:border-primary/60 transition-colors text-base-content/80"
         data-test-guides-result>
-        <span class="font-semibold text-base-content">{{ entry.title }}</span>
-        <span class="text-sm">{{ entry.summary }}</span>
+        <span class="flex flex-col gap-0.5 min-w-0">
+          <span class="font-semibold text-base-content">{{ entry.title }}</span>
+          <span class="text-sm">{{ entry.summary }}</span>
+        </span>
+        <GuideChevron />
       </RouterLink>
     </section>
 
@@ -36,7 +39,7 @@
           <li v-for="(step, index) in GUIDE_START_PATH" :key="step.to" class="min-w-0">
             <RouterLink
               :to="step.to"
-              class="guides__entry flex flex-col h-full bg-base-200 text-base-content/80 rounded-2xl overflow-hidden border border-transparent hover:border-primary/60 transition-colors">
+              class="guides__entry flex flex-col h-full bg-base-200 text-base-content/80 rounded-2xl overflow-hidden border border-base-content/10 hover:border-primary/60 transition-colors">
               <span class="block h-40 overflow-hidden bg-base-300">
                 <img
                   :src="guideImageUrl(step.image.file)"
@@ -47,7 +50,10 @@
               </span>
               <span class="flex flex-col gap-1.5 p-4">
                 <span class="font-extrabold text-primary">{{ index + 1 }}</span>
-                <span class="text-lg font-bold text-base-content">{{ step.title }}</span>
+                <span class="flex items-center justify-between gap-2 text-lg font-bold text-base-content">
+                  {{ step.title }}
+                  <GuideChevron />
+                </span>
                 <span class="text-sm leading-relaxed">{{ step.summary }}</span>
               </span>
             </RouterLink>
@@ -66,9 +72,10 @@
             v-for="entry in category.entries"
             :key="entry.to"
             :to="entry.to"
-            class="guides__entry flex items-center min-h-11 px-3 py-2 bg-base-200 rounded-lg font-medium text-base-content hover:bg-base-300"
+            class="guides__entry flex items-center justify-between gap-2 min-h-11 px-3 py-2 bg-base-200 border border-base-content/10 rounded-lg hover:border-primary/60 transition-colors font-medium text-base-content"
             data-test-guides-entry>
             {{ entry.title }}
+            <GuideChevron />
           </RouterLink>
         </section>
       </div>
@@ -86,6 +93,7 @@ import {
   searchGuideEntries,
 } from "../../content/guides";
 import { guideImageUrl } from "../../content/guides/images";
+import GuideChevron from "../guides/GuideChevron.vue";
 
 useDocumentTitle(
   "Guides — Wuthering Waves Calculator & Optimizer",

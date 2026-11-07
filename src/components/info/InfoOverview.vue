@@ -31,7 +31,7 @@
             v-for="link in feature.links"
             :key="link.to"
             :to="link.to"
-            class="link link-primary no-underline hover:underline">
+            class="link link-primary">
             {{ link.label }}
           </RouterLink>
         </div>
@@ -46,8 +46,11 @@
           v-for="tool in moreTools"
           :key="tool.to"
           :to="tool.to"
-          class="overview__tool flex flex-col gap-1 p-4 bg-base-200 text-base-content/80 rounded-xl border border-transparent hover:border-primary/60 transition-colors">
-          <span class="font-bold text-base-content">{{ tool.title }}</span>
+          class="overview__tool flex flex-col gap-1 p-4 bg-base-200 text-base-content/80 rounded-xl border border-base-content/10 hover:border-primary/60 transition-colors">
+          <span class="flex items-center justify-between gap-2 font-bold text-base-content">
+            {{ tool.title }}
+            <GuideChevron />
+          </span>
           <span class="text-sm leading-relaxed">{{ tool.body }}</span>
         </RouterLink>
       </div>
@@ -63,6 +66,7 @@
 <script setup lang="ts">
 import { useDocumentTitle } from "../../composables/useDocumentTitle";
 import { GUIDE_IMAGES } from "../../content/guides/images";
+import GuideChevron from "../guides/GuideChevron.vue";
 import GuideScreenshot from "../guides/GuideScreenshot.vue";
 
 useDocumentTitle(

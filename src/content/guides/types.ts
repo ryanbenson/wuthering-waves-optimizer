@@ -29,7 +29,7 @@ export type GuideBlock =
   | { type: "keyed"; items: { title: string; text: string }[] };
 
 export interface GuideSection {
-  /** Anchor for the "In this guide" links and for deep links to the section. */
+  /** Anchor for deep links to the section. */
   id: string;
   heading: string;
   blocks: GuideBlock[];
