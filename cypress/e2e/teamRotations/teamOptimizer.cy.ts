@@ -3,6 +3,7 @@
 // workers end to end: setup, run, results, saving as new builds.
 import { rotations as suomingRotations } from "../../../src/characters/Suoming/presets";
 import { rotations as hsinRotations } from "../../../src/characters/Hsin/presets";
+import { rotations as mornyeRotations } from "../../../src/characters/Mornye/presets";
 
 const TEAM_NAME = "Optimizer Test Team";
 
@@ -89,6 +90,65 @@ function seed(labOn: boolean) {
   };
 }
 
+// A full team, where a support can trade personal damage for a team buff (ADR 0053).
+const PLAN_TEAM_NAME = "Buff Plan Team";
+const moonlitEchoes = [
+  { ...echo("moon-4", "ImpermanenceHeron", 4, "CritRate", "ATK", 40), echoSet: "MoonlitClouds" },
+  { ...echo("moon-3a", "Carapace", 3, "ATK", "ATK", 40), echoSet: "MoonlitClouds" },
+  { ...echo("moon-3b", "Spearback", 3, "ATK", "ATK", 40), echoSet: "MoonlitClouds" },
+  { ...echo("moon-1a", "Diamondclaw", 1, "ATK", "ATK", 40), echoSet: "MoonlitClouds" },
+  { ...echo("moon-1b", "SabyrBoar", 1, "ATK", "ATK", 40), echoSet: "MoonlitClouds" },
+];
+
+function seedPlanTeam(win: Window) {
+  const suomingActions = actionsFor(suomingRotations as any[], 0, 1);
+  const mornyeActions = actionsFor(mornyeRotations as any[], 1, suomingActions.length + 1);
+  const hsinActions = actionsFor(hsinRotations as any[], 2, suomingActions.length + mornyeActions.length + 1);
+  const character = (weapon: string, optimizer: Record<string, unknown>) => ({
+    weapon,
+    mainEcho: { echo: MAIN_ECHO, rank: 5, buffs: {} },
+    optimizer,
+  });
+  const damageDealer = { echoSets: ["HeartofSwornVigil"], mainEchoes: [MAIN_ECHO] };
+  win.localStorage.setItem("settings", JSON.stringify({ config: {}, labs: { teamOptimizer: { isEnabled: true } } }));
+  win.localStorage.setItem(
+    "character",
+    JSON.stringify({
+      characters: {
+        // Credited with a buff nobody on the team provides, which the search should correct.
+        Suoming: { ...character("EmeraldOfGenesis", damageDealer), teamBuffs: { buffs: { FallacyOfNoReturn: { isEnabled: true } } } },
+        Mornye: character("Variation", {}),
+        Hsin: character("BloomingJadehaven", damageDealer),
+      },
+      activeCharacter: "Suoming",
+      favoriteCharacters: [],
+    }),
+  );
+  win.localStorage.setItem(
+    "inventory",
+    JSON.stringify({ echoes: [...inventoryEchoes, ...moonlitEchoes], equipped: {}, echoPresets: [], equippedPresets: {} }),
+  );
+  win.localStorage.setItem(
+    "teamRotations",
+    JSON.stringify({
+      teams: [
+        {
+          id: "team-optimizer-plans",
+          name: PLAN_TEAM_NAME,
+          characterIds: ["Suoming", "Mornye", "Hsin"],
+          buildIds: [null, null, null],
+          actions: [...suomingActions, ...mornyeActions, ...hsinActions],
+          duration: 25,
+          mode: "basic",
+          enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
+        },
+      ],
+      favoriteTeamIds: [],
+      favoritePresetNames: [],
+    }),
+  );
+}
+
 function openTeam(labOn: boolean) {
   cy.visit("/teams", { onBeforeLoad: seed(labOn) });
   cy.get(`[data-test-team-rotations-item="${TEAM_NAME}"]`).contains(TEAM_NAME).click();
@@ -96,6 +156,41 @@ function openTeam(labOn: boolean) {
 }
 
 describe("Team optimizer", () => {
+  it("compares what a support could provide, and saves the buffs with the builds", () => {
+    cy.viewport(1280, 900);
+    cy.visit("/teams", { onBeforeLoad: seedPlanTeam });
+    cy.get(`[data-test-team-rotations-item="${PLAN_TEAM_NAME}"]`).contains(PLAN_TEAM_NAME).click();
+    cy.get("[data-test-team-rotation-summary-optimize]").first().click();
+
+    cy.get("[data-test-team-optimizer-setup]", { timeout: 60000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-offer='1-MoonlitClouds']").should("contain.text", "Moonlit Clouds");
+    cy.get("[data-test-team-optimizer-plan-count]").should("exist");
+    cy.get("[data-test-team-optimizer-search-all]").check();
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+
+    cy.get("[data-test-team-optimizer-results]", { timeout: 180000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-mismatch]").should("not.exist");
+    cy.get("[data-test-team-optimizer-proof]").should("contain.text", "No better combination exists");
+    cy.get("[data-test-team-optimizer-plan]").should("contain.text", "Mornye: Moonlit Clouds");
+    cy.get("[data-test-team-optimizer-buff-changes]").should("contain.text", "Suoming loses Fallacy of No Return");
+
+    cy.get("[data-test-team-optimizer-total]")
+      .invoke("text")
+      .then((total) => {
+        cy.get("[data-test-team-optimizer-save]").click();
+        cy.get("[data-test-team-optimizer-confirm-save]").click();
+        // Only true if the toggles saved too: the Team page reads them.
+        cy.get("[data-test-team-optimizer-saved]").should("contain.text", `now calculates ${total}`);
+        cy.window().then((win) => {
+          const characters = JSON.parse(win.localStorage.getItem("character")!).characters;
+          expect(characters.Suoming.teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(false);
+          expect(characters.Hsin.teamBuffs.buffs.MoonlitClouds.isEnabled).to.equal(true);
+          // The original build is untouched.
+          expect(characters.Suoming.builds[0].teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(true);
+        });
+      });
+  });
+
   it("stays hidden until the lab is on", () => {
     openTeam(false);
     cy.get("[data-test-team-rotation-summary]").should("be.visible");

@@ -12,7 +12,10 @@
             <span class="font-mono font-bold">
               {{ displayInt(optimizer.totalLoadouts.value.count) }}{{ optimizer.totalLoadouts.value.isCapped ? "+" : "" }}
             </span>
-            loadouts, {{ estimateLabel }}.
+            loadouts, {{ estimateLabel }}<template v-if="optimizer.planCount.value > 1">,
+              comparing
+              <span class="font-mono font-bold" data-test-team-optimizer-plan-count>{{ displayInt(optimizer.planCount.value) }}</span>
+              team buff plans</template>.
           </template>
         </div>
       </div>
@@ -42,6 +45,49 @@
     </div>
     <div v-if="isLarge" role="alert" class="alert alert-warning" data-test-team-optimizer-large>
       This is a very large search and could take a long time. Choosing fewer sets or a single main echo makes it much faster.
+    </div>
+
+    <div v-if="optimizer.isPlanListCapped.value" role="alert" class="alert alert-warning" data-test-team-optimizer-plans-capped>
+      Only the first {{ displayInt(optimizer.maxPlans) }} team buff plans will be compared. Untick some team buffs to compare them all.
+    </div>
+    <div
+      v-for="entry in optimizer.absentBuffSources.value"
+      :key="entry.characterId"
+      role="alert"
+      class="alert alert-warning text-sm"
+      data-test-team-optimizer-absent>
+      {{ characterName(entry.characterId) }}'s team buffs are still set up for {{ entry.absent.map(characterName).join(" and ") }},
+      who {{ entry.absent.length === 1 ? "isn't" : "aren't" }} on this team. Those buffs still count in this team's damage, so
+      update {{ characterName(entry.characterId) }}'s team buffs for accurate results.
+    </div>
+
+    <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-2">
+      <label class="flex items-start gap-2 cursor-pointer">
+        <input
+          v-model="optimizer.linkTeamBuffs.value"
+          type="checkbox"
+          class="checkbox checkbox-sm checkbox-primary mt-0.5"
+          data-test-team-optimizer-link-buffs />
+        <span class="text-sm">
+          <span class="font-semibold">Base set and main echo buffs on what each build wears</span>
+          <span class="block opacity-70">
+            Compares what supports could give the team, not just their own damage. Saved results include the matching team buff settings.
+          </span>
+        </span>
+      </label>
+      <label v-if="optimizer.linkTeamBuffs.value" class="flex items-start gap-2 cursor-pointer">
+        <input
+          v-model="optimizer.searchAllPlans.value"
+          type="checkbox"
+          class="checkbox checkbox-sm checkbox-primary mt-0.5"
+          data-test-team-optimizer-search-all />
+        <span class="text-sm">
+          <span class="font-semibold">Search every plan fully</span>
+          <span class="block opacity-70">
+            Slower. Without this, only the closest plans get a full search, so the result is the best found rather than proven.
+          </span>
+        </span>
+      </label>
     </div>
 
     <div class="flex flex-col gap-3">
@@ -112,6 +158,28 @@
             :data-test-team-optimizer-slot-count="view.slot">
             {{ loadoutCount(view.slot) }} loadouts
           </span>
+        </div>
+
+        <div
+          v-if="optimizer.linkTeamBuffs.value && view.offers.length"
+          class="flex flex-col gap-1.5 text-sm"
+          :data-test-team-optimizer-offers="view.slot">
+          <div class="opacity-70">Team buffs to try from this character:</div>
+          <label
+            v-for="offer in view.offers"
+            :key="offer.defKey"
+            class="flex flex-wrap items-center gap-2 cursor-pointer"
+            :data-test-team-optimizer-offer="`${view.slot}-${offer.defKey}`">
+            <input
+              type="checkbox"
+              class="checkbox checkbox-xs checkbox-primary"
+              :checked="offer.isTicked"
+              @change="optimizer.setOfferTicked(view.slot, offer.defKey, ($event.target as HTMLInputElement).checked)" />
+            <span>{{ offerName(offer) }}</span>
+            <span class="font-mono text-xs opacity-60">{{ offer.effect >= 0 ? "+" : "" }}{{ (offer.effect * 100).toFixed(1) }}%</span>
+            <span v-if="offer.condition" class="text-xs opacity-60">{{ offer.condition }}</span>
+            <span v-if="offer.hasStacks" class="text-xs opacity-60">Assumes saved or max stacks</span>
+          </label>
         </div>
 
         <div
@@ -193,6 +261,7 @@ import { getEchoSetIconByType, getEchoSetLabelByType } from "../../echoes/stats"
 import { displayInt } from "../../utils/numbers";
 import {
   LARGE_SEARCH_LOADOUTS,
+  type TeamOptimizerOffer,
   type TeamOptimizerSlotView,
   type useTeamOptimizer,
 } from "../../composables/useTeamOptimizer";
@@ -238,6 +307,11 @@ function formatStat(value: number) {
 function loadoutCount(slot: number) {
   const entry = props.optimizer.loadoutCounts[slot];
   return entry ? `${displayInt(entry.count)}${entry.isCapped ? "+" : ""}` : null;
+}
+function offerName(offer: TeamOptimizerOffer) {
+  if (offer.source.kind === "main") return echoName(offer.source.echoKey);
+  const label = setLabel(offer.source.setKey);
+  return offer.defKey === offer.source.setKey ? label : `${label} (${offer.defKey.slice(offer.source.setKey.length)})`;
 }
 function displayMains(view: TeamOptimizerSlotView) {
   return view.choice.protectTeamBuffs && view.guard.requiredMainEcho
