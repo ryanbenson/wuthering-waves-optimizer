@@ -17,6 +17,9 @@
             <template v-if="optimizer.isProven.value">No better combination exists within your settings</template>
             <template v-else>Best found. A larger search could still find better</template>
             · {{ displayTotal(optimizer.totalEvaluated.value) }} loadouts in {{ formatOptimizerElapsed(optimizer.elapsedMs.value) }}
+            <template v-if="optimizer.plansCompared.value > 1">
+              · {{ optimizer.plansCompared.value }} team buff plans compared, {{ optimizer.plansSearched.value }} fully searched
+            </template>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -29,6 +32,19 @@
         </div>
       </div>
       <TeamRotationDamageBar :per-character="selected.characterResults" />
+      <div v-if="selected.provisions.length || selected.buffChanges.length" class="text-sm flex flex-col gap-1" data-test-team-optimizer-plan>
+        <div v-if="selected.provisions.length">
+          <span class="opacity-70">Team buffs provided:</span>
+          {{ selected.provisions.map((entry) => `${name(entry.characterId)}: ${buffName(entry.defKey)}`).join(", ") }}
+        </div>
+        <div v-if="selected.buffChanges.length" data-test-team-optimizer-buff-changes>
+          <span class="opacity-70">Changes from saved team buffs:</span>
+          {{ selected.buffChanges.map((change) => `${name(change.characterId)} ${change.isOn ? "gains" : "loses"} ${buffName(change.defKey)}`).join(", ") }}
+        </div>
+        <div v-if="selected.buffChanges.some((change) => !change.isOn)" class="text-xs opacity-60">
+          "vs current" compares against your saved total, which counts buffs nobody on this team is set to provide here.
+        </div>
+      </div>
       <div
         v-if="isBelowCurrent"
         class="text-sm bg-warning/15 rounded-lg px-3 py-2"
@@ -142,6 +158,7 @@
         <p class="text-sm">
           This adds a new build for {{ changedNames }} and pins it to this team. Those builds become active, and your existing
           builds stay saved and unchanged.
+          <template v-if="selected?.buffChanges.length">The new builds also carry the team buff changes above.</template>
         </p>
         <p v-if="confirmOutside.length" class="text-sm bg-warning/15 rounded-lg px-3 py-2" data-test-team-optimizer-confirm-outside>
           Some of these echoes are also on {{ confirmOutside.map(name).join(", ") }}, who will keep wearing them too.
@@ -170,6 +187,8 @@ import OptimizerWorkspaceResultHighlights from "../optimizerWorkspace/OptimizerW
 import { formatOptimizerElapsed } from "../optimizerWorkspace/formatElapsed";
 import { sortLoadoutForDisplay } from "../optimizerWorkspace/optimizerLoadoutSort";
 import { readTeamDamage } from "../../calculator/teamOptimizer";
+import { teamBuffSource } from "../../calculator/teamBuffPlans";
+import { getEchoSetLabelByType } from "../../echoes/stats";
 
 defineOptions({ name: "TeamOptimizerResults" });
 
@@ -199,10 +218,7 @@ const savedMessage = ref<string | null>(null);
 const savedMatches = ref(true);
 
 const changedNames = computed(() =>
-  (selected.value?.picks ?? [])
-    .filter((pick) => pick.loadout)
-    .map((pick) => name(pick.characterId))
-    .join(", "),
+  (selected.value ? props.optimizer.changedCharacters(selected.value) : []).map(name).join(", "),
 );
 const confirmOutside = computed(() =>
   selected.value ? props.optimizer.outsideWearers(selected.value) : [],
@@ -217,6 +233,11 @@ function name(id: string) {
 }
 function image(id: string) {
   return `https://ryanbenson.github.io/wuthering-waves-assets/images/${id}.png`;
+}
+function buffName(defKey: string) {
+  const source = teamBuffSource(defKey);
+  if (source?.kind === "main") return getEchoData(source.echoKey)?.name ?? defKey;
+  return (source && getEchoSetLabelByType(source.setKey)) ?? defKey;
 }
 function echoNames(loadout: any[]) {
   return sortLoadoutForDisplay(loadout)

@@ -1,8 +1,8 @@
 <template>
   <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-4" data-test-team-optimizer-running>
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <div class="text-xs font-bold uppercase tracking-wider opacity-50">
-        Scoring each character against their part of the rotation
+      <div class="text-xs font-bold uppercase tracking-wider opacity-50" data-test-team-optimizer-stage>
+        {{ stageLabel }}
       </div>
       <button type="button" class="btn btn-outline btn-error btn-sm" data-test-team-optimizer-cancel @click="optimizer.cancel()">
         Cancel
@@ -36,13 +36,14 @@
       </div>
     </div>
     <p class="text-xs opacity-60">
-      Next: find the best {{ TEAM_OPTIMIZER_TOP_N }} combinations that don't use an echo twice, then check them against the
+      Then: find the best {{ TEAM_OPTIMIZER_TOP_N }} combinations that don't use an echo twice, then check them against the
       Team page's calculation.
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import { getCharacterRosterDisplayName } from "../../characters/characters";
 import { TEAM_OPTIMIZER_TOP_N } from "../../calculator/teamOptimizer";
 import { displayInt } from "../../utils/numbers";
@@ -50,7 +51,16 @@ import type { TeamOptimizerLane, useTeamOptimizer } from "../../composables/useT
 
 defineOptions({ name: "TeamOptimizerRunning" });
 
-defineProps<{ optimizer: ReturnType<typeof useTeamOptimizer> }>();
+const props = defineProps<{ optimizer: ReturnType<typeof useTeamOptimizer> }>();
+
+const stageLabel = computed(() => {
+  const progress = props.optimizer.progress.value;
+  if (progress?.stage === "scouting") {
+    return `Comparing team buff options: ${progress.done} of ${progress.total}`;
+  }
+  if (progress && progress.total > 1) return `Searching team buff plan ${Math.min(progress.done + 1, progress.total)} of ${progress.total}`;
+  return "Scoring each character against their part of the rotation";
+});
 
 function name(id: string) {
   return getCharacterRosterDisplayName(id);

@@ -135,8 +135,12 @@ export function defaultTeamOptimizerGoal(input: {
   hasActions: boolean;
   damageShare: number;
   hasEligibleEchoes: boolean;
+  /** A low-damage support may still be worth searching for what they give the team (ADR 0053). */
+  canProvideTeamBuffs?: boolean;
 }): TeamOptimizerGoal {
-  if (!input.hasActions || !input.hasEligibleEchoes) return "keep";
+  if (!input.hasActions) return "keep";
+  if (input.canProvideTeamBuffs) return "damage";
+  if (!input.hasEligibleEchoes) return "keep";
   return input.damageShare < KEEP_BUILD_DAMAGE_SHARE ? "keep" : "damage";
 }
 
@@ -610,6 +614,11 @@ export interface TeamOptimizerCombineResult<Row extends TeamOptimizerRow = TeamO
   combinations: TeamOptimizerCombination<Row>[];
   /** True when no combination outside the kept rows could reach the top N. */
   isProven: boolean;
+  /**
+   * The most a combination outside the kept rows could score, or null if the
+   * search stopped early and can't say. -Infinity when no list was truncated.
+   */
+  unseenBound: number | null;
   visited: number;
 }
 
@@ -626,7 +635,8 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
   topN: number = TEAM_OPTIMIZER_TOP_N,
 ): TeamOptimizerCombineResult<Row> {
   if (!lists.length || lists.some((list) => list.rows.length === 0)) {
-    return { combinations: [], isProven: lists.every((list) => !list.isTruncated), visited: 0 };
+    const isComplete = lists.every((list) => !list.isTruncated);
+    return { combinations: [], isProven: isComplete, unseenBound: isComplete ? -Infinity : null, visited: 0 };
   }
 
   const best: TeamOptimizerCombination<Row>[] = [];
@@ -675,7 +685,7 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
     !isCapped &&
     (!hasTruncatedList || (best.length === topN && best[best.length - 1].total >= unseenBound));
 
-  return { combinations: best, isProven, visited };
+  return { combinations: best, isProven, unseenBound: isCapped ? null : unseenBound, visited };
 }
 
 // --- Verifying -----------------------------------------------------------

@@ -96,7 +96,8 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0049](./0049-rotation-timeline-strip.md) | Rotation editors' charts on a game-time axis | accepted | [0050](./0050-swapped-out-hits-still-land.md) (swap limit) | calculator, components, labs |
 | [0050](./0050-swapped-out-hits-still-land.md) | A swapped-out character's hits all land | accepted | | calculator |
 | [0051](./0051-build-vs-live-stats.md) | v3 stats show build vs live (buffs) | accepted | | calculator, components |
-| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | | calculator, components, workers, labs, team-rotations |
+| [0052](./0052-team-optimizer.md) | Team optimizer: separate searches, then combine | accepted | [0053](./0053-team-optimizer-buff-plans.md) (partly) | calculator, components, workers, labs, team-rotations |
+| [0053](./0053-team-optimizer-buff-plans.md) | Team optimizer: compare who provides which team buff | accepted | | calculator, components, labs, team-rotations |
 
 ## When to write a new ADR
 
