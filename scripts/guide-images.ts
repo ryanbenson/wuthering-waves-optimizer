@@ -1,7 +1,7 @@
 /**
  * Turns the captures from cypress/capture/guideScreenshots.cy.ts into the files the
  * Guides pages load, in guide-images/ (gitignored). Upload that folder's contents to the
- * assets repo's wt-info/ folder. Run with `npm run guides:screenshots` (ADR 0053).
+ * assets repo's wt-info/ folder. Run with `npm run guides:screenshots` (ADR 0054).
  */
 import { mkdirSync, readdirSync } from "node:fs";
 import { join, parse } from "node:path";

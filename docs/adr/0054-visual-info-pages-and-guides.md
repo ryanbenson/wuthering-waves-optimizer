@@ -4,7 +4,7 @@ date: 2026-11-06
 tags: [components, content]
 ---
 
-# 53. Visual Info pages and guides as shared data
+# 54. Visual Info pages and guides as shared data
 
 ## Context
 

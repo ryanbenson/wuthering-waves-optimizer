@@ -1,4 +1,4 @@
-// The Guides pages and the visual Info pages (ADR 0053). Screenshots may not be uploaded
+// The Guides pages and the visual Info pages (ADR 0054). Screenshots may not be uploaded
 // where this runs: a missing one shows its description, so nothing here depends on them.
 // These pages are v3 only, and specs that seed nothing get the classic UI.
 function visitV3(path: string) {
