@@ -155,6 +155,48 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     });
   });
 
+  // ADR 0056: what one more roll of each substat adds to the Live Result
+  // Bar's number. The values come from a real recalculation, so this only
+  // checks they arrive and land in the right places.
+  it("shows what one more roll adds and which substat to roll for", () => {
+    openBrantEchoesTab();
+    cy.viewport(1280, 1000);
+    cy.get('[data-test-echo-item="0"]').click();
+    pickEcho("BellBorneGeochelone");
+    assignSlot(0, "Crit Rate");
+    assignSlot(1, "Crit DMG");
+    assignSlot(2, "Basic Attack DMG Bonus");
+    assignSlot(3, "ATK%");
+    assignSlot(4, "HP%");
+    collapseEcho(0);
+
+    cy.get('.echoes-sidebar [data-test-echo-insights-roll-gain="CritRate"]')
+      .invoke("text")
+      .should("match", /^\s*\+[\d,.]+[KM]?\s*$/);
+    // Brant's damage doesn't scale with HP.
+    cy.get('.echoes-sidebar [data-test-echo-insights-roll-gain="HP"]').invoke("text").should("match", /^\s*\+0\s*$/);
+
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-for]").should("be.visible").and("contain.text", "Roll for");
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-for-best]").invoke("text").should("not.be.empty");
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "one more average roll");
+  });
+
+  it("keeps Roll for out of the collapsed phone bar", () => {
+    cy.viewport(390, 844);
+    enableLiveResultBarLab();
+    cy.selectWorkspaceCharacter("Brant");
+    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
+    cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
+    cy.get('[data-test-echo-item="0"]').click();
+    pickEcho("BellBorneGeochelone");
+    assignSlot(0, "Crit Rate");
+    collapseEcho(0);
+
+    cy.get(".echoes-mobile-score [data-test-echo-insights-roll-for]").should("not.exist");
+    cy.get(".echoes-mobile-score [data-test-echo-insights-toggle]").click();
+    cy.get(".echoes-mobile-score [data-test-echo-insights-roll-for]").should("be.visible");
+  });
+
   it("stays off by default — no insights panel on the legacy path", () => {
     cy.visit("/");
     cy.richSelect("[data-test-character-select]", "Brant");

@@ -176,6 +176,9 @@ ADR is for building that, not the proposal itself.
 
 10. **The Echoes tab splits into two columns — build strip left, a new
    "Echo Insights" panel right — instead of a third right-side dock.**
+   **Extended 2026-11-07:** each substat row now also shows what one more
+   roll adds to the Live Result Bar's number, with a "Roll for" line under
+   the Build Score — see ADR [0056](./0056-substat-roll-value.md).
    Listing all 5 equipped echo tiles full-width left a lot of unused
    horizontal space on desktop, and players wanted more visibility into
    how their current rolls add up (echo farming is the most RNG-heavy,
