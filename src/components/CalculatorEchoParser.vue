@@ -137,12 +137,7 @@
       <input type="checkbox" aria-label="Show import tips" />
       <div class="collapse-title text-sm font-semibold">Tips &amp; how to get the image</div>
       <div class="collapse-content text-sm">
-        <ul class="list-disc list-inside space-y-1">
-          <li>In the WuWa Discord (or ours), run <code>/bind</code> once, then <code>/create</code> to generate the image. The bot is made by Kuro, so your account is safe.</li>
-          <li>Use the bot's original image. Re-uploads through Discord, Reddit, etc. lower quality and hurt parsing.</li>
-          <li>Parsing takes a moment and isn't perfect — check the results afterwards.</li>
-          <li>English only for now.</li>
-        </ul>
+        <GuideContent :sections="importTips" compact hide-headings />
       </div>
     </div>
     <template v-if="debug">
@@ -172,8 +167,13 @@ import EchoParserWorker from "../workers/echoParser.worker?worker";
 import { useToast } from "../composables/useToast";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { getGuide } from "../content/guides";
+import GuideContent from "./guides/GuideContent.vue";
 
 const { showToast } = useToast();
+
+// Same copy as /info/guides/discord-build-card's tips (ADR 0055).
+const importTips = getGuide("discord-build-card")?.sections.filter((section) => section.id === "tips") ?? [];
 
 // Card layout, text parsing and the read order live in @wutheringtools/build-card-scanner;
 // this component supplies the OCR (tesseract.js) and image matching (echoParser.worker).

@@ -81,7 +81,7 @@ describe("EchoScannerResultCard", () => {
 describe("EchoScannerGuide", () => {
   it("renders the click-wait-click steps and closes", async () => {
     const { getByText, emitted } = render(EchoScannerGuide);
-    getByText("Back in the game: click, wait, click");
+    getByText(/Back in the game: click, wait, click/);
     await fireEvent.click(getByText("Got it"));
     expect(emitted().close).toHaveLength(1);
   });
