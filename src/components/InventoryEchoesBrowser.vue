@@ -48,7 +48,9 @@
       </div>
     </div>
 
+    <!-- Nothing to search or filter yet: the empty state below takes this space. -->
     <AppFilterPanel
+      v-if="!isInventoryEmpty"
       panel-key="inventory-echoes"
       class="mb-6"
       :active-count="activeFilterCount"
@@ -486,7 +488,42 @@
       </div>
     </div>
     <div class="echoes__list">
-      <template v-if="!echoesList.length">
+      <section
+        v-if="isInventoryEmpty"
+        class="bg-base-200 border border-base-content/10 rounded-2xl p-5 sm:p-8 flex flex-col gap-5"
+        data-test-inventory-empty-state>
+        <div class="flex flex-col gap-1">
+          <h2 class="text-xl font-bold">Your inventory is empty</h2>
+          <p>The fastest way to fill it depends on your setup.</p>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <RouterLink
+            :to="{ path: '/scanners', hash: '#wavescan' }"
+            class="inventory-empty__way flex flex-col gap-1.5 p-4 bg-base-100 text-base-content/80 border border-base-content/10 rounded-xl hover:border-primary/60 transition-colors"
+            data-test-inventory-empty-way="wavescan">
+            <span class="flex items-center justify-between gap-2 font-bold text-base-content">Wavescan <GuideChevron /></span>
+            <span class="text-sm">Scans your whole inventory in a few minutes.</span>
+            <span class="badge badge-sm badge-ghost mt-auto">Windows and Mac app</span>
+          </RouterLink>
+          <button
+            v-for="way in emptyInventoryWays"
+            :key="way.id"
+            type="button"
+            class="inventory-empty__way flex flex-col gap-1.5 p-4 bg-base-100 text-base-content/80 text-left border border-base-content/10 rounded-xl hover:border-primary/60 transition-colors"
+            :data-test-inventory-empty-way="way.id"
+            @click="way.open">
+            <span class="flex items-center justify-between gap-2 font-bold text-base-content">{{ way.title }} <GuideChevron /></span>
+            <span class="text-sm">{{ way.body }}</span>
+            <span class="badge badge-sm badge-ghost mt-auto">{{ way.where }}</span>
+          </button>
+        </div>
+        <p>
+          Prefer typing?
+          <button type="button" class="link link-primary" @click="createEcho">Add an echo by hand</button>,
+          or read <RouterLink to="/scanners" class="link link-primary">which scanner fits you</RouterLink>.
+        </p>
+      </section>
+      <template v-else-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
           No echoes found
           <template v-if="duplicatesFilter">
@@ -708,6 +745,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import GuideChevron from "./guides/GuideChevron.vue";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
@@ -805,6 +843,15 @@ const inventoryEchoEditRef = ref<
   | InstanceType<typeof InventoryEchoEditPanel>
   | null
 >(null);
+const isInventoryEmpty = computed(() => isLiveResultBarEnabled.value && !echoes.value.length);
+
+// What an empty inventory offers (v3). Both scanner modes start from the same dialog.
+const emptyInventoryWays = [
+  { id: "screen-share", title: "Share your screen", body: "Click through your echoes in the game.", where: "PC browser", open: () => handleOpenEchoScanner() },
+  { id: "video", title: "Upload a recording", body: "Record the same clicks, then upload the clip.", where: "Phones and tablets too", open: () => handleOpenEchoScanner() },
+  { id: "build-card", title: "Discord build card", body: "Import one character's echoes from the bot's image.", where: "Any device", open: () => handleOpenEchoesImporter() },
+];
+
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
@@ -1404,6 +1451,11 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+// The global a:hover colour would tint the cards' text.
+.inventory-empty__way:hover {
+  color: inherit;
+}
+
 html[data-theme-style="light"] {
   .modal-backdrop {
     opacity: 0.5;

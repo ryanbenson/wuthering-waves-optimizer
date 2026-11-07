@@ -23,9 +23,9 @@ function allLinks(): string[] {
     for (const section of guide.sections) {
       for (const block of section.blocks) {
         if (block.type === "text" || block.type === "note") texts.push(block.text);
-        if (block.type === "steps" || block.type === "keyed") {
-          block.items.forEach((item) => texts.push(item.text));
-        }
+        if (block.type === "list") texts.push(...block.items);
+        if (block.type === "steps") block.items.forEach((item) => texts.push(item.text ?? "", ...(item.points ?? [])));
+        if (block.type === "keyed") block.items.forEach((item) => texts.push(item.text));
       }
     }
   }
@@ -61,9 +61,13 @@ describe("guide content", () => {
       const [withoutHash, hash] = link.split("#");
       const [path, search] = withoutHash.split("?");
       expect(known.has(path), `unknown path in ${link}`).toBe(true);
-      if (search) {
+      if (search && path === "/") {
         const section = new URLSearchParams(search).get("section");
         expect(getCalculatorSectionFromQuery(section), `unknown screen in ${link}`).not.toBeNull();
+      }
+      if (search && path === "/inventory") {
+        // InventoryEchoesBrowser.vue opens these tools from ?open=.
+        expect(["scan", "import"], `unknown tool in ${link}`).toContain(new URLSearchParams(search).get("open"));
       }
       if (hash && path === "/scanners") {
         expect(scannersSource, `unknown section in ${link}`).toContain(`id: "${hash}"`);

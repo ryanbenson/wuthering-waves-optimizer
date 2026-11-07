@@ -54,9 +54,9 @@ describe("Guides", () => {
 
   it("scrolls to the section a link names", () => {
     visitV3("/info/guides");
-    cy.get('[data-test-guides-category="echoes"]').contains("Import a Discord build card").click();
-    cy.location("hash").should("eq", "#build-card");
-    cy.get("#build-card").should(($el) => {
+    cy.get('[data-test-guides-category="echoes"]').contains("Scan with Wavescan").click();
+    cy.location("hash").should("eq", "#wavescan");
+    cy.get("#wavescan").should(($el) => {
       expect($el[0].getBoundingClientRect().top).to.be.lessThan(200);
     });
   });

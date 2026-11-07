@@ -1,7 +1,23 @@
 <template>
   <Nav cur-page="convene" :disable-mobile-nav="true"></Nav>
   <div class="page-convene w-full px-4 py-6 md:px-6 lg:px-10 text-base-content">
-    <header class="mb-8 max-w-4xl">
+    <header v-if="isV3" class="mb-8 max-w-4xl flex flex-col gap-3" data-test-convene-intro>
+      <h1 class="text-2xl md:text-3xl font-semibold">Convene odds</h1>
+      <p class="text-base-content/80 text-sm md:text-base">
+        Estimate the chance of pulling enough promotional 5★ copies with your Astrite, Lunite
+        (1:1 with Astrite in the shop), and wishes. The pity curve comes from player data, not Kuro's server code.
+      </p>
+      <div>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline"
+          data-test-convene-method
+          @click="openGuide('convene-odds', 'convene')">
+          How the odds are worked out
+        </button>
+      </div>
+    </header>
+    <header v-else class="mb-8 max-w-4xl">
       <h1 class="text-2xl md:text-3xl font-semibold mb-2">Convene odds</h1>
       <p class="text-base-content/80 text-sm md:text-base space-y-3">
         <span class="block">
@@ -388,6 +404,9 @@ import {
 } from "vue";
 import Chart from "chart.js/auto";
 import Nav from "../components/navigation/Nav.vue";
+import { useGuideDrawer } from "../composables/useGuideDrawer";
+import { useSettingsStore } from "../stores/settings";
+import { isV3UiEnabled } from "../utils/uiVersion";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "../components/AppRichSelect.vue";
@@ -398,6 +417,10 @@ import {
   type ConveneMode,
   type ConveneSimulationResult,
 } from "../convene/simulateConvene";
+
+const { openGuide } = useGuideDrawer();
+const settingsStore = useSettingsStore();
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 import {
   DAILY_ASTRITE_BASE,
   DAILY_ASTRITE_SUBSCRIPTION_EXTRA,

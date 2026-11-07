@@ -337,6 +337,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useGuideDrawer } from "../composables/useGuideDrawer";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
@@ -399,6 +400,7 @@ const characterStore = useCharacterStore() as any;
 const inventoryStore = useInventoryStore() as any;
 const settingsStore = useSettingsStore() as any;
 
+const { openGuide } = useGuideDrawer();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
@@ -597,10 +599,12 @@ function handleOpenEchoesPreset(options?: EchoPresetsOpenOptions) {
   echoesPresets.value?.triggerOpenModal?.(options);
 }
 function handleOpenPresetsGuide() {
-  echoesPresetsGuide.value?.triggerOpenModal?.();
+  if (isLiveResultBarEnabled.value) openGuide("echo-presets", "echoes");
+  else echoesPresetsGuide.value?.triggerOpenModal?.();
 }
 function handleOpenRatingGuide() {
-  echoRatingGuide.value?.triggerOpenModal?.();
+  if (isLiveResultBarEnabled.value) openGuide("echo-ratings", "echoes");
+  else echoRatingGuide.value?.triggerOpenModal?.();
 }
 function handleOpenWeightsEditor() {
   echoRatingWeightsEditor.value?.triggerOpenModal?.({

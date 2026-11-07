@@ -151,6 +151,27 @@
       </div>
     </div>
 
+    <section
+      v-if="isLiveResultBarEnabled && !rotations.length"
+      class="bg-base-200 border border-base-content/10 rounded-2xl p-5 sm:p-8 flex flex-col items-start gap-3"
+      data-test-rotations-empty-state>
+      <h2 class="text-xl font-bold">No rotations yet</h2>
+      <p class="max-w-2xl leading-relaxed">
+        A rotation scores a whole sequence of attacks instead of one hit. Start from a
+        rotation made for this character, or build your own.
+      </p>
+      <div class="flex flex-wrap gap-2 pt-1">
+        <button type="button" class="btn btn-sm btn-primary" data-test-rotations-empty-presets @click="isPresetRotationsOpen = true">
+          Start from a preset
+        </button>
+        <button type="button" class="btn btn-sm btn-outline" data-test-rotations-empty-create @click="handleCreateRotation">
+          Create your own
+        </button>
+        <button type="button" class="btn btn-sm btn-ghost" data-test-rotations-empty-guide @click="openGuide('rotations', 'rotations-empty')">
+          How rotations work
+        </button>
+      </div>
+    </section>
     <ul v-if="isLiveResultBarEnabled" class="flex flex-col gap-2" data-test-rotations-list>
       <CalculatorRotationRow
         v-for="(rotation, index) in sortedRotations"
@@ -223,6 +244,7 @@ import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
+import { useGuideDrawer } from "../composables/useGuideDrawer";
 import { headlineDps, rotationDpsReadings } from "../calculator/teamRotation";
 import { framesToSeconds, type RotationLength } from "../calculator/rotationTiming";
 import {
@@ -370,6 +392,7 @@ async function recomputeCharacterContext() {
 watch(currentCharacter, () => void recomputeCharacterContext(), { deep: true });
 
 const settingsStore = useSettingsStore();
+const { openGuide } = useGuideDrawer();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );

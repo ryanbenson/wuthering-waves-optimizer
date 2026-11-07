@@ -23,7 +23,9 @@ export type GuideBlock =
   | { type: "text"; text: string }
   /** Something to know before going further, set apart from the text. */
   | { type: "note"; text: string }
-  | { type: "steps"; items: { title: string; text: string }[] }
+  /** A step can have a line of text, a few bullet points, or both. */
+  | { type: "steps"; items: { title: string; text?: string; points?: string[] }[] }
+  | { type: "list"; items: string[] }
   /** Marker 1 goes with the first item of the keyed list that follows the image. */
   | { type: "image"; image: GuideImage; markers?: GuideImageMarker[]; caption?: string }
   | { type: "keyed"; items: { title: string; text: string }[] };

@@ -1,10 +1,8 @@
 <template>
   <div class="flex flex-col gap-4" data-test-optimizer-workspace>
-    <CalculatorOptimizerGuide ref="optimizerGuide"></CalculatorOptimizerGuide>
-
     <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Optimizer</h3>
-      <button type="button" class="btn btn-sm" data-test-optimizer-workspace-guide-btn @click="optimizerGuide?.triggerOpenModal()">
+      <button type="button" class="btn btn-sm" data-test-optimizer-workspace-guide-btn @click="openGuide('best-loadout', 'optimizer')">
         <span class="text-primary">Optimizer Guide</span>
       </button>
     </div>
@@ -57,8 +55,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import CalculatorOptimizerGuide from "../CalculatorOptimizerGuide.vue";
+import { computed } from "vue";
+import { useGuideDrawer } from "../../composables/useGuideDrawer";
 import OptimizerWorkspaceSetup from "./OptimizerWorkspaceSetup.vue";
 import OptimizerWorkspaceRunning from "./OptimizerWorkspaceRunning.vue";
 import OptimizerWorkspaceResults from "./OptimizerWorkspaceResults.vue";
@@ -123,7 +121,7 @@ const emit = defineEmits<{
   "optimizer:edit-setup": [];
 }>();
 
-const optimizerGuide = ref<{ triggerOpenModal: () => void } | null>(null);
+const { openGuide } = useGuideDrawer();
 
 const phase = computed<"setup" | "running" | "results">(() => {
   if (props.optimizerResults?.length) return "results";

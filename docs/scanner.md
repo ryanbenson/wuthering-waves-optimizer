@@ -855,7 +855,8 @@ is already a full `https://` URL — self-hosting is what exposes it.
 ## Using the scanner (the in-app guide)
 
 `EchoScannerGuide.vue` is the "How to scan" walkthrough on the start
-screen. It opens automatically the first time (a per-browser
+screen. Its copy is the `scan-echoes` guide in `src/content/guides/`, which
+`/info/guides/scan-echoes` shows too (ADR 0055), so edit it there. It opens automatically the first time (a per-browser
 `localStorage` flag, `echoScanner.guideSeen`, wrapped in try/catch; it
 isn't user data, so no store or migration), then from the **How to scan**
 button. It's text only on purpose: screenshots would be large and go stale

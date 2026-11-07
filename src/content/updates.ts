@@ -48,6 +48,16 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-07",
+    dateLabel: "November 7, 2026",
+    items: [
+      "Guides now open beside the screen they explain instead of covering it. Try the Optimizer Guide, the Echoes screen's Rating Guide and Presets guide, or How the odds are worked out on Convene",
+      "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
+      "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",
+    ],
+    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
+  },
+  {
     date: "2026-11-06",
     dateLabel: "November 6, 2026",
     items: [
