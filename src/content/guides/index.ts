@@ -326,18 +326,243 @@ export const GUIDES: Guide[] = [
       },
     ],
   },
+  {
+    slug: "scan-echoes",
+    title: "Scan your echoes from the game",
+    summary: "Click through your echoes in the game, or record it, and let the app read them.",
+    category: "echoes",
+    action: { label: "Open the scanner", to: "/inventory?open=scan" },
+    sections: [
+      {
+        id: "share",
+        heading: "Share your screen",
+        blocks: [
+          { type: "text", text: "The scanner watches your game window while you click through your echoes, reads each one, and gives you a list to check before anything is saved. It takes about 2 seconds per echo." },
+          {
+            type: "steps",
+            items: [
+              {
+                title: "Before you start",
+                points: [
+                  "Use desktop **Chrome or Edge** with the game set to **English**.",
+                  "Run the game full screen, or in a window, at any **16:10 or 16:9** resolution (e.g. 2560×1600 or 1920×1080). Ultrawide isn't supported yet.",
+                ],
+              },
+              {
+                title: "In the game: open your echoes",
+                points: [
+                  "Open **Backpack → Echoes** (the Echo Management screen).",
+                  "Click the first echo you want scanned so its details show on the right.",
+                ],
+              },
+              {
+                title: "In the app: start sharing",
+                points: [
+                  "Click **Share screen (live)** in the scanner.",
+                  "In the browser's picker, choose the **Window** tab and pick **Wuthering Waves**, not your entire screen.",
+                ],
+              },
+              {
+                title: "Back in the game: click, wait, click",
+                points: [
+                  "**Click an echo → wait about 2 seconds → click the next one.** Repeat for every echo you want.",
+                  "Keep the detail panel fully visible. Don't leave a tooltip or menu over it.",
+                  "Going faster can skip echoes. If one is skipped, just click back to it.",
+                ],
+              },
+              {
+                title: "Stop scanning",
+                points: ["Switch back to the app and click **Stop scanning**. Anything still being read finishes on its own."],
+              },
+              {
+                title: "Check the results",
+                points: [
+                  "The list opens on **Needs attention**: only the echoes the scanner wasn't sure about.",
+                  "Compare each one with its **in-game capture**. If it matches, click **Looks right**. If not, click **Edit** to fix it (the capture is shown in the editor too).",
+                  "**Unknown echo** means the name wasn't recognized. Pick the echo in Edit, or remove it.",
+                  "Each echo is numbered in the order you clicked it, so you can find it in the game if you need to.",
+                ],
+              },
+              {
+                title: "Save",
+                points: ["The save button says exactly what will happen. Echoes already in your inventory are left unchecked on the next step, so you won't save them twice by accident."],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "recording",
+        heading: "Using a recording instead",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "Record yourself clicking through echoes the same way (click, wait about 2 seconds, click next) with OBS, GeForce Experience, or similar.",
+              "Choose **Upload a video**, drag the start and end past any menus, and keep the default 4 frames/sec.",
+              "The video stays on your device. It's never uploaded.",
+            ],
+          },
+        ],
+      },
+      {
+        id: "tips",
+        heading: "Tips",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "Any in-game sort order works.",
+              "Clicking the same echo twice is fine. Repeats are merged.",
+              "Newly obtained echoes with no main stat chosen yet are skipped.",
+              "Turn on **Beep on each capture** to hear when an echo was read, so you know it's safe to click the next one.",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "discord-build-card",
+    title: "Import a Discord build card",
+    summary: "Read one character's echoes from the image Kuro's Discord bot makes.",
+    category: "echoes",
+    action: { label: "Import a build card", to: "/inventory?open=import" },
+    sections: [
+      {
+        id: "how",
+        heading: "Get the card in",
+        blocks: [
+          {
+            type: "steps",
+            items: [
+              { title: "Make the card", text: "In the Wuthering Waves Discord (or ours), run **/bind** once, then **/create**." },
+              { title: "Save the original", text: "Download the bot's image as it is. Re-shared copies lose quality and read worse." },
+              { title: "Upload it here", text: "Open **Import echoes** in your inventory, add the image and check what it read." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "tips",
+        heading: "Tips",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "In the WuWa Discord (or ours), run /bind once, then /create to generate the image. The bot is made by Kuro, so your account is safe.",
+              "Use the bot's original image. Re-uploads through Discord, Reddit, etc. lower quality and hurt parsing.",
+              "Parsing takes a moment and isn't perfect. Check the results afterwards.",
+              "English only for now.",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "echo-ratings",
+    title: "How echo grades work",
+    summary: "What Echo Rating and Substat Score measure, with a worked example.",
+    category: "numbers",
+    action: { label: "Try scoring an echo", to: "/info/cv-echo-rating" },
+    sections: [
+      {
+        id: "points",
+        heading: "How points work",
+        blocks: [
+          { type: "text", text: "Each substat can roll one of several possible values. A higher roll is worth more points, from 1 (the worst possible roll) up to 8 (the best). Most substats have 8 possible rolls. Two of them, flat ATK and flat DEF, only have 4 possible rolls." },
+          { type: "text", text: "A fully revealed echo has 5 substats. Adding up the points from all 5 gives a total between 5 (worst possible) and 40 (best possible)." },
+        ],
+      },
+      {
+        id: "echo-rating",
+        heading: "Echo Rating (E to SSS)",
+        blocks: [
+          { type: "text", text: "This is the letter grade shown on every echo, everywhere: the inventory, echo browsers, build cards, and optimizer results. It's simply that point total turned into a grade. See every band on [CV & Echo Rating](/info/cv-echo-rating)." },
+          { type: "text", text: "By default, every substat counts equally. Click **Customize Weights** if you want to tell the app which substats matter most to you. The grade still uses this same E to SSS scale either way." },
+        ],
+      },
+      {
+        id: "substat-score",
+        heading: "Substat Score (0% to 100%)",
+        blocks: [
+          { type: "text", text: "This score is different: instead of grading the echo on its own, it grades how good the echo is for one specific character. You'll see it wherever an echo is tied to a character, like an equipped echo or a build card." },
+          { type: "text", text: "It uses that character's own substat priorities, and it compares the echo to that character's best possible echo, not just to itself. So if an echo is missing a substat the character really wants, that counts against it, even if every substat it does have rolled perfectly." },
+        ],
+      },
+      {
+        id: "example",
+        heading: "Worked example",
+        blocks: [
+          { type: "text", text: "Say a character's priorities are Crit Rate (highest), Crit DMG (highest), ATK% (medium), and Resonance Liberation DMG Bonus (lower). Here's an echo with these 5 substats:" },
+          {
+            type: "keyed",
+            items: [
+              { title: "Crit DMG 15%", text: "A decent roll, worth 3 of 8 points." },
+              { title: "ATK% 8.6%", text: "4 of 8 points." },
+              { title: "Energy Regen 10%", text: "Not a priority for this character, so 0 points." },
+              { title: "Resonance Liberation DMG Bonus 10.9%", text: "A strong roll, worth 7 of 8 points." },
+              { title: "Resonance Skill DMG Bonus 11.6%", text: "Not a priority for this character, so 0 points." },
+            ],
+          },
+          { type: "text", text: "Notice this echo has no Crit Rate substat at all, even though it's this character's top priority. That's a real weakness, and the score reflects it: the echo only earns points on 3 of its 5 substats, and it's being compared to this character's ideal echo, which would also roll well on Crit Rate. Adding it all up, this echo scores about 32%, a C." },
+        ],
+      },
+      {
+        id: "priorities",
+        heading: "Setting priorities",
+        blocks: [
+          { type: "text", text: "Some characters come with a starting set of priorities already filled in. Others start with no priorities set, so every substat counts equally until you customize them. Click **Customize Weights** from a character's Echoes screen to set that character's own priorities." },
+          { type: "text", text: "Flat ATK and flat DEF only have 4 possible rolls instead of 8. Flat HP still has all 8, just like a percent-based substat. The score accounts for this automatically, so a substat with fewer possible rolls can't outscore one with more just by being present." },
+          { type: "note", text: "**An asterisk after a grade** (*) means the echo has fewer than 5 revealed substats. The score is provisional, and it will likely change as the echo levels up and reveals the rest." },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "convene-odds",
+    title: "How Convene odds are worked out",
+    summary: "The rates and pity curve behind the Convene simulator.",
+    category: "numbers",
+    action: { label: "Open Convene", to: "/convene" },
+    sections: [
+      {
+        id: "rates",
+        heading: "The rates it uses",
+        blocks: [
+          { type: "text", text: "**Character** (featured resonator): 50/50 on the rate-up 5★, with the next 5★ guaranteed rate-up if you miss. The 5★ pity curve below comes from a large-sample analysis of player convenes (not Kuro's server code): ~1.848% of pulls are 5★ (~54.1 pulls expected to any 5★), ~81.15 pulls expected to a featured 5★; published banner rates are ~1.8% for 5★ and ~12% for 4★." },
+          { type: "text", text: "**Weapon** (featured weapon): same 5★ curve as other non-beginner banners; every 5★ is the promotional weapon (100%). Featured 4★ weapon rules are not modeled here." },
+        ],
+      },
+      {
+        id: "curve",
+        heading: "The 5★ pity curve",
+        blocks: [
+          {
+            type: "list",
+            items: [
+              "0.8% flat on pulls 1–65",
+              "+4% per pull on 66–70",
+              "+8% per pull on 71–75",
+              "+10% per pull on 76–78",
+              "100% on pull 79",
+            ],
+          },
+          { type: "text", text: "Pulls count from the last 5★. The 4★ floor after nine consecutive 3★ pulls (counter resets on any 4★ or 5★) is omitted: 5★ is resolved first, so it does not change how many 5★s you get." },
+        ],
+      },
+    ],
+  },
 ];
 
 /** Topics an existing page already covers: the hub links there instead of copying them. */
 const PAGE_ENTRIES: GuideHubEntry[] = [
   { title: "Which scanner should I use?", summary: "Compare the four ways to fill your inventory.", to: "/scanners", category: "echoes" },
   { title: "Scan with Wavescan", summary: "A desktop app that scans your whole inventory.", to: "/scanners#wavescan", category: "echoes" },
-  { title: "Share your screen", summary: "Click through your echoes while the app reads them.", to: "/scanners#screen-share", category: "echoes" },
-  { title: "Upload a recording", summary: "Record the same clicks, then upload the clip.", to: "/scanners#video", category: "echoes" },
-  { title: "Import a Discord build card", summary: "Grab one character's echoes from the bot's image.", to: "/scanners#build-card", category: "echoes" },
+  { title: "Upload a recording", summary: "Record the same clicks, then upload the clip.", to: "/info/guides/scan-echoes#recording", category: "echoes" },
   { title: "When the Optimizer is slow", summary: "Shrink the search and use workers well.", to: "/info/guides/best-loadout#slow", category: "optimize" },
-  { title: "CV, Echo Rating and Substat Score", summary: "What the badges on your echoes mean.", to: "/info/cv-echo-rating", category: "numbers" },
-  { title: "How Convene odds are worked out", summary: "The pity curve and rules behind the simulator.", to: "/convene", category: "numbers" },
+  { title: "Score a sample echo", summary: "Click the rolls and watch CV and the grade change.", to: "/info/cv-echo-rating", category: "numbers" },
   { title: "The damage formulas", summary: "How one hit becomes the number you see.", to: "/info/formulas", category: "numbers" },
 ];
 
@@ -361,6 +586,8 @@ export function getGuide(slug: string): Guide | undefined {
 function blockText(block: GuideBlock): string[] {
   if (block.type === "text" || block.type === "note") return [block.text];
   if (block.type === "image") return [block.caption ?? ""];
+  if (block.type === "list") return block.items;
+  if (block.type === "steps") return block.items.flatMap((item) => [item.title, item.text ?? "", ...(item.points ?? [])]);
   return block.items.flatMap((item) => [item.title, item.text]);
 }
 

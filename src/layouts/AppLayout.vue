@@ -2,6 +2,7 @@
   <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
   <ToastContainer />
   <ConfirmDialog />
+  <GuideDrawer v-if="isV3" />
   <!-- --nav-h / --nav-rail-w / --nav-bottom-h: the fixed nav's measured sizes (Nav.vue). -->
   <div
     class="contain"
@@ -18,16 +19,18 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, watch } from "vue";
+import { computed, onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
 import ToastContainer from "../components/ToastContainer.vue";
 import ConfirmDialog from "../components/ConfirmDialog.vue";
 import AppUpdateBanner from "../components/AppUpdateBanner.vue";
+import GuideDrawer from "../components/guides/GuideDrawer.vue";
 
 const route = useRoute();
 const settingsStore = useSettingsStore();
+const isV3 = computed(() => isV3UiEnabled(settingsStore));
 
 // Global CSS scoped to one UI (e.g. v3's larger type in style.css) keys off this.
 const stopUiWatch = watch(
