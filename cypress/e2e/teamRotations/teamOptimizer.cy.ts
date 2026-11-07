@@ -164,6 +164,7 @@ describe("Team optimizer", () => {
 
     cy.get("[data-test-team-optimizer-setup]", { timeout: 60000 }).should("be.visible");
     cy.get("[data-test-team-optimizer-offer='1-MoonlitClouds']").should("contain.text", "Moonlit Clouds");
+    cy.get("[data-test-team-optimizer-offers='1'] [data-test-team-optimizer-offers-note]").should("contain.text", "changes the team total");
     cy.get("[data-test-team-optimizer-plan-count]").should("exist");
     cy.get("[data-test-team-optimizer-search-all]").check();
     cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
