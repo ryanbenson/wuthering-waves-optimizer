@@ -52,7 +52,9 @@ describe("EchoEquippedIndicator", () => {
     characterStore.activeCharacter = "Carlotta";
     inventoryStore.setEquippedData("echo-1", { Carlotta: 2 });
     const { container } = renderIndicator("echo-1");
-    expect(equippedEl(container, "echo-1")).not.toBeNull();
+    expect(equippedEl(container, "echo-1")?.textContent?.trim()).toBe(
+      "Already equipped",
+    );
   });
 
   it("shows the indicator when the echo is equipped by the active character among others", () => {
