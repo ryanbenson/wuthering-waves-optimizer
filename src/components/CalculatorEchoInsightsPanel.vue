@@ -115,7 +115,7 @@
             <div v-if="insights.priorityRows.length" class="mb-4">
               <div class="flex items-baseline justify-between gap-2 text-xs font-semibold uppercase tracking-wide opacity-60 mb-1.5">
                 <span>Priority substats</span>
-                <span v-if="showRollGains">Next roll</span>
+                <span v-if="showRollGains">Damage gain</span>
               </div>
               <div class="flex flex-col gap-1">
                 <div
@@ -130,7 +130,7 @@
                     <span class="echo-insights__missing-tag">0 rolls</span>
                   </template>
                   <template v-else>
-                    <span class="badge badge-xs badge-ghost font-mono">×{{ row.count }}</span>
+                    <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
                     <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
                   </template>
                   <EchoInsightsRollGain
@@ -156,7 +156,7 @@
                   :data-test-echo-insights-row="row.type">
                   <img :src="row.icon" class="size-4 shrink-0" />
                   <span class="flex-1 min-w-0">{{ row.label }}</span>
-                  <span class="badge badge-xs badge-ghost font-mono">×{{ row.count }}</span>
+                  <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
                   <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
                   <EchoInsightsRollGain
                     v-if="showRollGains"
@@ -183,7 +183,7 @@
               :data-test-echo-insights-row="row.type">
               <img :src="row.icon" class="size-4 shrink-0" />
               <span class="flex-1 min-w-0">{{ row.label }}</span>
-              <span class="badge badge-xs badge-ghost font-mono">×{{ row.count }}</span>
+              <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
               <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
               <EchoInsightsRollGain
                 v-if="showRollGains"
@@ -196,9 +196,11 @@
           </div>
         </template>
         <p v-if="rollValues" class="text-xs opacity-60 mt-3" data-test-echo-insights-roll-note>
-          Next roll: what one more average roll adds to
+          Damage gain to
           <span class="font-semibold opacity-100">{{ rollValues.label }}</span>
-          ({{ rollValues.damageType }}) in the Live Result Bar.
+          ({{ rollValues.damageType }}) in the Live Result Bar. <em>Per roll</em>: one more average
+          roll on an echo that doesn't have it yet. <em>If maxed</em>: the stat is on all 5 echoes,
+          so this is what max rolls would add.
         </p>
         <p
           v-else-if="!rollValuesLoading && rollValuesUnavailable"

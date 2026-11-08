@@ -21,6 +21,7 @@ In the v3 UI only:
 3. **It reuses the headless pipeline; no new damage math.** `estimateSubstatRollValues` (`src/echoes/substatRollValue.ts`) adds one roll to a copy of the character's Custom Buffs, whose keys are the substat keys, on top of anything the user already set. It then runs `calcCharacterRotationDamage` (ADR [0011](./0011-headless-character-calculation-context.md)) once for the baseline and once per substat. Each value is a real before-and-after, so the Crit Rate cap, the damage type, and stats an attack doesn't use (Energy Regen, HP, another skill type's DMG Bonus) all come out right, usually as +0.
 4. **One calculation per screen.** `useSubstatRollValues` recalculates 300 ms after the character's record, its equipped echoes or the Live Result Bar target change, and ignores late results. `CalculatorEchoes.vue` passes the result to both panels (desktop sidebar and phone bar).
 5. **"Roll for"** sits under the Build Score: the substat with the biggest gain, then the next two (`pickRollFor`). It ranks all 13 substats, so it also works for characters with no curated weights. It is hidden in the collapsed phone bar and when nothing adds damage.
+6. **A stat already on all five echoes shows its upgrade room instead.** Each echo can carry a substat once, so with five rolls of it there is nowhere to put another. Its row shows "if maxed": what the build gains if every current roll of it were a max roll (the gaps are added to Custom Buffs the same way; `substatRollIncrease`). Other rows say "per roll". "Roll for" leaves full stats out, the bar for an "if maxed" value is dimmed, and the count badge reads "3/5" instead of "×3" so the limit is visible. The current rolls come from the same slots the panel counts (`collectSubstatRolls`). Added after review: a bare "+1,612" next to "×5" read as a gain the player could not get.
 
 ## Consequences
 
@@ -37,5 +38,5 @@ In the v3 UI only:
 
 - `src/echoes/substatRollValue.ts`, `src/composables/useSubstatRollValues.ts`
 - `src/components/CalculatorEchoInsightsPanel.vue`, `src/components/EchoInsightsRollGain.vue`, `src/components/CalculatorEchoes.vue`
-- `tests/calculator/substatRollValue.test.ts`, `cypress/e2e/calculator/echoInsights.cy.ts`
+- `tests/calculator/substatRollValue.test.ts` (also checks an "if maxed" value against the same echoes with max rolls), `cypress/e2e/calculator/echoInsights.cy.ts`
 - ADR [0011](./0011-headless-character-calculation-context.md), [0014](./0014-echo-editor-redesign.md), [0030](./0030-echoes-tab-v3-redesign.md)

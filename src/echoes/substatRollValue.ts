@@ -8,7 +8,7 @@ import {
 } from "../calculator/rotationComparison";
 import type { TeamEnemyConfig } from "../calculator/buildCharacterContext";
 import { ROTATION_DAMAGE_FIELD, type LiveResultBarDamageType } from "../calculator/liveResultBar";
-import { subStats, subStatsTable } from "./stats";
+import { getEchoSubStatEntries, subStats, subStatsTable, type EchoSubStatsSource } from "./stats";
 
 /**
  * What one more roll of each substat adds to the number the Live Result Bar
@@ -18,10 +18,22 @@ import { subStats, subStatsTable } from "./stats";
  * the substat keys, so no damage math lives here. A real recalculation (not a
  * derivative) is what makes the Crit Rate cap and stat-scaled buffs come out
  * right. The store is never touched.
+ *
+ * A substat can sit on each echo only once, so a stat already on all five
+ * echoes has no slot for another roll. For those the value is instead what
+ * the build gains if every one of its current rolls were a max roll.
  */
 
+/** Echo slots a build has; each can carry a given substat once. */
+export const ECHO_SLOT_COUNT = 5;
+
 export interface SubstatRollGain {
-  /** Damage added by one average roll. */
+  /**
+   * "roll": one more average roll (the stat has a free echo slot).
+   * "max": every current roll of it raised to the max (it's on all five echoes).
+   */
+  kind: "roll" | "max";
+  /** Damage added. */
   delta: number;
   /** `delta` as a share of the current number (0.05 = +5%). */
   pct: number;
@@ -39,6 +51,8 @@ export interface SubstatRollValues {
 
 export interface SubstatRollValueOptions extends ComparisonTargetOptions {
   damageType?: LiveResultBarDamageType;
+  /** Each substat's current roll values across the equipped echoes (`collectSubstatRolls`). */
+  rolls?: Record<string, number[]>;
 }
 
 /**
@@ -50,6 +64,36 @@ export function averageSubstatRoll(key: string): number {
   const values = subStatsTable[key];
   if (!values?.length) return 0;
   return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+/** The biggest single roll the substat can have. */
+export function maxSubstatRoll(key: string): number {
+  const values = subStatsTable[key];
+  return values?.length ? Math.max(...values) : 0;
+}
+
+/** Each substat's roll values across the given echoes, one entry per echo that has it. */
+export function collectSubstatRolls(echoes: EchoSubStatsSource[]): Record<string, number[]> {
+  const rolls: Record<string, number[]> = {};
+  for (const echo of echoes) {
+    for (const [type, value] of getEchoSubStatEntries(echo)) (rolls[type] ??= []).push(value);
+  }
+  return rolls;
+}
+
+/**
+ * What to add for one substat, and which kind of value that is: one average
+ * roll while it has a free echo slot, otherwise the gap between its current
+ * rolls and max rolls (0 once they're all maxed).
+ */
+export function substatRollIncrease(
+  key: string,
+  rolls: number[] = [],
+): { kind: SubstatRollGain["kind"]; amount: number } {
+  if (rolls.length < ECHO_SLOT_COUNT) return { kind: "roll", amount: averageSubstatRoll(key) };
+  const max = maxSubstatRoll(key);
+  const amount = rolls.reduce((sum, value) => sum + Math.max(0, max - value), 0);
+  return { kind: "max", amount };
 }
 
 function readDamage(aggregation: DamageAggregation, damageType: LiveResultBarDamageType): number {
@@ -103,12 +147,14 @@ export async function estimateSubstatRollValues(
 
   const entries = await Promise.all(
     subStats.map(async (key): Promise<[string, SubstatRollGain]> => {
+      const { kind, amount } = substatRollIncrease(key, options.rolls?.[key]);
+      if (!(amount > 0)) return [key, { kind, delta: 0, pct: 0 }];
       const current = Number(storedCustomBuffs[key]) || 0;
-      const result = await run({ [key]: current + averageSubstatRoll(key) });
+      const result = await run({ [key]: current + amount });
       const delta = readDamage(result.damageAggregation, damageType) - baseline;
       // Float noise from an unchanged result reads as "+0", not "+0.0000001".
       const clean = Math.abs(delta) < 1e-6 ? 0 : delta;
-      return [key, { delta: clean, pct: clean / baseline }];
+      return [key, { kind, delta: clean, pct: clean / baseline }];
     }),
   );
 
@@ -125,10 +171,13 @@ export interface RollForPick {
   gain: SubstatRollGain;
 }
 
-/** The substats whose next roll adds the most, best first; those that add nothing are left out. */
+/**
+ * The substats whose next roll adds the most, best first. Stats with no free
+ * echo slot ("max" values) and those that add nothing are left out.
+ */
 export function pickRollFor(gains: Record<string, SubstatRollGain>, count = 3): RollForPick[] {
   return Object.entries(gains)
-    .filter(([, gain]) => gain.delta > 0)
+    .filter(([, gain]) => gain.kind === "roll" && gain.delta > 0)
     .sort((a, b) => b[1].delta - a[1].delta || a[0].localeCompare(b[0]))
     .slice(0, count)
     .map(([key, gain]) => ({ key, gain }));

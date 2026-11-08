@@ -3,7 +3,11 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { resolveTeamEnemyConfig } from "../calculator/buildCharacterContext";
-import { estimateSubstatRollValues, type SubstatRollValues } from "../echoes/substatRollValue";
+import {
+  collectSubstatRolls,
+  estimateSubstatRollValues,
+  type SubstatRollValues,
+} from "../echoes/substatRollValue";
 
 /** Wait this long after the last build change before recalculating. */
 const DEBOUNCE_MS = 300;
@@ -38,7 +42,13 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
     const equipped = Object.values(slots)
       .map((slot: any) => (slot?.echoId ? inventoryStore.getEchoById(slot.echoId) : null))
       .filter(Boolean);
-    return { id, record, equipped, preference: preference.value };
+    // The same "is this slot equipped" read as useEchoInsights.ts, so the
+    // slot counts match the panel's: an inventory echo, or one stored on the
+    // slot itself.
+    const slotEchoes = Object.values(slots)
+      .filter((slot: any) => slot?.echoId || slot?.echo)
+      .map((slot: any) => (slot.echoId && inventoryStore.getEchoById(slot.echoId)) || slot);
+    return { id, record, equipped, slotEchoes, preference: preference.value };
   });
 
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -46,7 +56,7 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
 
   async function recalculate() {
     const token = ++requestToken;
-    const { id, record, equipped, preference: options } = inputs.value;
+    const { id, record, equipped, slotEchoes, preference: target } = inputs.value;
     if (!id || !record) {
       values.value = null;
       loading.value = false;
@@ -59,7 +69,7 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
         characters,
         resolveTeamEnemyConfig(record),
         equipped.map((echo: any) => toRaw(echo)),
-        options,
+        { ...target, rolls: collectSubstatRolls(slotEchoes.map((echo: any) => toRaw(echo))) },
       );
       if (token === requestToken) values.value = result;
     } catch {

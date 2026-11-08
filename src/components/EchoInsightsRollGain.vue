@@ -7,10 +7,14 @@
   <template v-else-if="gain">
     <span
       v-if="gain.delta > 0"
-      class="echo-insights-gain font-mono font-bold text-success text-right shrink-0"
-      :title="`One more average roll adds ${formatRollGain(gain.delta)} (${formatPercent(gain.pct)})`"
-      :data-test-echo-insights-roll-gain="type">
-      {{ formatRollGain(gain.delta) }}
+      class="echo-insights-gain text-right shrink-0"
+      :title="gainTitle"
+      :data-test-echo-insights-roll-gain="type"
+      :data-test-echo-insights-roll-gain-kind="gain.kind">
+      <span class="font-mono font-bold text-success" data-test-echo-insights-roll-gain-value>{{
+        formatRollGain(gain.delta)
+      }}</span>
+      <span class="opacity-60 ml-1">{{ gain.kind === "max" ? "if maxed" : "per roll" }}</span>
     </span>
     <span
       v-else-if="type === 'EnergyRegen'"
@@ -21,13 +25,18 @@
     </span>
     <span
       v-else
-      class="echo-insights-gain font-mono opacity-50 text-right shrink-0"
-      :title="`Doesn't add damage to ${label}`"
-      :data-test-echo-insights-roll-gain="type">
-      +0
+      class="echo-insights-gain text-right shrink-0"
+      :title="zeroTitle"
+      :data-test-echo-insights-roll-gain="type"
+      :data-test-echo-insights-roll-gain-kind="gain.kind">
+      <span class="font-mono opacity-50" data-test-echo-insights-roll-gain-value>+0</span>
     </span>
     <span v-if="gain.delta > 0" class="echo-insights-gain__bar basis-full" aria-hidden="true">
-      <span class="block h-full rounded bg-success" :style="{ width: barWidth }"></span>
+      <!-- Dimmed for "if maxed": a different kind of gain from one more roll. -->
+      <span
+        class="block h-full rounded bg-success"
+        :class="{ 'opacity-40': gain.kind === 'max' }"
+        :style="{ width: barWidth }"></span>
     </span>
   </template>
 </template>
@@ -54,6 +63,21 @@ const barWidth = computed(() => {
 function formatPercent(pct: number): string {
   return `+${(pct * 100).toFixed(1)}%`;
 }
+
+const gainTitle = computed(() => {
+  const gain = props.gain;
+  if (!gain) return "";
+  const added = `${formatRollGain(gain.delta)} damage (${formatPercent(gain.pct)}) to ${props.label}`;
+  return gain.kind === "max"
+    ? `Already on all 5 echoes. If every roll of it were a max roll, that adds ${added}.`
+    : `One more average roll, on an echo that doesn't have it yet, adds ${added}.`;
+});
+
+const zeroTitle = computed(() =>
+  props.gain?.kind === "max"
+    ? `Already on all 5 echoes, and better rolls of it don't add damage to ${props.label}`
+    : `Doesn't add damage to ${props.label}`,
+);
 </script>
 
 <style scoped>

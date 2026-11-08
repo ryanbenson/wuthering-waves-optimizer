@@ -3,9 +3,12 @@ import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext
 import { calcCharacterRotationDamage } from "../../src/calculator/characterRotation";
 import {
   averageSubstatRoll,
+  collectSubstatRolls,
   estimateSubstatRollValues,
   formatRollGain,
+  maxSubstatRoll,
   pickRollFor,
+  substatRollIncrease,
 } from "../../src/echoes/substatRollValue";
 import { subStats } from "../../src/echoes/stats";
 
@@ -50,6 +53,25 @@ describe("averageSubstatRoll", () => {
     expect(averageSubstatRoll("ATK")).toBeCloseTo(9);
     expect(averageSubstatRoll("ATK_FLAT")).toBeCloseTo(45);
     expect(averageSubstatRoll("Nope")).toBe(0);
+  });
+});
+
+describe("substatRollIncrease", () => {
+  it("adds one average roll while the stat has a free echo slot", () => {
+    expect(substatRollIncrease("CritRate", [6.3, 8.1])).toEqual({ kind: "roll", amount: averageSubstatRoll("CritRate") });
+    expect(substatRollIncrease("CritRate")).toEqual({ kind: "roll", amount: averageSubstatRoll("CritRate") });
+  });
+
+  it("measures the gap to max rolls once the stat is on all five echoes", () => {
+    expect(maxSubstatRoll("CritRate")).toBeCloseTo(10.5);
+    const { kind, amount } = substatRollIncrease("CritRate", [6.3, 8.1, 10.5, 7.5, 9.9]);
+    expect(kind).toBe("max");
+    expect(amount).toBeCloseTo(4.2 + 2.4 + 0 + 3 + 0.6);
+    expect(substatRollIncrease("CritRate", [10.5, 10.5, 10.5, 10.5, 10.5]).amount).toBe(0);
+  });
+
+  it("reads each echo's rolls", () => {
+    expect(collectSubstatRolls(INVENTORY)).toEqual({ ATK: [10], CritDMG: [12.6], CritRate: [6.3] });
   });
 });
 
@@ -130,6 +152,35 @@ describe("estimateSubstatRollValues", () => {
     expect(values!.label).not.toBe("MoonringBasicAttack1DMG");
   });
 
+  it("gives a stat on all five echoes the gain from maxing its rolls", async () => {
+    const rolled = [6.4, 7.1, 7.9, 8.6, 11.6];
+    const withBasic = (values: number[]) =>
+      INVENTORY.map((echo, i) => ({ ...echo, echoSubStatsType2: "BasicAttackDMGBonus", echoSubStatsValue2: values[i] }));
+    const inventory = withBasic(rolled);
+    const characters = iuno();
+    const values = await estimateSubstatRollValues("Iuno", characters, enemyConfig, inventory, {
+      target,
+      rolls: collectSubstatRolls(inventory),
+    });
+    // The reference: the same echoes with every Basic Attack DMG Bonus roll at max.
+    const maxed = withBasic(rolled.map(() => maxSubstatRoll("BasicAttackDMGBonus")));
+    const expected = (await damage(characters, maxed)) - (await damage(characters, inventory));
+    expect(expected).toBeGreaterThan(0);
+    expect(values!.gains.BasicAttackDMGBonus.kind).toBe("max");
+    expect(values!.gains.BasicAttackDMGBonus.delta).toBeCloseTo(expected, 4);
+    // Stats with a free slot still get one more roll.
+    expect(values!.gains.CritRate.kind).toBe("roll");
+  });
+
+  it("gives 0 once every roll of a full stat is already max", async () => {
+    const inventory = INVENTORY.map((echo) => ({ ...echo, echoSubStatsType2: "ATK_FLAT", echoSubStatsValue2: 60 }));
+    const values = await estimateSubstatRollValues("Iuno", iuno(), enemyConfig, inventory, {
+      target,
+      rolls: collectSubstatRolls(inventory),
+    });
+    expect(values!.gains.ATK_FLAT).toEqual({ kind: "max", delta: 0, pct: 0 });
+  });
+
   it("returns null when the Live Result Bar shows a stat", async () => {
     const values = await estimateSubstatRollValues("Iuno", iuno(), enemyConfig, INVENTORY, { target: "Stat:totalAtk" });
     expect(values).toBeNull();
@@ -139,22 +190,30 @@ describe("estimateSubstatRollValues", () => {
 describe("pickRollFor", () => {
   it("ranks by gain and leaves out what adds nothing", () => {
     const picks = pickRollFor({
-      ATK: { delta: 2055, pct: 0.045 },
-      CritRate: { delta: 2987, pct: 0.066 },
-      EnergyRegen: { delta: 0, pct: 0 },
-      CritDMG: { delta: 2382, pct: 0.053 },
-      ATK_FLAT: { delta: 1015, pct: 0.022 },
+      ATK: { kind: "roll", delta: 2055, pct: 0.045 },
+      CritRate: { kind: "roll", delta: 2987, pct: 0.066 },
+      EnergyRegen: { kind: "roll", delta: 0, pct: 0 },
+      CritDMG: { kind: "roll", delta: 2382, pct: 0.053 },
+      ATK_FLAT: { kind: "roll", delta: 1015, pct: 0.022 },
     });
     expect(picks.map((pick) => pick.key)).toEqual(["CritRate", "CritDMG", "ATK"]);
   });
 
   it("breaks ties by key so the order doesn't flicker", () => {
-    const picks = pickRollFor({ CritRate: { delta: 5, pct: 0 }, ATK: { delta: 5, pct: 0 } }, 2);
+    const picks = pickRollFor({ CritRate: { kind: "roll", delta: 5, pct: 0 }, ATK: { kind: "roll", delta: 5, pct: 0 } }, 2);
     expect(picks.map((pick) => pick.key)).toEqual(["ATK", "CritRate"]);
   });
 
+  it("leaves out stats with no free echo slot", () => {
+    const picks = pickRollFor({
+      CritRate: { kind: "max", delta: 9000, pct: 0.2 },
+      CritDMG: { kind: "roll", delta: 2382, pct: 0.053 },
+    });
+    expect(picks.map((pick) => pick.key)).toEqual(["CritDMG"]);
+  });
+
   it("is empty when nothing adds damage", () => {
-    expect(pickRollFor({ EnergyRegen: { delta: 0, pct: 0 } })).toEqual([]);
+    expect(pickRollFor({ EnergyRegen: { kind: "roll", delta: 0, pct: 0 } })).toEqual([]);
   });
 });
 

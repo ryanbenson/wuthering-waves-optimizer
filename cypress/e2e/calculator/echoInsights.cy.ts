@@ -130,7 +130,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(0, "Crit Rate");
     collapseEcho(1);
 
-    cy.get('[data-test-echo-insights-row="CritRate"]').should("contain.text", "×2");
+    cy.get('[data-test-echo-insights-row="CritRate"]').should("contain.text", "2/5");
   });
 
   it("pins the Build Score panel above the strip on a mobile viewport, hiding the desktop sidebar", () => {
@@ -171,6 +171,9 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     collapseEcho(0);
 
     cy.get('.echoes-sidebar [data-test-echo-insights-roll-gain="CritRate"]')
+      .should("have.attr", "data-test-echo-insights-roll-gain-kind", "roll")
+      .and("contain.text", "per roll")
+      .find("[data-test-echo-insights-roll-gain-value]")
       .invoke("text")
       .should("match", /^\s*\+[\d,.]+[KM]?\s*$/);
     // Brant's damage doesn't scale with HP.
@@ -178,7 +181,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
 
     cy.get(".echoes-sidebar [data-test-echo-insights-roll-for]").should("be.visible").and("contain.text", "Roll for");
     cy.get(".echoes-sidebar [data-test-echo-insights-roll-for-best]").invoke("text").should("not.be.empty");
-    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "one more average roll");
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "one more average");
   });
 
   it("keeps Roll for out of the collapsed phone bar", () => {
