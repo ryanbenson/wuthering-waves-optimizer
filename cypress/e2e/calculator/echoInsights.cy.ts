@@ -86,8 +86,11 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
       expect(types.indexOf("EnergyRegen")).to.be.lessThan(types.indexOf("CritRate"));
     });
 
-    // HP (weight 0 for Brant) lands in "Other rolled substats", not flagged.
-    cy.get('[data-test-echo-insights-row="HP"]').should("exist").and("not.have.class", "echo-insights__row--missing");
+    // HP (weight 0 for Brant) isn't a priority, so it isn't flagged. It adds
+    // no damage for Brant, so it lands in the "Adds nothing here" chips.
+    cy.get('.echoes-sidebar [data-test-echo-insights-row="HP"]')
+      .should("exist")
+      .and("not.have.attr", "data-test-echo-insights-row-missing");
 
     // 4 of the 5 rolled substats (CritRate/CritDMG/BasicAttackDMGBonus/ATK)
     // are priority for Brant, HP isn't — 80%.
@@ -112,9 +115,9 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(4, "HP%");
     collapseEcho(0);
 
-    cy.get('[data-test-echo-insights-row="EnergyRegen"]')
-      .should("have.class", "echo-insights__row--missing")
-      .and("contain.text", "0 rolls");
+    cy.get('.echoes-sidebar [data-test-echo-insights-row="EnergyRegen"]')
+      .should("contain.text", "0/5")
+      .and("have.attr", "data-test-echo-insights-row-missing");
   });
 
   it("aggregates roll counts across more than one equipped echo", () => {
@@ -155,10 +158,10 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     });
   });
 
-  // ADR 0056: what one more roll of each substat adds to the Live Result
-  // Bar's number. The values come from a real recalculation, so this only
-  // checks they arrive and land in the right places.
-  it("shows what one more roll adds and which substat to roll for", () => {
+  // ADR 0056: what each substat adds to the Live Result Bar's number. The
+  // values come from a real recalculation (unit-tested), so this only checks
+  // they arrive and land in the right places.
+  it("shows what each substat adds, which to roll for, and a Try a change answer", () => {
     openBrantEchoesTab();
     cy.viewport(1280, 1000);
     cy.get('[data-test-echo-item="0"]').click();
@@ -170,18 +173,26 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(4, "HP%");
     collapseEcho(0);
 
-    cy.get('.echoes-sidebar [data-test-echo-insights-roll-gain="CritRate"]')
-      .should("have.attr", "data-test-echo-insights-roll-gain-kind", "roll")
-      .and("contain.text", "per roll")
-      .find("[data-test-echo-insights-roll-gain-value]")
+    const gain = /^\s*\+[\d,.]+[KM]?\s*$/;
+    cy.get('.echoes-sidebar [data-test-echo-insights-per-step="CritRate"] .font-mono')
+      .first()
       .invoke("text")
-      .should("match", /^\s*\+[\d,.]+[KM]?\s*$/);
-    // Brant's damage doesn't scale with HP.
-    cy.get('.echoes-sidebar [data-test-echo-insights-roll-gain="HP"]').invoke("text").should("match", /^\s*\+0\s*$/);
+      .should("match", gain);
+    cy.get('.echoes-sidebar [data-test-echo-insights-typical="CritRate"]').should("contain.text", "7.5%");
+    cy.get('.echoes-sidebar [data-test-echo-insights-top="CritRate"]')
+      .should("contain.text", "10.5%")
+      .and("contain.text", "3 in 100");
+    // Brant's damage doesn't scale with HP: it's a chip, not a table row.
+    cy.get(".echoes-sidebar [data-test-echo-insights-adds-nothing]").should("contain.text", "HP%");
 
     cy.get(".echoes-sidebar [data-test-echo-insights-roll-for]").should("be.visible").and("contain.text", "Roll for");
     cy.get(".echoes-sidebar [data-test-echo-insights-roll-for-best]").invoke("text").should("not.be.empty");
-    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "one more average");
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "What each substat adds");
+
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-stat]").select("CritRate");
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").clear();
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").type("2.5");
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-result]").invoke("text").should("match", gain);
   });
 
   it("keeps Roll for out of the collapsed phone bar", () => {

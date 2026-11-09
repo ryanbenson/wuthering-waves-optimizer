@@ -51,7 +51,7 @@ export const updateEntries: UpdateEntry[] = [
     date: "2026-11-07",
     dateLabel: "November 7, 2026",
     items: [
-      "The Echoes screen now shows what one more roll of each substat adds to your damage, or what maxing its rolls adds once it's on all 5 echoes, with a Roll for line naming the best ones for your build",
+      "The Echoes screen now shows what each substat adds to your damage: per 1%, for a typical roll and for a top roll, with a Roll for line naming the best ones for your build and a Try a change box for any amount",
       "Guides now open beside the screen they explain instead of covering it. Try the Optimizer Guide, the Echoes screen's Rating Guide and Presets guide, or How the odds are worked out on Convene",
       "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
       "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",

@@ -4,8 +4,9 @@ import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { resolveTeamEnemyConfig } from "../calculator/buildCharacterContext";
 import {
-  collectSubstatRolls,
-  estimateSubstatRollValues,
+  createSubstatMeasurer,
+  measureSubstatValues,
+  type SubstatMeasurer,
   type SubstatRollValues,
 } from "../echoes/substatRollValue";
 
@@ -13,8 +14,7 @@ import {
 const DEBOUNCE_MS = 300;
 
 /**
- * What one more roll of each substat adds, for the Echo Insights panel
- * (ADR 0056). Recalculates after the build, its equipped echoes or the Live
+ * What each substat is worth, for the Echo Insights panel (ADR 0056). Recalculates after the build, its equipped echoes or the Live
  * Result Bar's target changes. Call it once per screen and share the result:
  * the Echoes screen renders two copies of the panel (desktop and phone).
  */
@@ -42,38 +42,42 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
     const equipped = Object.values(slots)
       .map((slot: any) => (slot?.echoId ? inventoryStore.getEchoById(slot.echoId) : null))
       .filter(Boolean);
-    // The same "is this slot equipped" read as useEchoInsights.ts, so the
-    // slot counts match the panel's: an inventory echo, or one stored on the
-    // slot itself.
-    const slotEchoes = Object.values(slots)
-      .filter((slot: any) => slot?.echoId || slot?.echo)
-      .map((slot: any) => (slot.echoId && inventoryStore.getEchoById(slot.echoId)) || slot);
-    return { id, record, equipped, slotEchoes, preference: preference.value };
+    return { id, record, equipped, preference: preference.value };
   });
 
   let timer: ReturnType<typeof setTimeout> | null = null;
   let requestToken = 0;
+  // Kept for measureChange; it holds the build as of the last calculation.
+  let measurer: SubstatMeasurer | null = null;
 
   async function recalculate() {
     const token = ++requestToken;
-    const { id, record, equipped, slotEchoes, preference: target } = inputs.value;
+    const { id, record, equipped, preference: target } = inputs.value;
     if (!id || !record) {
+      measurer = null;
       values.value = null;
       loading.value = false;
       return;
     }
     try {
       const characters = { [id]: toRaw(record) };
-      const result = await estimateSubstatRollValues(
+      const next = await createSubstatMeasurer(
         id,
         characters,
         resolveTeamEnemyConfig(record),
         equipped.map((echo: any) => toRaw(echo)),
-        { ...target, rolls: collectSubstatRolls(slotEchoes.map((echo: any) => toRaw(echo))) },
+        target,
       );
-      if (token === requestToken) values.value = result;
+      const result = next ? await measureSubstatValues(next) : null;
+      if (token === requestToken) {
+        measurer = next;
+        values.value = result;
+      }
     } catch {
-      if (token === requestToken) values.value = null;
+      if (token === requestToken) {
+        measurer = null;
+        values.value = null;
+      }
     } finally {
       if (token === requestToken) loading.value = false;
     }
@@ -84,7 +88,10 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
     (next, previous) => {
       if (timer) clearTimeout(timer);
       // A different character's numbers would be wrong, not just stale.
-      if (next.id !== previous?.id) values.value = null;
+      if (next.id !== previous?.id) {
+        values.value = null;
+        measurer = null;
+      }
       loading.value = true;
       timer = setTimeout(recalculate, previous ? DEBOUNCE_MS : 0);
     },
@@ -96,5 +103,15 @@ export function useSubstatRollValues(characterId: () => string | null | undefine
     requestToken++;
   });
 
-  return { values, loading };
+  /**
+   * Damage `amount` more of one substat adds (Custom Buffs units: 2.5 = 2.5%),
+   * on the same build and target as `values`. A real recalculation, so it
+   * stays right past the Crit Rate cap. `null` while there's nothing to measure.
+   */
+  async function measureChange(key: string, amount: number): Promise<number | null> {
+    if (!measurer || !Number.isFinite(amount)) return null;
+    return measurer.measure({ [key]: amount });
+  }
+
+  return { values, loading, measureChange };
 }

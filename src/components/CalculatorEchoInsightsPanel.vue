@@ -62,11 +62,11 @@
           <span class="font-semibold">
             <span data-test-echo-insights-roll-for-best>{{ getReadableSubStatLabel(rollFor[0].key) }}</span>
             <span class="font-mono text-success ml-1">
-              {{ formatRollGain(rollFor[0].gain.delta) }} · +{{ (rollFor[0].gain.pct * 100).toFixed(1) }}%
+              {{ formatRollGain(rollFor[0].value.typical.delta) }} · +{{ (rollFor[0].value.typical.pct * 100).toFixed(1) }}%
             </span>
           </span>
-          <span v-if="rollFor.length > 1" class="text-xs opacity-60">
-            Then {{ rollForRest }}
+          <span class="text-xs opacity-60">
+            per typical roll.<template v-if="rollFor.length > 1"> Then {{ rollForRest }}</template>
           </span>
         </div>
 
@@ -95,118 +95,59 @@
             max="100"></progress>
         </div>
 
-        <!--
-          Side by side once this is the desktop (always-expanded) instance
-          AND the viewport is wide enough — the wider sidebar it lives in
-          (see CalculatorEchoes.vue's .echoes-sidebar) has the room at that
-          point, and stacking both lists vertically here was pushing the
-          panel's bottom past the fold. alwaysExpanded doubles as "this is
-          the desktop instance" (the mobile pinned bar never passes it — see
-          the prop comment below); the 1400px floor on top of that handles
-          the narrower end of the desktop instance's own range (it's still
-          visible down to 769px, where two columns don't fit) — see the
-          --split modifier below.
-        -->
-        <template v-if="insights.isCurated">
-          <div
-            v-if="insights.priorityRows.length || insights.otherRows.length"
-            class="echo-insights__substat-groups"
-            :class="{ 'echo-insights__substat-groups--split': alwaysExpanded }">
-            <div v-if="insights.priorityRows.length" class="mb-4">
-              <div class="flex items-baseline justify-between gap-2 text-xs font-semibold uppercase tracking-wide opacity-60 mb-1.5">
-                <span>Priority substats</span>
-                <span v-if="showRollGains">Damage gain</span>
-              </div>
-              <div class="flex flex-col gap-1">
-                <div
-                  v-for="row in insights.priorityRows"
-                  :key="row.type"
-                  class="echo-insights__row flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
-                  :class="{ 'echo-insights__row--missing': row.missing }"
-                  :data-test-echo-insights-row="row.type">
-                  <img :src="row.icon" class="size-4 shrink-0" />
-                  <span class="flex-1 min-w-0">{{ row.label }}</span>
-                  <template v-if="row.missing">
-                    <span class="echo-insights__missing-tag">0 rolls</span>
-                  </template>
-                  <template v-else>
-                    <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
-                    <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
-                  </template>
-                  <EchoInsightsRollGain
-                    v-if="showRollGains"
-                    :type="row.type"
-                    :gain="rollValues?.gains[row.type]"
-                    :max-delta="maxRollDelta"
-                    :label="rollValues?.label ?? ''"
-                    :loading="rollValuesLoading" />
-                </div>
-              </div>
-            </div>
+        <p v-if="!insights.isCurated" class="text-xs opacity-60 mb-2">
+          Substat priorities aren't set for this character, so
+          {{ rollValues ? "substats are ordered by damage." : "this shows raw totals only." }}
+        </p>
 
-            <div v-if="insights.otherRows.length" class="mb-4">
-              <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1.5">
-                Other rolled substats
-              </div>
-              <div class="flex flex-col gap-1">
-                <div
-                  v-for="row in insights.otherRows"
-                  :key="row.type"
-                  class="echo-insights__row flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
-                  :data-test-echo-insights-row="row.type">
-                  <img :src="row.icon" class="size-4 shrink-0" />
-                  <span class="flex-1 min-w-0">{{ row.label }}</span>
-                  <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
-                  <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
-                  <EchoInsightsRollGain
-                    v-if="showRollGains"
-                    :type="row.type"
-                    :gain="rollValues?.gains[row.type]"
-                    :max-delta="maxRollDelta"
-                    :label="rollValues?.label ?? ''"
-                    :loading="rollValuesLoading" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
+        <div v-if="rollValues" class="flex flex-col gap-0.5 mb-1" data-test-echo-insights-roll-note>
+          <span class="text-xs font-semibold uppercase tracking-wide opacity-60">What each substat adds</span>
+          <span class="text-xs opacity-60">
+            to <span class="font-semibold opacity-100">{{ rollValues.label }}</span> ({{ rollValues.damageType }}),
+            <span class="font-mono">{{ Math.round(rollValues.baseline).toLocaleString("en-US") }}</span> now
+          </span>
+        </div>
+        <div v-else-if="tableRows.length" class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">
+          Your substats
+        </div>
 
-        <template v-else>
-          <p class="text-xs opacity-60 mb-2">
-            Substat priorities aren't set for this character — showing raw totals only.
-          </p>
-          <div class="flex flex-col gap-1">
-            <div
-              v-for="row in insights.otherRows"
-              :key="row.type"
-              class="echo-insights__row flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
-              :data-test-echo-insights-row="row.type">
-              <img :src="row.icon" class="size-4 shrink-0" />
-              <span class="flex-1 min-w-0">{{ row.label }}</span>
-              <span class="badge badge-xs badge-ghost font-mono" title="Echoes with this substat">{{ row.count }}/5</span>
-              <span class="font-mono font-bold">{{ row.formattedTotal }}</span>
-              <EchoInsightsRollGain
-                v-if="showRollGains"
-                :type="row.type"
-                :gain="rollValues?.gains[row.type]"
-                :max-delta="maxRollDelta"
-                :label="rollValues?.label ?? ''"
-                :loading="rollValuesLoading" />
-            </div>
-          </div>
-        </template>
-        <p v-if="rollValues" class="text-xs opacity-60 mt-3" data-test-echo-insights-roll-note>
-          Damage gain to
-          <span class="font-semibold opacity-100">{{ rollValues.label }}</span>
-          ({{ rollValues.damageType }}) in the Live Result Bar. <em>Per roll</em>: one more average
-          roll on an echo that doesn't have it yet. <em>If maxed</em>: the stat is on all 5 echoes,
-          so this is what max rolls would add.
+        <EchoInsightsSubstatTable
+          v-if="tableRows.length"
+          :rows="tableRows"
+          :values="rollValues?.values"
+          :loading="rollValuesLoading" />
+
+        <div
+          v-if="nothingRows.length"
+          class="flex flex-wrap items-center gap-1.5 mt-2"
+          data-test-echo-insights-adds-nothing>
+          <span class="text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">Adds nothing here</span>
+          <span
+            v-for="row in nothingRows"
+            :key="row.type"
+            class="rounded-full border border-dashed border-base-300 px-2 py-0.5 text-[0.7rem] opacity-70"
+            :data-test-echo-insights-row="row.type">
+            {{ row.label }} · {{ row.count }}/5
+          </span>
+        </div>
+
+        <EchoInsightsTryChange
+          v-if="rollValues && measureChange && tryChangeStats.length"
+          class="mt-3"
+          :stats="tryChangeStats"
+          :measure-change="measureChange"
+          :revision="rollValues" />
+
+        <p v-if="rollValues" class="text-xs opacity-60 mt-2">
+          <em>Per 1%</em> works for any change: 2% more is twice that number, whether it's a new roll
+          or a better one. <em>Typical roll</em> is the size a roll usually drops at; <em>Top roll</em>
+          is the biggest, and how often it drops.
         </p>
         <p
           v-else-if="!rollValuesLoading && rollValuesUnavailable"
           class="text-xs opacity-60 mt-3"
           data-test-echo-insights-roll-unavailable>
-          Pick an attack or rotation in the Live Result Bar to see what each roll adds.
+          Pick an attack or rotation in the Live Result Bar to see what each substat adds.
         </p>
       </template>
     </div>
@@ -218,8 +159,10 @@ import { ref, computed } from "vue";
 import { useEchoInsights } from "../composables/useEchoInsights";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { getRatingAccentClasses } from "../composables/useEchoRating";
-import EchoInsightsRollGain from "./EchoInsightsRollGain.vue";
-import { getReadableSubStatLabel } from "../echoes/stats";
+import type { EchoInsightRow } from "../composables/useEchoInsights";
+import EchoInsightsSubstatTable from "./EchoInsightsSubstatTable.vue";
+import EchoInsightsTryChange from "./EchoInsightsTryChange.vue";
+import { getReadableSubStatLabel, getSubStatIconByType, subStats } from "../echoes/stats";
 import { formatRollGain, pickRollFor, type SubstatRollValues } from "../echoes/substatRollValue";
 
 defineOptions({ name: "CalculatorEchoInsightsPanel" });
@@ -237,13 +180,15 @@ const props = withDefaults(
     // useBreakpoint-style composable to reuse, and every other responsive
     // split in this redesign is CSS-only too.
     alwaysExpanded?: boolean;
-    // What one more roll of each substat adds (ADR 0056). Calculated once
-    // by CalculatorEchoes.vue (useSubstatRollValues) and shared by both
-    // instances. Left out, the panel shows no roll values.
+    // What each substat adds (ADR 0056). Calculated once by
+    // CalculatorEchoes.vue (useSubstatRollValues) and shared by both
+    // instances. Left out, the panel shows no values.
     rollValues?: SubstatRollValues | null;
     rollValuesLoading?: boolean;
+    // Measures any amount of one substat, for "Try a change".
+    measureChange?: (key: string, amount: number) => Promise<number | null>;
   }>(),
-  { alwaysExpanded: false, rollValues: undefined, rollValuesLoading: false },
+  { alwaysExpanded: false, rollValues: undefined, rollValuesLoading: false, measureChange: undefined },
 );
 
 const { insights } = useEchoInsights(() => props.character);
@@ -268,72 +213,55 @@ const isExpanded = ref(false);
 // undefined = this screen doesn't calculate roll values at all; null = it
 // does, but there's nothing to measure (a Stat target, or no damage).
 const rollValuesUnavailable = computed(() => props.rollValues === null);
-const showRollGains = computed(
-  () => props.rollValues !== undefined && (Boolean(props.rollValues) || props.rollValuesLoading),
+
+const addsDamage = (type: string) => (props.rollValues?.values[type]?.typical.delta ?? 0) > 0;
+const byTypicalGain = (a: string, b: string) =>
+  (props.rollValues?.values[b]?.typical.delta ?? 0) - (props.rollValues?.values[a]?.typical.delta ?? 0);
+
+// Priority substats first, in their weight order (as before ADR 0056), then
+// any other substat that adds damage, best first: rolled ones, and unrolled
+// ones too, since "Roll for" can name them. Rolled substats that add
+// nothing go to the "Adds nothing here" chips instead.
+const tableRows = computed<EchoInsightRow[]>(() => {
+  const { priorityRows, otherRows } = insights.value;
+  if (!props.rollValues) return [...priorityRows, ...otherRows];
+  const listed = new Set([...priorityRows, ...otherRows].map((row) => row.type));
+  const unrolled: EchoInsightRow[] = subStats
+    .filter((type) => !listed.has(type) && addsDamage(type))
+    .map((type) => ({
+      type,
+      label: getReadableSubStatLabel(type),
+      icon: getSubStatIconByType(type),
+      count: 0,
+      total: 0,
+      formattedTotal: "",
+      weight: 0,
+      missing: false,
+    }));
+  const rest = [...otherRows.filter((row) => addsDamage(row.type)), ...unrolled].sort((a, b) =>
+    byTypicalGain(a.type, b.type),
+  );
+  return [...priorityRows, ...rest];
+});
+const nothingRows = computed(() =>
+  props.rollValues ? insights.value.otherRows.filter((row) => !addsDamage(row.type)) : [],
 );
-const maxRollDelta = computed(() =>
-  Math.max(0, ...Object.values(props.rollValues?.gains ?? {}).map((gain) => gain.delta)),
+const tryChangeStats = computed(() => subStats.filter(addsDamage).sort(byTypicalGain));
+
+const echoCounts = computed(() =>
+  Object.fromEntries(
+    [...insights.value.priorityRows, ...insights.value.otherRows].map((row) => [row.type, row.count]),
+  ),
 );
-const rollFor = computed(() => (props.rollValues ? pickRollFor(props.rollValues.gains) : []));
+const rollFor = computed(() =>
+  props.rollValues ? pickRollFor(props.rollValues.values, echoCounts.value) : [],
+);
 const rollForRest = computed(() => {
   const rest = rollFor.value.slice(1).map(
-    (pick) => `${getReadableSubStatLabel(pick.key)} (${formatRollGain(pick.gain.delta)})`,
+    (pick) => `${getReadableSubStatLabel(pick.key)} (${formatRollGain(pick.value.typical.delta)})`,
   );
   return rest.length > 1 ? `${rest.slice(0, -1).join(", ")} and ${rest[rest.length - 1]}` : rest[0];
 });
 const canToggle = computed(() => !props.alwaysExpanded && insights.value.equippedCount > 0);
 const showDetails = computed(() => props.alwaysExpanded || isExpanded.value);
 </script>
-
-<style scoped>
-.echo-insights__row {
-  border: 1px solid oklch(var(--b3));
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.55rem;
-  background: oklch(var(--b2));
-}
-
-.echo-insights__row--missing {
-  border-style: dashed;
-  opacity: 0.7;
-}
-
-.echo-insights__missing-tag {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: oklch(var(--er));
-}
-
-/*
- * Stacked by default (mobile-bar instance, and the desktop instance at
- * narrower widths); --split only ever goes side by side from 1400px, even
- * though the modifier class itself is present down to 769px (the desktop
- * instance's whole visible range — see CalculatorEchoes.vue's
- * .echoes-layout, hidden below 768px). A real viewport breakpoint, not just
- * the alwaysExpanded prop, since the desktop sidebar doesn't have room for
- * two columns for its own narrower stretch (769-1399px).
- */
-.echo-insights__substat-groups {
-  display: flex;
-  flex-direction: column;
-}
-
-/* 1400px, not 1025px: with a "Next roll" value on each row (ADR 0056), each
-   list needs about 340px, and the sidebar only has room for two from here. */
-@media (min-width: 1400px) {
-  .echo-insights__substat-groups--split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-}
-
-/* Priority/Other-rolled-substat row icons are dark-line glyphs drawn for a
-   dark background — same light-mode inversion convention as
-   EchoCardSubstatList.vue / CalculatorEchoTile.vue's substat icons. */
-html[data-theme-style="light"] img {
-  filter: contrast(0);
-}
-</style>

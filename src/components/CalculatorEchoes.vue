@@ -127,7 +127,8 @@
       class="echoes-column echoes-column__sticky-score echoes-mobile-score mb-4"
       :character="character"
       :roll-values="substatRollValues"
-      :roll-values-loading="substatRollValuesLoading"></CalculatorEchoInsightsPanel>
+      :roll-values-loading="substatRollValuesLoading"
+      :measure-change="measureSubstatChange"></CalculatorEchoInsightsPanel>
     <div v-if="!isLiveResultBarEnabled" class="flex flex-wrap items-center gap-2 mb-4">
       <div v-if="echoPresetName" class="badge badge-primary badge-outline">
         Preset: {{ echoPresetName }}
@@ -229,7 +230,8 @@
           :always-expanded="true"
           :character="character"
           :roll-values="substatRollValues"
-          :roll-values-loading="substatRollValuesLoading"></CalculatorEchoInsightsPanel>
+          :roll-values-loading="substatRollValuesLoading"
+          :measure-change="measureSubstatChange"></CalculatorEchoInsightsPanel>
       </div>
     </div>
 
@@ -410,9 +412,13 @@ const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
 
-// What one more roll of each substat adds, shared by both insights panels
-// (ADR 0056). Classic has no panel, so nothing is calculated there.
-const { values: substatRollValues, loading: substatRollValuesLoading } = useSubstatRollValues(() =>
+// What each substat adds, shared by both insights panels (ADR 0056).
+// Classic has no panel, so nothing is calculated there.
+const {
+  values: substatRollValues,
+  loading: substatRollValuesLoading,
+  measureChange: measureSubstatChange,
+} = useSubstatRollValues(() =>
   isLiveResultBarEnabled.value ? props.character : null,
 );
 
@@ -772,8 +778,8 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
  * panel indefinitely on very wide screens.
  */
 .echoes-sidebar {
-  /* A 0 basis, not auto: sized from its content, the panel's wider rows
-     (roll values, ADR 0056) would squeeze the tiles column below its 50%. */
+  /* A 0 basis, not auto: sized from its content, the panel's substat value
+     table (ADR 0056) would squeeze the tiles column below its 50%. */
   flex: 1 1 0;
   max-width: 900px;
   min-width: 0;
