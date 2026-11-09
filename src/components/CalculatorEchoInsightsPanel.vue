@@ -54,22 +54,6 @@
       </div>
 
       <template v-if="showDetails && insights.equippedCount > 0">
-        <div
-          v-if="rollFor.length"
-          class="rounded-lg bg-base-200 border-l-4 border-l-success px-4 py-2.5 mb-4 flex flex-col gap-0.5"
-          data-test-echo-insights-roll-for>
-          <span class="text-xs font-semibold uppercase tracking-widest text-success">Roll for</span>
-          <span class="font-semibold">
-            <span data-test-echo-insights-roll-for-best>{{ getReadableSubStatLabel(rollFor[0].key) }}</span>
-            <span class="font-mono text-success ml-1">
-              {{ formatRollGain(rollFor[0].value.typical.delta) }} · +{{ (rollFor[0].value.typical.pct * 100).toFixed(1) }}%
-            </span>
-          </span>
-          <span class="text-xs opacity-60">
-            per typical roll.<template v-if="rollFor.length > 1"> Then {{ rollForRest }}</template>
-          </span>
-        </div>
-
         <div class="flex items-center justify-between gap-2 mb-3">
           <h3 class="text-sm font-semibold">Echo Insights</h3>
           <span class="text-xs opacity-60" data-test-echo-insights-equipped-count>
@@ -100,20 +84,20 @@
           {{ rollValues ? "substats are ordered by damage." : "this shows raw totals only." }}
         </p>
 
-        <div v-if="rollValues" class="flex flex-col gap-0.5 mb-1" data-test-echo-insights-roll-note>
-          <span class="text-xs font-semibold uppercase tracking-wide opacity-60">What each substat adds</span>
-          <span class="text-xs opacity-60">
-            to <span class="font-semibold opacity-100">{{ rollValues.label }}</span> ({{ rollValues.damageType }}),
+        <div v-if="tableGroups.length" class="flex flex-col gap-0.5 mb-1" data-test-echo-insights-roll-note>
+          <span class="text-xs font-semibold uppercase tracking-wide opacity-60">
+            {{ insights.isCurated ? "Priority substats" : "Your substats" }}
+          </span>
+          <span v-if="rollValues" class="text-xs opacity-60">
+            What each one adds to
+            <span class="font-semibold opacity-100">{{ rollValues.label }}</span> ({{ rollValues.damageType }}),
             <span class="font-mono">{{ Math.round(rollValues.baseline).toLocaleString("en-US") }}</span> now
           </span>
         </div>
-        <div v-else-if="tableRows.length" class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">
-          Your substats
-        </div>
 
         <EchoInsightsSubstatTable
-          v-if="tableRows.length"
-          :rows="tableRows"
+          v-if="tableGroups.length"
+          :groups="tableGroups"
           :values="rollValues?.values"
           :loading="rollValuesLoading" />
 
@@ -163,7 +147,7 @@ import type { EchoInsightRow } from "../composables/useEchoInsights";
 import EchoInsightsSubstatTable from "./EchoInsightsSubstatTable.vue";
 import EchoInsightsTryChange from "./EchoInsightsTryChange.vue";
 import { getReadableSubStatLabel, getSubStatIconByType, subStats } from "../echoes/stats";
-import { formatRollGain, pickRollFor, type SubstatRollValues } from "../echoes/substatRollValue";
+import type { SubstatRollValues } from "../echoes/substatRollValue";
 
 defineOptions({ name: "CalculatorEchoInsightsPanel" });
 
@@ -218,14 +202,15 @@ const addsDamage = (type: string) => (props.rollValues?.values[type]?.typical.de
 const byTypicalGain = (a: string, b: string) =>
   (props.rollValues?.values[b]?.typical.delta ?? 0) - (props.rollValues?.values[a]?.typical.delta ?? 0);
 
-// Priority substats first, in their weight order (as before ADR 0056), then
-// any other substat that adds damage, best first: rolled ones, and unrolled
-// ones too, since "Roll for" can name them. Rolled substats that add
-// nothing go to the "Adds nothing here" chips instead.
-const tableRows = computed<EchoInsightRow[]>(() => {
-  const { priorityRows, otherRows } = insights.value;
-  if (!props.rollValues) return [...priorityRows, ...otherRows];
-  const listed = new Set([...priorityRows, ...otherRows].map((row) => row.type));
+// Priority substats in their weight order (as before ADR 0056), then, as
+// their own group, other substats that add damage, best first: rolled ones,
+// and unrolled ones too. Rolled substats that add nothing go to the "Adds
+// nothing here" chips instead. Without values, the other group is every
+// other rolled substat, as the old list was.
+const otherRows = computed<EchoInsightRow[]>(() => {
+  const { priorityRows, otherRows: rolled } = insights.value;
+  if (!props.rollValues) return rolled;
+  const listed = new Set([...priorityRows, ...rolled].map((row) => row.type));
   const unrolled: EchoInsightRow[] = subStats
     .filter((type) => !listed.has(type) && addsDamage(type))
     .map((type) => ({
@@ -238,30 +223,28 @@ const tableRows = computed<EchoInsightRow[]>(() => {
       weight: 0,
       missing: false,
     }));
-  const rest = [...otherRows.filter((row) => addsDamage(row.type)), ...unrolled].sort((a, b) =>
+  return [...rolled.filter((row) => addsDamage(row.type)), ...unrolled].sort((a, b) =>
     byTypicalGain(a.type, b.type),
   );
-  return [...priorityRows, ...rest];
+});
+const tableGroups = computed(() => {
+  const groups: Array<{ key: string; label?: string; rows: EchoInsightRow[] }> = [];
+  const priorityRows = insights.value.priorityRows;
+  if (priorityRows.length) groups.push({ key: "priority", rows: priorityRows });
+  if (otherRows.value.length) {
+    const label = !priorityRows.length
+      ? undefined
+      : props.rollValues
+        ? "Other substats that add damage"
+        : "Other rolled substats";
+    groups.push({ key: "other", label, rows: otherRows.value });
+  }
+  return groups;
 });
 const nothingRows = computed(() =>
   props.rollValues ? insights.value.otherRows.filter((row) => !addsDamage(row.type)) : [],
 );
 const tryChangeStats = computed(() => subStats.filter(addsDamage).sort(byTypicalGain));
-
-const echoCounts = computed(() =>
-  Object.fromEntries(
-    [...insights.value.priorityRows, ...insights.value.otherRows].map((row) => [row.type, row.count]),
-  ),
-);
-const rollFor = computed(() =>
-  props.rollValues ? pickRollFor(props.rollValues.values, echoCounts.value) : [],
-);
-const rollForRest = computed(() => {
-  const rest = rollFor.value.slice(1).map(
-    (pick) => `${getReadableSubStatLabel(pick.key)} (${formatRollGain(pick.value.typical.delta)})`,
-  );
-  return rest.length > 1 ? `${rest.slice(0, -1).join(", ")} and ${rest[rest.length - 1]}` : rest[0];
-});
 const canToggle = computed(() => !props.alwaysExpanded && insights.value.equippedCount > 0);
 const showDetails = computed(() => props.alwaysExpanded || isExpanded.value);
 </script>

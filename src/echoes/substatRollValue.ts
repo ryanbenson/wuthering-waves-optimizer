@@ -22,9 +22,6 @@ import { getSubStatRollDistribution } from "./substatRollRates";
  * stat-scaled buffs come out right. The store is never touched.
  */
 
-/** Echo slots a build has; each can carry a given substat once. */
-export const ECHO_SLOT_COUNT = 5;
-
 const FLAT_STEPS: Record<string, number> = { ATK_FLAT: 10, DEF_FLAT: 10, HP_FLAT: 100 };
 
 /** The "per" unit for a substat: 1 (%) for percent stats, 10 or 100 points for flat ones. */
@@ -202,28 +199,6 @@ export async function estimateSubstatRollValues(
 ): Promise<SubstatRollValues | null> {
   const measurer = await createSubstatMeasurer(characterId, characters, enemyConfig, inventoryEchoes, options);
   return measurer ? measureSubstatValues(measurer) : null;
-}
-
-export interface RollForPick {
-  key: string;
-  value: SubstatValue;
-}
-
-/**
- * The substats whose next typical roll adds the most, best first. Stats
- * already on all five echoes are left out (there's no echo left to roll one
- * on), and so are those that add nothing.
- */
-export function pickRollFor(
-  values: Record<string, SubstatValue>,
-  echoCounts: Record<string, number> = {},
-  count = 3,
-): RollForPick[] {
-  return Object.entries(values)
-    .filter(([key, value]) => value.typical.delta > 0 && (echoCounts[key] ?? 0) < ECHO_SLOT_COUNT)
-    .sort((a, b) => b[1].typical.delta - a[1].typical.delta || a[0].localeCompare(b[0]))
-    .slice(0, count)
-    .map(([key, value]) => ({ key, value }));
 }
 
 /** "+2,987", shortened from 100K up so a rotation's total fits a cell ("+123K", "+1.23M"). */

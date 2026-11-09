@@ -161,7 +161,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
   // ADR 0056: what each substat adds to the Live Result Bar's number. The
   // values come from a real recalculation (unit-tested), so this only checks
   // they arrive and land in the right places.
-  it("shows what each substat adds, which to roll for, and a Try a change answer", () => {
+  it("shows what each priority substat adds, and a Try a change answer", () => {
     openBrantEchoesTab();
     cy.viewport(1280, 1000);
     cy.get('[data-test-echo-item="0"]').click();
@@ -185,30 +185,15 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     // Brant's damage doesn't scale with HP: it's a chip, not a table row.
     cy.get(".echoes-sidebar [data-test-echo-insights-adds-nothing]").should("contain.text", "HP%");
 
-    cy.get(".echoes-sidebar [data-test-echo-insights-roll-for]").should("be.visible").and("contain.text", "Roll for");
-    cy.get(".echoes-sidebar [data-test-echo-insights-roll-for-best]").invoke("text").should("not.be.empty");
-    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]").should("contain.text", "What each substat adds");
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]")
+      .should("contain.text", "Priority substats")
+      .and("contain.text", "What each one adds to");
+    cy.get('.echoes-sidebar [data-test-echo-insights-group="priority"] [data-test-echo-insights-row="CritRate"]').should("exist");
 
     cy.get(".echoes-sidebar [data-test-echo-insights-try-change-stat]").select("CritRate");
     cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").clear();
     cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").type("2.5");
     cy.get(".echoes-sidebar [data-test-echo-insights-try-change-result]").invoke("text").should("match", gain);
-  });
-
-  it("keeps Roll for out of the collapsed phone bar", () => {
-    cy.viewport(390, 844);
-    enableLiveResultBarLab();
-    cy.selectWorkspaceCharacter("Brant");
-    cy.get("[data-test-workspace-buffs-enable-all]").should("be.visible");
-    cy.get('[data-test-calculator-mobile-nav="echoes"]').click({ force: true });
-    cy.get('[data-test-echo-item="0"]').click();
-    pickEcho("BellBorneGeochelone");
-    assignSlot(0, "Crit Rate");
-    collapseEcho(0);
-
-    cy.get(".echoes-mobile-score [data-test-echo-insights-roll-for]").should("not.exist");
-    cy.get(".echoes-mobile-score [data-test-echo-insights-toggle]").click();
-    cy.get(".echoes-mobile-score [data-test-echo-insights-roll-for]").should("be.visible");
   });
 
   it("stays off by default — no insights panel on the legacy path", () => {

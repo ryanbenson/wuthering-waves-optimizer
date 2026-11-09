@@ -16,9 +16,16 @@
           <th v-if="showValues" class="echo-substat-table__top text-right font-semibold pl-2 pb-0.5">Top roll</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-for="group in groups" :key="group.key" :data-test-echo-insights-group="group.key">
+        <tr v-if="group.label">
+          <td
+            :colspan="showValues ? 4 : 1"
+            class="pt-2 text-[0.65rem] font-semibold uppercase tracking-wide opacity-60">
+            {{ group.label }}
+          </td>
+        </tr>
         <tr
-          v-for="row in rows"
+          v-for="row in group.rows"
           :key="row.type"
           class="echo-substat-table__row"
           :class="{ 'echo-substat-table__row--missing': row.missing }"
@@ -91,7 +98,8 @@ import {
 } from "../echoes/substatRollValue";
 
 const props = defineProps<{
-  rows: EchoInsightRow[];
+  /** Row groups, in order; a group's label shows as a sub-heading row. */
+  groups: Array<{ key: string; label?: string; rows: EchoInsightRow[] }>;
   /** Per-substat values; left out, only the substat column shows. */
   values?: Record<string, SubstatValue>;
   loading?: boolean;

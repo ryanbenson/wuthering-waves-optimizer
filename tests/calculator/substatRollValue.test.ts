@@ -7,11 +7,9 @@ import {
   formatRollGain,
   formatRollSize,
   formatTopRollChance,
-  pickRollFor,
   substatValueStep,
   topSubstatRoll,
   typicalSubstatRoll,
-  type SubstatValue,
 } from "../../src/echoes/substatRollValue";
 import { subStats } from "../../src/echoes/stats";
 
@@ -193,37 +191,6 @@ describe("createSubstatMeasurer", () => {
     const expected = (await damage(iuno({ customBuffs: { CritRate: 2.5 } }))) - (await damage(characters));
     expect(await measurer!.measure({ CritRate: 2.5 })).toBeCloseTo(expected, 4);
     expect(await measurer!.measure({ CritRate: 0 })).toBe(0);
-  });
-});
-
-function value(delta: number): SubstatValue {
-  return { step: 1, perStep: delta / 8, typical: { roll: 8, delta, pct: 0 }, top: { roll: 10, chance: 0.03, delta } };
-}
-
-describe("pickRollFor", () => {
-  it("ranks by typical roll and leaves out what adds nothing", () => {
-    const picks = pickRollFor({
-      ATK: value(2003),
-      CritRate: value(2678),
-      EnergyRegen: value(0),
-      CritDMG: value(2135),
-      ATK_FLAT: value(985),
-    });
-    expect(picks.map((pick) => pick.key)).toEqual(["CritRate", "CritDMG", "ATK"]);
-  });
-
-  it("breaks ties by key so the order doesn't flicker", () => {
-    const picks = pickRollFor({ CritRate: value(5), ATK: value(5) }, {}, 2);
-    expect(picks.map((pick) => pick.key)).toEqual(["ATK", "CritRate"]);
-  });
-
-  it("leaves out stats already on all five echoes", () => {
-    const picks = pickRollFor({ CritRate: value(9000), CritDMG: value(2135) }, { CritRate: 5, CritDMG: 4 });
-    expect(picks.map((pick) => pick.key)).toEqual(["CritDMG"]);
-  });
-
-  it("is empty when nothing adds damage", () => {
-    expect(pickRollFor({ EnergyRegen: value(0) })).toEqual([]);
   });
 });
 
