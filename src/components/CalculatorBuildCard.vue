@@ -32,20 +32,29 @@
       :clear-disabled="!customizationActiveCount"
       @clear="handleClearCustomization">
       <template #bar>
-        <div class="join" role="group" aria-label="Card layout" data-test-build-card-layout-picker>
+        <span id="build-card-layout-label" class="text-sm font-medium">Card layout</span>
+        <div
+          class="join"
+          role="group"
+          aria-labelledby="build-card-layout-label"
+          data-test-build-card-layout-picker>
           <button
             v-for="option in BUILD_CARD_LAYOUTS"
             :key="option.id"
             type="button"
-            class="btn btn-sm join-item"
+            class="btn btn-sm join-item gap-2"
             :class="{ 'btn-active btn-primary': option.id === buildCardLayout }"
             :aria-pressed="option.id === buildCardLayout"
             :title="option.description"
             :data-test-build-card-layout-option="option.id"
             @click="buildCardLayout = option.id">
+            <BuildCardLayoutIcon :layout="option.id" />
             {{ option.label }}
           </button>
         </div>
+        <span class="text-xs text-base-content/70" data-test-build-card-layout-description>
+          {{ activeLayoutDescription }}
+        </span>
       </template>
       <div class="build-card__profile-fields flex flex-wrap items-end gap-2">
         <label class="form-control">
@@ -136,7 +145,7 @@
           @select="selectCharacterArt" />
         <div class="flex flex-col gap-2">
           <BuildCardArtPicker
-            legend="Background"
+            legend="Background (this character only)"
             test-id="background"
             :options="backgroundOptions"
             :selected-id="backgroundSelectedId"
@@ -231,6 +240,7 @@ import {
   resolveArtSource,
   resolveBackgroundOpacity,
 } from "../buildCard/arts";
+import { resolveCharacterBackground } from "../buildCard/background";
 import { buildCardStatRows } from "../buildCard/statRows";
 import { getElementAccent, getElementIcon } from "../buildCard/theme";
 import type { BuildCardView } from "../buildCard/view";
@@ -241,6 +251,7 @@ import BuildCardArtPicker, {
 } from "./buildCard/BuildCardArtPicker.vue";
 import BuildCardBackdrop from "./buildCard/BuildCardBackdrop.vue";
 import BuildCardLayoutColumns from "./buildCard/BuildCardLayoutColumns.vue";
+import BuildCardLayoutIcon from "./buildCard/BuildCardLayoutIcon.vue";
 import BuildCardLayoutHero from "./buildCard/BuildCardLayoutHero.vue";
 import BuildCardLayoutShowcase from "./buildCard/BuildCardLayoutShowcase.vue";
 
@@ -277,10 +288,10 @@ const settingsStore = useSettingsStore();
 const { characters } = storeToRefs(characterStore);
 const { config } = storeToRefs(settingsStore);
 
-// Player identity/branding for the card (username, UID, background image)
-// is shared across every character's build card, not tied to one build, so
-// it lives in the settings store's general `config` bag rather than on the
-// per-character state in `characterStore`.
+// Player identity for the card (username, UID) and the layout are shared
+// across every character's build card, not tied to one build, so they live
+// in the settings store's general `config` bag. Background settings belong
+// to each character (see below).
 const buildCardUsername = computed({
   get: () => config.value?.buildCard?.username ?? "",
   set: (value: string) =>
@@ -291,14 +302,6 @@ const buildCardUid = computed({
   set: (value: string) =>
     settingsStore.addToConfig({ buildCard: { uid: value } }),
 });
-const buildCardBackground = computed(
-  () => config.value?.buildCard?.background ?? null,
-);
-const buildCardBackgroundTransform = computed({
-  get: () => (config.value?.buildCard?.backgroundTransform ?? null) as Partial<ImageTransform> | null,
-  set: (value: ImageTransform | null) =>
-    settingsStore.addToConfig({ buildCard: { backgroundTransform: value } }),
-});
 
 // Layout choice (ADR 0056): one preference for every card, like the
 // username/UID above. Anything unrecognised falls back to Columns.
@@ -306,6 +309,9 @@ const buildCardLayout = computed<BuildCardLayoutId>({
   get: () => resolveBuildCardLayout(config.value?.buildCard?.layout),
   set: (value) => settingsStore.addToConfig({ buildCard: { layout: value } }),
 });
+const activeLayoutDescription = computed(
+  () => BUILD_CARD_LAYOUTS.find((option) => option.id === buildCardLayout.value)?.description ?? "",
+);
 const layoutComponent = computed(
   () =>
     ({
@@ -315,24 +321,44 @@ const layoutComponent = computed(
     })[buildCardLayout.value],
 );
 
-// Which background is showing: "default" (blurred character art),
-// "upload", or a curated art id. Absent on data saved before curated art
-// existed, which resolveArtSource treats as "the upload if there is one".
-const buildCardBackgroundSource = computed<string | null>(
-  () => config.value?.buildCard?.backgroundSource ?? null,
+const characterData = computed(
+  () => (characters.value[props.character] ?? {}) as Record<string, any>,
 );
+
+// Background settings are per character (src/buildCard/background.ts), so
+// a background uploaded for one character doesn't show on every card. The
+// old shared upload (config.buildCard.background) still fills in for any
+// character without its own upload.
+const backgroundSettings = computed(() =>
+  resolveCharacterBackground(characterData.value, config.value?.buildCard),
+);
+const buildCardBackground = computed(() => backgroundSettings.value.upload);
+const buildCardBackgroundTransform = computed({
+  get: () => backgroundSettings.value.transform,
+  set: (value: Partial<ImageTransform> | null) => {
+    if (backgroundSettings.value.uploadIsShared) {
+      settingsStore.addToConfig({ buildCard: { backgroundTransform: value } });
+    } else {
+      characterStore.setCharacterData(props.character, {
+        buildCardBackgroundTransform: value,
+      });
+    }
+  },
+});
 // Applies to whichever background is showing: default, curated or upload.
 const backgroundOpacity = computed({
-  get: () => resolveBackgroundOpacity(config.value?.buildCard?.backgroundOpacity),
+  get: () => backgroundSettings.value.opacity,
   set: (value: number) =>
-    settingsStore.addToConfig({
-      buildCard: { backgroundOpacity: resolveBackgroundOpacity(value) },
+    characterStore.setCharacterData(props.character, {
+      buildCardBackgroundOpacity: resolveBackgroundOpacity(value),
     }),
 });
 const showArtOverBackground = computed({
-  get: () => Boolean(config.value?.buildCard?.showArtOverBackground),
+  get: () => backgroundSettings.value.showArtOverBackground,
   set: (value: boolean) =>
-    settingsStore.addToConfig({ buildCard: { showArtOverBackground: value } }),
+    characterStore.setCharacterData(props.character, {
+      buildCardShowArtOverBackground: value,
+    }),
 });
 
 const backgroundFileInput = ref<HTMLInputElement | null>(null);
@@ -369,12 +395,10 @@ async function handleBackgroundFile(file: File) {
       // A fresh background starts framed at the default cover/center/100%
       // look — positioning dialed in for the previous image wouldn't mean
       // anything for a differently-cropped one.
-      settingsStore.addToConfig({
-        buildCard: {
-          background: dataUrl,
-          backgroundTransform: null,
-          backgroundSource: ART_SOURCE_UPLOAD,
-        },
+      characterStore.setCharacterData(props.character, {
+        buildCardBackground: dataUrl,
+        buildCardBackgroundTransform: null,
+        buildCardBackgroundSource: ART_SOURCE_UPLOAD,
       });
       showToast("Background updated", "success");
     } catch {
@@ -390,16 +414,26 @@ async function handleBackgroundFile(file: File) {
   img.src = objectUrl;
 }
 
+// Removes this character's upload. If the card is showing the old shared
+// upload instead, that one is removed, which clears it from every card
+// still using it (the only way to delete it).
 function resetBackground() {
-  settingsStore.addToConfig({
-    buildCard: { background: null, backgroundTransform: null, backgroundSource: null },
-  });
+  if (backgroundSettings.value.uploadIsShared) {
+    settingsStore.addToConfig({
+      buildCard: { background: null, backgroundTransform: null },
+    });
+  }
+  clearCharacterBackground();
   showToast("Background reset", "success");
 }
 
-const characterData = computed(
-  () => (characters.value[props.character] ?? {}) as Record<string, any>,
-);
+function clearCharacterBackground() {
+  characterStore.setCharacterData(props.character, {
+    buildCardBackground: null,
+    buildCardBackgroundTransform: null,
+    buildCardBackgroundSource: null,
+  });
+}
 const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
 
 // Like buildCardPrimaryColor above, the character portrait's positioning is
@@ -458,18 +492,16 @@ function handleClearCustomization() {
   buildCardUsername.value = "";
   buildCardUid.value = "";
   settingsStore.addToConfig({
-    buildCard: {
-      background: null,
-      backgroundTransform: null,
-      backgroundSource: null,
-      layout: null,
-      showArtOverBackground: false,
-      backgroundOpacity: null,
-    },
+    buildCard: { background: null, backgroundTransform: null, layout: null },
   });
   characterStore.setCharacterData(props.character, {
     buildCardPrimaryColor: null,
     buildCardArtSource: null,
+    buildCardBackground: null,
+    buildCardBackgroundTransform: null,
+    buildCardBackgroundSource: null,
+    buildCardBackgroundOpacity: null,
+    buildCardShowArtOverBackground: false,
   });
   showToast("Build card customization reset", "success");
 }
@@ -665,7 +697,7 @@ const weaponModifierImage = computed(() =>
 // Art (ADR 0056). Two slots, each showing the default, a curated art
 // (src/buildCard/arts.ts) or the player's upload:
 //   - character art: per character, beside customPortrait
-//   - background: shared by every card, beside the uploaded background
+//   - background: per character too (src/buildCard/background.ts)
 const characterArtCurated = computed(() =>
   getBuildCardArtOptions("character", props.character),
 );
@@ -682,7 +714,7 @@ const resolvedCharacterArt = computed(() =>
 );
 const resolvedBackground = computed(() =>
   resolveArtSource(
-    buildCardBackgroundSource.value,
+    backgroundSettings.value.source,
     buildCardBackground.value,
     backgroundCurated.value,
   ),
@@ -717,7 +749,16 @@ const backgroundOptions = computed<BuildCardArtPickerOption[]>(() => [
   { id: ART_SOURCE_DEFAULT, label: "Blurred art", url: characterArtUrl.value, blurred: true },
   ...backgroundCurated.value.map((art) => ({ id: art.id, label: art.label, url: art.url })),
   ...(buildCardBackground.value
-    ? [{ id: ART_SOURCE_UPLOAD, label: "Your upload", url: buildCardBackground.value }]
+    ? [
+        {
+          id: ART_SOURCE_UPLOAD,
+          label: backgroundSettings.value.uploadIsShared ? "Shared upload" : "Your upload",
+          url: buildCardBackground.value,
+          title: backgroundSettings.value.uploadIsShared
+            ? "Your earlier background, shared by every card. Upload a new one to use it on this character only."
+            : undefined,
+        },
+      ]
     : []),
 ]);
 
@@ -726,7 +767,7 @@ function selectCharacterArt(id: string) {
 }
 
 function selectBackground(id: string) {
-  settingsStore.addToConfig({ buildCard: { backgroundSource: id } });
+  characterStore.setCharacterData(props.character, { buildCardBackgroundSource: id });
 }
 
 const cardAccent = computed(

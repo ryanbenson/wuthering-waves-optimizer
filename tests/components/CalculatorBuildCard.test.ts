@@ -432,7 +432,7 @@ describe("CalculatorBuildCard", () => {
     });
 
     it("shows a curated background and, in Hero, hides the character art unless asked", async () => {
-      seedCharacter();
+      const characterStore = seedCharacter();
       const settingsStore = useSettingsStore();
       settingsStore.addToConfig({ buildCard: { layout: "hero" } });
       const { container, findByText } = renderCard(baseStatsProps());
@@ -442,7 +442,8 @@ describe("CalculatorBuildCard", () => {
           '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="bg-test"]',
         )!,
       );
-      expect(settingsStore.config.buildCard.backgroundSource).toBe("bg-test");
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundSource).toBe("bg-test");
+      expect(settingsStore.config.buildCard?.backgroundSource).toBeUndefined();
       const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
       expect(layer.style.backgroundImage).toContain("bg.webp");
       expect(container.querySelector("[data-test-build-card-portrait]")).toBeNull();
@@ -450,6 +451,7 @@ describe("CalculatorBuildCard", () => {
       const toggle = (await findByText("Show the character art over your background"))
         .previousElementSibling as HTMLInputElement;
       await fireEvent.click(toggle);
+      expect(characterStore.characters[CHARACTER].buildCardShowArtOverBackground).toBe(true);
       expect(container.querySelector("[data-test-build-card-portrait]")).toBeTruthy();
     });
 
@@ -461,11 +463,72 @@ describe("CalculatorBuildCard", () => {
       expect(layer.style.backgroundImage).toContain("data:image/png");
     });
   });
-  describe("background opacity", () => {
-    it("fades an uploaded background and saves the setting for every card", async () => {
-      seedCharacter();
+
+  describe("per-character background", () => {
+    const OWN = "data:image/png;base64,OWN";
+    const SHARED = "data:image/png;base64,SHARED";
+
+    it("shows a character's own upload, not on other characters", () => {
+      const characterStore = seedCharacter({ buildCardBackground: OWN });
+      characterStore.characters.Other = { buildCardBackground: null };
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("OWN");
+      expect(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="upload"]',
+        )?.textContent,
+      ).toContain("Your upload");
+      expect(useSettingsStore().config.buildCard?.background).toBeUndefined();
+    });
+
+    it("prefers the character's own upload over the old shared one", () => {
+      seedCharacter({ buildCardBackground: OWN });
+      useSettingsStore().addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("OWN");
+    });
+
+    it("labels the old shared upload and lets a character switch away from it", async () => {
+      const characterStore = seedCharacter();
       const settingsStore = useSettingsStore();
-      settingsStore.addToConfig({ buildCard: { background: "data:image/png;base64,AAAA" } });
+      settingsStore.addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+
+      expect(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="upload"]',
+        )?.textContent,
+      ).toContain("Shared upload");
+      await fireEvent.click(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="default"]',
+        )!,
+      );
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundSource).toBe("default");
+      expect(container.querySelector(".build-card__background-layer")).toBeNull();
+      // The shared image is kept for other characters still using it.
+      expect(settingsStore.config.buildCard.background).toBe(SHARED);
+    });
+
+    it("Reset Background removes only this character's upload", async () => {
+      const characterStore = seedCharacter({
+        buildCardBackground: OWN,
+        buildCardBackgroundSource: "upload",
+      });
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+
+      await fireEvent.click(container.querySelector("[data-test-build-card-background-reset]")!);
+      expect(characterStore.characters[CHARACTER].buildCardBackground).toBeNull();
+      expect(settingsStore.config.buildCard.background).toBe(SHARED);
+    });
+  });
+  describe("background opacity", () => {
+    it("fades an uploaded background and saves the setting on the character", async () => {
+      const characterStore = seedCharacter({ buildCardBackground: "data:image/png;base64,AAAA" });
       const { container } = renderCard(baseStatsProps());
 
       const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
@@ -476,14 +539,13 @@ describe("CalculatorBuildCard", () => {
       ) as HTMLInputElement;
       await fireEvent.update(slider, "40");
 
-      expect(settingsStore.config.buildCard.backgroundOpacity).toBe(40);
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundOpacity).toBe(40);
       expect(layer.style.opacity).toBe("0.4");
       expect(container.textContent).toContain("Background opacity (40%)");
     });
 
     it("also fades the default blurred art", async () => {
-      seedCharacter();
-      useSettingsStore().addToConfig({ buildCard: { backgroundOpacity: 50 } });
+      seedCharacter({ buildCardBackgroundOpacity: 50 });
       const { container } = renderCard(baseStatsProps());
       const blur = container.querySelector(".build-card-backdrop__blur") as HTMLElement;
       expect(Number(blur.style.opacity)).toBeCloseTo(0.45);

@@ -201,8 +201,8 @@ export const GUIDES: Guide[] = [
             type: "steps",
             items: [
               { title: "Finish your build", text: "The card shows your character's build, so set up their weapon and echoes first." },
-              { title: "Pick a layout", text: "**Columns** puts the art, stats and echoes side by side. **Hero** shows big art with your echoes in a row. **Showcase** fills the card with art and puts every stat on one panel." },
-              { title: "Customize it", text: "Open **Customize** to add your username and UID, pick character art and a background, or upload your own. The opacity slider fades the background if it's too busy. You can also pick a primary color." },
+              { title: "Pick a layout", text: "Use the **Card layout** buttons above the card. **Columns** puts the art, stats and echoes side by side. **Hero** shows big art with your echoes in a row. **Showcase** fills the card with art and puts every stat on one panel." },
+              { title: "Customize it", text: "Open **Customize** to add your username and UID, pick character art and a background, or upload your own. Each character keeps its own background. The opacity slider fades the background if it's too busy. You can also pick a primary color." },
               { title: "Share it", text: "Choose **Copy to Clipboard** or **Download**." },
             ],
           },

@@ -244,6 +244,30 @@ describe("Calculator Build Card", () => {
     );
   });
 
+  it("keeps an uploaded background on the character it was uploaded for", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    const pngBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    cy.get("[data-test-build-card-background-input]").selectFile(
+      {
+        contents: Cypress.Buffer.from(pngBase64, "base64"),
+        fileName: "background.png",
+        mimeType: "image/png",
+      },
+      { force: true },
+    );
+    cy.get(".build-card__background-layer").should("exist");
+
+    cy.richSelect("[data-test-character-select]", "Brant");
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get("[data-test-build-card-name]").should("contain.text", "Brant");
+    cy.get(".build-card__background-layer").should("not.exist");
+
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get(".build-card__background-layer").should("exist");
+  });
+
   it("downloads the build card as a PNG", () => {
     cy.get('[data-test-calculator-nav="buildCard"]').click();
     cy.get("[data-test-build-card-download]").click();
@@ -255,6 +279,13 @@ describe("Calculator Build Card", () => {
   it("switches between the three layouts, remembers the choice, and still exports", () => {
     cy.get('[data-test-calculator-nav="buildCard"]').click();
     cy.get('[data-test-build-card-layout="columns"]').should("be.visible");
+    cy.get("[data-test-build-card-layout-picker]")
+      .parent()
+      .should("contain.text", "Card layout");
+    cy.get("[data-test-build-card-layout-description]").should(
+      "contain.text",
+      "side by side",
+    );
 
     for (const layout of ["hero", "showcase"]) {
       cy.get(`[data-test-build-card-layout-option="${layout}"]`).click();

@@ -9,7 +9,7 @@
         class="build-card-art-picker__tile"
         :class="{ 'is-selected': option.id === selectedId }"
         :aria-pressed="option.id === selectedId"
-        :title="option.label"
+        :title="option.title ?? option.label"
         :data-test-build-card-art-option="option.id"
         @click="$emit('select', option.id)">
         <span v-if="option.url" class="build-card-art-picker__thumb">
@@ -30,6 +30,8 @@ export interface BuildCardArtPickerOption {
   id: string;
   label: string;
   url: string | null;
+  /** Tooltip; defaults to the label. */
+  title?: string;
   /** Preview the default background the way the card draws it. */
   blurred?: boolean;
 }
