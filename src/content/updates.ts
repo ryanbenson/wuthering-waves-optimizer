@@ -44,7 +44,10 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = null;
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-11-09",
+  headline: "Build cards got redesigned!",
+};
 
 export const updateEntries: UpdateEntry[] = [
   {
