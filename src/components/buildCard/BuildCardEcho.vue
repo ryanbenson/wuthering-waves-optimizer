@@ -7,7 +7,7 @@
     <!-- Columns layout: art banner left, full-name substats, grade column right -->
     <template v-if="variant === 'card'">
       <div class="build-card-echo__banner">
-        <img v-if="echoImage" :src="echoImage" alt="" class="build-card-echo__banner-img" />
+        <img v-if="echoImage" :src="echoImage" alt="" class="build-card-echo__art" />
         <div class="build-card-echo__banner-scrim"></div>
         <div class="build-card-echo__tags">
           <img v-if="setIcon" :src="setIcon" alt="" :class="echoSet" class="size-6" />
@@ -42,7 +42,7 @@
     <!-- Hero layout: a narrow column with roll-quality bars -->
     <template v-else-if="variant === 'column'">
       <div class="build-card-echo__header">
-        <img v-if="echoImage" :src="echoImage" alt="" class="build-card-echo__header-img" />
+        <img v-if="echoImage" :src="echoImage" alt="" class="build-card-echo__art" />
         <div class="build-card-echo__header-scrim"></div>
         <div v-if="hasSubStats" class="build-card-echo__header-score">
           <span v-if="substatScore" class="build-card-echo__grade" :style="{ color: gradeColor }" data-test-build-card-echo-grade>
@@ -79,7 +79,9 @@
     <!-- Showcase layout: one compact table row -->
     <template v-else>
       <div class="build-card-echo__thumb">
-        <img v-if="echoImage" :src="echoImage" alt="" class="w-full h-full object-contain" />
+        <div class="build-card-echo__thumb-clip">
+          <img v-if="echoImage" :src="echoImage" alt="" class="build-card-echo__art" />
+        </div>
         <img v-if="setIcon" :src="setIcon" alt="" :class="echoSet" class="build-card-echo__thumb-set" />
       </div>
       <div class="build-card-echo__row-identity">
@@ -352,6 +354,17 @@ function shortLabel(type: string) {
   right: 10px;
 }
 
+/* Echo art is square; it fills whatever frame each variant gives it and
+   the frame crops the overflow, so there is no empty space around it. */
+.build-card-echo__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
 /* ---- card (Columns layout) ---- */
 .build-card-echo--card {
   display: flex;
@@ -366,14 +379,6 @@ function shortLabel(type: string) {
   background: linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 16%, transparent), rgba(6, 9, 18, 0.2));
 }
 
-.build-card-echo__banner-img {
-  position: absolute;
-  right: -16px;
-  top: -6px;
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-}
 
 .build-card-echo__banner-scrim {
   position: absolute;
@@ -461,20 +466,15 @@ function shortLabel(type: string) {
   background: linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 16%, transparent), rgba(6, 9, 18, 0.1));
 }
 
-.build-card-echo__header-img {
-  position: absolute;
-  right: -8px;
-  top: -4px;
-  width: 124px;
-  height: 124px;
-  object-fit: contain;
-}
 
 .build-card-echo__header-scrim {
   position: absolute;
   inset: 0;
+  /* Left and top keep the grade readable, bottom keeps the name readable,
+     now that the art fills the whole header. */
   background: linear-gradient(90deg, rgba(6, 9, 18, 0.85) 0%, rgba(6, 9, 18, 0.1) 80%),
-    linear-gradient(0deg, rgba(6, 9, 18, 0.8) 0%, rgba(6, 9, 18, 0) 50%);
+    linear-gradient(180deg, rgba(6, 9, 18, 0.6) 0%, rgba(6, 9, 18, 0) 45%),
+    linear-gradient(0deg, rgba(6, 9, 18, 0.85) 0%, rgba(6, 9, 18, 0) 50%);
 }
 
 .build-card-echo__header-score {
@@ -591,6 +591,13 @@ function shortLabel(type: string) {
   border-radius: 12px;
   background: color-mix(in srgb, var(--card-accent) 12%, transparent);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.build-card-echo__thumb-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 11px;
 }
 
 .build-card-echo__thumb-set {
