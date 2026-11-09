@@ -38,13 +38,33 @@ function formatSubStatValue(type: string, value: string | number) {
 // mid-high, yellow = high) — reuses the same 30-100 roll-quality score
 // `getBadgeClass` already sums across all 5 substats for the CV/RV badges,
 // just bucketed per-substat instead of on the total.
-function getSubStatValueColorClass(type: string, value: string | number) {
-  if (!type || type === "none" || !value) return "";
+export type SubstatRollTier = "low" | "mid" | "high" | "top";
+
+// The 30-100 roll-quality score for one rolled substat, bucketed into the
+// four tiers every roll-quality color in the app uses. Null for an empty
+// substat.
+export function getSubstatRollTier(
+  type: string | null | undefined,
+  value: number | string | null | undefined,
+): { tier: SubstatRollTier; score: number } | null {
+  if (!type || type === "none" || !value) return null;
   const score = getSubstatRollValue(type, String(Number(value)));
-  if (score <= 40) return "text-emerald-500";
-  if (score <= 60) return "text-blue-500";
-  if (score <= 80) return "text-purple-500";
-  return "text-yellow-500";
+  if (score <= 40) return { tier: "low", score };
+  if (score <= 60) return { tier: "mid", score };
+  if (score <= 80) return { tier: "high", score };
+  return { tier: "top", score };
+}
+
+const ROLL_TIER_TEXT_CLASSES: Record<SubstatRollTier, string> = {
+  low: "text-emerald-500",
+  mid: "text-blue-500",
+  high: "text-purple-500",
+  top: "text-yellow-500",
+};
+
+function getSubStatValueColorClass(type: string, value: string | number) {
+  const rolled = getSubstatRollTier(type, value);
+  return rolled ? ROLL_TIER_TEXT_CLASSES[rolled.tier] : "";
 }
 
 export function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
@@ -99,8 +119,8 @@ export function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
 
 // [bg, text, border] for a single rolled substat, bucketed by the exact
 // same roll-quality score and emerald/blue/purple/yellow thresholds as
-// `getSubStatValueColorClass` above (already shipped, used by
-// CalculatorBuildCardEchoCard.vue) — an earlier version of this file colored
+// `getSubStatValueColorClass` above (also used by the build card's
+// buildCard/BuildCardEcho.vue) — an earlier version of this file colored
 // substats by *family* (crit/dmg/util/flat) instead, using amber for
 // "utility" stats. That collided with this app's own established
 // convention where amber/gold already means "high roll" everywhere else
@@ -163,6 +183,23 @@ const echoElementsList = [
   "Spectro",
   "Havoc",
 ];
+
+// Crit Value of one echo's substats (2 x Crit Rate + Crit DMG). The main
+// stat isn't counted, matching the CV badges everywhere else.
+export function getEchoCritValue(
+  echo: object | null | undefined,
+): number {
+  if (!echo) return 0;
+  let cv = 0;
+  for (let i = 1; i <= 5; i++) {
+    const source = echo as Record<string, unknown>;
+    const type = source[`echoSubStatsType${i}`];
+    const value = Number(source[`echoSubStatsValue${i}`] ?? 0);
+    if (type === "CritRate") cv += value * 2;
+    if (type === "CritDMG") cv += value;
+  }
+  return cv;
+}
 
 export function useEchoCardStats(props: EchoCardStatsProps) {
   const echoFreeSubStatType = computed(() =>
@@ -281,22 +318,7 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     return echoData;
   });
 
-  const critValue = computed(() => {
-    let cv = 0;
-    const entries: Array<[string, number | string]> = [
-      [props.echoSubStatsType1, props.echoSubStatsValue1],
-      [props.echoSubStatsType2, props.echoSubStatsValue2],
-      [props.echoSubStatsType3, props.echoSubStatsValue3],
-      [props.echoSubStatsType4, props.echoSubStatsValue4],
-      [props.echoSubStatsType5, props.echoSubStatsValue5],
-    ];
-    for (const [type, rawValue] of entries) {
-      const value = Number(rawValue ?? 0);
-      if (type === "CritRate") cv += value * 2;
-      if (type === "CritDMG") cv += value;
-    }
-    return cv;
-  });
+  const critValue = computed(() => getEchoCritValue(props));
 
   const formattedCritValue = computed(() => {
     const num = critValue.value;
