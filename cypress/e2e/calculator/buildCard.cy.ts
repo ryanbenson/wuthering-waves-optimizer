@@ -56,8 +56,11 @@ describe("Calculator Build Card", () => {
     cy.get("[data-test-build-card-echoes]").within(() => {
       cy.contains("CV").should("exist");
       // The RV badge is hidden (redundant with the Substat Score); the
-      // per-character Substat Score badge (e.g. "SS 78%") is what shows now.
-      cy.contains(/^[A-Z]{1,3} \d+%\*?$/).should("exist");
+      // per-character Substat Score (grade, then e.g. "78%") is what shows now.
+      cy.get("[data-test-build-card-echo-grade]")
+        .invoke("text")
+        .should("match", /^\s*[A-Z]{1,3}\s*$/);
+      cy.contains(/^\d+%\*?$/).should("exist");
       cy.get("img.FrostyResolve").should("exist");
     });
   });
@@ -243,6 +246,26 @@ describe("Calculator Build Card", () => {
 
   it("downloads the build card as a PNG", () => {
     cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get("[data-test-build-card-download]").click();
+    cy.readFile(`${Cypress.config("downloadsFolder")}/Carlotta-build-card.png`, {
+      timeout: 10000,
+    }).should("exist");
+  });
+
+  it("switches between the three layouts, remembers the choice, and still exports", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get('[data-test-build-card-layout="columns"]').should("be.visible");
+
+    for (const layout of ["hero", "showcase"]) {
+      cy.get(`[data-test-build-card-layout-option="${layout}"]`).click();
+      cy.get(`[data-test-build-card-layout="${layout}"]`).should("be.visible");
+      cy.get("[data-test-build-card-echoes] .echo__item").should("have.length", 5);
+    }
+
+    cy.reload();
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get('[data-test-build-card-layout="showcase"]').should("be.visible");
+
     cy.get("[data-test-build-card-download]").click();
     cy.readFile(`${Cypress.config("downloadsFolder")}/Carlotta-build-card.png`, {
       timeout: 10000,

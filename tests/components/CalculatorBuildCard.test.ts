@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { fireEvent, render, waitFor } from "@testing-library/vue";
 import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
@@ -8,6 +8,23 @@ import { useInventoryStore } from "../../src/stores/inventory";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { displayInt } from "../../src/utils/numbers";
 import { contrastOklchTriple, hexToOklchTriple } from "../../src/utils/color";
+import { useSettingsStore } from "../../src/stores/settings";
+
+// One curated character art and one background, so the pickers have
+// something to offer (the real list starts empty and is curated by hand).
+vi.mock("../../src/buildCard/arts", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../src/buildCard/arts")>();
+  const arts = [
+    { id: "changli-test", kind: "character", label: "Test art", url: "https://example.com/changli.webp", characters: ["Changli"], credit: "Test Artist" },
+    { id: "bg-test", kind: "background", label: "Test bg", url: "https://example.com/bg.webp" },
+  ] as const;
+  return {
+    ...actual,
+    BUILD_CARD_ARTS: arts,
+    getBuildCardArtOptions: (kind: "character" | "background", characterId: string) =>
+      actual.getBuildCardArtOptions(kind, characterId, arts as any),
+  };
+});
 
 const CHARACTER = "Changli";
 
@@ -347,5 +364,101 @@ describe("CalculatorBuildCard", () => {
 
     const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
     expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#00ff00"));
+  });
+
+  describe("layouts", () => {
+    it("defaults to the Columns layout", () => {
+      seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector('[data-test-build-card-layout="columns"]')).toBeTruthy();
+      expect(
+        container
+          .querySelector('[data-test-build-card-layout-option="columns"]')
+          ?.getAttribute("aria-pressed"),
+      ).toBe("true");
+    });
+
+    it.each(["hero", "showcase"])("switches to %s, saves it for every card, and keeps all 5 echo slots", async (layout) => {
+      seedCharacter();
+      seedInventoryEcho();
+      const settingsStore = useSettingsStore();
+      const { container } = renderCard(baseStatsProps());
+
+      await fireEvent.click(
+        container.querySelector(`[data-test-build-card-layout-option="${layout}"]`)!,
+      );
+
+      expect(settingsStore.config.buildCard.layout).toBe(layout);
+      expect(container.querySelector(`[data-test-build-card-layout="${layout}"]`)).toBeTruthy();
+      expect(
+        container.querySelectorAll("[data-test-build-card-echoes] .echo__item").length,
+      ).toBe(5);
+      expect(container.querySelector("[data-test-build-card-name]")?.textContent).toContain("Changli");
+      expect(container.querySelector("[data-test-build-card-build-score]")).toBeTruthy();
+    });
+
+    it("falls back to Columns for an unknown saved layout", () => {
+      seedCharacter();
+      useSettingsStore().addToConfig({ buildCard: { layout: "retired-layout" } });
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector('[data-test-build-card-layout="columns"]')).toBeTruthy();
+    });
+  });
+
+  describe("curated art", () => {
+    it("offers this character's curated art and saves the pick on the character", async () => {
+      const characterStore = seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+
+      const option = container.querySelector(
+        '[data-test-build-card-art-picker="character"] [data-test-build-card-art-option="changli-test"]',
+      );
+      expect(option).toBeTruthy();
+      await fireEvent.click(option!);
+
+      expect(characterStore.characters[CHARACTER].buildCardArtSource).toBe("changli-test");
+      const image = container.querySelector(
+        "[data-test-build-card-portrait-image]",
+      ) as HTMLElement;
+      expect(image.style.backgroundImage).toContain("changli.webp");
+      expect(container.textContent).toContain("Art: Test Artist");
+    });
+
+    it("uses the blurred character art as the default background", () => {
+      seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector(".build-card-backdrop__blur")).toBeTruthy();
+      expect(container.querySelector(".build-card__background-layer")).toBeNull();
+    });
+
+    it("shows a curated background and, in Hero, hides the character art unless asked", async () => {
+      seedCharacter();
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { layout: "hero" } });
+      const { container, findByText } = renderCard(baseStatsProps());
+
+      await fireEvent.click(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="bg-test"]',
+        )!,
+      );
+      expect(settingsStore.config.buildCard.backgroundSource).toBe("bg-test");
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("bg.webp");
+      expect(container.querySelector("[data-test-build-card-portrait]")).toBeNull();
+
+      const toggle = (await findByText("Show the character art over your background"))
+        .previousElementSibling as HTMLInputElement;
+      await fireEvent.click(toggle);
+      expect(container.querySelector("[data-test-build-card-portrait]")).toBeTruthy();
+    });
+
+    it("keeps showing an uploaded background saved before backgrounds had a source", () => {
+      seedCharacter();
+      useSettingsStore().addToConfig({ buildCard: { background: "data:image/png;base64,AAAA" } });
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("data:image/png");
+    });
   });
 });

@@ -82,7 +82,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0026](./0026-chooser-modals-redesign.md) | Chooser modal redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes, weapons, enemies |
 | [0027](./0027-team-presets-browser-redesign.md) | Team presets browser redesign | accepted | | team-rotations, components |
 | [0028](./0028-echo-set-bonus-v3-redesign.md) | Echo Set Bonus / Main Echo Buff redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | | calculator, components, echoes |
-| [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0043 (Presets Guide moved to the Presets menu) | calculator, components, composables, echoes |
+| [0030](./0030-echoes-tab-v3-redesign.md) | Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0043 (Presets Guide moved to the Presets menu), 0056 (build card echo substats) | calculator, components, composables, echoes |
 | [0033](./0033-team-buffs-summary-grouping-and-hide-impossible.md) | Team Buffs summary: drop contribution totals, group the active tray, add "Hide impossible" | accepted | | components, buffs, weapons |
 | [0038](./0038-v3-ui-default.md) | Make the v3 UI the default, with classic as an opt-in | accepted | | components, stores, analytics, release |
 | [0039](./0039-resizable-live-result-panel.md) | Drag-to-resize the Full breakdown panel | accepted | | components, stores |
@@ -101,6 +101,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0053](./0053-team-optimizer-buff-plans.md) | Team optimizer: compare who provides which team buff | accepted | | calculator, components, labs, team-rotations |
 | [0054](./0054-visual-info-pages-and-guides.md) | Visual Info pages and guides as shared data | accepted | | components, content |
 | [0055](./0055-in-app-guides-drawer.md) | In-app help opens guides in a drawer | accepted | | components, content |
+| [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
 
 ## When to write a new ADR
 

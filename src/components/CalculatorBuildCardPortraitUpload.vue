@@ -124,9 +124,12 @@ async function handleImageFile(file: File) {
       // A fresh image starts framed at the default cover/center/100% look —
       // any positioning dialed in for the *previous* portrait wouldn't mean
       // anything for a differently-cropped one.
+      // Uploading also selects the upload, over any curated art picked in
+      // the Customize panel (ADR 0056).
       setCharacterData(props.character, {
         customPortrait: dataUrl,
         customPortraitTransform: null,
+        buildCardArtSource: "upload",
       });
       showToast("Portrait updated", "success");
     } catch {
@@ -146,6 +149,7 @@ function resetPortrait() {
   setCharacterData(props.character, {
     customPortrait: null,
     customPortraitTransform: null,
+    buildCardArtSource: null,
   });
   showToast("Reset to default art", "success");
 }
