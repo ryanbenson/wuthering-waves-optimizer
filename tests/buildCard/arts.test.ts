@@ -3,6 +3,7 @@ import {
   BUILD_CARD_ARTS,
   getBuildCardArtOptions,
   resolveArtSource,
+  resolveBackgroundOpacity,
   type BuildCardArt,
 } from "../../src/buildCard/arts";
 
@@ -59,5 +60,21 @@ describe("resolveArtSource", () => {
     const lupaOptions = getBuildCardArtOptions("background", "Lupa", ARTS);
     expect(resolveArtSource("iuno-bg", null, lupaOptions)).toEqual({ kind: "default" });
     expect(resolveArtSource("upload", null, options)).toEqual({ kind: "default" });
+  });
+});
+
+describe("resolveBackgroundOpacity", () => {
+  it("is fully opaque when nothing is saved", () => {
+    expect(resolveBackgroundOpacity(undefined)).toBe(100);
+    expect(resolveBackgroundOpacity(null)).toBe(100);
+    expect(resolveBackgroundOpacity("abc")).toBe(100);
+  });
+
+  it("keeps a saved percent, clamped to 0-100 and rounded", () => {
+    expect(resolveBackgroundOpacity(40)).toBe(40);
+    expect(resolveBackgroundOpacity(0)).toBe(0);
+    expect(resolveBackgroundOpacity(-5)).toBe(0);
+    expect(resolveBackgroundOpacity(250)).toBe(100);
+    expect(resolveBackgroundOpacity("62.6")).toBe(63);
   });
 });

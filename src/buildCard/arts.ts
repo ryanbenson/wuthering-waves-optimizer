@@ -81,3 +81,14 @@ export function resolveArtSource(
   const art = options.find((option) => option.id === source);
   return art ? { kind: "curated", url: art.url, art } : { kind: "default" };
 }
+
+// Background image opacity, saved as a whole percent (0-100) in
+// `config.buildCard.backgroundOpacity`. Absent or invalid means fully
+// opaque, so cards saved before the slider existed look the same.
+export const BACKGROUND_OPACITY_DEFAULT = 100;
+
+export function resolveBackgroundOpacity(value: unknown): number {
+  const n = typeof value === "number" ? value : Number(value);
+  if (value == null || value === "" || !Number.isFinite(n)) return BACKGROUND_OPACITY_DEFAULT;
+  return Math.min(Math.max(Math.round(n), 0), 100);
+}

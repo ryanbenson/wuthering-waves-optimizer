@@ -52,7 +52,7 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 8, 2026",
     items: [
       "Build cards got a new look and three layouts to pick from: Columns, Hero and Showcase. Uploaded backgrounds now show evenly behind every panel, and without one the card uses your character's art as a soft background",
-      "Pick character art and backgrounds for your build card from a curated list, or keep uploading your own",
+      "Pick character art and backgrounds for your build card from a curated list, or keep uploading your own. A new slider fades the background if it's too busy",
     ],
     itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" } },
   },

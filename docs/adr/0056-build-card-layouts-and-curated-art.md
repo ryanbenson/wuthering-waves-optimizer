@@ -21,6 +21,8 @@ The Build Card had one layout, drawn with the app's theme colors. Uploaded backg
 6. **Curated art in code, choices in user data.** `src/buildCard/arts.ts` lists curated character art (tagged with the characters it's for) and backgrounds (for everyone, or tagged). Each slot saves a source: `"default"`, `"upload"` or a curated id. Character art is saved per character as `buildCardArtSource`, beside `customPortrait`. The background is saved once as `config.buildCard.backgroundSource`. With no source saved, a slot shows the upload if there is one, which matches data from before sources existed, so no migration is needed. An unknown or unavailable id falls back to the default.
 7. **In Hero and Showcase, a chosen background replaces the art.** In those layouts the art fills the left side, so a chosen background takes its place unless the player ticks "Show the character art over your background" (`config.buildCard.showArtOverBackground`). Columns always shows the art in its own panel.
 
+8. **One opacity slider for the background.** `config.buildCard.backgroundOpacity` (0-100, absent means 100) fades whichever background is showing, default, curated or uploaded, into the card's dark base. It sits under the Background picker rather than in the Adjust panel, because that panel only edits uploads.
+
 ## Consequences
 
 - Pros: the card works with any background, and players can switch layouts without losing anything. New curated art is a one-line change.

@@ -73,6 +73,8 @@ export interface BuildCardView {
     /** True for the default look: the character art, blurred and darkened. */
     blurred: boolean;
     transform: Partial<ImageTransform> | null;
+    /** 0-1. Fades the background image into the card's dark base. */
+    opacity: number;
   };
   resonance: BuildCardResonanceNode[];
   talents: BuildCardTalents;

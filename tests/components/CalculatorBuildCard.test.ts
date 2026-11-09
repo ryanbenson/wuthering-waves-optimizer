@@ -461,4 +461,32 @@ describe("CalculatorBuildCard", () => {
       expect(layer.style.backgroundImage).toContain("data:image/png");
     });
   });
+  describe("background opacity", () => {
+    it("fades an uploaded background and saves the setting for every card", async () => {
+      seedCharacter();
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { background: "data:image/png;base64,AAAA" } });
+      const { container } = renderCard(baseStatsProps());
+
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.opacity).toBe("1");
+
+      const slider = container.querySelector(
+        "[data-test-build-card-background-opacity]",
+      ) as HTMLInputElement;
+      await fireEvent.update(slider, "40");
+
+      expect(settingsStore.config.buildCard.backgroundOpacity).toBe(40);
+      expect(layer.style.opacity).toBe("0.4");
+      expect(container.textContent).toContain("Background opacity (40%)");
+    });
+
+    it("also fades the default blurred art", async () => {
+      seedCharacter();
+      useSettingsStore().addToConfig({ buildCard: { backgroundOpacity: 50 } });
+      const { container } = renderCard(baseStatsProps());
+      const blur = container.querySelector(".build-card-backdrop__blur") as HTMLElement;
+      expect(Number(blur.style.opacity)).toBeCloseTo(0.45);
+    });
+  });
 });

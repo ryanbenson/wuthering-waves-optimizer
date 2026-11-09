@@ -12,11 +12,12 @@
         :title="option.label"
         :data-test-build-card-art-option="option.id"
         @click="$emit('select', option.id)">
-        <span
-          v-if="option.url"
-          class="build-card-art-picker__thumb"
-          :class="{ 'is-blurred': option.blurred }"
-          :style="{ backgroundImage: `url(${option.url})` }"></span>
+        <span v-if="option.url" class="build-card-art-picker__thumb">
+          <span
+            class="build-card-art-picker__thumb-image"
+            :class="{ 'is-blurred': option.blurred }"
+            :style="{ backgroundImage: `url(${option.url})` }"></span>
+        </span>
         <span v-else class="build-card-art-picker__thumb build-card-art-picker__thumb--empty"></span>
         <span class="build-card-art-picker__label">{{ option.label }}</span>
       </button>
@@ -66,16 +67,24 @@ defineEmits<{ (e: "select", id: string): void }>();
 }
 
 .build-card-art-picker__thumb {
+  position: relative;
   display: block;
   width: 72px;
   height: 48px;
   border-radius: 0.375rem;
-  background-size: cover;
-  background-position: center 25%;
   overflow: hidden;
 }
 
-.build-card-art-picker__thumb.is-blurred {
+.build-card-art-picker__thumb-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+}
+
+/* Scaled up so the blur's soft edge stays inside the clipped tile. */
+.build-card-art-picker__thumb-image.is-blurred {
+  inset: -8px;
   filter: blur(4px) brightness(0.7);
 }
 

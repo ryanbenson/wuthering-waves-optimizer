@@ -3,7 +3,10 @@
     <!-- Default: the character art, blurred and darkened into a tinted
          backdrop, so every character gets a matching card with no upload. -->
     <template v-if="blurred">
-      <div v-if="url" class="build-card-backdrop__blur" :style="{ backgroundImage: `url(${url})` }"></div>
+      <div
+        v-if="url"
+        class="build-card-backdrop__blur"
+        :style="{ backgroundImage: `url(${url})`, opacity: BLUR_OPACITY * opacity }"></div>
       <div class="build-card-backdrop__tint"></div>
     </template>
     <!-- A chosen background: shown as-is under one even scrim. Panels sit on
@@ -20,13 +23,24 @@
 import { computed } from "vue";
 import { imageLayerStyle, type ImageTransform } from "../../utils/imageTransform";
 
-const props = defineProps<{
-  url: string | null;
-  blurred: boolean;
-  transform?: Partial<ImageTransform> | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    url: string | null;
+    blurred: boolean;
+    transform?: Partial<ImageTransform> | null;
+    /** 0-1, from the Customize panel's opacity slider. */
+    opacity?: number;
+  }>(),
+  { transform: null, opacity: 1 },
+);
 
-const layerStyle = computed(() => imageLayerStyle(props.url, props.transform));
+// The blurred default is already slightly see-through at full opacity.
+const BLUR_OPACITY = 0.9;
+
+const layerStyle = computed(() => ({
+  ...imageLayerStyle(props.url, props.transform),
+  opacity: String(props.opacity),
+}));
 </script>
 
 <style scoped>
@@ -46,7 +60,6 @@ const layerStyle = computed(() => imageLayerStyle(props.url, props.transform));
   background-size: cover;
   background-position: center 30%;
   filter: blur(70px) saturate(1.4) brightness(0.55);
-  opacity: 0.9;
 }
 
 .build-card-backdrop__tint {

@@ -134,12 +134,27 @@
           :options="characterArtOptions"
           :selected-id="characterArtSelectedId"
           @select="selectCharacterArt" />
-        <BuildCardArtPicker
-          legend="Background"
-          test-id="background"
-          :options="backgroundOptions"
-          :selected-id="backgroundSelectedId"
-          @select="selectBackground" />
+        <div class="flex flex-col gap-2">
+          <BuildCardArtPicker
+            legend="Background"
+            test-id="background"
+            :options="backgroundOptions"
+            :selected-id="backgroundSelectedId"
+            @select="selectBackground" />
+          <label class="form-control w-64">
+            <div class="label py-1">
+              <span class="label-text text-xs">Background opacity ({{ backgroundOpacity }}%)</span>
+            </div>
+            <input
+              v-model.number="backgroundOpacity"
+              type="range"
+              class="range range-sm"
+              min="0"
+              max="100"
+              step="5"
+              data-test-build-card-background-opacity />
+          </label>
+        </div>
       </div>
       <label
         v-if="buildCardLayout !== 'columns' && hasChosenBackground"
@@ -166,7 +181,8 @@
         <BuildCardBackdrop
           :url="cardView.backdrop.url"
           :blurred="cardView.backdrop.blurred"
-          :transform="cardView.backdrop.transform" />
+          :transform="cardView.backdrop.transform"
+          :opacity="cardView.backdrop.opacity" />
         <component :is="layoutComponent" :card="cardView" />
       </div>
     </div>
@@ -210,8 +226,10 @@ import {
 import {
   ART_SOURCE_DEFAULT,
   ART_SOURCE_UPLOAD,
+  BACKGROUND_OPACITY_DEFAULT,
   getBuildCardArtOptions,
   resolveArtSource,
+  resolveBackgroundOpacity,
 } from "../buildCard/arts";
 import { buildCardStatRows } from "../buildCard/statRows";
 import { getElementAccent, getElementIcon } from "../buildCard/theme";
@@ -303,6 +321,14 @@ const layoutComponent = computed(
 const buildCardBackgroundSource = computed<string | null>(
   () => config.value?.buildCard?.backgroundSource ?? null,
 );
+// Applies to whichever background is showing: default, curated or upload.
+const backgroundOpacity = computed({
+  get: () => resolveBackgroundOpacity(config.value?.buildCard?.backgroundOpacity),
+  set: (value: number) =>
+    settingsStore.addToConfig({
+      buildCard: { backgroundOpacity: resolveBackgroundOpacity(value) },
+    }),
+});
 const showArtOverBackground = computed({
   get: () => Boolean(config.value?.buildCard?.showArtOverBackground),
   set: (value: boolean) =>
@@ -424,6 +450,7 @@ const customizationActiveCount = computed(() => {
   if (hasChosenBackground.value) count += 1;
   if (customPrimaryColor.value) count += 1;
   if (buildCardLayout.value !== BUILD_CARD_LAYOUTS[0].id) count += 1;
+  if (backgroundOpacity.value !== BACKGROUND_OPACITY_DEFAULT) count += 1;
   return count;
 });
 
@@ -437,6 +464,7 @@ function handleClearCustomization() {
       backgroundSource: null,
       layout: null,
       showArtOverBackground: false,
+      backgroundOpacity: null,
     },
   });
   characterStore.setCharacterData(props.character, {
@@ -734,13 +762,19 @@ const cardView = computed<BuildCardView>(() => {
     },
     backdrop:
       background.kind === "default"
-        ? { url: characterArtUrl.value, blurred: true, transform: null }
+        ? {
+            url: characterArtUrl.value,
+            blurred: true,
+            transform: null,
+            opacity: backgroundOpacity.value / 100,
+          }
         : {
             url: background.url,
             blurred: false,
             // The adjust panel edits the uploaded image's framing only.
             transform:
               background.kind === "upload" ? buildCardBackgroundTransform.value : null,
+            opacity: backgroundOpacity.value / 100,
           },
     resonance: resonanceChainNodes.value,
     talents: characterData.value.talents ?? {},
