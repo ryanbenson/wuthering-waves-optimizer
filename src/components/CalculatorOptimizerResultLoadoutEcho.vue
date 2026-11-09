@@ -86,8 +86,9 @@
 
         <EchoCardSubstatList :slots="substatSlots" size="xs" :character-id="characterStore.activeCharacter" />
 
-        <div class="mt-auto flex justify-center pt-1 empty:hidden">
+        <div class="mt-auto flex flex-col items-center gap-1 pt-1 empty:hidden">
           <EchoEquippedIndicator :echo-id="echoId || null" />
+          <EchoEquippedByOthers :echo-id="echoId || null" />
         </div>
       </div>
 
@@ -182,8 +183,9 @@
             </div>
           </div>
         </div>
-        <div class="mt-auto flex justify-center empty:hidden">
+        <div class="mt-auto flex flex-col items-center gap-1 empty:hidden">
           <EchoEquippedIndicator :echo-id="echoId || null" />
+          <EchoEquippedByOthers :echo-id="echoId || null" />
         </div>
       </div>
     </div>
@@ -196,6 +198,7 @@ import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import EchoStatusBadge from "./EchoStatusBadge.vue";
 import EchoEquippedIndicator from "./EchoEquippedIndicator.vue";
+import EchoEquippedByOthers from "./EchoEquippedByOthers.vue";
 import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";

@@ -48,6 +48,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-08",
+    dateLabel: "November 8, 2026",
+    items: [
+      "Optimizer loadout results now show which other resonators are already wearing an echo (\"Also on Zani +2\"), next to \"Already equipped\" for the current one. Hover it to see everyone. Equipping the loadout keeps the echo on them too",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
     date: "2026-11-07",
     dateLabel: "November 7, 2026",
     items: [
