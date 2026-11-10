@@ -21,7 +21,15 @@ export function cleanHtml(html: string): string {
     .replace(/(?:<br\s*\/?>\s*){3,}/gi, (match) => {
       const brs = match.match(/<br\s*\/?>/gi) ?? [];
       return brs.slice(0, -1).join("");
-    });
+    })
+    // A section ends "...text.<br><size=10></span><br><br>"; with <size>
+    // stripped, the first <br> is a stray extra line before the section gap.
+    .replace(/<br\s*\/?>(<\/span><br\s*\/?><br\s*\/?>)/gi, "$1")
+    // Section titles are followed by a blank line; one break is enough.
+    .replace(
+      /(<span class="Title">[^<]*<\/span>(?:<\/span>)?)<br\s*\/?><br\s*\/?>/gi,
+      "$1<br>",
+    );
 }
 
 export function decodeAndCleanHtml(text: string): string {
