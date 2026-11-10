@@ -2785,7 +2785,7 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
     {
       key: "DreamAroma",
       name: `Dream Aroma`,
-      details: `<div>While <span class="Highlight">Cradle Lullaby</span> is active, each Intro Skill cast by a Resonator in the team grants 1 stack of <span class="Highlight">Dream Aroma</span>. Stacks up to 4 times. Each stack increases the ATK of all Resonators on the team by 0.1% for every 1% of Lily's Energy Regen above 190%, up to 7%. Removed when Lily is the incoming Resonator or when Cradle Lullaby ends.</div>`,
+      details: `<div>While <span class="Highlight">Cradle Lullaby</span> is active, each Intro Skill cast by a Resonator in the team other than Lily grants 1 stack of <span class="Highlight">Dream Aroma</span>. Stacks up to 4 times. Each stack increases the ATK of all Resonators on the team by 0.1% for every 1% of Lily's Energy Regen above 190%, up to 7%. Removed when Lily is the incoming Resonator or when Cradle Lullaby ends.</div>`,
       hasStacks: true,
       modifiers: [
         {
@@ -2873,7 +2873,7 @@ While this effect is active, Suoming's Outro Skill grants the incoming Resonator
     {
       key: "SequenceNode2ListenARequiemFromTheDreamCradle",
       name: `Sequence Node 2: Listen, a Requiem from the Dream Cradle`,
-      details: `<div>While <span class="Highlight">Cradle Lullaby</span> is active, when a Resonator in the team casts an Intro Skill, each stack of <span class="Highlight">Dream Aroma</span> additionally increases Crit. Rate by 2% and Crit. DMG by 6%.</div>`,
+      details: `<div>While <span class="Highlight">Cradle Lullaby</span> is active, when a Resonator in the team other than Lily casts an Intro Skill, each stack of <span class="Highlight">Dream Aroma</span> additionally increases Crit. Rate by 2% and Crit. DMG by 6%.</div>`,
       // `stacks` is the Dream Aroma stack count
       hasStacks: true,
       modifiers: [
@@ -3638,7 +3638,7 @@ export const allWeaponTeamBuffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    details: `All Resonators in the team gain Soothed Soul for 30s when the wielder performs healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase. This effect is removed when Soothed Soul ends.`,
+    details: `All Resonators in the team gain Soothed Soul for 30s when the wielder provides healing with Heavy Attack. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase for 30s. This effect is removed when Soothed Soul ends.`,
     alwaysEnabled: false,
   },
   {
@@ -3661,7 +3661,7 @@ export const allWeaponTeamBuffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    details: `When the wielder heals Resonators, the active Resonator gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.`,
+    details: `When the wielder provides healing with Heavy Attack, the active Resonator gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 30s. Effects of the same name do not stack.`,
     alwaysEnabled: false,
   },
 ];

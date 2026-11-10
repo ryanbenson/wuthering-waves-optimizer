@@ -5,7 +5,7 @@ const weaponInfo: WeaponInfo = {
   type: "Pistols",
   rarity: 5,
   passiveName: "Dreamland Solace",
-  passiveValue: "Increases Max HP by 12%/15%/18%/21%/24%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy, triggered once every 20/20/20/20/20s. All Resonators in the team gain Soothed Soul for 30/30/30/30/30s when the wielder performs healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 6/6/6/6/6s. Effects of the same name do not stack.",
+  passiveValue: "Increases Max HP by 12%/15%/18%/21%/24%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy, triggered once every 20/20/20/20/20s. All Resonators in the team gain Soothed Soul for 30/30/30/30/30s when the wielder provides healing with Heavy Attack. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase for 30/30/30/30/30s. This effect is removed when Soothed Soul ends. When the wielder provides healing with Heavy Attack, the active Resonator also gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 30/30/30/30/30s. Effects of the same name do not stack.",
   passiveData: [
     {
       key: "LullabyHP",
@@ -32,7 +32,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.28,
         "5": 0.32,
       },
-      details: `<span class="skilldescription">All Resonators in the team gain Soothed Soul for <span class="param">30</span>s when the wielder performs healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains <span class="param">16%/20%/24%/28%/32%</span> ATK increase. This effect is removed when Soothed Soul ends.</span>`,
+      details: `<span class="skilldescription">All Resonators in the team gain Soothed Soul for <span class="param">30</span>s when the wielder provides healing with Heavy Attack. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains <span class="param">16%/20%/24%/28%/32%</span> ATK increase for <span class="param">30</span>s. This effect is removed when Soothed Soul ends.</span>`,
       alwaysEnabled: false,
     },
     {
@@ -46,7 +46,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.42,
         "5": 0.48,
       },
-      details: `<span class="skilldescription">When the wielder heals Resonators, the active Resonator gains <span class="param">24%/30%/36%/42%/48%</span> Echo Skill DMG Bonus for <span class="param">6</span>s. Effects of the same name do not stack.</span>`,
+      details: `<span class="skilldescription">When the wielder provides healing with Heavy Attack, the active Resonator gains <span class="param">24%/30%/36%/42%/48%</span> Echo Skill DMG Bonus for <span class="param">30</span>s. Effects of the same name do not stack.</span>`,
       alwaysEnabled: false,
     },
   ],

@@ -41,7 +41,7 @@ export const buffs = [
   {
     key: `DreamAroma`,
     name: `Dream Aroma`,
-    details: `<div>Granted while <span style="color:#ffd12f;" class="font-bold">Cradle Lullaby</span> is active, 1 stack per Intro Skill cast by a Resonator in the team. Stacks up to 4 times. Each stack increases the ATK of all Resonators on the team by 0.1% for every 1% of Lily's Energy Regen above 190%, up to 7%. Removed when Lily is the incoming Resonator, so it only reaches Lily's off-field <span style="color:#ffd12f;" class="font-bold">Dreambind</span> hits.</div>`,
+    details: `<div>Granted while <span style="color:#ffd12f;" class="font-bold">Cradle Lullaby</span> is active, 1 stack per Intro Skill cast by a Resonator in the team other than Lily. Stacks up to 4 times. Each stack increases the ATK of all Resonators on the team by 0.1% for every 1% of Lily's Energy Regen above 190%, up to 7%. Removed when Lily is the incoming Resonator, so it only reaches Lily's off-field <span style="color:#ffd12f;" class="font-bold">Dreambind</span> hits.</div>`,
     hasStacks: true,
     modifiers: [
       {
@@ -87,7 +87,7 @@ export const buffs = [
   {
     key: `InherentSkillFlowersForYou`,
     name: `Inherent Skill: Flowers for You`,
-    details: `<div>While the active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.<br>When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.<br>Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Fairytale's Finale</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Phantasm's End</span> grants <span style="color:#ffd12f;" class="font-bold">Floral Blessing</span> to all Resonators in the team.<br></span><br><br><span class="Title">Floral Blessing</span></span><br><br>Lasts for 60s. When a Resonator in the team takes DMG that brings their HP below 50% of their Max HP, they restore HP equal to 50% of their Max HP, and <span style="color:#ffd12f;" class="font-bold">Floral Blessing</span> is removed. This effect can be triggered once every 120s.</div>`,
+    details: `<div>While a nearby active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.<br>When a Resonator in the team takes a fatal blow, they will not fall and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.<br>Casting <span style="color:#ffd12f;" class="font-bold">Enhanced Heavy Attack - Fairytale's Finale</span> or <span style="color:#ffd12f;" class="font-bold">Enhanced Heavy Attack - Phantasm's End</span> grants <span style="color:#ffd12f;" class="font-bold">Floral Blessing</span> to Resonators in the team.<br></span><br><br><span class="Title">Floral Blessing</span></span><br><br>Lasts for 60s. When the HP of a Resonator in the team is below 50% of their Max HP, restore 50% of their Max HP and remove <span style="color:#ffd12f;" class="font-bold">Floral Blessing</span>. This effect can be triggered once every 120s.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
