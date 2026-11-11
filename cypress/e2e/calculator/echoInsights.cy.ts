@@ -86,8 +86,11 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
       expect(types.indexOf("EnergyRegen")).to.be.lessThan(types.indexOf("CritRate"));
     });
 
-    // HP (weight 0 for Brant) lands in "Other rolled substats", not flagged.
-    cy.get('[data-test-echo-insights-row="HP"]').should("exist").and("not.have.class", "echo-insights__row--missing");
+    // HP (weight 0 for Brant) isn't a priority, so it isn't flagged. It adds
+    // no damage for Brant, so it lands in the "Adds nothing here" chips.
+    cy.get('.echoes-sidebar [data-test-echo-insights-row="HP"]')
+      .should("exist")
+      .and("not.have.attr", "data-test-echo-insights-row-missing");
 
     // 4 of the 5 rolled substats (CritRate/CritDMG/BasicAttackDMGBonus/ATK)
     // are priority for Brant, HP isn't — 80%.
@@ -112,9 +115,9 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(4, "HP%");
     collapseEcho(0);
 
-    cy.get('[data-test-echo-insights-row="EnergyRegen"]')
-      .should("have.class", "echo-insights__row--missing")
-      .and("contain.text", "0 rolls");
+    cy.get('.echoes-sidebar [data-test-echo-insights-row="EnergyRegen"]')
+      .should("contain.text", "0/5")
+      .and("have.attr", "data-test-echo-insights-row-missing");
   });
 
   it("aggregates roll counts across more than one equipped echo", () => {
@@ -130,7 +133,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     assignSlot(0, "Crit Rate");
     collapseEcho(1);
 
-    cy.get('[data-test-echo-insights-row="CritRate"]').should("contain.text", "×2");
+    cy.get('[data-test-echo-insights-row="CritRate"]').should("contain.text", "2/5");
   });
 
   it("pins the Build Score panel above the strip on a mobile viewport, hiding the desktop sidebar", () => {
@@ -153,6 +156,44 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
           );
         });
     });
+  });
+
+  // ADR 0057: what each substat adds to the Live Result Bar's number. The
+  // values come from a real recalculation (unit-tested), so this only checks
+  // they arrive and land in the right places.
+  it("shows what each priority substat adds, and a Try a change answer", () => {
+    openBrantEchoesTab();
+    cy.viewport(1280, 1000);
+    cy.get('[data-test-echo-item="0"]').click();
+    pickEcho("BellBorneGeochelone");
+    assignSlot(0, "Crit Rate");
+    assignSlot(1, "Crit DMG");
+    assignSlot(2, "Basic Attack DMG Bonus");
+    assignSlot(3, "ATK%");
+    assignSlot(4, "HP%");
+    collapseEcho(0);
+
+    const gain = /^\s*\+[\d,.]+[KM]?\s*$/;
+    cy.get('.echoes-sidebar [data-test-echo-insights-per-step="CritRate"] .font-mono')
+      .first()
+      .invoke("text")
+      .should("match", gain);
+    cy.get('.echoes-sidebar [data-test-echo-insights-typical="CritRate"]').should("contain.text", "7.5%");
+    cy.get('.echoes-sidebar [data-test-echo-insights-top="CritRate"]')
+      .should("contain.text", "10.5%")
+      .and("contain.text", "3 in 100");
+    // Brant's damage doesn't scale with HP: it's a chip, not a table row.
+    cy.get(".echoes-sidebar [data-test-echo-insights-adds-nothing]").should("contain.text", "HP%");
+
+    cy.get(".echoes-sidebar [data-test-echo-insights-roll-note]")
+      .should("contain.text", "Priority substats")
+      .and("contain.text", "What each one adds to");
+    cy.get('.echoes-sidebar [data-test-echo-insights-group="priority"] [data-test-echo-insights-row="CritRate"]').should("exist");
+
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-stat]").select("CritRate");
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").clear();
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-amount]").type("2.5");
+    cy.get(".echoes-sidebar [data-test-echo-insights-try-change-result]").invoke("text").should("match", gain);
   });
 
   it("stays off by default — no insights panel on the legacy path", () => {

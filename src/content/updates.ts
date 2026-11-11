@@ -51,6 +51,14 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-10",
+    dateLabel: "November 10, 2026",
+    items: [
+      "Echo Insights now shows what each priority substat adds to your damage: per 1%, for a typical roll and for a top roll (with how often it drops). A Try a change box answers questions like \"what would 2.5% more Crit Rate give me?\"",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
     date: "2026-11-09",
     dateLabel: "November 9, 2026",
     items: [

@@ -102,6 +102,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0054](./0054-visual-info-pages-and-guides.md) | Visual Info pages and guides as shared data | accepted | | components, content |
 | [0055](./0055-in-app-guides-drawer.md) | In-app help opens guides in a drawer | accepted | | components, content |
 | [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
+| [0057](./0057-substat-roll-value.md) | Show what each substat is worth | accepted | | components, calculator |
 
 ## When to write a new ADR
 
