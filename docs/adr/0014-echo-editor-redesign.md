@@ -179,7 +179,7 @@ ADR is for building that, not the proposal itself.
    **Extended 2026-11-07:** the Priority and Other substat lists are now one
    table of what each substat adds to the Live Result Bar's number (per 1%,
    typical roll, top roll), under the same "Priority substats" heading —
-   see ADR [0056](./0056-substat-roll-value.md).
+   see ADR [0057](./0057-substat-roll-value.md).
    Listing all 5 equipped echo tiles full-width left a lot of unused
    horizontal space on desktop, and players wanted more visibility into
    how their current rolls add up (echo farming is the most RNG-heavy,

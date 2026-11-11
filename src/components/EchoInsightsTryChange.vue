@@ -1,6 +1,6 @@
 <template>
   <!--
-    "Try a change" (ADR 0056): type an amount, pick a substat, read the gain.
+    "Try a change" (ADR 0057): type an amount, pick a substat, read the gain.
     For "if I got 2-3% more Crit Rate" questions. Each answer is a real
     recalculation (measureChange), not Per 1% times the amount, so it stays
     right past the Crit Rate cap.

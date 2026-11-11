@@ -412,7 +412,7 @@ const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
 
-// What each substat adds, shared by both insights panels (ADR 0056).
+// What each substat adds, shared by both insights panels (ADR 0057).
 // Classic has no panel, so nothing is calculated there.
 const {
   values: substatRollValues,
@@ -779,7 +779,7 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
  */
 .echoes-sidebar {
   /* A 0 basis, not auto: sized from its content, the panel's substat value
-     table (ADR 0056) would squeeze the tiles column below its 50%. */
+     table (ADR 0057) would squeeze the tiles column below its 50%. */
   flex: 1 1 0;
   max-width: 900px;
   min-width: 0;

@@ -31,6 +31,31 @@
       :active-count="customizationActiveCount"
       :clear-disabled="!customizationActiveCount"
       @clear="handleClearCustomization">
+      <template #bar>
+        <span id="build-card-layout-label" class="text-sm font-medium">Card layout</span>
+        <div
+          class="join"
+          role="group"
+          aria-labelledby="build-card-layout-label"
+          data-test-build-card-layout-picker>
+          <button
+            v-for="option in BUILD_CARD_LAYOUTS"
+            :key="option.id"
+            type="button"
+            class="btn btn-sm join-item gap-2"
+            :class="{ 'btn-active btn-primary': option.id === buildCardLayout }"
+            :aria-pressed="option.id === buildCardLayout"
+            :title="option.description"
+            :data-test-build-card-layout-option="option.id"
+            @click="buildCardLayout = option.id">
+            <BuildCardLayoutIcon :layout="option.id" />
+            {{ option.label }}
+          </button>
+        </div>
+        <span class="text-xs text-base-content/70" data-test-build-card-layout-description>
+          {{ activeLayoutDescription }}
+        </span>
+      </template>
       <div class="build-card__profile-fields flex flex-wrap items-end gap-2">
         <label class="form-control">
           <div class="label py-1">
@@ -111,6 +136,42 @@
           @update:model-value="portraitTransform = $event"
           @reset="portraitTransform = null" />
       </div>
+      <div class="build-card__art-fields flex flex-wrap items-start gap-6 mt-4">
+        <BuildCardArtPicker
+          legend="Character art (click the art on the card to upload your own)"
+          test-id="character"
+          :options="characterArtOptions"
+          :selected-id="characterArtSelectedId"
+          @select="selectCharacterArt" />
+        <div class="flex flex-col gap-2">
+          <BuildCardArtPicker
+            legend="Background (this character only)"
+            test-id="background"
+            :options="backgroundOptions"
+            :selected-id="backgroundSelectedId"
+            @select="selectBackground" />
+          <label class="form-control w-64">
+            <div class="label py-1">
+              <span class="label-text text-xs">Background opacity ({{ backgroundOpacity }}%)</span>
+            </div>
+            <input
+              v-model.number="backgroundOpacity"
+              type="range"
+              class="range range-sm"
+              min="0"
+              max="100"
+              step="5"
+              data-test-build-card-background-opacity />
+          </label>
+        </div>
+      </div>
+      <label
+        v-if="buildCardLayout !== 'columns' && hasChosenBackground"
+        class="label cursor-pointer justify-start gap-2 mt-2"
+        data-test-build-card-show-art>
+        <input v-model="showArtOverBackground" type="checkbox" class="checkbox checkbox-sm" />
+        <span class="label-text">Show the character art over your background</span>
+      </label>
     </AppFilterPanel>
 
     <div
@@ -119,201 +180,19 @@
       :style="{ height: `${scaledHeight}px` }">
       <div
         ref="cardRef"
-        class="build-card__canvas bg-base-100"
+        class="build-card__canvas"
+        :data-test-build-card-canvas="buildCardLayout"
         :style="{
           transform: `scale(${scale})`,
           ...buildCardPrimaryColorStyle,
+          '--card-accent': cardAccent,
         }">
-        <div class="build-card__background-layer absolute inset-0" :style="backgroundLayerStyle"></div>
-        <div class="build-card__grid grid grid-cols-12 gap-4">
-          <div class="build-card__identity-panel col-span-4 h-full">
-            <div class="build-card__identity relative h-full w-full rounded-lg overflow-hidden bg-base-300">
-              <CalculatorBuildCardPortraitUpload
-                variant="cover"
-                :character="character"
-                :current-portrait="characterData.customPortrait"
-                :default-portrait-url="defaultPortraitUrl"
-                :transform="characterData.customPortraitTransform" />
-              <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
-
-              <div class="absolute top-4 left-4 min-w-[88%] max-w-[88%] pointer-events-none">
-                <template v-if="characterBasic">
-                  <h2
-                    class="text-4xl font-bold leading-tight text-white"
-                    :class="{
-                      'text-amber-300': characterBasic.rarity === 5,
-                      'text-violet-600': characterBasic.rarity === 4,
-                    }"
-                    data-test-build-card-name>
-                    {{ characterBasic.name }}
-                  </h2>
-                  <div
-                    class="flex gap-1 mt-1.5"
-                    :class="{
-                      'text-amber-300': characterBasic.rarity === 5,
-                      'text-violet-600': characterBasic.rarity === 4,
-                    }"
-                    aria-hidden="true">
-                    <svg
-                      v-for="n in characterBasic.rarity"
-                      :key="n"
-                      viewBox="0 0 24 24"
-                      class="size-5"
-                      fill="currentColor">
-                      <path
-                        d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77l-6.18 3.23L7 14.14 2 9.27l7.1-1.01z" />
-                    </svg>
-                  </div>
-                  <div class="text-sm text-white opacity-80 mt-1">Lv. {{ characterLevel }}</div>
-                </template>
-
-                <div
-                  class="build-card__resonance flex flex-col items-start gap-5 mt-4"
-                  data-test-build-card-resonance>
-                  <div
-                    v-for="(chain, idx) in resonanceChainNodes"
-                    :key="chain.key ?? idx"
-                    class="build-card__resonance-node flex items-center justify-center rounded-full overflow-hidden"
-                    :class="
-                      chain.isEnabled
-                        ? 'build-card__resonance-node--active'
-                        : 'build-card__resonance-node--inactive'
-                    "
-                    :title="chain.name">
-                    <img
-                      v-if="chain.icon"
-                      :src="chain.icon"
-                      class="w-full h-full object-cover" />
-                    <svg
-                      v-else
-                      viewBox="0 0 24 24"
-                      class="size-6"
-                      fill="currentColor">
-                      <path
-                        d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                v-if="buildCardUsername || buildCardUid"
-                class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
-                data-test-build-card-profile>
-                <div v-if="buildCardUsername" class="text-2xl font-semibold">
-                  {{ buildCardUsername }}
-                </div>
-                <div v-if="buildCardUid" class="text-lg opacity-70 whitespace-nowrap">
-                  UID {{ buildCardUid }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="build-card__middle col-span-4 h-full flex flex-col gap-4">
-            <div class="build-card__weapon h-[200px] shrink-0">
-              <CalculatorBuildCardWeaponPanel
-                v-if="weaponInfo"
-                :name="weaponInfo.name"
-                :image="weaponImage"
-                :rarity="weaponInfo.rarity"
-                :level="weaponLevel"
-                :refinement="weaponRefinement"
-                :attack="weaponAtk"
-                :modifier-label="weaponModifierLabel"
-                :modifier-image="weaponModifierImage"
-                :modifier-value="weaponModifierValue" />
-              <div
-                v-else
-                class="w-full h-full rounded-lg bg-base-200 flex items-center justify-center text-sm opacity-50">
-                No weapon selected
-              </div>
-            </div>
-            <div class="build-card__forte shrink-0">
-              <CalculatorBuildCardForte
-                :talents="characterData.talents ?? {}"
-                :icons="forteIcons" />
-            </div>
-            <div class="build-card__stats flex-1 min-h-0 overflow-hidden">
-              <CalculatorStats
-                :character="character"
-                :character-level="characterLevel"
-                :weapon-atk="weaponAtk"
-                :total-atk="buildCardStats.totalAtk ?? 0"
-                :total-atk-percent="buildCardStats.attackPercent ?? 0"
-                :total-atk-flat="buildCardStats.attackFlat ?? 0"
-                :total-hp="buildCardStats.totalHp ?? 0"
-                :total-hp-percent="buildCardStats.hpPercent ?? 0"
-                :total-hp-flat="buildCardStats.hpFlat ?? 0"
-                :total-def="buildCardStats.totalDef ?? 0"
-                :total-def-percent="buildCardStats.defPercent ?? 0"
-                :total-def-flat="buildCardStats.defFlat ?? 0"
-                :total-crit-rate="(buildCardStats.critRate ?? 0) / 100"
-                :total-crit-dmg="(buildCardStats.critDMG ?? 0) / 100"
-                :energy-regen="buildCardStats.energyRegen ?? 0"
-                :basic-attack-dmg-bonus="buildCardStats.basicAttackDMGBonus ?? 0"
-                :heavy-attack-dmg-bonus="buildCardStats.heavyAttackDMGBonus ?? 0"
-                :resonance-skill-dmg-bonus="buildCardStats.resonanceSkillDMGBonus ?? 0"
-                :resonance-liberation-dmg-bonus="buildCardStats.resonanceLiberationDMGBonus ?? 0"
-                :glacio="buildCardStats.glacio ?? 0"
-                :fusion="buildCardStats.fusion ?? 0"
-                :electro="buildCardStats.electro ?? 0"
-                :aero="buildCardStats.aero ?? 0"
-                :spectro="buildCardStats.spectro ?? 0"
-                :havoc="buildCardStats.havoc ?? 0"
-                :healing-bonus="buildCardStats.healingBonus ?? 0"
-                :tune-break-boost="buildCardTuneBreakBoost"
-                :element-filter="characterBasic?.element"
-                :clickable="false" />
-            </div>
-            <div
-              v-if="echoSetSummary.length"
-              class="build-card__echo-sets shrink-0 flex flex-wrap-reverse justify-center gap-2 mb-6"
-              data-test-build-card-echo-sets>
-              <div
-                v-for="set in echoSetSummary"
-                :key="set.key"
-                class="flex items-center gap-2 rounded-lg bg-base-200 px-3 py-2">
-                <img :src="set.icon" class="size-7" />
-                <span class="text-base font-semibold whitespace-nowrap">{{ set.count }}pc {{ set.label }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="build-card__echoes col-span-4 h-full flex flex-col gap-4"
-            data-test-build-card-echoes>
-            <div
-              v-if="substatScoreRollup"
-              class="build-card__build-score shrink-0 rounded-lg bg-base-200 border-l-4 px-4 py-3 flex items-center justify-between gap-3"
-              :class="substatScoreRollupAccent?.border"
-              data-test-build-card-build-score>
-              <span class="text-sm font-semibold uppercase tracking-widest opacity-60">
-                Build Score
-              </span>
-              <div class="flex items-baseline gap-2">
-                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
-                  {{ substatScoreRollup.grade }}
-                </span>
-                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
-                  {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
-                </span>
-              </div>
-            </div>
-            <div class="build-card__echoes-list shrink-0 flex flex-col gap-4">
-              <CalculatorBuildCardEchoCard
-                v-for="(echo, index) in echoSlots"
-                :key="index"
-                class="shrink-0"
-                style="height: 175px"
-                v-bind="echo"
-                :character-id="props.character" />
-            </div>
-            <div class="build-card__watermark shrink-0 text-right" data-test-build-card-watermark>
-              WUTHERINGTOOLS.COM
-            </div>
-          </div>
-        </div>
+        <BuildCardBackdrop
+          :url="cardView.backdrop.url"
+          :blurred="cardView.backdrop.blurred"
+          :transform="cardView.backdrop.transform"
+          :opacity="cardView.backdrop.opacity" />
+        <component :is="layoutComponent" :card="cardView" />
       </div>
     </div>
   </div>
@@ -330,7 +209,6 @@ import { computeBuildOnlyStats } from "../calculator/buildOnlyStats";
 import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
-import { getRatingAccentClasses } from "../composables/useEchoRating";
 import {
   subStatIconMap,
   subStatLabelMap,
@@ -347,14 +225,35 @@ import {
   EXPORT_WIDTH,
   isClipboardImageWriteSupported,
 } from "../utils/exportCardImage";
-import { imageLayerStyle, type ImageTransform } from "../utils/imageTransform";
-import CalculatorBuildCardPortraitUpload from "./CalculatorBuildCardPortraitUpload.vue";
-import CalculatorBuildCardWeaponPanel from "./CalculatorBuildCardWeaponPanel.vue";
-import CalculatorBuildCardForte from "./CalculatorBuildCardForte.vue";
-import CalculatorBuildCardEchoCard from "./CalculatorBuildCardEchoCard.vue";
+import { type ImageTransform } from "../utils/imageTransform";
+import { getEchoCritValue } from "../composables/useEchoCardStats";
+import {
+  BUILD_CARD_LAYOUTS,
+  resolveBuildCardLayout,
+  type BuildCardLayoutId,
+} from "../buildCard/layouts";
+import {
+  ART_SOURCE_DEFAULT,
+  ART_SOURCE_UPLOAD,
+  BACKGROUND_OPACITY_DEFAULT,
+  getBuildCardArtOptions,
+  resolveArtSource,
+  resolveBackgroundOpacity,
+} from "../buildCard/arts";
+import { resolveCharacterBackground } from "../buildCard/background";
+import { buildCardStatRows } from "../buildCard/statRows";
+import { getElementAccent, getElementIcon } from "../buildCard/theme";
+import type { BuildCardView } from "../buildCard/view";
 import CalculatorBuildCardImageAdjustPanel from "./CalculatorBuildCardImageAdjustPanel.vue";
-import CalculatorStats from "./CalculatorStats.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
+import BuildCardArtPicker, {
+  type BuildCardArtPickerOption,
+} from "./buildCard/BuildCardArtPicker.vue";
+import BuildCardBackdrop from "./buildCard/BuildCardBackdrop.vue";
+import BuildCardLayoutColumns from "./buildCard/BuildCardLayoutColumns.vue";
+import BuildCardLayoutIcon from "./buildCard/BuildCardLayoutIcon.vue";
+import BuildCardLayoutHero from "./buildCard/BuildCardLayoutHero.vue";
+import BuildCardLayoutShowcase from "./buildCard/BuildCardLayoutShowcase.vue";
 
 interface ChosenCharRef {
   value?: {
@@ -389,10 +288,10 @@ const settingsStore = useSettingsStore();
 const { characters } = storeToRefs(characterStore);
 const { config } = storeToRefs(settingsStore);
 
-// Player identity/branding for the card (username, UID, background image)
-// is shared across every character's build card, not tied to one build, so
-// it lives in the settings store's general `config` bag rather than on the
-// per-character state in `characterStore`.
+// Player identity for the card (username, UID) and the layout are shared
+// across every character's build card, not tied to one build, so they live
+// in the settings store's general `config` bag. Background settings belong
+// to each character (see below).
 const buildCardUsername = computed({
   get: () => config.value?.buildCard?.username ?? "",
   set: (value: string) =>
@@ -403,17 +302,64 @@ const buildCardUid = computed({
   set: (value: string) =>
     settingsStore.addToConfig({ buildCard: { uid: value } }),
 });
-const buildCardBackground = computed(
-  () => config.value?.buildCard?.background ?? null,
-);
-const buildCardBackgroundTransform = computed({
-  get: () => (config.value?.buildCard?.backgroundTransform ?? null) as Partial<ImageTransform> | null,
-  set: (value: ImageTransform | null) =>
-    settingsStore.addToConfig({ buildCard: { backgroundTransform: value } }),
+
+// Layout choice (ADR 0056): one preference for every card, like the
+// username/UID above. Anything unrecognised falls back to Columns.
+const buildCardLayout = computed<BuildCardLayoutId>({
+  get: () => resolveBuildCardLayout(config.value?.buildCard?.layout),
+  set: (value) => settingsStore.addToConfig({ buildCard: { layout: value } }),
 });
-const backgroundLayerStyle = computed(() =>
-  imageLayerStyle(buildCardBackground.value, buildCardBackgroundTransform.value),
+const activeLayoutDescription = computed(
+  () => BUILD_CARD_LAYOUTS.find((option) => option.id === buildCardLayout.value)?.description ?? "",
 );
+const layoutComponent = computed(
+  () =>
+    ({
+      columns: BuildCardLayoutColumns,
+      hero: BuildCardLayoutHero,
+      showcase: BuildCardLayoutShowcase,
+    })[buildCardLayout.value],
+);
+
+const characterData = computed(
+  () => (characters.value[props.character] ?? {}) as Record<string, any>,
+);
+
+// Background settings are per character (src/buildCard/background.ts), so
+// a background uploaded for one character doesn't show on every card. The
+// old shared upload (config.buildCard.background) still fills in for any
+// character without its own upload.
+const backgroundSettings = computed(() =>
+  resolveCharacterBackground(characterData.value, config.value?.buildCard),
+);
+const buildCardBackground = computed(() => backgroundSettings.value.upload);
+const buildCardBackgroundTransform = computed({
+  get: () => backgroundSettings.value.transform,
+  set: (value: Partial<ImageTransform> | null) => {
+    if (backgroundSettings.value.uploadIsShared) {
+      settingsStore.addToConfig({ buildCard: { backgroundTransform: value } });
+    } else {
+      characterStore.setCharacterData(props.character, {
+        buildCardBackgroundTransform: value,
+      });
+    }
+  },
+});
+// Applies to whichever background is showing: default, curated or upload.
+const backgroundOpacity = computed({
+  get: () => backgroundSettings.value.opacity,
+  set: (value: number) =>
+    characterStore.setCharacterData(props.character, {
+      buildCardBackgroundOpacity: resolveBackgroundOpacity(value),
+    }),
+});
+const showArtOverBackground = computed({
+  get: () => backgroundSettings.value.showArtOverBackground,
+  set: (value: boolean) =>
+    characterStore.setCharacterData(props.character, {
+      buildCardShowArtOverBackground: value,
+    }),
+});
 
 const backgroundFileInput = ref<HTMLInputElement | null>(null);
 
@@ -449,8 +395,10 @@ async function handleBackgroundFile(file: File) {
       // A fresh background starts framed at the default cover/center/100%
       // look — positioning dialed in for the previous image wouldn't mean
       // anything for a differently-cropped one.
-      settingsStore.addToConfig({
-        buildCard: { background: dataUrl, backgroundTransform: null },
+      characterStore.setCharacterData(props.character, {
+        buildCardBackground: dataUrl,
+        buildCardBackgroundTransform: null,
+        buildCardBackgroundSource: ART_SOURCE_UPLOAD,
       });
       showToast("Background updated", "success");
     } catch {
@@ -466,16 +414,26 @@ async function handleBackgroundFile(file: File) {
   img.src = objectUrl;
 }
 
+// Removes this character's upload. If the card is showing the old shared
+// upload instead, that one is removed, which clears it from every card
+// still using it (the only way to delete it).
 function resetBackground() {
-  settingsStore.addToConfig({
-    buildCard: { background: null, backgroundTransform: null },
-  });
+  if (backgroundSettings.value.uploadIsShared) {
+    settingsStore.addToConfig({
+      buildCard: { background: null, backgroundTransform: null },
+    });
+  }
+  clearCharacterBackground();
   showToast("Background reset", "success");
 }
 
-const characterData = computed(
-  () => (characters.value[props.character] ?? {}) as Record<string, any>,
-);
+function clearCharacterBackground() {
+  characterStore.setCharacterData(props.character, {
+    buildCardBackground: null,
+    buildCardBackgroundTransform: null,
+    buildCardBackgroundSource: null,
+  });
+}
 const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
 
 // Like buildCardPrimaryColor above, the character portrait's positioning is
@@ -523,8 +481,10 @@ const customizationActiveCount = computed(() => {
   let count = 0;
   if (buildCardUsername.value) count += 1;
   if (buildCardUid.value) count += 1;
-  if (buildCardBackground.value) count += 1;
+  if (hasChosenBackground.value) count += 1;
   if (customPrimaryColor.value) count += 1;
+  if (buildCardLayout.value !== BUILD_CARD_LAYOUTS[0].id) count += 1;
+  if (backgroundOpacity.value !== BACKGROUND_OPACITY_DEFAULT) count += 1;
   return count;
 });
 
@@ -532,10 +492,16 @@ function handleClearCustomization() {
   buildCardUsername.value = "";
   buildCardUid.value = "";
   settingsStore.addToConfig({
-    buildCard: { background: null, backgroundTransform: null },
+    buildCard: { background: null, backgroundTransform: null, layout: null },
   });
   characterStore.setCharacterData(props.character, {
     buildCardPrimaryColor: null,
+    buildCardArtSource: null,
+    buildCardBackground: null,
+    buildCardBackgroundTransform: null,
+    buildCardBackgroundSource: null,
+    buildCardBackgroundOpacity: null,
+    buildCardShowArtOverBackground: false,
   });
   showToast("Build card customization reset", "success");
 }
@@ -641,11 +607,6 @@ const echoSlots = computed(() => {
 const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(
   () => props.character,
 );
-const substatScoreRollupAccent = computed(() =>
-  substatScoreRollup.value
-    ? getRatingAccentClasses(substatScoreRollup.value.color)
-    : null,
-);
 
 // Tallies equipped echoes by set key and surfaces every set that meets its
 // own bonus threshold (usually 2pc/5pc, but some sets — e.g. Lucy's
@@ -732,6 +693,161 @@ const weaponModifierImage = computed(() =>
     : null,
 );
 
+// ---------------------------------------------------------------------------
+// Art (ADR 0056). Two slots, each showing the default, a curated art
+// (src/buildCard/arts.ts) or the player's upload:
+//   - character art: per character, beside customPortrait
+//   - background: per character too (src/buildCard/background.ts)
+const characterArtCurated = computed(() =>
+  getBuildCardArtOptions("character", props.character),
+);
+const backgroundCurated = computed(() =>
+  getBuildCardArtOptions("background", props.character),
+);
+
+const resolvedCharacterArt = computed(() =>
+  resolveArtSource(
+    characterData.value.buildCardArtSource,
+    characterData.value.customPortrait,
+    characterArtCurated.value,
+  ),
+);
+const resolvedBackground = computed(() =>
+  resolveArtSource(
+    backgroundSettings.value.source,
+    buildCardBackground.value,
+    backgroundCurated.value,
+  ),
+);
+const hasChosenBackground = computed(() => resolvedBackground.value.kind !== "default");
+
+const characterArtUrl = computed(() =>
+  resolvedCharacterArt.value.kind === "default"
+    ? defaultPortraitUrl.value
+    : resolvedCharacterArt.value.url,
+);
+
+const characterArtSelectedId = computed(() => {
+  const art = resolvedCharacterArt.value;
+  if (art.kind === "curated") return art.art.id;
+  return art.kind;
+});
+const backgroundSelectedId = computed(() => {
+  const art = resolvedBackground.value;
+  if (art.kind === "curated") return art.art.id;
+  return art.kind;
+});
+
+const characterArtOptions = computed<BuildCardArtPickerOption[]>(() => [
+  { id: ART_SOURCE_DEFAULT, label: "Default", url: defaultPortraitUrl.value },
+  ...characterArtCurated.value.map((art) => ({ id: art.id, label: art.label, url: art.url })),
+  ...(characterData.value.customPortrait
+    ? [{ id: ART_SOURCE_UPLOAD, label: "Your upload", url: characterData.value.customPortrait }]
+    : []),
+]);
+const backgroundOptions = computed<BuildCardArtPickerOption[]>(() => [
+  { id: ART_SOURCE_DEFAULT, label: "Blurred art", url: characterArtUrl.value, blurred: true },
+  ...backgroundCurated.value.map((art) => ({ id: art.id, label: art.label, url: art.url })),
+  ...(buildCardBackground.value
+    ? [
+        {
+          id: ART_SOURCE_UPLOAD,
+          label: backgroundSettings.value.uploadIsShared ? "Shared upload" : "Your upload",
+          url: buildCardBackground.value,
+          title: backgroundSettings.value.uploadIsShared
+            ? "Your earlier background, shared by every card. Upload a new one to use it on this character only."
+            : undefined,
+        },
+      ]
+    : []),
+]);
+
+function selectCharacterArt(id: string) {
+  characterStore.setCharacterData(props.character, { buildCardArtSource: id });
+}
+
+function selectBackground(id: string) {
+  characterStore.setCharacterData(props.character, { buildCardBackgroundSource: id });
+}
+
+const cardAccent = computed(
+  () => customPrimaryColor.value ?? getElementAccent(characterBasic.value?.element),
+);
+
+const totalCritValue = computed(() => {
+  const equipped = (echoSlots.value as Array<Record<string, unknown>>).filter(
+    (echo) => echo?.echo,
+  );
+  if (!equipped.length) return null;
+  return equipped.reduce((sum, echo) => sum + getEchoCritValue(echo), 0);
+});
+
+const cardView = computed<BuildCardView>(() => {
+  const characterArt = resolvedCharacterArt.value;
+  const background = resolvedBackground.value;
+  const credits = [characterArt, background]
+    .map((art) => (art.kind === "curated" ? art.art.credit : undefined))
+    .filter((credit): credit is string => Boolean(credit));
+  return {
+    characterId: props.character,
+    name: characterBasic.value?.name ?? null,
+    rarity: Number(characterBasic.value?.rarity) || 0,
+    level: props.characterLevel,
+    element: characterBasic.value?.element ?? null,
+    elementIcon: getElementIcon(characterBasic.value?.element),
+    art: {
+      url: characterArtUrl.value,
+      uploadUrl: characterArt.kind === "upload" ? characterArt.url : null,
+      transform: characterData.value.customPortraitTransform ?? null,
+      show: !hasChosenBackground.value || showArtOverBackground.value,
+    },
+    backdrop:
+      background.kind === "default"
+        ? {
+            url: characterArtUrl.value,
+            blurred: true,
+            transform: null,
+            opacity: backgroundOpacity.value / 100,
+          }
+        : {
+            url: background.url,
+            blurred: false,
+            // The adjust panel edits the uploaded image's framing only.
+            transform:
+              background.kind === "upload" ? buildCardBackgroundTransform.value : null,
+            opacity: backgroundOpacity.value / 100,
+          },
+    resonance: resonanceChainNodes.value,
+    talents: characterData.value.talents ?? {},
+    forteIcons: forteIcons.value,
+    weapon: weaponInfo.value
+      ? {
+          name: weaponInfo.value.name,
+          image: weaponImage.value,
+          rarity: weaponInfo.value.rarity,
+          level: weaponLevel.value,
+          refinement: weaponRefinement.value,
+          attack: props.weaponAtk ?? null,
+          modifierLabel: weaponModifierLabel.value,
+          modifierImage: weaponModifierImage.value,
+          modifierValue: weaponModifierValue.value,
+        }
+      : null,
+    statRows: buildCardStatRows(
+      buildCardStats.value,
+      characterBasic.value?.element,
+      buildCardTuneBreakBoost.value,
+    ),
+    echoes: echoSlots.value as Array<Record<string, any>>,
+    sets: echoSetSummary.value,
+    score: substatScoreRollup.value,
+    totalCv: totalCritValue.value,
+    username: buildCardUsername.value,
+    uid: buildCardUid.value,
+    credits,
+  };
+});
+
 // The card is built at a fixed 1920x1080 layout size (matching the exported
 // image exactly) and visually scaled down to fit the available width, so
 // what's captured never depends on the viewer's screen size.
@@ -811,81 +927,56 @@ async function handleDownload() {
   overflow: hidden;
 }
 
+// The card is an exported image, so it keeps one dark palette whatever the
+// app theme is (ADR 0056). Layout components read these variables;
+// --card-accent is set inline from the element or the custom primary color.
 .build-card__canvas {
+  --card-bg: #0a0e1c;
+  --card-ink: #eef2fa;
+  --card-muted: rgba(226, 232, 245, 0.7);
+  --card-faint: rgba(226, 232, 245, 0.48);
+  --card-glass: rgba(9, 13, 26, 0.74);
+  --card-border: rgba(255, 255, 255, 0.09);
+  --card-hair: rgba(255, 255, 255, 0.07);
+  --card-gold: #f3c45a;
+
   width: 1920px;
   height: 1080px;
-  padding: 0;
   box-sizing: border-box;
   position: absolute;
   top: 0;
   left: 0;
   overflow: hidden;
   transform-origin: top left;
-  display: flex;
-  flex-direction: column;
+  color: var(--card-ink);
+  background: var(--card-bg);
+  font-family: "Figtree", sans-serif;
 }
+</style>
 
-.build-card__background-layer {
-  z-index: 0;
-  transform-origin: center;
-}
+<style lang="scss">
+// Shared by the layout components in ./buildCard/, so not scoped.
+.build-card__canvas {
+  .build-card-glass {
+    background: var(--card-glass);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
 
-.build-card__grid {
-  position: relative;
-  z-index: 1;
-  flex: 1 1 auto;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: 100%;
-}
+  .build-card__credit {
+    font-size: 13px;
+    color: var(--card-faint);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  }
 
-.build-card__identity-scrim {
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.75) 0%,
-    rgba(0, 0, 0, 0.1) 35%,
-    rgba(0, 0, 0, 0.35) 100%
-  );
-}
-
-.build-card__resonance-node {
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid oklch(var(--bc) / 0.4);
-  background: rgba(0, 0, 0, 0.35);
-  color: white;
-}
-
-.build-card__resonance-node--active {
-  border-color: oklch(var(--p) / 0.9);
-  background: oklch(var(--p) / 0.35);
-  box-shadow: 0 0 8px 1px oklch(var(--p) / 0.4);
-}
-
-.build-card__resonance-node--inactive {
-  opacity: 0.5;
-}
-
-.build-card__watermark {
-  padding: 0.35rem 1.5rem 1rem 0;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: oklch(var(--bc) / 0.4);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-}
-
-// CalculatorStats.vue is shared with the single-character Calculator page,
-// so its own base font-size can't change without affecting that page too —
-// :deep() overrides it only within this build card's usage.
-.build-card__stats :deep(.calculator__stats td) {
-  font-size: 19px;
-  padding: 0.6rem 0.5rem;
-}
-
-.build-card__stats :deep(.calculator__stats img) {
-  width: 1.5rem;
-  height: 1.5rem;
+  .build-card__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 96px;
+    font-size: 15px;
+    color: var(--card-faint);
+  }
 }
 </style>

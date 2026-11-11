@@ -164,7 +164,13 @@
           v-if="optimizer.linkTeamBuffs.value && view.offers.length"
           class="flex flex-col gap-1.5 text-sm"
           :data-test-team-optimizer-offers="view.slot">
-          <div class="opacity-70">Team buffs to try from this character:</div>
+          <div>
+            <div class="opacity-70">Team buffs to try from this character:</div>
+            <div class="text-xs opacity-60" data-test-team-optimizer-offers-note>
+              Listed when your echoes can make the set or main echo and it changes the team total, by the percent shown.
+              Buffs with conditions start unticked unless you've already enabled them on a teammate.
+            </div>
+          </div>
           <label
             v-for="offer in view.offers"
             :key="offer.defKey"

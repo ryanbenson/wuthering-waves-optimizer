@@ -3,7 +3,7 @@ status: accepted
 date: 2026-09-12
 tags: [calculator, components, composables, echoes]
 supersedes: [0014]
-superseded_by: [43]
+superseded_by: [43, 56]
 ---
 
 # 30. Echoes tab v3 redesign (Labs-flagged, shares the `liveResultBar` flag)
@@ -59,6 +59,11 @@ is for building that, not the review itself.
    `getSubStatValueColorClass`) — extending the same convention there
    landed as a separate, smaller follow-up change to that one file, value
    coloring left untouched.
+
+   **Superseded 2026-11-08:** `CalculatorBuildCardEchoCard.vue` was replaced by
+   `buildCard/BuildCardEcho.vue` (ADR [0056](./0056-build-card-layouts-and-curated-art.md)).
+   Build card substats no longer get the border/wash. Only the value is colored by roll
+   quality, and the Hero layout adds a roll bar under each one.
 
 3. **Echo editing is inline-in-place on the tile — the docked panel /
    bottom sheet is gone for the build context.** `CalculatorEchoEditPanel.vue`

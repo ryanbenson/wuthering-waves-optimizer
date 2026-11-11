@@ -14,7 +14,7 @@ import {
 const DEBOUNCE_MS = 300;
 
 /**
- * What each substat is worth, for the Echo Insights panel (ADR 0056). Recalculates after the build, its equipped echoes or the Live
+ * What each substat is worth, for the Echo Insights panel (ADR 0057). Recalculates after the build, its equipped echoes or the Live
  * Result Bar's target changes. Call it once per screen and share the result:
  * the Echoes screen renders two copies of the panel (desktop and phone).
  */

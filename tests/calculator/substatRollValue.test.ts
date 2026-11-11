@@ -82,7 +82,7 @@ describe("substatValueStep", () => {
 });
 
 describe("estimateSubstatRollValues", () => {
-  // The accuracy check (ADR 0056): a roll added through Custom Buffs must move
+  // The accuracy check (ADR 0057): a roll added through Custom Buffs must move
   // damage exactly as much as the same roll on an equipped echo.
   it.each(["ATK", "ATK_FLAT", "CritRate", "CritDMG", "BasicAttackDMGBonus", "HP", "EnergyRegen"])(
     "adds a typical %s roll the same way an echo substat does",

@@ -13,7 +13,7 @@ import { getSubStatRollDistribution } from "./substatRollRates";
 
 /**
  * What each substat is worth to the number the Live Result Bar shows
- * (ADR 0056): per 1% (per 10 or 100 for flat stats), per typical roll, and
+ * (ADR 0057): per 1% (per 10 or 100 for flat stats), per typical roll, and
  * per top roll. Each value is a real before-and-after through the same
  * headless pipeline the echo-swap estimate uses (`echoImpact.ts`, ADR 0011):
  * the extra stat is added to a copy of the character's Custom Buffs, whose

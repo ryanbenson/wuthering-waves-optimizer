@@ -164,7 +164,7 @@ const props = withDefaults(
     // useBreakpoint-style composable to reuse, and every other responsive
     // split in this redesign is CSS-only too.
     alwaysExpanded?: boolean;
-    // What each substat adds (ADR 0056). Calculated once by
+    // What each substat adds (ADR 0057). Calculated once by
     // CalculatorEchoes.vue (useSubstatRollValues) and shared by both
     // instances. Left out, the panel shows no values.
     rollValues?: SubstatRollValues | null;
@@ -202,7 +202,7 @@ const addsDamage = (type: string) => (props.rollValues?.values[type]?.typical.de
 const byTypicalGain = (a: string, b: string) =>
   (props.rollValues?.values[b]?.typical.delta ?? 0) - (props.rollValues?.values[a]?.typical.delta ?? 0);
 
-// Priority substats in their weight order (as before ADR 0056), then, as
+// Priority substats in their weight order (as before ADR 0057), then, as
 // their own group, other substats that add damage, best first: rolled ones,
 // and unrolled ones too. Rolled substats that add nothing go to the "Adds
 // nothing here" chips instead. Without values, the other group is every

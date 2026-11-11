@@ -44,19 +44,45 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = null;
+export const currentAnnouncement: Announcement | null = {
+  date: "2026-11-09",
+  headline: "Build cards got redesigned!",
+};
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-11-10",
+    dateLabel: "November 10, 2026",
+    items: [
+      "Echo Insights now shows what each priority substat adds to your damage: per 1%, for a typical roll and for a top roll (with how often it drops). A Try a change box answers questions like \"what would 2.5% more Crit Rate give me?\"",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
+    date: "2026-11-09",
+    dateLabel: "November 9, 2026",
+    items: [
+      "Build cards got a new look and three layouts to pick from: Columns, Hero and Showcase. Uploaded backgrounds now show evenly behind every panel, and without one the card uses your character's art as a soft background. Pick character art and backgrounds for your build card from a curated list, or keep uploading your own. Each character now keeps its own background, and a new slider fades it if it's too busy",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
+  {
+    date: "2026-11-08",
+    dateLabel: "November 8, 2026",
+    items: [
+      "Optimizer loadout results now show which other resonators are already wearing an echo (\"Also on Zani +2\"), next to \"Already equipped\" for the current one. Hover it to see everyone. Equipping the loadout keeps the echo on them too",
+    ],
+    itemDetails: { 0: { tag: "feature" } },
+  },
   {
     date: "2026-11-07",
     dateLabel: "November 7, 2026",
     items: [
-      "The Echoes screen now shows what each substat adds to your damage: per 1%, for a typical roll and for a top roll, plus a Try a change box for any amount",
       "Guides now open beside the screen they explain instead of covering it. Try the Optimizer Guide, the Echoes screen's Rating Guide and Presets guide, or How the odds are worked out on Convene",
       "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
       "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",
     ],
-    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "feature" } },
+    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
   },
   {
     date: "2026-11-06",

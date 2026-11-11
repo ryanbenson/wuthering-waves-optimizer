@@ -158,7 +158,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
     });
   });
 
-  // ADR 0056: what each substat adds to the Live Result Bar's number. The
+  // ADR 0057: what each substat adds to the Live Result Bar's number. The
   // values come from a real recalculation (unit-tested), so this only checks
   // they arrive and land in the right places.
   it("shows what each priority substat adds, and a Try a change answer", () => {

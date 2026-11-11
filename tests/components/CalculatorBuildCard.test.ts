@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { fireEvent, render, waitFor } from "@testing-library/vue";
 import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
@@ -8,6 +8,23 @@ import { useInventoryStore } from "../../src/stores/inventory";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { displayInt } from "../../src/utils/numbers";
 import { contrastOklchTriple, hexToOklchTriple } from "../../src/utils/color";
+import { useSettingsStore } from "../../src/stores/settings";
+
+// One curated character art and one background, so the pickers have
+// something to offer (the real list starts empty and is curated by hand).
+vi.mock("../../src/buildCard/arts", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../src/buildCard/arts")>();
+  const arts = [
+    { id: "changli-test", kind: "character", label: "Test art", url: "https://example.com/changli.webp", characters: ["Changli"], credit: "Test Artist" },
+    { id: "bg-test", kind: "background", label: "Test bg", url: "https://example.com/bg.webp" },
+  ] as const;
+  return {
+    ...actual,
+    BUILD_CARD_ARTS: arts,
+    getBuildCardArtOptions: (kind: "character" | "background", characterId: string) =>
+      actual.getBuildCardArtOptions(kind, characterId, arts as any),
+  };
+});
 
 const CHARACTER = "Changli";
 
@@ -347,5 +364,191 @@ describe("CalculatorBuildCard", () => {
 
     const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
     expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#00ff00"));
+  });
+
+  describe("layouts", () => {
+    it("defaults to the Columns layout", () => {
+      seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector('[data-test-build-card-layout="columns"]')).toBeTruthy();
+      expect(
+        container
+          .querySelector('[data-test-build-card-layout-option="columns"]')
+          ?.getAttribute("aria-pressed"),
+      ).toBe("true");
+    });
+
+    it.each(["hero", "showcase"])("switches to %s, saves it for every card, and keeps all 5 echo slots", async (layout) => {
+      seedCharacter();
+      seedInventoryEcho();
+      const settingsStore = useSettingsStore();
+      const { container } = renderCard(baseStatsProps());
+
+      await fireEvent.click(
+        container.querySelector(`[data-test-build-card-layout-option="${layout}"]`)!,
+      );
+
+      expect(settingsStore.config.buildCard.layout).toBe(layout);
+      expect(container.querySelector(`[data-test-build-card-layout="${layout}"]`)).toBeTruthy();
+      expect(
+        container.querySelectorAll("[data-test-build-card-echoes] .echo__item").length,
+      ).toBe(5);
+      expect(container.querySelector("[data-test-build-card-name]")?.textContent).toContain("Changli");
+      expect(container.querySelector("[data-test-build-card-build-score]")).toBeTruthy();
+    });
+
+    it("falls back to Columns for an unknown saved layout", () => {
+      seedCharacter();
+      useSettingsStore().addToConfig({ buildCard: { layout: "retired-layout" } });
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector('[data-test-build-card-layout="columns"]')).toBeTruthy();
+    });
+  });
+
+  describe("curated art", () => {
+    it("offers this character's curated art and saves the pick on the character", async () => {
+      const characterStore = seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+
+      const option = container.querySelector(
+        '[data-test-build-card-art-picker="character"] [data-test-build-card-art-option="changli-test"]',
+      );
+      expect(option).toBeTruthy();
+      await fireEvent.click(option!);
+
+      expect(characterStore.characters[CHARACTER].buildCardArtSource).toBe("changli-test");
+      const image = container.querySelector(
+        "[data-test-build-card-portrait-image]",
+      ) as HTMLElement;
+      expect(image.style.backgroundImage).toContain("changli.webp");
+      expect(container.textContent).toContain("Art: Test Artist");
+    });
+
+    it("uses the blurred character art as the default background", () => {
+      seedCharacter();
+      const { container } = renderCard(baseStatsProps());
+      expect(container.querySelector(".build-card-backdrop__blur")).toBeTruthy();
+      expect(container.querySelector(".build-card__background-layer")).toBeNull();
+    });
+
+    it("shows a curated background and, in Hero, hides the character art unless asked", async () => {
+      const characterStore = seedCharacter();
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { layout: "hero" } });
+      const { container, findByText } = renderCard(baseStatsProps());
+
+      await fireEvent.click(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="bg-test"]',
+        )!,
+      );
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundSource).toBe("bg-test");
+      expect(settingsStore.config.buildCard?.backgroundSource).toBeUndefined();
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("bg.webp");
+      expect(container.querySelector("[data-test-build-card-portrait]")).toBeNull();
+
+      const toggle = (await findByText("Show the character art over your background"))
+        .previousElementSibling as HTMLInputElement;
+      await fireEvent.click(toggle);
+      expect(characterStore.characters[CHARACTER].buildCardShowArtOverBackground).toBe(true);
+      expect(container.querySelector("[data-test-build-card-portrait]")).toBeTruthy();
+    });
+
+    it("keeps showing an uploaded background saved before backgrounds had a source", () => {
+      seedCharacter();
+      useSettingsStore().addToConfig({ buildCard: { background: "data:image/png;base64,AAAA" } });
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("data:image/png");
+    });
+  });
+
+  describe("per-character background", () => {
+    const OWN = "data:image/png;base64,OWN";
+    const SHARED = "data:image/png;base64,SHARED";
+
+    it("shows a character's own upload, not on other characters", () => {
+      const characterStore = seedCharacter({ buildCardBackground: OWN });
+      characterStore.characters.Other = { buildCardBackground: null };
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("OWN");
+      expect(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="upload"]',
+        )?.textContent,
+      ).toContain("Your upload");
+      expect(useSettingsStore().config.buildCard?.background).toBeUndefined();
+    });
+
+    it("prefers the character's own upload over the old shared one", () => {
+      seedCharacter({ buildCardBackground: OWN });
+      useSettingsStore().addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.backgroundImage).toContain("OWN");
+    });
+
+    it("labels the old shared upload and lets a character switch away from it", async () => {
+      const characterStore = seedCharacter();
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+
+      expect(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="upload"]',
+        )?.textContent,
+      ).toContain("Shared upload");
+      await fireEvent.click(
+        container.querySelector(
+          '[data-test-build-card-art-picker="background"] [data-test-build-card-art-option="default"]',
+        )!,
+      );
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundSource).toBe("default");
+      expect(container.querySelector(".build-card__background-layer")).toBeNull();
+      // The shared image is kept for other characters still using it.
+      expect(settingsStore.config.buildCard.background).toBe(SHARED);
+    });
+
+    it("Reset Background removes only this character's upload", async () => {
+      const characterStore = seedCharacter({
+        buildCardBackground: OWN,
+        buildCardBackgroundSource: "upload",
+      });
+      const settingsStore = useSettingsStore();
+      settingsStore.addToConfig({ buildCard: { background: SHARED } });
+      const { container } = renderCard(baseStatsProps());
+
+      await fireEvent.click(container.querySelector("[data-test-build-card-background-reset]")!);
+      expect(characterStore.characters[CHARACTER].buildCardBackground).toBeNull();
+      expect(settingsStore.config.buildCard.background).toBe(SHARED);
+    });
+  });
+  describe("background opacity", () => {
+    it("fades an uploaded background and saves the setting on the character", async () => {
+      const characterStore = seedCharacter({ buildCardBackground: "data:image/png;base64,AAAA" });
+      const { container } = renderCard(baseStatsProps());
+
+      const layer = container.querySelector(".build-card__background-layer") as HTMLElement;
+      expect(layer.style.opacity).toBe("1");
+
+      const slider = container.querySelector(
+        "[data-test-build-card-background-opacity]",
+      ) as HTMLInputElement;
+      await fireEvent.update(slider, "40");
+
+      expect(characterStore.characters[CHARACTER].buildCardBackgroundOpacity).toBe(40);
+      expect(layer.style.opacity).toBe("0.4");
+      expect(container.textContent).toContain("Background opacity (40%)");
+    });
+
+    it("also fades the default blurred art", async () => {
+      seedCharacter({ buildCardBackgroundOpacity: 50 });
+      const { container } = renderCard(baseStatsProps());
+      const blur = container.querySelector(".build-card-backdrop__blur") as HTMLElement;
+      expect(Number(blur.style.opacity)).toBeCloseTo(0.45);
+    });
   });
 });

@@ -1,6 +1,6 @@
 <template>
   <!--
-    What each substat adds (ADR 0056). One number per cell, no bars: Per 1%
+    What each substat adds (ADR 0057). One number per cell, no bars: Per 1%
     (per 10/100 for flat stats), a typical roll and the top roll. Below
     ~380px of panel width (the phone bar, the narrow end of the desktop
     sidebar) the Top roll column folds under Typical roll; a container
