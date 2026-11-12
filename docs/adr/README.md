@@ -103,6 +103,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0055](./0055-in-app-guides-drawer.md) | In-app help opens guides in a drawer | accepted | | components, content |
 | [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
 | [0057](./0057-substat-roll-value.md) | Show what each substat is worth | accepted | | components, calculator |
+| [0058](./0058-per-character-filter-memory.md) | Remember picker filters per character (and the inventory's globally) | accepted | | components, composables, persistence |
 
 ## When to write a new ADR
 

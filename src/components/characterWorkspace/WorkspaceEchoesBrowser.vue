@@ -241,6 +241,11 @@ import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
 import { useUiDensity } from "../../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
+import {
+  ECHO_RATING_PERCENT_MAX,
+  ECHO_RATING_PERCENT_MIN,
+  useEchoBrowserFilters,
+} from "../../composables/useEchoBrowserFilters";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
@@ -257,24 +262,29 @@ const { getEchoEquippedChars } = inventoryStore;
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const echoIndex = ref<number | null>(null);
-const costFilter = ref<number | null>(null);
-const echoSet = ref<string | null>(null);
+// Search and page are local; the filters and sort are remembered per
+// character (see useEchoBrowserFilters), so switching resonators swaps them.
 const search = ref("");
-const equippedFilter = ref<"self" | "any" | null>(null);
-const mainStatFilter = ref<string | null>(null);
-const favoriteFilter = ref(false);
-const substatFilter = ref<string[]>([]);
-const cvMin = ref(0);
-const cvMax = ref(ECHO_CV_MAX);
-const rvMin = ref(0);
-const rvMax = ref(ECHO_RV_MAX);
-const RATING_PERCENT_MIN = 0;
-const RATING_PERCENT_MAX = 100;
-const ratingMin = ref(RATING_PERCENT_MIN);
-const ratingMax = ref(RATING_PERCENT_MAX);
+const {
+  costFilter,
+  echoSet,
+  equippedFilter,
+  mainStatFilter,
+  favoriteFilter,
+  substatFilter,
+  cvMin,
+  cvMax,
+  rvMin,
+  rvMax,
+  ratingMin,
+  ratingMax,
+  sortBy,
+  resetEchoBrowserFilters,
+} = useEchoBrowserFilters(() => props.character);
+const RATING_PERCENT_MIN = ECHO_RATING_PERCENT_MIN;
+const RATING_PERCENT_MAX = ECHO_RATING_PERCENT_MAX;
 const page = ref(1);
 const perPage = 20;
-const sortBy = ref<"default" | "impact">("default");
 
 const impactByEchoId = ref<Record<string, EchoImpactDelta | null>>({});
 const impactsLoading = ref(false);
@@ -537,19 +547,8 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 );
 
 function resetFilters() {
-  echoSet.value = null;
   search.value = "";
-  costFilter.value = null;
-  mainStatFilter.value = null;
-  equippedFilter.value = null;
-  favoriteFilter.value = false;
-  substatFilter.value = [];
-  cvMin.value = 0;
-  cvMax.value = ECHO_CV_MAX;
-  rvMin.value = 0;
-  rvMax.value = ECHO_RV_MAX;
-  ratingMin.value = RATING_PERCENT_MIN;
-  ratingMax.value = RATING_PERCENT_MAX;
+  resetEchoBrowserFilters();
 }
 
 function getEchoSetImage(set: string) {

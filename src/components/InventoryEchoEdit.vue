@@ -607,6 +607,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import { buildEchoSelectOptions } from "../utils/richSelectOptions";
 import { useEchoInventory } from "../composables/useEchoInventory";
+import { useEchoFinderFilters } from "../composables/useEchoFinderFilters";
 
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 
@@ -628,7 +629,9 @@ const allSubStatsEnabled = ref({
   echoSubStatsType5: false,
 });
 const allSubStats = ref<string[]>([]);
-const echoSetFilter = ref<string | null>(null);
+// Remembered globally across opens and reloads, like the v3 inventory Echo
+// Finder (see useEchoFinderFilters); this classic picker has no cost filter.
+const { echoSetFilter, resetEchoFinderFilters } = useEchoFinderFilters("inventory");
 
 const currentEcho = computed(() => {
   if (!echoId.value) return null;
@@ -1017,7 +1020,7 @@ function isEchoSetFilterActive(echoSetKey: string) {
 }
 
 function resetFilters() {
-  echoSetFilter.value = null;
+  resetEchoFinderFilters();
 }
 
 function chooseMainEcho(echoKey: string) {
@@ -1030,7 +1033,6 @@ function chooseMainEcho(echoKey: string) {
 }
 
 function closeEchoChooser() {
-  echoSetFilter.value = null;
   const modalEl = document.getElementById(
     modalIdPicker.value,
   ) as HTMLDialogElement | null;

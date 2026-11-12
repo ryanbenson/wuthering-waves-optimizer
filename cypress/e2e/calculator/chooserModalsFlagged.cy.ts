@@ -221,6 +221,68 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-workspace-weapon-equipped]").should("contain.text", "Static Mist");
   });
 
+  it("remembers weapon browser filters per character, but not the search", () => {
+    // Seed on the first visit only; the reload must keep what the app saved.
+    let seeded = false;
+    const visit = () =>
+      cy.visit("/", {
+        onBeforeLoad(win) {
+          if (seeded) return;
+          seeded = true;
+          win.localStorage.setItem(
+            "settings",
+            JSON.stringify({ config: {}, labs: { liveResultBar: { isEnabled: true } } }),
+          );
+        },
+      });
+    const openWeaponBrowser = () => {
+      cy.get('[data-test-calculator-nav="weapon"]').click();
+      cy.get("[data-test-workspace-weapon-browse]").click();
+      cy.get("[data-test-workspace-weapon-browser-list]").should("exist");
+    };
+    const closeWeaponBrowser = () =>
+      cy.get("[data-test-workspace-weapon-browser-close]").click({ force: true });
+    // selectWorkspaceCharacter waits on the Character screen, so go back to it first.
+    const switchCharacter = (key: string) => {
+      cy.get('[data-test-calculator-nav="character"]').click();
+      cy.selectWorkspaceCharacter(key);
+    };
+    const rarityButton = (rarity: number) =>
+      cy.get(`[data-test-workspace-weapon-browser-filter-rarity='${rarity}']`);
+
+    visit();
+    cy.selectWorkspaceCharacter("Carlotta");
+    openWeaponBrowser();
+    rarityButton(4).click({ force: true });
+    cy.get("[data-test-workspace-weapon-browser-search]").type("zzz", { force: true });
+    closeWeaponBrowser();
+
+    // Reopened for the same character: the rarity filter is kept, the search is cleared.
+    openWeaponBrowser();
+    cy.get("[data-test-workspace-weapon-browser-search]").should("have.value", "");
+    rarityButton(4).should("have.class", "btn-active");
+    closeWeaponBrowser();
+
+    // Another character starts unfiltered and keeps its own filter.
+    switchCharacter("Jinhsi");
+    openWeaponBrowser();
+    rarityButton(4).should("not.have.class", "btn-active");
+    rarityButton(5).click({ force: true });
+    closeWeaponBrowser();
+
+    // After a reload, each character still has its own filter.
+    visit();
+    cy.selectWorkspaceCharacter("Carlotta");
+    openWeaponBrowser();
+    rarityButton(4).should("have.class", "btn-active");
+    rarityButton(5).should("not.have.class", "btn-active");
+    closeWeaponBrowser();
+    switchCharacter("Jinhsi");
+    openWeaponBrowser();
+    rarityButton(5).should("have.class", "btn-active");
+    closeWeaponBrowser();
+  });
+
   it("estimates echo swap impact and equips from the inventory browser", () => {
     visitWithSeededInventory();
     cy.selectWorkspaceCharacter("Carlotta");

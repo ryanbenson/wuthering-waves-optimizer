@@ -1,6 +1,7 @@
-import { computed } from "vue";
+import { computed, type MaybeRefOrGetter } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
+import { useCharacterScopedFilters } from "./useCharacterScopedFilters";
 import {
   CHARACTER_BUILD_STATUSES,
   type CharacterBuildStatus,
@@ -14,7 +15,7 @@ export type CharacterBrowserFilters = {
   favorites: boolean;
 };
 
-const EMPTY_FILTERS: CharacterBrowserFilters = {
+export const EMPTY_CHARACTER_BROWSER_FILTERS: CharacterBrowserFilters = {
   element: null,
   rarity: null,
   weapon: null,
@@ -24,7 +25,7 @@ const EMPTY_FILTERS: CharacterBrowserFilters = {
 
 /** Reads saved filters defensively: anything missing or malformed means "not filtered". */
 export function parseCharacterBrowserFilters(raw: unknown): CharacterBrowserFilters {
-  if (!raw || typeof raw !== "object") return { ...EMPTY_FILTERS };
+  if (!raw || typeof raw !== "object") return { ...EMPTY_CHARACTER_BROWSER_FILTERS };
   const saved = raw as Record<string, unknown>;
   return {
     element: typeof saved.element === "string" ? saved.element : null,
@@ -43,8 +44,33 @@ export function parseCharacterBrowserFilters(raw: unknown): CharacterBrowserFilt
  * the browser and reloading the site. Shared by the legacy and v3 browsers.
  * Search text is deliberately not remembered: a stale search silently hides
  * characters the next time the browser opens.
+ *
+ * Pass `scopeCharacterId` for a teammate picker: its filters are then
+ * remembered per character being built (settings.config.characterFilters,
+ * surface "teammateBrowser"), separate from the main character selector's
+ * global set. Without it, the global set is used (main selector, team
+ * rotations).
  */
-export function useCharacterBrowserFilters() {
+export function useCharacterBrowserFilters(
+  scopeCharacterId?: MaybeRefOrGetter<string | null | undefined>,
+) {
+  if (scopeCharacterId !== undefined) {
+    const scoped = useCharacterScopedFilters({
+      surface: "teammateBrowser",
+      characterId: scopeCharacterId,
+      empty: EMPTY_CHARACTER_BROWSER_FILTERS,
+      parse: parseCharacterBrowserFilters,
+    });
+    return {
+      filterElement: scoped.field("element"),
+      filterRarity: scoped.field("rarity"),
+      filterWeapon: scoped.field("weapon"),
+      filterBuildStatus: scoped.field("buildStatus"),
+      filterFavorites: scoped.field("favorites"),
+      resetFilters: scoped.reset,
+    };
+  }
+
   const settingsStore = useSettingsStore();
   const { config } = storeToRefs(settingsStore);
 
@@ -71,7 +97,7 @@ export function useCharacterBrowserFilters() {
     filterWeapon: field("weapon"),
     filterBuildStatus: field("buildStatus"),
     filterFavorites: field("favorites"),
-    resetFilters: () => settingsStore.setCharacterBrowserFilters({ ...EMPTY_FILTERS }),
+    resetFilters: () => settingsStore.setCharacterBrowserFilters({ ...EMPTY_CHARACTER_BROWSER_FILTERS }),
   };
 }
 
