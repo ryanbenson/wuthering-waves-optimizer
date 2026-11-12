@@ -11,7 +11,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     signatureWeapon: "Lullaby",
     liveResultBarStats: ["totalHp", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [
-      { key: "StaticMist", label: "Standard" },
       { key: "Cadenza", label: "4*" },
     ],
   };
