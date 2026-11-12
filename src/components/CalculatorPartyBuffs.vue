@@ -106,6 +106,7 @@
         </div>
         <CalculatorCharacterBrowser
           :character="character"
+          :filter-scope-character="character"
           ref="partyMemberBrowser1Ref"
           @character-browser:chosen-character="handlePartyMember1Chosen" />
       </div>
@@ -153,6 +154,7 @@
         </div>
         <CalculatorCharacterBrowser
           :character="character"
+          :filter-scope-character="character"
           ref="partyMemberBrowser2Ref"
           @character-browser:chosen-character="handlePartyMember2Chosen" />
       </div>

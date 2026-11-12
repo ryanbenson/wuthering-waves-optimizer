@@ -37,6 +37,28 @@ export const useSettingsStore = defineStore("settings", {
     setCharacterBrowserFilters(filters) {
       this.config.characterBrowserFilters = filters;
     },
+    // One character's saved filters for one picker surface (echo browser,
+    // weapon browser, ...). Replaced whole rather than merged, for the same
+    // reason as setCharacterBrowserFilters — lodash `merge` would leave stale
+    // array entries (e.g. substat filters) behind. See useCharacterScopedFilters.
+    setCharacterFilters(characterId, surface, filters) {
+      if (!characterId || !surface) return;
+      const byCharacter =
+        this.config.characterFilters && typeof this.config.characterFilters === "object"
+          ? this.config.characterFilters
+          : (this.config.characterFilters = {});
+      const forCharacter =
+        byCharacter[characterId] && typeof byCharacter[characterId] === "object"
+          ? byCharacter[characterId]
+          : (byCharacter[characterId] = {});
+      forCharacter[surface] = filters;
+    },
+    // A picker's filters remembered globally under one config key (e.g. the
+    // inventory's Echo Finder). Replaced whole, like setCharacterFilters.
+    setGlobalFilters(key, filters) {
+      if (!key) return;
+      this.config[key] = filters;
+    },
     // Most-recently-chosen enemy catalog keys, newest first, capped and
     // de-duplicated. A plain array assignment rather than `addToConfig` —
     // lodash `merge` combines arrays index-by-index, which would leave

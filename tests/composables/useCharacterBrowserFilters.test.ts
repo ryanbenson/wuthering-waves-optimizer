@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { ref } from "vue";
 import { createPinia, setActivePinia } from "pinia";
 import {
   parseCharacterBrowserFilters,
@@ -98,5 +99,47 @@ describe("useCharacterBrowserView", () => {
   it("falls back to grid for an unknown saved value", () => {
     useSettingsStore().config.characterBrowserView = "table";
     expect(useCharacterBrowserView().value).toBe("grid");
+  });
+});
+
+describe("useCharacterBrowserFilters with a teammate scope", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("keeps teammate filters separate from the main selector's global filters", () => {
+    useCharacterBrowserFilters().filterElement.value = "Havoc";
+    const teammate = useCharacterBrowserFilters("Jinhsi");
+    expect(teammate.filterElement.value).toBeNull();
+
+    teammate.filterElement.value = "Spectro";
+    expect(useCharacterBrowserFilters().filterElement.value).toBe("Havoc");
+    expect(useSettingsStore().config.characterFilters.Jinhsi.teammateBrowser.element).toBe("Spectro");
+  });
+
+  it("remembers teammate filters per character and follows a scope change", () => {
+    const scope = ref("Jinhsi");
+    const teammate = useCharacterBrowserFilters(scope);
+    teammate.filterRarity.value = 4;
+
+    scope.value = "Camellya";
+    expect(teammate.filterRarity.value).toBeNull();
+    teammate.filterFavorites.value = true;
+
+    scope.value = "Jinhsi";
+    expect(teammate.filterRarity.value).toBe(4);
+    expect(teammate.filterFavorites.value).toBe(false);
+  });
+
+  it("resets only the scoped character's filters", () => {
+    useCharacterBrowserFilters().filterWeapon.value = "Sword";
+    useCharacterBrowserFilters("Camellya").filterWeapon.value = "Gauntlets";
+    const teammate = useCharacterBrowserFilters("Jinhsi");
+    teammate.filterWeapon.value = "Broadblade";
+
+    teammate.resetFilters();
+    expect(teammate.filterWeapon.value).toBeNull();
+    expect(useCharacterBrowserFilters("Camellya").filterWeapon.value).toBe("Gauntlets");
+    expect(useCharacterBrowserFilters().filterWeapon.value).toBe("Sword");
   });
 });

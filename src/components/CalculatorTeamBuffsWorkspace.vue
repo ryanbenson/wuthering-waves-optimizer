@@ -128,6 +128,7 @@
       populate. -->
       <WorkspaceCharacterBrowser
         :character="character"
+        :filter-scope-character="character"
         ref="partyMemberBrowser1Ref"
         @character-browser:chosen-character="handlePartyMember1Chosen" />
     </div>
@@ -205,6 +206,7 @@
       Teammate 1's browser instance. -->
       <WorkspaceCharacterBrowser
         :character="character"
+        :filter-scope-character="character"
         ref="partyMemberBrowser2Ref"
         @character-browser:chosen-character="handlePartyMember2Chosen" />
     </div>

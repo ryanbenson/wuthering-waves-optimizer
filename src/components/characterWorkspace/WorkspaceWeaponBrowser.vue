@@ -160,6 +160,7 @@ import { resolveTeamEnemyConfig } from "../../calculator/buildCharacterContext";
 import AppChooserModal from "../AppChooserModal.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
+import { useWeaponBrowserFilters } from "../../composables/useWeaponBrowserFilters";
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
@@ -194,9 +195,10 @@ const settingsStore = useSettingsStore();
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 const search = ref("");
-const rarityFilter = ref<number | null>(null);
-const mainStatFilter = ref<string | null>(null);
-const sortBy = ref<"impact" | "rarity" | "name">("impact");
+// Search is local and clears on pick; the filters and sort are remembered
+// per character (see useWeaponBrowserFilters).
+const { rarityFilter, mainStatFilter, sortBy, resetWeaponBrowserFilters } =
+  useWeaponBrowserFilters(() => props.character);
 const impactByKey = ref<Record<string, WeaponImpactRange | null>>({});
 const impactsLoading = ref(false);
 
@@ -358,14 +360,14 @@ function triggerCloseModal() {
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
 
+// After a pick only the search clears — the filters are remembered for this
+// character. "Clear" (resetFilters) is the way to drop them.
 function reset() {
   search.value = "";
-  resetFilters();
 }
 
 function resetFilters() {
-  rarityFilter.value = null;
-  mainStatFilter.value = null;
+  resetWeaponBrowserFilters();
 }
 
 function toggleRarityFilter(rarity: number) {

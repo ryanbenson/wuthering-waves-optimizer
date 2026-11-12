@@ -107,6 +107,7 @@ import { computed, nextTick, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
+import { useWeaponBrowserFilters } from "../composables/useWeaponBrowserFilters";
 
 type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
 
@@ -126,7 +127,11 @@ const emit = defineEmits<{
   "weapon-browser:chosen-weapon": [key: string];
 }>();
 
-const filterRarity = ref<number | null>(null);
+// Remembered per character (see useWeaponBrowserFilters); this classic
+// browser only has the rarity filter.
+const { rarityFilter: filterRarity, resetWeaponBrowserFilters } = useWeaponBrowserFilters(
+  () => props.character,
+);
 const isOpen = ref(false);
 
 const weaponsListFormatted = computed(() => {
@@ -181,12 +186,7 @@ function triggerCloseModal() {
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
 
-function reset() {
-  filterRarity.value = null;
-}
-
 function handleClose() {
-  reset();
   // Must close the <dialog> itself — only clearing isOpen removes the
   // modal-box (and its method="dialog" form) while leaving the backdrop open.
   triggerCloseModal();
@@ -201,7 +201,7 @@ function isRarityFilterActive(rarity: number) {
 }
 
 function resetFilters() {
-  filterRarity.value = null;
+  resetWeaponBrowserFilters();
 }
 
 function chooseWeapon(weapon: WeaponRow) {

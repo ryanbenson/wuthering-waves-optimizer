@@ -117,6 +117,7 @@ import { useEchoInventory } from "../composables/useEchoInventory";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { mainEchoesData, getCostByClass } from "../echoes/index.ts";
 import AppFilterPanel from "./AppFilterPanel.vue";
+import { useEchoFinderFilters } from "../composables/useEchoFinderFilters";
 
 defineOptions({ name: "EchoPickerDialog" });
 
@@ -140,9 +141,12 @@ const pickerModalId = computed(() => {
     : `echoEditPickerModal-inventory-${t.echoId}`;
 });
 const isPickerOpen = ref(false);
-const echoSetFilter = ref<string | null>(null);
 const echoSearch = ref("");
-const echoCostFilter = ref<number | null>(null);
+// Remembered per character for a build slot, and globally for an inventory
+// echo (see useEchoFinderFilters).
+const { echoSetFilter, echoCostFilter, resetEchoFinderFilters } = useEchoFinderFilters(() =>
+  props.target.context === "build" ? { character: props.target.character } : "inventory",
+);
 
 async function openEchoPicker() {
   isPickerOpen.value = true;
@@ -152,7 +156,8 @@ async function openEchoPicker() {
 }
 
 function closeEchoChooser() {
-  resetFilters();
+  // Only the search clears; the set/cost filters are remembered.
+  echoSearch.value = "";
   const modalEl = document.getElementById(pickerModalId.value);
   (modalEl as HTMLDialogElement | null)?.close();
   isPickerOpen.value = false;
@@ -180,9 +185,8 @@ function isEchoSetFilterActive(echoSetKey: string) {
 }
 
 function resetFilters() {
-  echoSetFilter.value = null;
   echoSearch.value = "";
-  echoCostFilter.value = null;
+  resetEchoFinderFilters();
 }
 
 const pickerActiveFilterCount = computed(() => {

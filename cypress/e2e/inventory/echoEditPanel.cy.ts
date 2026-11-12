@@ -98,6 +98,30 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       .should("contain.text", "21%");
   });
 
+  it("remembers the Echo Finder's cost filter globally, but not the search", () => {
+    visitInventoryWithEcho();
+    openEditPanelForSeededEcho();
+
+    cy.get("[data-test-echo-edit-find]").click();
+    cy.get("[data-test-echo-picker-cost='3']").click({ force: true });
+    cy.get("[data-test-echo-picker-search]").type("zzz", { force: true });
+    cy.get("[data-test-echo-picker-search]").clear({ force: true });
+    // Picking an echo closes the finder.
+    cy.get("[data-test-echo-picker-option]").first().click({ force: true });
+    cy.get("[data-test-echo-picker-option]").should("not.exist");
+
+    // Reopened: the cost filter is kept.
+    cy.get("[data-test-echo-edit-find]").click();
+    cy.get("[data-test-echo-picker-cost='3']").should("have.class", "btn-active");
+    cy.get("[data-test-echo-picker-search]").should("have.value", "");
+
+    // And after a reload.
+    cy.reload();
+    openEditPanelForSeededEcho();
+    cy.get("[data-test-echo-edit-find]").click();
+    cy.get("[data-test-echo-picker-cost='3']").should("have.class", "btn-active");
+  });
+
   it("shows roll-quality colored substat rows in comfy density", () => {
     visitInventoryWithEcho("comfy");
     // ATK is substat slot 1 (index 0) on the seeded echo.

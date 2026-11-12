@@ -904,6 +904,7 @@ import AppRichSelect, {
 import { buildEchoSelectOptions } from "../utils/richSelectOptions";
 import { randomString } from "../utils/strings.ts";
 import { isApplyingEchoLoadout } from "../echoes/echoLoadout";
+import { useEchoFinderFilters } from "../composables/useEchoFinderFilters";
 
 const props = defineProps<{
   character: string;
@@ -933,7 +934,11 @@ const allSubStatsEnabled = ref({
   echoSubStatsType5: false,
 });
 const allSubStats = ref<string[]>([]);
-const echoSetFilter = ref<string | null>(null);
+// Remembered per character, like the v3 Echo Finder (see
+// useEchoFinderFilters); this classic picker has no cost filter.
+const { echoSetFilter, resetEchoFinderFilters } = useEchoFinderFilters(() => ({
+  character: props.character,
+}));
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
@@ -1922,7 +1927,7 @@ function isEchoSetFilterActive(echoSetKey: string) {
 }
 
 function resetFilters() {
-  echoSetFilter.value = null;
+  resetEchoFinderFilters();
 }
 
 async function chooseMainEcho(echoKey: string) {
@@ -1935,7 +1940,6 @@ async function chooseMainEcho(echoKey: string) {
 }
 
 function closeEchoChooser() {
-  echoSetFilter.value = null;
   const modalEl = document.getElementById(modalIdPicker.value);
   (modalEl as HTMLDialogElement | null)?.close();
   isPickerOpen.value = false;

@@ -223,7 +223,15 @@ import WorkspaceCharacterRow from "./WorkspaceCharacterRow.vue";
 type ListedCharacter = (typeof allCharactersList)[number];
 
 const props = withDefaults(
-  defineProps<{ character: string; excludeKeys?: string[] }>(),
+  defineProps<{
+    character: string;
+    excludeKeys?: string[];
+    /**
+     * Set on teammate pickers: remember this browser's filters per character
+     * being built instead of sharing the main selector's global filters.
+     */
+    filterScopeCharacter?: string;
+  }>(),
   { excludeKeys: () => [] },
 );
 
@@ -238,7 +246,8 @@ const { config } = storeToRefs(settingsStore);
 
 const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
 
-// Search clears every time; the other filters and the view are remembered.
+// Search clears every time; the other filters and the view are remembered
+// (filters per character on teammate pickers — see filterScopeCharacter).
 const search = ref("");
 const {
   filterElement,
@@ -247,7 +256,9 @@ const {
   filterBuildStatus,
   filterFavorites,
   resetFilters,
-} = useCharacterBrowserFilters();
+} = useCharacterBrowserFilters(
+  props.filterScopeCharacter !== undefined ? () => props.filterScopeCharacter : undefined,
+);
 const viewMode = useCharacterBrowserView();
 
 const hideWontBuildTooltip =

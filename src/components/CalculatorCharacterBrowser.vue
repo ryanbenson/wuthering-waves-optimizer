@@ -200,6 +200,11 @@ type ListedCharacter = (typeof allCharactersList)[number];
 interface Props {
   character: string;
   excludeKeys?: string[];
+  /**
+   * Set on teammate pickers: remember this browser's filters per character
+   * being built instead of sharing the main selector's global filters.
+   */
+  filterScopeCharacter?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), { excludeKeys: () => [] });
@@ -213,7 +218,8 @@ const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
 }>();
 
-// Remembered across opens and reloads — see useCharacterBrowserFilters.
+// Remembered across opens and reloads — globally for the main selector, per
+// character for teammate pickers. See useCharacterBrowserFilters.
 const {
   filterElement,
   filterRarity,
@@ -221,7 +227,9 @@ const {
   filterBuildStatus,
   filterFavorites,
   resetFilters,
-} = useCharacterBrowserFilters();
+} = useCharacterBrowserFilters(
+  props.filterScopeCharacter !== undefined ? () => props.filterScopeCharacter : undefined,
+);
 
 const hideWontBuildTooltip =
   "Hide characters marked “Won't build”. This preference is saved globally.";
