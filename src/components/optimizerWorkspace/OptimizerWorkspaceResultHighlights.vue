@@ -6,17 +6,13 @@
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 truncate">{{ tile.label }}</div>
       </div>
       <div class="font-mono font-bold text-sm mt-0.5">{{ tile.display }}</div>
-      <div
-        v-if="tile.hasDiff"
-        class="font-mono text-xs font-bold"
-        :class="tile.diffPercent >= 0 ? 'text-success' : 'text-error'">
-        {{ tile.diffPercent >= 0 ? "+" : "" }}{{ displayPercentage(tile.diffPercent) }}
-      </div>
+      <AppDeltaPercent v-if="tile.hasDiff" :value="tile.diffPercent" class="block font-mono text-xs font-bold" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import AppDeltaPercent from "../AppDeltaPercent.vue";
 import { computed } from "vue";
 import { displayPercentage, displayInt } from "../../utils/numbers";
 

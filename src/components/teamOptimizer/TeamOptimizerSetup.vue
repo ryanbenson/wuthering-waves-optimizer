@@ -182,7 +182,7 @@
               :checked="offer.isTicked"
               @change="optimizer.setOfferTicked(view.slot, offer.defKey, ($event.target as HTMLInputElement).checked)" />
             <span>{{ offerName(offer) }}</span>
-            <span class="font-mono text-xs opacity-60">{{ offer.effect >= 0 ? "+" : "" }}{{ (offer.effect * 100).toFixed(1) }}%</span>
+            <span class="font-mono text-xs opacity-60">{{ signedPercent(offer.effect * 100).text }}</span>
             <span v-if="offer.condition" class="text-xs opacity-60">{{ offer.condition }}</span>
             <span v-if="offer.hasStacks" class="text-xs opacity-60">Assumes saved or max stacks</span>
           </label>
@@ -272,6 +272,7 @@ import {
   type useTeamOptimizer,
 } from "../../composables/useTeamOptimizer";
 import OptimizerWorkspaceSetup from "../optimizerWorkspace/OptimizerWorkspaceSetup.vue";
+import { signedPercent } from "../../utils/signedDelta";
 
 defineOptions({ name: "TeamOptimizerSetup" });
 

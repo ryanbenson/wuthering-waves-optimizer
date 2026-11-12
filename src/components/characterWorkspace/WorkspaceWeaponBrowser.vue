@@ -161,6 +161,7 @@ import AppChooserModal from "../AppChooserModal.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import { useWeaponBrowserFilters } from "../../composables/useWeaponBrowserFilters";
+import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
@@ -293,13 +294,12 @@ function rarityTextClasses(rarity: number) {
 
 function formatImpact(range: WeaponImpactRange | null | undefined): string {
   if (!range) return "";
-  const sign = range.fullyBuffedDelta >= 0 ? "+" : "";
-  return `${sign}${Math.round(range.fullyBuffedDelta).toLocaleString()} · ${sign}${(range.fullyBuffedPct * 100).toFixed(1)}%`;
+  return signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).text;
 }
 
 function impactBadgeClasses(range: WeaponImpactRange | null | undefined) {
   if (!range) return "badge-ghost";
-  return range.fullyBuffedPct >= 0 ? "badge-success" : "badge-error";
+  return deltaToneBadgeClass(signedImpact(range.fullyBuffedDelta, range.fullyBuffedPct).tone);
 }
 
 const enemyConfig = computed(() => resolveTeamEnemyConfig(characters.value[props.character]));

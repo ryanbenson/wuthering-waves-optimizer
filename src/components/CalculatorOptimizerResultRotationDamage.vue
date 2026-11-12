@@ -44,39 +44,15 @@
         <td>Total Damage</td>
         <td data-test-optimizer-rotation-damage-total>
           {{ displayDamage(rotation.damageAggregation.normalDamage ?? 0) }}
-          <span
-            :class="{
-              'text-success': normalDiffPercentage >= 0,
-              'text-error': normalDiffPercentage < 0,
-            }"
-            data-test-optimizer-result-rotation-total-dmg-diff>
-            ({{ normalDiffPercentage >= 0 ? "+" : ""
-            }}{{ displayPercentage(normalDiffPercentage) }})
-          </span>
+          <AppDeltaPercent :value="normalDiffPercentage" parens data-test-optimizer-result-rotation-total-dmg-diff />
         </td>
         <td data-test-optimizer-rotation-damage-total-avg>
           {{ displayDamage(rotation.damageAggregation.avgDamage ?? 0) }}
-          <span
-            :class="{
-              'text-success': avgDiffPercentage >= 0,
-              'text-error': avgDiffPercentage < 0,
-            }"
-            data-test-optimizer-result-rotation-total-avg-dmg-diff>
-            ({{ avgDiffPercentage >= 0 ? "+" : ""
-            }}{{ displayPercentage(avgDiffPercentage) }})
-          </span>
+          <AppDeltaPercent :value="avgDiffPercentage" parens data-test-optimizer-result-rotation-total-avg-dmg-diff />
         </td>
         <td data-test-optimizer-rotation-damage-total-crit>
           {{ displayDamage(rotation.damageAggregation.critDamage ?? 0) }}
-          <span
-            :class="{
-              'text-success': critDiffPercentage >= 0,
-              'text-error': critDiffPercentage < 0,
-            }"
-            data-test-optimizer-result-rotation-total-crit-dmg-diff>
-            ({{ critDiffPercentage >= 0 ? "+" : ""
-            }}{{ displayPercentage(critDiffPercentage) }})
-          </span>
+          <AppDeltaPercent :value="critDiffPercentage" parens data-test-optimizer-result-rotation-total-crit-dmg-diff />
         </td>
       </tr>
       <tr
@@ -85,15 +61,7 @@
         <td>Total Healing</td>
         <td data-test-optimizer-result-rotation-total-healing>
           {{ displayDamage(rotation.damageAggregation.healing ?? 0) }}
-          <span
-            :class="{
-              'text-success': healingDiffPercentage >= 0,
-              'text-error': healingDiffPercentage < 0,
-            }"
-            data-test-optimizer-result-rotation-total-healing-diff>
-            ({{ healingDiffPercentage >= 0 ? "+" : ""
-            }}{{ displayPercentage(healingDiffPercentage) }})
-          </span>
+          <AppDeltaPercent :value="healingDiffPercentage" parens data-test-optimizer-result-rotation-total-healing-diff />
         </td>
         <td></td>
         <td></td>
@@ -104,15 +72,7 @@
         <td>Total Shield</td>
         <td data-test-optimizer-result-rotation-total-shield>
           {{ displayDamage(rotation.damageAggregation.shield ?? 0) }}
-          <span
-            :class="{
-              'text-success': shieldDiffPercentage >= 0,
-              'text-error': shieldDiffPercentage < 0,
-            }"
-            data-test-optimizer-result-rotation-total-shield-diff>
-            ({{ shieldDiffPercentage >= 0 ? "+" : ""
-            }}{{ displayPercentage(shieldDiffPercentage) }})
-          </span>
+          <AppDeltaPercent :value="shieldDiffPercentage" parens data-test-optimizer-result-rotation-total-shield-diff />
         </td>
         <td></td>
         <td></td>
@@ -122,8 +82,9 @@
 </template>
 
 <script setup lang="ts">
+import AppDeltaPercent from "./AppDeltaPercent.vue";
 import { computed, ref } from "vue";
-import { displayDamage, displayPercentage } from "../utils/numbers";
+import { displayDamage } from "../utils/numbers";
 import CalculatorOptimizerResultRotationDamageItem from "./CalculatorOptimizerResultRotationDamageItem.vue";
 
 defineOptions({ name: "CalculatorOptimizerResultRotationDamage" });

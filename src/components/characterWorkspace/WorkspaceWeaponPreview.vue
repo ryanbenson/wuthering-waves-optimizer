@@ -84,19 +84,23 @@
               <div class="flex justify-between gap-4 text-xs">
                 <div>
                   <div class="font-mono font-semibold">
-                    {{ formatSigned(impactR1.statOnlyDelta) }} · {{ formatSignedPct(impactR1.statOnlyPct) }}
+                    {{ signedImpact(impactR1.statOnlyDelta, impactR1.statOnlyPct).text }}
                   </div>
                   <div class="opacity-50 uppercase tracking-wider text-[.6rem] font-bold">Stat swap only (R1)</div>
                 </div>
                 <div>
-                  <div class="font-mono font-semibold text-success">
-                    {{ formatSigned(impactR1.fullyBuffedDelta) }} · {{ formatSignedPct(impactR1.fullyBuffedPct) }}
+                  <div
+                    class="font-mono font-semibold"
+                    :class="impactTextClass(impactR1.fullyBuffedDelta, impactR1.fullyBuffedPct)">
+                    {{ signedImpact(impactR1.fullyBuffedDelta, impactR1.fullyBuffedPct).text }}
                   </div>
                   <div class="opacity-50 uppercase tracking-wider text-[.6rem] font-bold">Fully buffed (R1)</div>
                 </div>
                 <div v-if="impactR5">
-                  <div class="font-mono font-semibold text-success">
-                    {{ formatSigned(impactR5.fullyBuffedDelta) }} · {{ formatSignedPct(impactR5.fullyBuffedPct) }}
+                  <div
+                    class="font-mono font-semibold"
+                    :class="impactTextClass(impactR5.fullyBuffedDelta, impactR5.fullyBuffedPct)">
+                    {{ signedImpact(impactR5.fullyBuffedDelta, impactR5.fullyBuffedPct).text }}
                   </div>
                   <div class="opacity-50 uppercase tracking-wider text-[.6rem] font-bold">Fully buffed ceiling (R5)</div>
                 </div>
@@ -117,7 +121,8 @@ import { useInventoryStore } from "../../stores/inventory";
 import { getWeaponByName } from "../../weapons/weapons";
 import { estimateWeaponSwapImpact, type WeaponImpactRange } from "../../weapons/weaponImpact";
 import { subStatLabelMap } from "../../echoes/stats";
-import { displayPercentage, displayInt } from "../../utils/numbers";
+import { displayPercentage } from "../../utils/numbers";
+import { deltaToneTextClass, signedImpact } from "../../utils/signedDelta";
 
 const WEAPON_IMAGE_BASE = "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
@@ -188,13 +193,10 @@ function rarityTextClasses(r: number) {
   };
 }
 
-function formatSigned(value: number): string {
-  const sign = value >= 0 ? "+" : "";
-  return `${sign}${displayInt(value)}`;
-}
-function formatSignedPct(value: number): string {
-  const sign = value >= 0 ? "+" : "";
-  return `${sign}${displayPercentage(value * 100)}`;
+// Up is green, down red, no change muted — from the rounded percent (#703).
+// This used to be always green, even for a downgrade.
+function impactTextClass(delta: number, fraction: number): string {
+  return deltaToneTextClass(signedImpact(delta, fraction).tone);
 }
 
 const enemyConfig = computed(() => {

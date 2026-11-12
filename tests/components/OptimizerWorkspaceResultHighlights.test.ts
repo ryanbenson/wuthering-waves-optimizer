@@ -70,7 +70,19 @@ describe("OptimizerWorkspaceResultHighlights", () => {
       "[data-test-optimizer-workspace-result-highlights] > div",
     );
     expect(tiles.length).toBe(6);
-    const deltaLines = container.querySelectorAll(".text-success, .text-error");
+    const deltaLines = container.querySelectorAll("[data-delta-tone]");
     expect(deltaLines.length).toBe(6);
+  });
+
+  it("shows an unchanged stat as a neutral 0.0% with no sign (#703)", () => {
+    const { container } = render(OptimizerWorkspaceResultHighlights, {
+      // DEF unchanged; ATK up by a rounding-error amount.
+      props: baseProps({ totalDef: 1200, totalAtk: 2999.99 }),
+    });
+    const neutral = Array.from(container.querySelectorAll('[data-delta-tone="neutral"]'));
+    expect(neutral.map((el) => el.textContent?.trim())).toEqual(["0.0%", "0.0%"]);
+    expect(neutral.every((el) => el.classList.contains("opacity-60"))).toBe(true);
+    expect(container.textContent).not.toContain("+0.0%");
+    expect(container.textContent).not.toContain("-0.0%");
   });
 });

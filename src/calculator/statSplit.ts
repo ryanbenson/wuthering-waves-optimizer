@@ -536,22 +536,33 @@ function formatDelta(statKey: string, shownDelta: number): string {
 export function formatSplitRow(statKey: string, row: StatSplitRow): string {
   if (row.isAbsolute) {
     if (row.source === "other") {
-      const sign = row.amount < 0 ? "−" : "+";
-      return `${sign}${formatLiveStatValue(statKey, Math.abs(row.amount))}`;
+      return signed(formatLiveStatValue(statKey, Math.abs(row.amount)), row.amount);
     }
     return formatLiveStatValue(statKey, row.amount);
   }
   if (STAT_SPECS[statKey]?.kind === "scaled") {
     const parts: string[] = [];
-    if (Math.abs(row.amount) > EPSILON) parts.push(signed(displayPercentage(Math.abs(row.amount)), row.amount));
-    if (Math.abs(row.flat ?? 0) > EPSILON) parts.push(signed(displayInt(Math.abs(row.flat ?? 0)), row.flat ?? 0));
-    return parts.join(" · ") || "+0.0%";
+    const percentText = displayPercentage(Math.abs(row.amount));
+    const flatText = displayInt(Math.abs(row.flat ?? 0));
+    if (!isZeroText(percentText)) parts.push(signed(percentText, row.amount));
+    if (!isZeroText(flatText)) parts.push(signed(flatText, row.flat ?? 0));
+    return parts.join(" · ") || "0.0%";
   }
   const text = formatLiveStatValue(statKey, Math.abs(row.amount));
   return row.source === "base" ? text : signed(text, row.amount);
 }
 
+/** True when a formatted magnitude shows as zero ("0", "0.0%", "0.00"). */
+function isZeroText(text: string): boolean {
+  return !/[1-9]/.test(text);
+}
+
+/**
+ * Prefixes a formatted magnitude with its sign — none when it shows as zero,
+ * so a tiny amount never reads "+0.0%" or "−0" (#703).
+ */
 function signed(text: string, value: number): string {
+  if (isZeroText(text)) return text;
   return `${value < 0 ? "−" : "+"}${text}`;
 }
 

@@ -150,7 +150,7 @@ export const optimizerResults: Record<string, string> = {
   percentNormal: `(+5.1%)`,
   percentAvg: `(+17.9%)`,
   percentCrit: `(+8.3%)`,
-  percentNormalAfterEquip: `(+0.0%)`,
-  percentAvgAfterEquip: `(+0.0%)`,
-  percentCritAfterEquip: `(+0.0%)`,
+  percentNormalAfterEquip: `(0.0%)`,
+  percentAvgAfterEquip: `(0.0%)`,
+  percentCritAfterEquip: `(0.0%)`,
 };
