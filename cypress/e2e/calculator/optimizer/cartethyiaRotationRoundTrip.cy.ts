@@ -47,12 +47,12 @@ describe("Calculator Optimizer Round Trip: Cartethyia", () => {
     // (scoreOptimizerRotation vs. calcCharacterRotationDamage) disagree.
     cy.get(
       '[data-test-optimizer-results-index="0"] [data-test-optimizer-result-rotation-total-dmg-diff]',
-    ).should("contain.text", "+0.0%");
+    ).should("contain.text", "(0.0%)");
     cy.get(
       '[data-test-optimizer-results-index="0"] [data-test-optimizer-result-rotation-total-avg-dmg-diff]',
-    ).should("contain.text", "+0.0%");
+    ).should("contain.text", "(0.0%)");
     cy.get(
       '[data-test-optimizer-results-index="0"] [data-test-optimizer-result-rotation-total-crit-dmg-diff]',
-    ).should("contain.text", "+0.0%");
+    ).should("contain.text", "(0.0%)");
   });
 });
