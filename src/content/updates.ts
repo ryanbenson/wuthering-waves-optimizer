@@ -45,11 +45,27 @@ export interface Announcement {
 //   headline: "Version 3.7 (first half) is up!",
 // };
 export const currentAnnouncement: Announcement | null = {
-  date: "2026-11-09",
-  headline: "Build cards got redesigned!",
+  date: "2026-11-11",
+  headline: "Version 3.8 is up!",
 };
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-11-12",
+    dateLabel: "November 12, 2026",
+    items: [
+      "Removes Static Mist from Lily as a recommended weapon",
+    ],
+    itemDetails: { 0: { tag: "fix" } },
+  },
+  {
+    date: "2026-11-11",
+    dateLabel: "November 11, 2026",
+    items: [
+      "Version 3.8 is released",
+    ],
+    itemDetails: { 0: { tag: "content" } },
+  },
   {
     date: "2026-11-10",
     dateLabel: "November 10, 2026",
