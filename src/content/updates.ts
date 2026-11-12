@@ -56,7 +56,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Version 3.8 is released",
     ],
-    itemDetails: { 0: { tag: "version" } },
+    itemDetails: { 0: { tag: "content" } },
   },
   {
     date: "2026-11-10",
