@@ -1,4 +1,4 @@
-import { computeDeniaOffTuneBuildupTuneBreakBoost } from "../calculator/stats";
+import { computeDeniaOffTuneBuildupTuneBreakBoost, countStatSteps } from "../calculator/stats";
 
 export type PartyBuffModifier = {
   modifier?: string;
@@ -11,6 +11,8 @@ export type PartyBuffModifier = {
   modifierTalentTarget?: "talentModifierMultiplyAdd" | "talentModifierMultiply";
   modifierStep?: number;
   maximumValue?: number;
+  /** `inputBase` + `hasStacks` only: caps each stack before multiplying ("up to 7%" per stack). */
+  perStackMaximumValue?: number;
   minStatValue?: number;
   modifierValueCalculated?: number;
 };
@@ -85,6 +87,7 @@ const MODIFIER_LABELS: Record<string, string> = {
   DEF_FLAT: "DEF (Flat)",
   CritRate: "Crit Rate",
   CritDMG: "Crit DMG",
+  "CritRate:Echo": "Echo Crit Rate",
   "CritDMG:Echo": "Echo Crit DMG",
   EnergyRegen: "Energy Regen",
   DEFIgnore: "DEF Ignore",
@@ -156,6 +159,35 @@ export function getModifierLabel(modifierKey: string): string {
  * deliberate, visible change rather than an accidental drift introduced by
  * this extraction.
  */
+/**
+ * Value of one `inputBase` modifier for the buffer's entered stat (e.g. 260
+ * for 260% Energy Regen), before any maximum is applied. Never negative.
+ */
+function computeInputBaseValue(
+  def: TeamBuffDef,
+  modifierItem: PartyBuffModifier,
+  baseAttrValue: number,
+): number {
+  let base = 0;
+  switch (def.modifierBasedOn) {
+    case "Energy Regen":
+      base = modifierItem?.minStatValue ?? 0;
+      break;
+    case "CritRate":
+      base = modifierItem?.minStatValue ?? 0.05;
+      break;
+    case "CritDMG":
+      base = modifierItem?.minStatValue ?? 1.5;
+      break;
+    default:
+      base = modifierItem?.minStatValue ?? 0;
+      break;
+  }
+  const additionalAmount = (baseAttrValue - base) / 100;
+  const steps = countStatSteps(additionalAmount, modifierItem.modifierStep as number);
+  return Math.max(0, steps * (modifierItem.modifierValue as number));
+}
+
 export function resolveTeamBuffInstance(
   def: TeamBuffDef,
   config: TeamBuffConfigEntry | undefined,
@@ -256,30 +288,9 @@ export function resolveTeamBuffInstance(
       } else if (modifierItem.modifier?.includes("AdditionalBase")) {
         return;
       } else if (def.inputBase === true) {
-        let base = 0;
-        switch (def.modifierBasedOn) {
-          case "Energy Regen":
-            base = modifierItem?.minStatValue ?? 0;
-            break;
-          case "CritRate":
-            base = modifierItem?.minStatValue ?? 0.05;
-            break;
-          case "CritDMG":
-            base = modifierItem?.minStatValue ?? 1.5;
-            break;
-          default:
-            base = modifierItem?.minStatValue ?? 0;
-            break;
-        }
-        const currentAmount = baseAttrValueVal;
-        const additionalAmount = (currentAmount - base) / 100;
-        const steps = Math.floor(additionalAmount / (modifierItem.modifierStep as number));
-        let buffValue = steps * (modifierItem.modifierValue as number);
+        let buffValue = computeInputBaseValue(def, modifierItem, baseAttrValueVal);
         if (buffValue > (modifierItem.maximumValue as number)) {
           buffValue = modifierItem.maximumValue as number;
-        }
-        if (buffValue < 0) {
-          buffValue = 0;
         }
         data[modifierItem.modifier!] = buffValue;
       } else {
@@ -317,6 +328,22 @@ export function resolveTeamBuffInstance(
       const modVal = modifierItem.modifierValue as Record<string, number>;
       const talentVal = modVal[talentRef];
       data[modifierItem.modifierTalentKey!] = talentVal * stacksVal;
+    } else if (def.inputBase === true) {
+      // e.g. Lily's Dream Aroma: each stack scales off her entered Energy Regen
+      // and caps on its own ("up to 7%") before the stacks are added up
+      let perStackValue = computeInputBaseValue(def, modifierItem, baseAttrValueVal);
+      if (
+        modifierItem.perStackMaximumValue !== undefined &&
+        perStackValue > modifierItem.perStackMaximumValue
+      ) {
+        perStackValue = modifierItem.perStackMaximumValue;
+      }
+      let totalValue = perStackValue * stacksVal;
+      if (modifierItem.maximumValue !== undefined && totalValue > modifierItem.maximumValue) {
+        totalValue = modifierItem.maximumValue;
+      }
+      const key = modifierItem.modifier!;
+      data[key] = ((data[key] as number) || 0) + totalValue;
     } else {
       let modifierValue: number;
       if (def.hasRefinements && modifierItem.modifierByRefinement) {
