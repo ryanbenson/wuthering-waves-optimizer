@@ -51,6 +51,14 @@ export const currentAnnouncement: Announcement | null = {
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-12",
+    dateLabel: "November 12, 2026",
+    items: [
+      "Removes Static Mist from Lily as a recommended weapon",
+    ],
+    itemDetails: { 0: { tag: "fix" } },
+  },
+  {
     date: "2026-11-11",
     dateLabel: "November 11, 2026",
     items: [
