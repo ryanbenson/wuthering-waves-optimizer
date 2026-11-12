@@ -55,8 +55,9 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 12, 2026",
     items: [
       "Removes Static Mist from Lily as a recommended weapon",
+      "App now remembers your filters and other settings for characters in teams, weapons, echoes, inventory"
     ],
-    itemDetails: { 0: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" } },
   },
   {
     date: "2026-11-11",
