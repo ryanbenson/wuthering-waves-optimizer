@@ -5,8 +5,18 @@
 import { GUIDE_IMAGES } from "./guides/images";
 import type { GuideImage } from "./guides/types";
 
-/** What a bullet is. Hand-written and optional: history stays untagged (ADR 0054). */
-export type UpdateTag = "feature" | "content" | "labs" | "fix";
+/**
+ * What a bullet is. Hand-written and optional: history before Oct 28, 2026
+ * stays untagged (ADR 0054). Pick the first that fits:
+ * - `labs`: behind a Labs flag
+ * - `fix`: something was wrong and now isn't (including game data errors)
+ * - `content`: game data: a new version, characters, weapons, echoes, rotation presets
+ * - `feature`: something you couldn't do before (including new guides)
+ * - `improvement`: an existing feature does more or works better
+ * - `qol`: a small usability touch that makes things easier or quicker
+ */
+export const UPDATE_TAGS = ["feature", "improvement", "qol", "content", "fix", "labs"] as const;
+export type UpdateTag = (typeof UPDATE_TAGS)[number];
 
 export interface UpdateItemDetails {
   tag?: UpdateTag;
@@ -54,8 +64,9 @@ export const updateEntries: UpdateEntry[] = [
       "Improved the many damage delta previews for weapons, optimizer loadouts, etc. to handle near 0 better, and make 0 more clear too",
       "Echo rows on the character Echoes tab and in the inventory now show the echo set icon before the set name, and the set name is easier to read",
       "The optimizer now shows Already equipped when you're wearing a loadout, so you can't shuffle your echo slots by accident. If your buff settings differ from the optimizer's, a Use optimizer buffs button syncs them",
+      "The Updates page has two new tags, Improvement and Quality of life, so it's easier to tell new features apart from upgrades to existing ones",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "qol" }, 2: { tag: "improvement" }, 3: { tag: "qol" } },
   },
   {
     date: "2026-11-12",
@@ -64,7 +75,7 @@ export const updateEntries: UpdateEntry[] = [
       "Removes Static Mist from Lily as a recommended weapon",
       "App now remembers your filters and other settings for characters in teams, weapons, echoes, inventory"
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "qol" } },
   },
   {
     date: "2026-11-11",
@@ -88,7 +99,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Build cards got a new look and three layouts to pick from: Columns, Hero and Showcase. Uploaded backgrounds now show evenly behind every panel, and without one the card uses your character's art as a soft background. Pick character art and backgrounds for your build card from a curated list, or keep uploading your own. Each character now keeps its own background, and a new slider fades it if it's too busy",
     ],
-    itemDetails: { 0: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" } },
   },
   {
     date: "2026-11-08",
@@ -96,7 +107,7 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Optimizer loadout results now show which other resonators are already wearing an echo (\"Also on Zani +2\"), next to \"Already equipped\" for the current one. Hover it to see everyone. Equipping the loadout keeps the echo on them too",
     ],
-    itemDetails: { 0: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" } },
   },
   {
     date: "2026-11-07",
@@ -106,7 +117,7 @@ export const updateEntries: UpdateEntry[] = [
       "An empty inventory now shows the four ways to fill it, and a character with no rotations gets a quick way to start from a preset",
       "New guides for scanning your echoes, importing a Discord build card, how echo grades work, and how Convene odds are worked out",
     ],
-    itemDetails: { 0: { tag: "feature" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
+    itemDetails: { 0: { tag: "improvement" }, 1: { tag: "qol" }, 2: { tag: "feature" } },
   },
   {
     date: "2026-11-06",
@@ -118,7 +129,7 @@ export const updateEntries: UpdateEntry[] = [
       "The Info, Formulas, CV & Echo Rating, Credits, Privacy and Legal pages got a visual makeover. Try scoring an echo on CV & Echo Rating, or moving the sliders on Formulas to see how a hit adds up",
       "The Optimizer Guide no longer says echoes have to be entered by hand, and points to the scanners instead",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "feature" }, 4: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" }, 3: { tag: "improvement" }, 4: { tag: "fix" } },
   },
   {
     date: "2026-11-02",

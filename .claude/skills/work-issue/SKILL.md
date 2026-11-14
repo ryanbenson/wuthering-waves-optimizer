@@ -104,7 +104,7 @@ Only after the dev confirms it works:
 1. **Changelog** — add a bullet to `updateEntries` in `src/content/updates.ts` (newest first):
    - If an entry for today's date already exists (check `origin/master` too — another PR may have added it), append to its `items`; otherwise add a new entry at the top with `date` (ISO) and `dateLabel` ("November 14, 2026").
    - Write it for players, in plain English: what they'll notice, not component names. One idea per bullet.
-   - Tag it in `itemDetails` by its index: `feature`, `fix`, `content` (new game data) or `labs` (behind a Labs flag).
+   - Tag it in `itemDetails` by its index, picking the first that fits (definitions on `UPDATE_TAGS` in that file): `labs` (behind a Labs flag), `fix` (something was wrong), `content` (game data: versions, characters, weapons, echoes, rotation presets), `feature` (something you couldn't do before, including new guides), `improvement` (an existing feature does more or works better) or `qol` (a small usability touch).
    - Skip only for changes players can't see (internal refactor, tests, tooling, docs) — say you skipped it and why.
 2. **Sitemap** — check `public/sitemap.xml` and set `<lastmod>` to today for each page whose content changed, never moving a date backwards:
    - `/updates` — always, whenever step 1 added a bullet.
