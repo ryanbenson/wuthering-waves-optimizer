@@ -53,8 +53,9 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Improved the many damage delta previews for weapons, optimizer loadouts, etc. to handle near 0 better, and make 0 more clear too",
       "Echo rows on the character Echoes tab and in the inventory now show the echo set icon before the set name, and the set name is easier to read",
+      "The optimizer now shows Already equipped when you're wearing a loadout, so you can't shuffle your echo slots by accident. If your buff settings differ from the optimizer's, a Use optimizer buffs button syncs them",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" }, 2: { tag: "feature" } },
   },
   {
     date: "2026-11-12",

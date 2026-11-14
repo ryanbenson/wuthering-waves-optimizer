@@ -36,13 +36,20 @@ describe("Calculator Optimizer Round Trip: Cartethyia", () => {
     // would show as a real (but spurious) score mismatch.
     cy.get('[data-test-optimizer-progress-done="true"]', { timeout: 20000 }).should("exist");
 
+    // This save already wears the top loadout (same main echo) with the
+    // optimizer's buffs on, so there's nothing to equip or sync (issue #705).
     cy.get(
       '[data-test-optimizer-results-index="0"] [data-test-optimizer-results-equip-btn]',
-    ).click();
+    )
+      .should("be.disabled")
+      .and("contain.text", "Already equipped");
+    cy.get(
+      '[data-test-optimizer-results-index="0"] [data-test-loadout-sync-buffs]',
+    ).should("not.exist");
 
     // Once the equipped loadout's own CalculatorDamages rotation catches up
     // (calcAllDamages is async), the Optimizer's own number for this rotation
-    // and the freshly-equipped character's real number must agree exactly —
+    // and the equipped character's real number must agree exactly —
     // action-for-action divergence would mean the two calculation paths
     // (scoreOptimizerRotation vs. calcCharacterRotationDamage) disagree.
     cy.get(

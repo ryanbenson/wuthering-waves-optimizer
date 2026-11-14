@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getEchoEquippedBy } from "../../src/echoes/equippedBy";
+import { getEchoEquippedBy, isLoadoutEquipped } from "../../src/echoes/equippedBy";
 
 describe("getEchoEquippedBy", () => {
   const equipped = {
@@ -36,5 +36,45 @@ describe("getEchoEquippedBy", () => {
       onActive: false,
       others: ["Carlotta", "Zani"],
     });
+  });
+});
+
+describe("isLoadoutEquipped", () => {
+  const equipped = {
+    main: { Carlotta: 0 },
+    a: { Carlotta: 1 },
+    b: { Carlotta: 2, Zani: 0 },
+    c: { Carlotta: 3 },
+    d: { Carlotta: 4 },
+    other: { Zani: 1 },
+  };
+
+  it("is equipped when every echo is on the resonator and the main echo is in slot 1", () => {
+    expect(isLoadoutEquipped(equipped, ["main", "a", "b", "c", "d"], "Carlotta")).toBe(true);
+  });
+
+  it("ignores the order of slots 2-5", () => {
+    expect(isLoadoutEquipped(equipped, ["main", "d", "c", "b", "a"], "Carlotta")).toBe(true);
+  });
+
+  it("is not equipped when the same echoes have a different main echo", () => {
+    expect(isLoadoutEquipped(equipped, ["a", "main", "b", "c", "d"], "Carlotta")).toBe(false);
+  });
+
+  it("is not equipped when an echo is missing or only on another resonator", () => {
+    expect(isLoadoutEquipped(equipped, ["main", "a", "b", "c", "other"], "Carlotta")).toBe(false);
+    expect(isLoadoutEquipped(equipped, ["main", "a", "b", "c", "nope"], "Carlotta")).toBe(false);
+  });
+
+  it("only looks at the given resonator, even when echoes are also worn elsewhere", () => {
+    expect(isLoadoutEquipped(equipped, ["b", "other"], "Zani")).toBe(true);
+    expect(isLoadoutEquipped(equipped, ["main", "a", "b", "c", "d"], "Zani")).toBe(false);
+  });
+
+  it("is not equipped for an empty loadout, a missing echo id or no resonator", () => {
+    expect(isLoadoutEquipped(equipped, [], "Carlotta")).toBe(false);
+    expect(isLoadoutEquipped(equipped, ["main", undefined, "b"], "Carlotta")).toBe(false);
+    expect(isLoadoutEquipped(equipped, ["main", "a"], "")).toBe(false);
+    expect(isLoadoutEquipped(undefined, ["main"], "Carlotta")).toBe(false);
   });
 });

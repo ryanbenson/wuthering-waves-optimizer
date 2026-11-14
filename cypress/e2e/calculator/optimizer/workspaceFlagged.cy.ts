@@ -62,6 +62,14 @@ describe("Optimizer Workspace (liveResultBar flag): Augusta golden path", () => 
 
     cy.get("[data-test-optimizer-workspace-equip-btn]").click();
 
+    // Issue #705: once equipped, the same loadout can't be re-equipped (it would only shuffle slots).
+    cy.get("[data-test-optimizer-workspace-equip-btn]")
+      .should("be.disabled")
+      .and("have.attr", "data-test-loadout-equipped")
+      .then(() => cy.get("[data-test-optimizer-workspace-equip-btn]").should("contain.text", "Already equipped"));
+    // Equipping synced the optimizer's buffs too, so there's nothing left to sync.
+    cy.get("[data-test-loadout-sync-buffs]").should("not.exist");
+
     cy.get(
       "[data-test-optimizer-workspace-spotlight] [data-test-optimizer-rotation-damage-total]",
     )

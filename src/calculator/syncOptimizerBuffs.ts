@@ -3,6 +3,7 @@ import {
   getMainEchoBuffStacks,
   isMainEchoBuffEnabled,
   type MainEchoBuffState,
+  type MainEchoState,
   type OptimizerMainEchoBuffEntry,
 } from "../echoes/mainEchoBuffs";
 import { mainEchoesData } from "../echoes/index";
@@ -85,4 +86,54 @@ export function buildCharacterBuffUpdatesFromOptimizer(
   }
 
   return updates;
+}
+
+type BuildBuffState = {
+  mainEcho?: MainEchoState | null;
+  echoSetPassives?: Record<string, MainEchoBuffState>;
+};
+
+function matchesBuildSetting(
+  current: { isEnabled: boolean; stacks: number },
+  wanted: MainEchoBuffState,
+): boolean {
+  if (!current.isEnabled) return false;
+  return wanted.stacks == null || current.stacks === wanted.stacks;
+}
+
+/**
+ * The part of {@link buildCharacterBuffUpdatesFromOptimizer} that would
+ * actually change the build: main echo buffs and set passives the optimizer
+ * turns on (or sets stacks for) that the build doesn't already have that way.
+ * Compares effective settings, so a legacy single-toggle main echo state that
+ * is on counts as on for every buff. Empty when the build already matches —
+ * the "Use optimizer buffs" button (issue #705) only shows when it isn't.
+ */
+export function getOptimizerBuffSyncUpdates(
+  characterData: OptimizerBuffSource & BuildBuffState,
+  loadout: LoadoutEcho[],
+  resolveEchoKey?: (echoId: string) => string | undefined,
+): CharacterBuffUpdates {
+  const all = buildCharacterBuffUpdatesFromOptimizer(characterData, loadout, resolveEchoKey);
+  const changes: CharacterBuffUpdates = {};
+
+  const mainEchoChanges: Record<string, MainEchoBuffState> = {};
+  for (const [buffKey, wanted] of Object.entries(all.mainEcho?.buffs ?? {})) {
+    const current = {
+      isEnabled: isMainEchoBuffEnabled(characterData.mainEcho, buffKey),
+      stacks: getMainEchoBuffStacks(characterData.mainEcho, buffKey),
+    };
+    if (!matchesBuildSetting(current, wanted)) mainEchoChanges[buffKey] = wanted;
+  }
+  if (Object.keys(mainEchoChanges).length > 0) changes.mainEcho = { buffs: mainEchoChanges };
+
+  const passiveChanges: Record<string, MainEchoBuffState> = {};
+  for (const [passiveKey, wanted] of Object.entries(all.echoSetPassives ?? {})) {
+    const state = characterData.echoSetPassives?.[passiveKey];
+    const current = { isEnabled: Boolean(state?.isEnabled), stacks: state?.stacks ?? 0 };
+    if (!matchesBuildSetting(current, wanted)) passiveChanges[passiveKey] = wanted;
+  }
+  if (Object.keys(passiveChanges).length > 0) changes.echoSetPassives = passiveChanges;
+
+  return changes;
 }
