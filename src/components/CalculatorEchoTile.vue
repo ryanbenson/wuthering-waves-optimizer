@@ -214,7 +214,15 @@
             </span>
           </div>
           <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
-            <span class="text-xs opacity-60 truncate">{{ echoSetLabel }}</span>
+            <span v-if="echoSetLabel" class="flex items-center gap-1 min-w-0" data-test-echo-item-set>
+              <img
+                v-if="echoSetIcon"
+                :src="echoSetIcon"
+                :alt="echoSetLabel"
+                class="size-4 rounded-full shrink-0"
+                data-test-echo-item-set-icon />
+              <span class="text-xs opacity-80 truncate">{{ echoSetLabel }}</span>
+            </span>
             <template v-if="hasSubStats">
               <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
                 CV {{ formattedCritValue }}%
@@ -596,6 +604,7 @@ function slotValueDisplay(slot: EchoSubstatSlot) {
 }
 
 const echoSetLabel = computed(() => (echoSet.value ? getEchoSetLabelByType(echoSet.value) : ""));
+const echoSetIcon = computed(() => (echoSet.value ? getEchoSetIcon(echoSet.value) : ""));
 
 const rankBorderClass = computed(() => ({
   "border-amber-300": String(rank.value) === "5",

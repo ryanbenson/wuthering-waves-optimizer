@@ -353,3 +353,27 @@ describe("CalculatorEchoTile slot order", () => {
     expect(emitted()["toggle-edit"]).toBeUndefined();
   });
 });
+
+describe("CalculatorEchoTile echo set (issue #708)", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("shows the set icon before the set name on a collapsed tile", () => {
+    setInlineEcho(0);
+    const { container } = renderTile(0);
+    const set = container.querySelector("[data-test-echo-item-set]") as HTMLElement;
+    const icon = set.querySelector("[data-test-echo-item-set-icon]") as HTMLImageElement;
+    expect(icon.getAttribute("src")).toContain("/sets/MoltenRift.webp");
+    expect(icon.getAttribute("alt")).toBe("Molten Rift");
+    expect(set.textContent?.trim()).toBe("Molten Rift");
+    expect(set.firstElementChild).toBe(icon);
+  });
+
+  it("shows no set icon or label when the echo has no set", () => {
+    setInlineEcho(0, { echoSet: null });
+    const { container } = renderTile(0);
+    expect(container.querySelector("[data-test-echo-item-set]")).toBeNull();
+    expect(container.querySelector("[data-test-echo-item-set-icon]")).toBeNull();
+  });
+});
