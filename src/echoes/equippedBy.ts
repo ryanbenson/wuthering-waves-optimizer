@@ -23,3 +23,21 @@ export function getEchoEquippedBy(
     others: characters.filter((character) => character !== activeCharacter),
   };
 }
+
+/**
+ * Whether a loadout is already what `character` is wearing: every echo in it
+ * is on that resonator and the loadout's main echo (its first entry) is in
+ * slot 0. The order of the other slots doesn't matter — re-equipping would
+ * only shuffle them. A different main echo is a different build (main echo
+ * buff, damage), so it doesn't count as equipped.
+ */
+export function isLoadoutEquipped(
+  equipped: Record<string, Record<string, number>> | null | undefined,
+  loadoutEchoIds: (string | null | undefined)[],
+  character: string | null | undefined,
+): boolean {
+  if (!character || loadoutEchoIds.length === 0) return false;
+  if (loadoutEchoIds.some((echoId) => !echoId)) return false;
+  if (equipped?.[loadoutEchoIds[0] as string]?.[character] !== 0) return false;
+  return loadoutEchoIds.every((echoId) => equipped?.[echoId as string]?.[character] !== undefined);
+}
