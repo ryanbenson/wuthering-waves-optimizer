@@ -34,7 +34,9 @@ defineProps<{ entry: UpdateEntry }>();
 
 const TAGS: Record<UpdateTag, { label: string; classes: string }> = {
   feature: { label: "New feature", classes: "bg-primary/20 text-base-content" },
-  content: { label: "New content", classes: "bg-success/20 text-base-content" },
+  improvement: { label: "Improvement", classes: "bg-info/20 text-base-content" },
+  qol: { label: "Quality of life", classes: "bg-secondary/20 text-base-content" },
+  content: { label: "Game content", classes: "bg-success/20 text-base-content" },
   labs: { label: "Labs", classes: "bg-accent/20 text-base-content" },
   fix: { label: "Fix", classes: "bg-warning/20 text-base-content" },
 };
