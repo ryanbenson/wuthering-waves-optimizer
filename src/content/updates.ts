@@ -52,8 +52,9 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 14, 2026",
     items: [
       "Improved the many damage delta previews for weapons, optimizer loadouts, etc. to handle near 0 better, and make 0 more clear too",
+      "Echo rows on the character Echoes tab and in the inventory now show the echo set icon before the set name, and the set name is easier to read",
     ],
-    itemDetails: { 0: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "feature" } },
   },
   {
     date: "2026-11-12",

@@ -33,7 +33,15 @@
             </span>
           </div>
           <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
-            <span class="text-xs opacity-60 truncate">{{ echoSetLabel }}</span>
+            <span v-if="echoSetLabel" class="flex items-center gap-1 min-w-0" data-test-echo-item-set>
+              <img
+                v-if="echoSetIcon"
+                :src="echoSetIcon"
+                :alt="echoSetLabel"
+                class="size-4 rounded-full shrink-0"
+                data-test-echo-item-set-icon />
+              <span class="text-xs opacity-80 truncate">{{ echoSetLabel }}</span>
+            </span>
             <template v-if="hasSubStats">
               <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
                 CV {{ formattedCritValue }}%
@@ -140,7 +148,7 @@
 // comes from EchoCardSubstatList. Rendered by InventoryEchoesBrowser in the
 // non-compact layout only; the dense compact grid keeps CalculatorEchoCard.
 import { computed } from "vue";
-import { getEchoSetLabelByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
+import { getEchoSetIconByType, getEchoSetLabelByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
@@ -222,6 +230,7 @@ const {
 const { echoRating, echoRatingBadgeClass } = useEchoRating(props);
 
 const echoSetLabel = computed(() => (props.echoSet ? getEchoSetLabelByType(props.echoSet) : ""));
+const echoSetIcon = computed(() => (props.echoSet ? getEchoSetIconByType(props.echoSet) : ""));
 
 const rankBorderClass = computed(() => ({
   "border-amber-300": String(props.rank) === "5",
