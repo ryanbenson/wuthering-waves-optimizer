@@ -189,6 +189,7 @@ import { sortLoadoutForDisplay } from "../optimizerWorkspace/optimizerLoadoutSor
 import { readTeamDamage } from "../../calculator/teamOptimizer";
 import { teamBuffSource } from "../../calculator/teamBuffPlans";
 import { getEchoSetLabelByType } from "../../echoes/stats";
+import { deltaToneTextClass, signedPercent } from "../../utils/signedDelta";
 
 defineOptions({ name: "TeamOptimizerResults" });
 
@@ -253,14 +254,13 @@ function current(pick: TeamOptimizerPick): Record<string, number> {
 function deltaPercent(value: number, base: number) {
   return base > 0 ? ((value - base) / base) * 100 : 0;
 }
+// Sign and color both come from the value rounded to the 2 decimals shown,
+// so a change that rounds away reads "0.00%" in the muted color (#703).
 function deltaLabel(value: number, base: number) {
-  const delta = deltaPercent(value, base);
-  return `${delta >= 0 ? "+" : ""}${delta.toFixed(2)}%`;
+  return signedPercent(deltaPercent(value, base), { decimals: 2 }).text;
 }
 function deltaClass(value: number, base: number) {
-  const delta = deltaPercent(value, base);
-  if (Math.abs(delta) < 0.005) return "opacity-60";
-  return delta > 0 ? "text-success" : "text-error";
+  return deltaToneTextClass(signedPercent(deltaPercent(value, base), { decimals: 2 }).tone);
 }
 function pickNote(pick: TeamOptimizerPick, rowIndex: number) {
   if (pick.isKept) return "Keeps build";

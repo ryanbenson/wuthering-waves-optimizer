@@ -25,14 +25,7 @@
               html: true,
             }">
             {{ displayDamage(damageBlock.healAmount ?? 0) }}
-            <span
-              :class="{
-                'text-success': healingDiffPercentage >= 0,
-                'text-error': healingDiffPercentage < 0,
-              }">
-              ({{ healingDiffPercentage >= 0 ? "+" : ""
-              }}{{ displayPercentage(healingDiffPercentage) }})
-            </span>
+            <AppDeltaPercent :value="healingDiffPercentage" parens />
           </td>
         </template>
         <template v-else-if="attackInfo.type === 'Shield'">
@@ -43,14 +36,7 @@
               html: true,
             }">
             {{ displayDamage(damageBlock.shieldAmount ?? 0) }}
-            <span
-              :class="{
-                'text-success': shieldDiffPercentage >= 0,
-                'text-error': shieldDiffPercentage < 0,
-              }">
-              ({{ shieldDiffPercentage >= 0 ? "+" : ""
-              }}{{ displayPercentage(shieldDiffPercentage) }})
-            </span>
+            <AppDeltaPercent :value="shieldDiffPercentage" parens />
           </td>
         </template>
         <template v-else-if="attackInfo.type === 'ElementalEffect'">
@@ -61,14 +47,7 @@
               html: true,
             }">
             {{ displayDamage(elementalDamageNumber) }}
-            <span
-              :class="{
-                'text-success': elementalEffectDiffPercentage >= 0,
-                'text-error': elementalEffectDiffPercentage < 0,
-              }">
-              ({{ elementalEffectDiffPercentage >= 0 ? "+" : ""
-              }}{{ displayPercentage(elementalEffectDiffPercentage) }})
-            </span>
+            <AppDeltaPercent :value="elementalEffectDiffPercentage" parens />
           </td>
         </template>
         <template v-else>
@@ -80,14 +59,7 @@
             }">
             <template v-if="!alwaysCrit">
               {{ displayDamage(damageBlock.totalDamage ?? 0) }}
-              <span
-                :class="{
-                  'text-success': normalDiffPercentage >= 0,
-                  'text-error': normalDiffPercentage < 0,
-                }">
-                ({{ normalDiffPercentage >= 0 ? "+" : ""
-                }}{{ displayPercentage(normalDiffPercentage) }})
-              </span>
+              <AppDeltaPercent :value="normalDiffPercentage" parens />
             </template>
           </td>
           <td
@@ -97,14 +69,7 @@
             }">
             <template v-if="!alwaysCrit">
               {{ displayDamage(damageBlock.avgDamage ?? 0) }}
-              <span
-                :class="{
-                  'text-success': avgDiffPercentage >= 0,
-                  'text-error': avgDiffPercentage < 0,
-                }">
-                ({{ avgDiffPercentage >= 0 ? "+" : ""
-                }}{{ displayPercentage(avgDiffPercentage) }})
-              </span>
+              <AppDeltaPercent :value="avgDiffPercentage" parens />
             </template>
           </td>
           <td
@@ -113,14 +78,7 @@
               html: true,
             }">
             {{ displayDamage(damageBlock.critDamage ?? 0) }}
-            <span
-              :class="{
-                'text-success': critDiffPercentage >= 0,
-                'text-error': critDiffPercentage < 0,
-              }">
-              ({{ critDiffPercentage >= 0 ? "+" : ""
-              }}{{ displayPercentage(critDiffPercentage) }})
-            </span>
+            <AppDeltaPercent :value="critDiffPercentage" parens />
           </td>
         </template>
       </tr>
@@ -129,8 +87,9 @@
 </template>
 
 <script setup lang="ts">
+import AppDeltaPercent from "./AppDeltaPercent.vue";
 import { computed } from "vue";
-import { displayDamage, displayPercentage } from "../utils/numbers";
+import { displayDamage } from "../utils/numbers";
 
 defineOptions({ name: "CalculatorOptimizerResultDamage" });
 

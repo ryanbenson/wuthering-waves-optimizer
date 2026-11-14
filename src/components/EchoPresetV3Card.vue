@@ -65,7 +65,7 @@
               <span
                 v-else-if="preview?.impact"
                 class="badge text-nowrap"
-                :class="preview.impact.pct >= 0 ? 'badge-success' : 'badge-error'"
+                :class="deltaToneBadgeClass(signedImpact(preview.impact.delta, preview.impact.pct).tone)"
                 v-tooltip="'Damage change vs. your current echoes'"
                 data-test-echo-preset-impact>
                 {{ formatImpact(preview.impact) }}
@@ -119,6 +119,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
 import { displayInt, displayPercentage } from "../utils/numbers";
+import { deltaToneBadgeClass, signedImpact } from "../utils/signedDelta";
 
 defineOptions({ name: "EchoPresetV3Card" });
 
@@ -283,7 +284,6 @@ const statRows = computed(() => {
 });
 
 function formatImpact(delta: EchoImpactDelta): string {
-  const sign = delta.delta >= 0 ? "+" : "";
-  return `${sign}${Math.round(delta.delta).toLocaleString()} · ${sign}${(delta.pct * 100).toFixed(1)}%`;
+  return signedImpact(delta.delta, delta.pct).text;
 }
 </script>

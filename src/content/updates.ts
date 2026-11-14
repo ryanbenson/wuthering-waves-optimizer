@@ -44,12 +44,17 @@ export interface Announcement {
 //   date: "2026-09-29",
 //   headline: "Version 3.7 (first half) is up!",
 // };
-export const currentAnnouncement: Announcement | null = {
-  date: "2026-11-11",
-  headline: "Version 3.8 is up!",
-};
+export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
+  {
+    date: "2026-11-14",
+    dateLabel: "November 14, 2026",
+    items: [
+      "Improved the many damage delta previews for weapons, optimizer loadouts, etc. to handle near 0 better, and make 0 more clear too",
+    ],
+    itemDetails: { 0: { tag: "fix" } },
+  },
   {
     date: "2026-11-12",
     dateLabel: "November 12, 2026",

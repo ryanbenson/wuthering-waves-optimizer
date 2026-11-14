@@ -246,6 +246,7 @@ import {
   ECHO_RATING_PERCENT_MIN,
   useEchoBrowserFilters,
 } from "../../composables/useEchoBrowserFilters";
+import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
@@ -514,13 +515,12 @@ watch(echoIndex, () => {
 
 function formatImpact(delta: EchoImpactDelta | null | undefined): string {
   if (!delta) return "";
-  const sign = delta.delta >= 0 ? "+" : "";
-  return `${sign}${Math.round(delta.delta).toLocaleString()} · ${sign}${(delta.pct * 100).toFixed(1)}%`;
+  return signedImpact(delta.delta, delta.pct).text;
 }
 
 function impactBadgeClasses(delta: EchoImpactDelta | null | undefined) {
   if (!delta) return "badge-ghost";
-  return delta.pct >= 0 ? "badge-success" : "badge-error";
+  return deltaToneBadgeClass(signedImpact(delta.delta, delta.pct).tone);
 }
 
 const allMainStats = computed(() => {

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   attributeStatBuckets,
   formatSplitRow,
+  type StatSplitRow,
   liveStatValueFor,
   resolveStatSelection,
   splitStat,
@@ -89,6 +90,18 @@ describe("splitStat — scaled stats (ATK/HP/DEF)", () => {
     expect(formatSplitRow("totalAtk", echoes)).toBe("+68.0% · +200");
     const base = split.buildRows.find((row) => row.source === "base")!;
     expect(formatSplitRow("totalAtk", base)).toBe("412");
+  });
+
+  it("never signs an amount that shows as zero (#703)", () => {
+    const tiny = { source: "echoes", label: "Echoes", amount: 0.01, flat: 0 } as StatSplitRow;
+    expect(formatSplitRow("totalAtk", tiny)).toBe("0.0%");
+    const tinyFlat = { source: "echoes", label: "Echoes", amount: 0, flat: 0.3 } as StatSplitRow;
+    expect(formatSplitRow("totalAtk", tinyFlat)).toBe("0.0%");
+    // Crit Rate amounts are fractions: -0.0001 is -0.01%.
+    const tinyNegative = { source: "teamBuffs", label: "Team", amount: -0.0001 } as StatSplitRow;
+    expect(formatSplitRow("totalCritRate", tinyNegative)).toBe("0.0%");
+    const real = { source: "teamBuffs", label: "Team", amount: -0.025 } as StatSplitRow;
+    expect(formatSplitRow("totalCritRate", real)).toBe("−2.5%");
   });
 
   it("puts a gap it can't explain in an explicit Other row instead of hiding it", () => {

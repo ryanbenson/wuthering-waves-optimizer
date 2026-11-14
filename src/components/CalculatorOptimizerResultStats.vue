@@ -20,14 +20,7 @@
             }">
             {{ displayInt(finalStats.totalHp ?? 0) }}
             <template v-if="targetValue === 'totalHp'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -49,14 +42,7 @@
             }">
             {{ displayInt(finalStats.totalAtk ?? 0) }}
             <template v-if="targetValue === 'totalAtk'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -78,14 +64,7 @@
             }">
             {{ displayInt(finalStats.totalDef ?? 0) }}
             <template v-if="targetValue === 'totalDef'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -102,14 +81,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.totalCritRate ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritRate'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -126,14 +98,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.totalCritDMG ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritDMG'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -150,14 +115,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.energyRegen ?? 0) * 100) }}
             <template v-if="targetValue === 'energyRegen'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
+              <AppDeltaPercent :value="atkDiffPercent" parens />
             </template>
           </td>
         </tr>
@@ -280,6 +238,7 @@
 </template>
 
 <script setup lang="ts">
+import AppDeltaPercent from "./AppDeltaPercent.vue";
 import { computed } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
 

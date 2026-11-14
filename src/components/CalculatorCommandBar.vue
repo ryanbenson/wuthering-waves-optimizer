@@ -279,9 +279,9 @@
           <div class="flex items-center gap-2">
             <Transition name="live-result-bar-delta">
               <span
-                v-if="delta !== null && delta !== 0"
+                v-if="deltaShown"
                 class="badge badge-sm font-mono tabular-nums"
-                :class="delta > 0 ? 'badge-success' : 'badge-error'"
+                :class="deltaToneBadgeClass(deltaSigned!.tone)"
                 data-test-live-result-bar-delta>
                 {{ deltaLabel }}
               </span>
@@ -383,6 +383,7 @@ import { getStanceIconConfig } from "../calculator/stanceIcons";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
 import { useScrollCollapse } from "../composables/useScrollCollapse";
 import { useCharacterStore } from "../stores/character";
+import { deltaToneBadgeClass, signedInt } from "../utils/signedDelta";
 
 defineOptions({ name: "CalculatorCommandBar" });
 
@@ -556,11 +557,13 @@ const { displayValue, delta } = useAnimatedNumber(heroValueSource, heroValueIden
 const heroDisplay = computed(() =>
   displayValue.value === null ? "–" : displayInt(displayValue.value),
 );
-const deltaLabel = computed(() => {
-  if (delta.value === null) return "";
-  const sign = delta.value > 0 ? "+" : "−";
-  return `${sign}${displayInt(Math.abs(delta.value))}`;
-});
+// Sign, color and visibility all come from the rounded change, so a change
+// under 1 doesn't flash a green "+0" or red "−0" (#703).
+const deltaSigned = computed(() =>
+  delta.value === null ? null : signedInt(delta.value, { minus: "−" }),
+);
+const deltaShown = computed(() => deltaSigned.value !== null && deltaSigned.value.tone !== "neutral");
+const deltaLabel = computed(() => deltaSigned.value?.text ?? "");
 
 const settingsTriggerRef = ref<HTMLButtonElement | null>(null);
 const phoneTargetTriggerRef = ref<HTMLButtonElement | null>(null);
