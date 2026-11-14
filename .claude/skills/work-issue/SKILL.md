@@ -109,7 +109,8 @@ Only after the dev confirms it works:
 2. **Sitemap** — check `public/sitemap.xml` and set `<lastmod>` to today for each page whose content changed, never moving a date backwards:
    - `/updates` — always, whenever step 1 added a bullet.
    - The page the change lives on, when its visible content changed: a guide (`/info/guides/<slug>`), an info page, `/convene`, `/scanners`, `/privacy`, `/legal`.
-   - The root `https://wutheringtools.com` (the calculator) — only for a notable new calculator feature or a version/content release; small UI tweaks and fixes don't bump it.
+   - The root `https://wutheringtools.com` — only when the home page itself changes as a first-time visitor (and a crawler) sees it: landing content, the `<title>`/meta description in `index.html`, or the main navigation. Calculator features, UI tweaks and fixes that only show after interacting don't bump it — they're covered by `/updates`.
+   - Don't inflate dates: Google only trusts `lastmod` when it's consistently accurate, and over-bumping weakens it site-wide.
    - A new page or guide needs a new `<url>` entry (`tests/content/guides.test.ts` enforces this for guides).
    - Report which dates you bumped, or that none needed it (e.g. already today).
    - Run the related tests: `npx vitest run tests/pages/UpdatesView.test.ts tests/components/UpdatesWorkspace.test.ts tests/content/guides.test.ts`.
