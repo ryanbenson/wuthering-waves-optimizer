@@ -16,7 +16,7 @@ A gated workflow. **Every `STOP` is a hard stop**: end your turn and wait for th
 | 5. Plan | dev plan | **STOP: approve plan** |
 | 6. Build + verify | code, tests, docs; build/test results | — |
 | 7. Local test | dev server running + testing steps | **STOP: dev verifies** |
-| 8. Ship | commit, push, PR description | — |
+| 8. Ship | changelog + sitemap, commit, push, PR description | — |
 
 ## 1. Read the issue
 
@@ -72,6 +72,7 @@ Write a concrete plan:
 - **Tests**: unit tests under `tests/` (required for any calculator change — `tests/calculator/`); Cypress spec in `cypress/` if it's a user-facing flow worth covering.
 - **Persistence**: store shape change? → version bump + migration in `src/migrations/` + migration test. Say "none" explicitly if none.
 - **Docs**: which `docs/src-*.md` to update; ADR needed (lasting decision) or annotation of a stale ADR?
+- **Changelog + sitemap**: the bullet you'll add to `src/content/updates.ts` and its tag, and which `public/sitemap.xml` dates you expect to bump (see step 8).
 - **Both UIs**: whether classic and v3 both need the change.
 - **Out of scope**: things deliberately not done.
 
@@ -100,20 +101,32 @@ Write a concrete plan:
 
 Only after the dev confirms it works:
 
-1. Stage only the files this work changed (no stray scratch files). Commit:
+1. **Changelog** — add a bullet to `updateEntries` in `src/content/updates.ts` (newest first):
+   - If an entry for today's date already exists (check `origin/master` too — another PR may have added it), append to its `items`; otherwise add a new entry at the top with `date` (ISO) and `dateLabel` ("November 14, 2026").
+   - Write it for players, in plain English: what they'll notice, not component names. One idea per bullet.
+   - Tag it in `itemDetails` by its index: `feature`, `fix`, `content` (new game data) or `labs` (behind a Labs flag).
+   - Skip only for changes players can't see (internal refactor, tests, tooling, docs) — say you skipped it and why.
+2. **Sitemap** — check `public/sitemap.xml` and set `<lastmod>` to today for each page whose content changed, never moving a date backwards:
+   - `/updates` — always, whenever step 1 added a bullet.
+   - The page the change lives on, when its visible content changed: a guide (`/info/guides/<slug>`), an info page, `/convene`, `/scanners`, `/privacy`, `/legal`.
+   - The root `https://wutheringtools.com` (the calculator) — only for a notable new calculator feature or a version/content release; small UI tweaks and fixes don't bump it.
+   - A new page or guide needs a new `<url>` entry (`tests/content/guides.test.ts` enforces this for guides).
+   - Report which dates you bumped, or that none needed it (e.g. already today).
+   - Run the related tests: `npx vitest run tests/pages/UpdatesView.test.ts tests/components/UpdatesWorkspace.test.ts tests/content/guides.test.ts`.
+3. Stage only the files this work changed (no stray scratch files). Commit:
    ```
    <type>: <description> (#<N>)
    ```
    lowercase, no trailing period, per `docs/conventions.md`, with the attribution trailer.
-2. `git push -u origin <branch>`.
-3. Write the **PR description** and give it to the dev in a fenced markdown block:
+4. `git push -u origin <branch>`.
+5. Write the **PR description** and give it to the dev in a fenced markdown block:
    - Title (same as the commit title)
    - `Closes #<N>`
    - Summary — what changed and why, in plain English
    - Changes — bullet list by area
    - Testing — automated (build/test/Cypress results) and the manual steps the dev ran
    - Screenshots placeholder for UI changes
-   - Notes — migrations, docs updated, follow-ups / out-of-scope items
+   - Notes — migrations, docs updated, changelog line and sitemap dates, follow-ups / out-of-scope items
    - The attribution footer
-4. If `gh` is authenticated, offer to open the PR with `gh pr create` — don't open it without a yes. Otherwise give the compare link: `https://github.com/<owner>/<repo>/compare/master...<branch>?expand=1`.
-5. Stop the dev server you started.
+6. If `gh` is authenticated, offer to open the PR with `gh pr create` — don't open it without a yes. Otherwise give the compare link: `https://github.com/<owner>/<repo>/compare/master...<branch>?expand=1`.
+7. Stop the dev server you started.
