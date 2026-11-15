@@ -47,3 +47,14 @@ export function buffIsPossibleForTeam(
   }
   return teamWeaponTypes.includes(buff.weaponType);
 }
+
+/**
+ * "Hide impossible" is on unless the player turned it off (issue #701).
+ * Resolved when read and never written back, so only the player's own click
+ * is saved to `teamBuffs.hideImpossible`.
+ */
+export const DEFAULT_HIDE_IMPOSSIBLE = true;
+
+export function resolveHideImpossible(saved: boolean | null | undefined): boolean {
+  return saved ?? DEFAULT_HIDE_IMPOSSIBLE;
+}

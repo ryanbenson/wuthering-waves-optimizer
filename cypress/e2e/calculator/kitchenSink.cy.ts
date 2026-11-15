@@ -128,6 +128,9 @@ describe("Calculator Kitchen Sink", () => {
     cy.get('[data-test-calculator-nav="team"]').click();
     cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
     cy.richSelect("[data-test-party-member-2-input]", "Zhezhi");
+    // Turns on every buff, including Static Mist (Pistol) with no Pistol
+    // user on the team, so Hide impossible (on by default, #701) goes off.
+    cy.get("[data-test-party-buffs-hide-impossible]").uncheck();
     cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",

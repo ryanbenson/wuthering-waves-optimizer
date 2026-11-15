@@ -21,6 +21,9 @@ describe("Calculator Team Buffs", () => {
     // choose 2 characters for team buffs
     cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
     cy.richSelect("[data-test-party-member-2-input]", "Zhezhi");
+    // Turns on every buff, including Static Mist (Pistol) with no Pistol
+    // user on the team, so Hide impossible (on by default, #701) goes off.
+    cy.get("[data-test-party-buffs-hide-impossible]").uncheck();
     cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",
@@ -105,9 +108,8 @@ describe("Calculator Team Buffs", () => {
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get('[data-test-calculator-nav="team"]').click();
-    cy.get("[data-test-party-buffs-hide-impossible]").check();
-
-    // No teammates yet: nothing can be ruled out.
+    // On by default (issue #701). No teammates yet: nothing can be ruled out.
+    cy.get("[data-test-party-buffs-hide-impossible]").should("be.checked");
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("exist");
 
     // Shorekeeper wields a Rectifier: Pistol buffs go, Rectifier buffs stay.
@@ -117,5 +119,8 @@ describe("Calculator Team Buffs", () => {
 
     cy.get("[data-test-party-buffs-hide-impossible]").uncheck();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("exist");
+
+    cy.get("[data-test-party-buffs-hide-impossible]").check();
+    cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).should("not.exist");
   });
 });

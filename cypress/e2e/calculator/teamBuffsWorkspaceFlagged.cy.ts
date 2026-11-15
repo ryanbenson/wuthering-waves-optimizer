@@ -77,6 +77,9 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     // page's DaisyUI collapse which starts closed, so no clicks needed here.
     cy.selectTeamBuffsSlotCharacter(1, "Shorekeeper");
     cy.selectTeamBuffsSlotCharacter(2, "Zhezhi");
+    // Turns on every buff, including Static Mist (Pistol) with no Pistol
+    // user on the team, so Hide impossible (on by default, #701) goes off.
+    cy.get("[data-test-team-buffs-hide-impossible]").uncheck();
     cy.get('[data-test-team-buffs-slot-name="1"]').should("contain.text", "Shorekeeper");
     cy.get('[data-test-team-buffs-slot-name="2"]').should("contain.text", "Zhezhi");
 
@@ -178,8 +181,9 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.selectWorkspaceCharacter("Carlotta");
     cy.get('[data-test-calculator-nav="team"]').click();
 
-    // No teammates yet: nothing can be ruled out, so the toggle is a no-op.
-    cy.get("[data-test-team-buffs-hide-impossible]").check();
+    // On by default (issue #701). No teammates yet: nothing can be ruled out,
+    // so it's a no-op.
+    cy.get("[data-test-team-buffs-hide-impossible]").should("be.checked");
     cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("exist");
 
     // Shorekeeper wields a Rectifier: Pistol buffs go, Rectifier buffs stay.
@@ -189,6 +193,9 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
 
     cy.get("[data-test-team-buffs-hide-impossible]").uncheck();
     cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("exist");
+
+    cy.get("[data-test-team-buffs-hide-impossible]").check();
+    cy.get('[data-test-team-buffs-buff-enabled="StaticMistATK"]').should("not.exist");
   });
 
   it("toggles a teammate's buff list by clicking anywhere on the bar, not just the chevron", () => {
