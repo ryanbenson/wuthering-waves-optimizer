@@ -62,9 +62,15 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 15, 2026",
     items: [
       "Lily now has frame data, so her rotations show how long they take and the DPS from frame data, and she has four rotation presets: an opener and a loop at RC0 and at RC3",
+      "Lily now has her own substat weights, so echo ratings score HP%, Heavy Attack DMG, Crit DMG and Energy Regen higher for her instead of using the general defaults",
+      "Shorekeeper's echo ratings now value Energy Regen more, since she builds around a high ER target",
+      "Fixed Lily's echo preset, which had the wrong main stats, echoes and substats",
     ],
     itemDetails: {
       0: { tag: "content" },
+      1: { tag: "improvement" },
+      2: { tag: "improvement" },
+      3: { tag: "fix" },
     },
   },
   {

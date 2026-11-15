@@ -30,6 +30,12 @@ describe("characterSubstatPriorities", () => {
     expect(getCuratedSubstatWeights("NotACuratedCharacter")).toBeUndefined();
   });
 
+  it("weights Energy Regen high for characters built around a high ER target (issue #718)", () => {
+    for (const characterId of ["Lily", "Shorekeeper", "Mornye"]) {
+      expect(getCuratedSubstatWeights(characterId)?.EnergyRegen, characterId).toBe(3.5);
+    }
+  });
+
   it("returns the curated profile for a known character", () => {
     expect(getCuratedSubstatWeights("Camellya")).toBe(characterSubstatPriorities.Camellya);
   });
