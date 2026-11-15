@@ -1,4 +1,29 @@
-export const rotations: RotationPreset[] = [];
+export const rotations: RotationPreset[] = [
+  {
+    name: `Opener at RC0`,
+    description: `Opener for Lily at RC0`,
+    author: `Dorito`,
+    data: {"name":"Opener at RC0","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"basic","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"skill","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"basic","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"basic","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage2DMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":5,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":6,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":7,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Loop at RC0`,
+    description: `Loop for Lily at RC0`,
+    author: `Dorito`,
+    data: {"name":"Loop at RC0","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"intro","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"IntroSkillEternalBloomDMG","isDisabled":false,"buffs":[]},{"type":"skill","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"basic","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"BasicAttackStage1DMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":5,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":6,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Opener at RC3`,
+    description: `Opener for Lily at RC3`,
+    author: `Dorito`,
+    data: {"name":"Opener at RC3","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"skill","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"ResonanceSkillReverieBlendDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+  {
+    name: `Loop at RC3`,
+    description: `Loop for Lily at RC3`,
+    author: `Dorito`,
+    data: {"name":"Loop at RC3","description":"","duration":null,"echo":null,"echoRank":5,"actions":[{"type":"intro","order":1,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"IntroSkillEternalBloomDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":2,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackWovenFairytaleDMG","isDisabled":false,"buffs":[]},{"type":"forteCircuit","order":3,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"HeavyAttackFairytaleSFinaleDMG","isDisabled":false,"buffs":[]},{"type":"liberation","order":4,"count":1,"negativeStatusStacks":1,"electroRageStacks":0,"heartOfThunderStacks":0,"key":"SlumberlandHealing","isDisabled":false,"buffs":[],"end":{"type":"cancel"}}]},
+  },
+];
 export const echoes = [
     {
         name: `Standard Healing Build`,

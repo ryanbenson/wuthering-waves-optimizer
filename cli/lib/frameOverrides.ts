@@ -110,6 +110,15 @@ export const frameOverrides: Record<string, FrameOverrides> = {
     EarthCharmYinghuoShield: OFF_FIELD,
     ShadowStepDMG: "Dodge: Shadow Step",
   },
+  Lily: {
+    // Liberation damage that ticks on its own after the cast.
+    DreambindContinuousDMG: OFF_FIELD,
+    // Heals that ride on her heavy attacks. Both heavies share the same heal
+    // values, so the matcher would pin Phantasm's heal on "Heavy: Woven Fairytale".
+    HeavyAttackWovenFairytaleHealingWithWishOfPrayingDream: OFF_FIELD,
+    HeavyAttackWovenPhantasmHealing: OFF_FIELD,
+    HeavyAttackWovenPhantasmHealingWithWishOfPrayingDream: OFF_FIELD,
+  },
   Lingyang: {
     LionAwakensDMG: "Intro: Lion Awakens",
   },

@@ -58,6 +58,16 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-15",
+    dateLabel: "November 15, 2026",
+    items: [
+      "Lily now has frame data, so her rotations show how long they take and the DPS from frame data, and she has four rotation presets: an opener and a loop at RC0 and at RC3",
+    ],
+    itemDetails: {
+      0: { tag: "content" },
+    },
+  },
+  {
     date: "2026-11-14",
     dateLabel: "November 14, 2026",
     items: [

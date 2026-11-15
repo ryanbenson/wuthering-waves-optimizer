@@ -218,6 +218,30 @@ exports[`preset rotation lengths > matches the reviewed lengths 1`] = `
     "missing": 6,
     "real": 0,
   },
+  "Lily / Loop at RC0": {
+    "actions": 6,
+    "game": 500,
+    "missing": 0,
+    "real": 858,
+  },
+  "Lily / Loop at RC3": {
+    "actions": 4,
+    "game": 436,
+    "missing": 0,
+    "real": 794,
+  },
+  "Lily / Opener at RC0": {
+    "actions": 7,
+    "game": 486,
+    "missing": 0,
+    "real": 844,
+  },
+  "Lily / Opener at RC3": {
+    "actions": 4,
+    "game": 394,
+    "missing": 0,
+    "real": 752,
+  },
   "Lupa / Pre S6 Rotation": {
     "actions": 10,
     "game": 694,
