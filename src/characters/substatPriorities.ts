@@ -20,6 +20,11 @@ import type { SubstatWeights } from "../echoes/rating";
  * source was last synced (e.g. Jingran, Qingxiao). All omitted characters
  * fall back to the neutral DEFAULT_SUBSTAT_WEIGHTS profile (see
  * `src/echoes/rating.ts`) until a user customizes it themselves.
+ *
+ * Added by hand since: Lily comes from a damage-per-substat chart (S0R1,
+ * issue #718), scaled so the top stat is 4 and rounded to 0.5. Characters
+ * built around a high Energy Regen target (Lily 260%, Shorekeeper 250%,
+ * Mornye) weight it 3.5, since every ER roll counts until they reach it.
  */
 export const characterSubstatPriorities: Record<string, SubstatWeights> = {
   Aalto: { CritRate: 4, CritDMG: 4, EnergyRegen: 2, ATK: 2, ATK_FLAT: 1 },
@@ -46,6 +51,7 @@ export const characterSubstatPriorities: Record<string, SubstatWeights> = {
   Jinhsi: { CritRate: 4, CritDMG: 2.5, EnergyRegen: 1, ATK: 2, ResonanceSkillDMGBonus: 1.5, ResonanceLiberationDMGBonus: 0.5, ATK_FLAT: 1 },
   Jingran: { CritRate: 4, CritDMG: 4, EnergyRegen: 1, HP: 0.5, HeavyAttackDMGBonus: 1.5, ATK: 1, ATK_FLAT: 0.5 },
   Jiyan: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ATK: 2, HeavyAttackDMGBonus: 3, ATK_FLAT: 1 },
+  Lily: { HP: 4, HeavyAttackDMGBonus: 3.5, CritDMG: 3.5, EnergyRegen: 3.5, CritRate: 2, ATK: 1.5, HP_FLAT: 1, ATK_FLAT: 1, BasicAttackDMGBonus: 0.5, ResonanceSkillDMGBonus: 0.5 },
   Lucilla: { CritRate: 3.5, CritDMG: 4, EnergyRegen: 1, ATK: 2, BasicAttackDMGBonus: 1.5, ResonanceSkillDMGBonus: 0.5, ATK_FLAT: 1 },
   Lucy: { CritRate: 4, CritDMG: 3.5, EnergyRegen: 1, ATK: 1.5, HeavyAttackDMGBonus: 1.5, ATK_FLAT: 1 },
   Lupa: { CritRate: 4, CritDMG: 3, EnergyRegen: 1, ATK: 2, ResonanceLiberationDMGBonus: 1.5, ATK_FLAT: 1 },
@@ -66,7 +72,7 @@ export const characterSubstatPriorities: Record<string, SubstatWeights> = {
   RoverSpectroFemale: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ResonanceSkillDMGBonus: 3, ATK: 2, ATK_FLAT: 1 },
   RoverSpectroMale: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ResonanceSkillDMGBonus: 3, ATK: 2, ATK_FLAT: 1 },
   Sanhua: { CritRate: 4, CritDMG: 4, ATK: 2, EnergyRegen: 2, ResonanceLiberationDMGBonus: 3, ATK_FLAT: 1 },
-  Shorekeeper: { EnergyRegen: 2, HP: 2, CritDMG: 4, ResonanceLiberationDMGBonus: 3, HP_FLAT: 1 },
+  Shorekeeper: { EnergyRegen: 3.5, HP: 2, CritDMG: 4, ResonanceLiberationDMGBonus: 3, HP_FLAT: 1 },
   Sigrika: { CritRate: 4, CritDMG: 3.5, EnergyRegen: 1.5, ATK: 2, ATK_FLAT: 1 },
   Suisui: { CritRate: 2.5, CritDMG: 4, EnergyRegen: 1, ATK: 1, HP: 2, BasicAttackDMGBonus: 2, ResonanceSkillDMGBonus: 0.5, ATK_FLAT: 1, HP_FLAT: 0.5 },
   Suoming: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ATK: 3, BasicAttackDMGBonus: 2, ATK_FLAT: 1 },
