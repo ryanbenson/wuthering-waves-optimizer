@@ -65,12 +65,14 @@ export const updateEntries: UpdateEntry[] = [
       "Lily now has her own substat weights, so echo ratings score HP%, Heavy Attack DMG, Crit DMG and Energy Regen higher for her instead of using the general defaults",
       "Shorekeeper's echo ratings now value Energy Regen more, since she builds around a high ER target",
       "Fixed Lily's echo preset, which had the wrong main stats, echoes and substats",
+      "Hide impossible on Team Buffs is now on by default, so weapon buffs your teammates can't use stay out of the way. Turn it off anytime, and your choice is remembered",
     ],
     itemDetails: {
       0: { tag: "content" },
       1: { tag: "improvement" },
       2: { tag: "improvement" },
       3: { tag: "fix" },
+      4: { tag: "qol" },
     },
   },
   {

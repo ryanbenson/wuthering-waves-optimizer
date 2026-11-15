@@ -51,6 +51,12 @@ Crit DMG / Buffs Active) above a flat Active Buffs tray. In use:
    **Update 2026-09-24:** the same toggle (same persisted key, same helper)
    was also added to the legacy, flag-off `CalculatorPartyBuffs.vue`.
 
+   **Update 2026-11-15:** the default is now **on** (issue #701). An unset
+   `teamBuffs.hideImpossible` resolves to `true` when read
+   (`resolveHideImpossible()` / `DEFAULT_HIDE_IMPOSSIBLE` in
+   `buffFilters.ts`) and is never written back, so only a player's own
+   choice is saved. No migration.
+
 Display-only: none of this touches `teamBuffsData` or any calculator path.
 
 ## Consequences

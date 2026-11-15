@@ -3,6 +3,7 @@ import {
   buffIsPossibleForTeam,
   buffIsUsed,
   buffMatchesSearch,
+  resolveHideImpossible,
   stripBuffDetailsHtml,
 } from "../../src/buffs/buffFilters";
 import { allWeaponTeamBuffs } from "../../src/buffs/index";
@@ -85,4 +86,16 @@ describe("allWeaponTeamBuffs weaponType", () => {
       expect(keys).toContain(weaponKey);
     },
   );
+});
+
+describe("resolveHideImpossible (issue #701)", () => {
+  it("is on when the player never set it", () => {
+    expect(resolveHideImpossible(undefined)).toBe(true);
+    expect(resolveHideImpossible(null)).toBe(true);
+  });
+
+  it("keeps the player's own choice", () => {
+    expect(resolveHideImpossible(false)).toBe(false);
+    expect(resolveHideImpossible(true)).toBe(true);
+  });
 });
