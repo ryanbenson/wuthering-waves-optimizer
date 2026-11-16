@@ -1622,7 +1622,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         details: `Dealing Echo Skill DMG to enemies increases the Resonator's Echo Skill Crit. Rate by 20%, and grants 15% Aero DMG Bonus for 5s.`,
         modifiers: [
           {
-            modifier: "CritRate",
+            modifier: "CritRate:Echo",
             modifierValue: 20,
           },
           {

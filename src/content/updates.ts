@@ -66,6 +66,7 @@ export const updateEntries: UpdateEntry[] = [
       "Shorekeeper's echo ratings now value Energy Regen more, since she builds around a high ER target",
       "Fixed Lily's echo preset, which had the wrong main stats, echoes and substats",
       "Hide impossible on Team Buffs is now on by default, so weapon buffs your teammates can't use stay out of the way. Turn it off anytime, and your choice is remembered",
+      "Fixed Sound of True Name's 5-piece bonus giving +20% Crit Rate to every attack. It now only applies to Echo Skill damage, as in game, so damage for builds using it is lower and correct",
     ],
     itemDetails: {
       0: { tag: "content" },
@@ -73,6 +74,7 @@ export const updateEntries: UpdateEntry[] = [
       2: { tag: "improvement" },
       3: { tag: "fix" },
       4: { tag: "qol" },
+      5: { tag: "fix" },
     },
   },
   {
