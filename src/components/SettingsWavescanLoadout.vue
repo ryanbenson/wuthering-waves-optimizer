@@ -198,7 +198,7 @@
  * the parent owns the order and applies it.
  */
 import { computed, useId } from "vue";
-import { useDragReorder } from "../composables/useDragReorder";
+import { setDragPreview, useDragReorder } from "../composables/useDragReorder";
 
 export type WavescanLoadoutTile = {
   id: string;
@@ -267,6 +267,10 @@ function onHandleDragStart(index: number, id: string, event: DragEvent) {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", id);
   }
+  setDragPreview(
+    event,
+    (event.currentTarget as HTMLElement | null)?.closest<HTMLElement>("[data-test-wavescan-loadout-slot]"),
+  );
   onDragStart(index);
 }
 </script>
