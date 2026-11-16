@@ -34,6 +34,9 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    // Each Rune consumption takes one path: >= 30 Vitality is this +50%,
+    // < 30 is Soliskin Vitality's amplification (issue #700)
+    mutuallyExclusiveWith: ["SoliskinVitality"],
   },
   {
     key: `SoliskinVitality`,
@@ -51,6 +54,7 @@ export const buffs = [
     maxStacks: 60,
     alwaysEnabled: false,
     appliesOnEveryStep: 10,
+    mutuallyExclusiveWith: ["SchemataofRunes"],
   },
   {
     key: `InnateGift`,
