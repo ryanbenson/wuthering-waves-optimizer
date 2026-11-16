@@ -4,6 +4,7 @@ import {
   buildBulkEnableUpdate,
   type MutuallyExclusiveDef,
 } from "../../src/characters/mutuallyExclusiveBuffs";
+import { buffs as sigrikaBuffs } from "../../src/characters/Sigrika/buffs";
 
 describe("buildBuffToggleUpdate", () => {
   it("just toggles the key when it has no mutually exclusive partners", () => {
@@ -85,5 +86,33 @@ describe("buildBulkEnableUpdate", () => {
     );
     expect(updates.buffs?.MyMoment).toEqual({ isEnabled: true, stacks: 5 });
     expect(updates.buffs?.TheatricalMoment).toEqual({ isEnabled: false });
+  });
+});
+
+// Issue #700: each Rune consumption takes one Soliskin Vitality path, so
+// Sigrika's Schemata of Runes (>= 30) and Soliskin Vitality (< 30) can't both apply.
+describe("Sigrika's Schemata of Runes vs. Soliskin Vitality", () => {
+  const byKey = (key: string) => sigrikaBuffs.find((buff) => buff.key === key) as MutuallyExclusiveDef;
+  const schemata = byKey("SchemataofRunes");
+  const vitality = byKey("SoliskinVitality");
+
+  it("declares each buff exclusive with the other", () => {
+    expect(schemata.mutuallyExclusiveWith).toEqual(["SoliskinVitality"]);
+    expect(vitality.mutuallyExclusiveWith).toEqual(["SchemataofRunes"]);
+  });
+
+  it("turns the other off when either is turned on", () => {
+    expect(buildBuffToggleUpdate("buffs", schemata.key, true, schemata.mutuallyExclusiveWith)).toEqual({
+      buffs: { SchemataofRunes: { isEnabled: true }, SoliskinVitality: { isEnabled: false } },
+    });
+    expect(buildBuffToggleUpdate("buffs", vitality.key, true, vitality.mutuallyExclusiveWith)).toEqual({
+      buffs: { SoliskinVitality: { isEnabled: true }, SchemataofRunes: { isEnabled: false } },
+    });
+  });
+
+  it("keeps Schemata of Runes on an enable-all pass", () => {
+    const updates = buildBulkEnableUpdate("buffs", sigrikaBuffs as MutuallyExclusiveDef[], () => false);
+    expect(updates.buffs?.SchemataofRunes).toEqual({ isEnabled: true });
+    expect(updates.buffs?.SoliskinVitality).toEqual({ isEnabled: false });
   });
 });

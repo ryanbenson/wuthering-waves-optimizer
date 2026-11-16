@@ -62,8 +62,9 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 16, 2026",
     items: [
       "Dragging to reorder echoes, rotations, actions and the Wavescan loadout now shows just the item you're moving, instead of the whole screen in Chrome",
+      "Sigrika's Schemata of Runes and Soliskin Vitality buffs can no longer both be on, matching the game, where each Rune consumption gets one or the other",
     ],
-    itemDetails: { 0: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" } },
   },
   {
     date: "2026-11-15",
