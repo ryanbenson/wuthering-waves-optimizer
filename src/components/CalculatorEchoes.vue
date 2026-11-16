@@ -351,7 +351,7 @@ import { randomString } from "../utils/strings.ts";
 import { useCommunityEchoPresets, type EchoPresetsOpenOptions } from "../composables/useCommunityEchoPresets";
 import { useEchoPresetStatus } from "../composables/useEchoPresetStatus";
 import { trackEvent } from "../utils/analytics";
-import { useDragReorder } from "../composables/useDragReorder";
+import { setDragPreview, useDragReorder } from "../composables/useDragReorder";
 
 const MAX_ECHO_COST = 12;
 
@@ -400,6 +400,7 @@ function handleEchoDragStart(index: number, event: DragEvent) {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", String(index));
   }
+  setDragPreview(event, event.currentTarget as HTMLElement | null);
   onEchoDragStart(index);
 }
 

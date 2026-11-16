@@ -536,7 +536,7 @@ import {
   getEchoData,
 } from "../echoes/index.ts";
 import { useToast } from "../composables/useToast";
-import { useDragReorder } from "../composables/useDragReorder";
+import { setDragPreview, useDragReorder } from "../composables/useDragReorder";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
 import {
@@ -689,6 +689,12 @@ function onDragReorderStart(event: DragEvent) {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", props.id);
   }
+  // An open rotation is tall, so the preview is the card cropped to its header
+  const handle = event.currentTarget as HTMLElement | null;
+  const head = handle?.closest<HTMLElement>(".rotation__head");
+  setDragPreview(event, handle?.closest<HTMLElement>("[data-test-rotation-item]"), {
+    maxHeight: head?.offsetHeight,
+  });
   emit("drag-reorder-start", event);
 }
 

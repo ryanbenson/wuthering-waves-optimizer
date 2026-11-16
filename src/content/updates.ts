@@ -58,6 +58,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-16",
+    dateLabel: "November 16, 2026",
+    items: [
+      "Dragging to reorder echoes, rotations, actions and the Wavescan loadout now shows just the item you're moving, instead of the whole screen in Chrome",
+    ],
+    itemDetails: { 0: { tag: "fix" } },
+  },
+  {
     date: "2026-11-15",
     dateLabel: "November 15, 2026",
     items: [

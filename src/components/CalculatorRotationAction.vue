@@ -336,6 +336,7 @@ import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
 import { randomString } from "../utils/strings";
+import { setDragPreview } from "../composables/useDragReorder";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -960,6 +961,13 @@ function onDragReorderStart(event: DragEvent) {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", props.id);
   }
+  // Crop to the summary row in case the action's editor is open
+  const handle = event.currentTarget as HTMLElement | null;
+  const row = handle?.closest<HTMLElement>(".rotation__action");
+  const info = row?.querySelector<HTMLElement>(".rotation__action__info");
+  const maxHeight =
+    row && info ? info.getBoundingClientRect().bottom - row.getBoundingClientRect().top + 16 : undefined; // + p-4
+  setDragPreview(event, row, { maxHeight });
   emit("drag-reorder-start", event);
 }
 
