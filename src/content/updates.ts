@@ -63,8 +63,10 @@ export const updateEntries: UpdateEntry[] = [
     items: [
       "Dragging to reorder echoes, rotations, actions and the Wavescan loadout now shows just the item you're moving, instead of the whole screen in Chrome",
       "Sigrika's Schemata of Runes and Soliskin Vitality buffs can no longer both be on, matching the game, where each Rune consumption gets one or the other",
+      "Fixed Lily's echo preset using HP instead of Healing Bonus on its 4-cost echo, and corrected its description",
+      "Lily has a second echo preset with Energy Regen on both 3-cost echoes, by lavasnake",
     ],
-    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" } },
+    itemDetails: { 0: { tag: "fix" }, 1: { tag: "fix" }, 2: { tag: "fix" }, 3: { tag: "content" } },
   },
   {
     date: "2026-11-15",
