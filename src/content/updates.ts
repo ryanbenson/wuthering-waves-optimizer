@@ -58,6 +58,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-17",
+    dateLabel: "November 17, 2026",
+    items: [
+      "Optimizer results now tell you when you've changed your weapon, resonance chains, buffs or other settings since the run, keep their comparisons from before that change, and let you run it again in one click. Equipping a result still updates the comparisons",
+    ],
+    itemDetails: { 0: { tag: "improvement" } },
+  },
+  {
     date: "2026-11-16",
     dateLabel: "November 16, 2026",
     items: [
