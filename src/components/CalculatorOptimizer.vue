@@ -353,6 +353,10 @@
         </p>
       </template>
     </div>
+    <OptimizerStaleResultsAlert
+      v-if="optimizerResults?.length && resultsStale"
+      class="mt-4"
+      @rerun="emit('optimizer:rerun')" />
     <CalculatorOptimizerResults
       v-if="optimizerResults?.length"
       :character="character"
@@ -386,6 +390,7 @@ import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
+import OptimizerStaleResultsAlert from "./OptimizerStaleResultsAlert.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
 import {
@@ -417,9 +422,11 @@ const props = defineProps<{
   energyRegen: number;
   optimizationTargetType: string;
   optimizationTargetObject: string;
+  resultsStale?: boolean;
 }>();
 
 const emit = defineEmits<{
+  "optimizer:rerun": [];
   "optimizer:optimize": [
     setFilters: string[],
     mainEchoes: string[],

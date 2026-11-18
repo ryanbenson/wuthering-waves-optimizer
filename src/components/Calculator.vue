@@ -210,16 +210,18 @@
           :optimizer-empty-reason="optimizerEmptyReason"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
-          :all-damages="JSON.parse(JSON.stringify(allDamages))"
-          :total-atk="totalAtk"
-          :total-hp="totalHp"
-          :total-def="totalDef"
-          :total-crit-rate="totalCritRate"
-          :total-crit-dmg="totalCritDMG"
-          :energy-regen="energyRegen"
+          :all-damages="optimizerCompareDamages"
+          :total-atk="optimizerCompareStats.totalAtk"
+          :total-hp="optimizerCompareStats.totalHp"
+          :total-def="optimizerCompareStats.totalDef"
+          :total-crit-rate="optimizerCompareStats.totalCritRate"
+          :total-crit-dmg="optimizerCompareStats.totalCritDMG"
+          :energy-regen="optimizerCompareStats.energyRegen"
+          :results-stale="optimizerResultsStale"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
-          @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
+          @optimizer:optimize="handleOptimize"
+          @optimizer:rerun="rerunOptimizer"></CalculatorOptimizer>
         <!-- Labs flag "UI Overhaul 3.0" (liveResultBar) on: redesigned setup/running/results workspace. -->
         <CalculatorOptimizerWorkspace
           v-else
@@ -232,13 +234,14 @@
           :optimizer-empty-reason="optimizerEmptyReason"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
-          :all-damages="JSON.parse(JSON.stringify(allDamages))"
-          :total-atk="totalAtk"
-          :total-hp="totalHp"
-          :total-def="totalDef"
-          :total-crit-rate="totalCritRate"
-          :total-crit-dmg="totalCritDMG"
-          :energy-regen="energyRegen"
+          :all-damages="optimizerCompareDamages"
+          :total-atk="optimizerCompareStats.totalAtk"
+          :total-hp="optimizerCompareStats.totalHp"
+          :total-def="optimizerCompareStats.totalDef"
+          :total-crit-rate="optimizerCompareStats.totalCritRate"
+          :total-crit-dmg="optimizerCompareStats.totalCritDMG"
+          :energy-regen="optimizerCompareStats.energyRegen"
+          :results-stale="optimizerResultsStale"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
           :is-optimizer-running="isOptimizerRunning"
@@ -246,7 +249,8 @@
           :live-best-result="liveBestResult"
           @optimizer:optimize="handleOptimize"
           @optimizer:cancel="cancelOptimizer"
-          @optimizer:edit-setup="optimizerResults = []"></CalculatorOptimizerWorkspace>
+          @optimizer:rerun="rerunOptimizer"
+          @optimizer:edit-setup="optimizerResults = []; optimizerSnapshot = null"></CalculatorOptimizerWorkspace>
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
         <CalculatorRotations
@@ -594,6 +598,13 @@ import {
 } from "../calculator/liveResultBar";
 // Note: Workers are spawned by src/workers/optimizerRun.ts
 import { runOptimizerWorkers } from "../workers/optimizerRun";
+import {
+  createOptimizerRunSnapshot,
+  isOptimizerSnapshotStale,
+  refreshOptimizerSnapshotBaseline,
+  type OptimizerRunInputs,
+  type OptimizerRunSnapshot,
+} from "../calculator/optimizerRunSnapshot";
 import { displayPercentage, displayInt } from "../utils/numbers";
 
 export default defineComponent({
@@ -856,6 +867,11 @@ export default defineComponent({
     const optimizerSearchComplete = ref(false);
     const liveBestResult = ref<any>(null);
     let currentOptimizerCleanup: (() => void) | null = null;
+    // Issue #706: what the shown results are compared against. Taken when a
+    // run starts (same moment as its worker context), kept once it finishes.
+    const optimizerSnapshot = ref<OptimizerRunSnapshot | null>(null);
+    let pendingOptimizerSnapshot: OptimizerRunSnapshot | null = null;
+    let lastOptimizeArgs: unknown[] | null = null;
     let optimizerTimerStartMs = 0;
     let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -974,6 +990,7 @@ export default defineComponent({
       optimizerNoPossibleLoadouts.value = false;
       optimizerEmptyReason.value = null;
       optimizerResults.value = [];
+      optimizerSnapshot.value = null;
       isOptimizerRunning.value = false;
       optimizerSearchComplete.value = false;
       liveBestResult.value = null;
@@ -1495,6 +1512,29 @@ export default defineComponent({
       ignoreOtherResonantorEchoes = false,
       loadoutFormat = "Any",
     ) => {
+      lastOptimizeArgs = [
+        setFilters,
+        mainEchoes,
+        minStats,
+        echoSetPassiveBuffs,
+        mainEchoStats,
+        target,
+        damageType,
+        ignoreOtherResonantorEchoes,
+        loadoutFormat,
+      ];
+      pendingOptimizerSnapshot = createOptimizerRunSnapshot(
+        currentOptimizerRunInputs(),
+        {
+          totalAtk: totalAtk.value,
+          totalHp: totalHp.value,
+          totalDef: totalDef.value,
+          totalCritRate: totalCritRate.value,
+          totalCritDMG: totalCritDMG.value,
+          energyRegen: energyRegen.value,
+        },
+        allDamages,
+      );
       const echoes = inventoryStore.echoes;
       const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
@@ -1504,6 +1544,7 @@ export default defineComponent({
       optimizerNoPossibleLoadouts.value = false;
       optimizerEmptyReason.value = null;
       optimizerResults.value = []; // Initialize as empty array instead of null
+      optimizerSnapshot.value = null;
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
       isOptimizerRunning.value = true;
@@ -1734,6 +1775,8 @@ export default defineComponent({
           },
           onFinished: ({ results, totalProcessed, generatedCount }) => {
             optimizerResults.value = results;
+            optimizerSnapshot.value = results.length ? pendingOptimizerSnapshot : null;
+            pendingOptimizerSnapshot = null;
             if (results.length === 0) {
               optimizerEmptyReason.value = resolveOptimizerEmptyReason({
                 inventoryCount: emptyReasonContext.inventoryCount,
@@ -1763,12 +1806,113 @@ export default defineComponent({
       stopOptimizerTimer();
       isOptimizerRunning.value = false;
       optimizerResults.value = [];
+      optimizerSnapshot.value = null;
+      pendingOptimizerSnapshot = null;
       totalCombos.value = 0;
       processedCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
       optimizerEmptyReason.value = null;
       optimizerSearchComplete.value = false;
       liveBestResult.value = null;
+    };
+
+    // The build's non-echo inputs to a run (issue #706). Echoes, the main
+    // echo and set/main-echo buff settings are left out on purpose: equipping
+    // a result or syncing the optimizer's buffs must not flag the results.
+    function currentOptimizerRunInputs(): OptimizerRunInputs {
+      return {
+        characterLevel: characterLevel.value,
+        talents: {
+          basic: talentData.basic,
+          skill: talentData.skill,
+          forte: talentData.forte,
+          liberation: talentData.liberation,
+          intro: talentData.intro,
+        },
+        weapon: weaponData.value ?? null,
+        characterBuffs: charBuffsData.value ?? null,
+        resonanceChains: charResonanceChainsData.value ?? null,
+        teamBuffs: teamBuffsData.value ?? null,
+        customBuffs: customBuffs.value ?? null,
+        enemy: {
+          enemyLevel: enemyLevel.value,
+          enemyResist: enemyResist.value,
+          enemyType: enemyType.value,
+          isSpectroFrazzleEnabled: isSpectroFrazzleEnabled.value,
+          spectroFrazzleStacks: spectroFrazzleStacks.value,
+          isAeroErosionEnabled: isAeroErosionEnabled.value,
+          aeroErosionStacks: aeroErosionStacks.value,
+          havocBaneStacks: havocBaneStacks.value,
+          isFusionBurstEnabled: isFusionBurstEnabled.value,
+          fusionBurstStacks: fusionBurstStacks.value,
+          isElectroFlareEnabled: isElectroFlareEnabled.value,
+          electroFlareStacks: electroFlareStacks.value,
+          electroRageStacks: electroRageStacks.value,
+          isGlacioChafeEnabled: isGlacioChafeEnabled.value,
+          glacioChafeStacks: glacioChafeStacks.value,
+          strainStacks: strainStacks.value,
+        },
+        stance: activeStance.value ?? null,
+        rotations: rotationsList.value,
+      };
+    }
+
+    const optimizerResultsStale = computed(
+      () =>
+        optimizerResults.value.length > 0 &&
+        isOptimizerSnapshotStale(optimizerSnapshot.value, currentOptimizerRunInputs()),
+    );
+
+    // While the build's non-echo inputs still match the run, move the
+    // comparison baseline with the live build (so equipping a result updates
+    // the diffs). Once they differ, the baseline stays on the last matching
+    // build and the stale alert shows.
+    watch(
+      [
+        optimizerResultsStale,
+        () => [totalAtk.value, totalHp.value, totalDef.value, totalCritRate.value, totalCritDMG.value, energyRegen.value],
+        () => allDamages,
+      ],
+      () => {
+        if (!optimizerSnapshot.value || optimizerResultsStale.value) return;
+        optimizerSnapshot.value = refreshOptimizerSnapshotBaseline(
+          optimizerSnapshot.value,
+          {
+            totalAtk: totalAtk.value,
+            totalHp: totalHp.value,
+            totalDef: totalDef.value,
+            totalCritRate: totalCritRate.value,
+            totalCritDMG: totalCritDMG.value,
+            energyRegen: energyRegen.value,
+          },
+          allDamages,
+        );
+      },
+      { deep: true },
+    );
+
+    // Comparisons for the shown results: the run's baseline, or live values
+    // before any run has finished.
+    const optimizerCompareStats = computed(
+      () =>
+        optimizerSnapshot.value?.stats ?? {
+          totalAtk: totalAtk.value,
+          totalHp: totalHp.value,
+          totalDef: totalDef.value,
+          totalCritRate: totalCritRate.value,
+          totalCritDMG: totalCritDMG.value,
+          energyRegen: energyRegen.value,
+        },
+    );
+    const optimizerCompareDamages = computed(() =>
+      optimizerSnapshot.value
+        ? optimizerSnapshot.value.allDamages
+        : JSON.parse(JSON.stringify(allDamages)),
+    );
+
+    const rerunOptimizer = () => {
+      if (!lastOptimizeArgs || isOptimizerRunning.value) return;
+      (handleOptimize as (...args: unknown[]) => void)(...lastOptimizeArgs);
     };
 
     async function handleSelectedAttack(attackKey, damage, label) {
@@ -2013,6 +2157,11 @@ export default defineComponent({
       optimizerSearchComplete,
       liveBestResult,
       cancelOptimizer,
+      optimizerSnapshot,
+      optimizerResultsStale,
+      optimizerCompareStats,
+      optimizerCompareDamages,
+      rerunOptimizer,
       // data for the sidebar
       displayPercentage,
       displayInt,

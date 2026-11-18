@@ -23,6 +23,8 @@
         :energy-regen="energyRegen"
         :total-combos="totalCombos"
         :optimizer-elapsed-ms="optimizerElapsedMs"
+        :results-stale="resultsStale"
+        @rerun="emit('optimizer:rerun')"
         @edit-setup="emit('optimizer:edit-setup')"></OptimizerWorkspaceResults>
     </template>
 
@@ -88,6 +90,7 @@ const props = withDefaults(
     optimizationTargetType: string;
     optimizationTargetObject: string;
     isOptimizerRunning?: boolean;
+    resultsStale?: boolean;
     optimizerSearchComplete?: boolean;
     liveBestResult?: any;
   }>(),
@@ -118,6 +121,7 @@ const emit = defineEmits<{
     loadoutFormat: OptimizerLoadoutFormat,
   ];
   "optimizer:cancel": [];
+  "optimizer:rerun": [];
   "optimizer:edit-setup": [];
 }>();
 

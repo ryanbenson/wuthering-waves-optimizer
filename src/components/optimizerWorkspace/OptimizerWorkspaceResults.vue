@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col gap-4" data-test-optimizer-workspace-results>
+    <OptimizerStaleResultsAlert v-if="resultsStale" @rerun="emit('rerun')" />
     <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="text-xs font-bold uppercase tracking-wider opacity-50">
@@ -71,6 +72,7 @@
 
 <script setup lang="ts">
 import AppDeltaPercent from "../AppDeltaPercent.vue";
+import OptimizerStaleResultsAlert from "../OptimizerStaleResultsAlert.vue";
 import { computed, ref, watch } from "vue";
 import OptimizerWorkspaceSpotlight from "./OptimizerWorkspaceSpotlight.vue";
 import OptimizerWorkspaceEchoAvatarStack from "./OptimizerWorkspaceEchoAvatarStack.vue";
@@ -97,11 +99,12 @@ const props = withDefaults(
     energyRegen: number;
     totalCombos: number;
     optimizerElapsedMs: number;
+    resultsStale?: boolean;
   }>(),
   { results: () => [] },
 );
 
-const emit = defineEmits<{ "edit-setup": [] }>();
+const emit = defineEmits<{ "edit-setup": []; rerun: [] }>();
 
 type OptimizerResultRow = {
   id: string;
