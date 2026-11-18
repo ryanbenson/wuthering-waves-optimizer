@@ -195,6 +195,7 @@
           v-else
           :key="characterBuildKey"
           :character="character"
+          :suggested-teams="chosenChar.value?.basic?.suggestedTeams"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorTeamBuffsWorkspace>
       </div>
       <div class="screen--optimizer" v-if="curScreen === 'optimizer'">

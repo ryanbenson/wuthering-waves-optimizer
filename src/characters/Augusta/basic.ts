@@ -23,5 +23,9 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Autumntrace", label: "BP" },
       { key: "WaningRedshift", label: "4*" },
     ],
+    suggestedTeams: [
+      { members: ["Iuno", "Shorekeeper"], tags: ["Quickswap"] },
+      { members: ["Iuno", "Verina"], tags: ["Quickswap"] },
+    ],
   };
 }

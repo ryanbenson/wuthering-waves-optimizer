@@ -15,5 +15,10 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    suggestedTeams: [
+      { members: ["Roccia", "Shorekeeper"], tags: ["Hypercarry"] },
+      { members: ["Sanhua", "Shorekeeper"], tags: ["Hypercarry"] },
+      { members: ["Sanhua", "Verina"], tags: ["Hypercarry", "Budget"] },
+    ],
   };
 }

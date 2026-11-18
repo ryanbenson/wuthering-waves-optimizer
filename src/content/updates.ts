@@ -58,6 +58,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-18",
+    dateLabel: "November 18, 2026",
+    items: [
+      "New in Labs: Recommended teams on the Team Buffs tab. Pick a suggested team for your character to fill both teammate slots in one click. Only a few characters have teams so far, with more to come",
+    ],
+    itemDetails: { 0: { tag: "labs" } },
+  },
+  {
     date: "2026-11-17",
     dateLabel: "November 17, 2026",
     items: [

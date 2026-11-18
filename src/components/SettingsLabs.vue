@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
-import { TEAM_OPTIMIZER_LAB } from "../utils/labs";
+import { RECOMMENDED_TEAMS_LAB, TEAM_OPTIMIZER_LAB } from "../utils/labs";
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",
@@ -84,6 +84,12 @@ const labsFeatures = ref<LabFeature[]>([
     label: "Team optimizer",
     details:
       "Adds an Optimize team button to Team Rotations. It finds the best builds for all of a team's characters at once, for that team's rotation, without using an echo twice. Results save as new builds, so your current ones stay untouched.",
+  },
+  {
+    key: RECOMMENDED_TEAMS_LAB,
+    label: "Recommended teams",
+    details:
+      "Adds suggested teams to the Team Buffs tab. Pick one to fill both teammate slots in one click. Only a few characters have teams so far.",
   },
 ]);
 </script>
