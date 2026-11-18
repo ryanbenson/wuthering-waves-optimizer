@@ -368,6 +368,14 @@
           </div>
         </template>
       </div>
+      <TeamBuffsRecommendedTeams
+        v-if="showRecommendedTeams"
+        class="mt-3"
+        :teams="recommendedTeams"
+        :character-name="mainCharacterName"
+        :slot1="selectedCharacter1"
+        :slot2="selectedCharacter2"
+        @use="useRecommendedTeam" />
     </template>
     </WorkspaceSplitLayout>
   </div>
@@ -393,6 +401,10 @@ import {
 import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch, resolveHideImpossible } from "../buffs/buffFilters";
 import { useFilterPanelOpen } from "../composables/useFilterPanelOpen";
 import { getRealisticMaxStacks } from "../characters/effectiveBuffStacks";
+import TeamBuffsRecommendedTeams from "./teamBuffsWorkspace/TeamBuffsRecommendedTeams.vue";
+import { getRecommendedTeams, type SuggestedTeam } from "../characters/recommendedTeams";
+import { useSettingsStore } from "../stores/settings";
+import { isRecommendedTeamsEnabled } from "../utils/labs";
 
 export interface PartyBuffDef {
   key: string;
@@ -414,6 +426,8 @@ export interface PartyBuffDef {
 
 interface Props {
   character: string;
+  /** The character's curated `suggestedTeams` from `basic.ts` (issue #663). */
+  suggestedTeams?: SuggestedTeam[];
 }
 const props = defineProps<Props>();
 
@@ -795,6 +809,17 @@ function openPartyMember1Browser() {
 function openPartyMember2Browser() {
   partyMemberBrowser2Ref.value?.triggerOpenModal();
 }
+// --- Recommended teams (Labs "recommendedTeams", issue #663) ---
+const settingsStore = useSettingsStore();
+const showRecommendedTeams = computed(() => isRecommendedTeamsEnabled(settingsStore));
+const recommendedTeams = computed(() => getRecommendedTeams(props.character, props.suggestedTeams));
+const mainCharacterName = computed(() => getCharacterRosterDisplayName(props.character));
+// Same as picking each teammate by hand: fills the slots, leaves buffs alone.
+function useRecommendedTeam([first, second]: [string, string]) {
+  selectedCharacter1.value = first;
+  selectedCharacter2.value = second;
+}
+
 function handlePartyMember1Chosen(nextCharacter: string) {
   selectedCharacter1.value = nextCharacter;
 }

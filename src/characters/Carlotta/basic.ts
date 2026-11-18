@@ -15,5 +15,9 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    suggestedTeams: [
+      { members: ["Zhezhi", "Shorekeeper"], tags: ["Quickswap"] },
+      { members: ["Zhezhi", "Verina"], tags: ["Quickswap"] },
+    ],
   };
 }

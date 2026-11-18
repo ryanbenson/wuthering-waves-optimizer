@@ -22,6 +22,14 @@ interface CharacterBasicInfo {
    * hand per character — empty is a valid, common state.
    */
   suggestedWeapons?: Array<{ key: string; label?: string }>;
+  /**
+   * Curated teams for the Team Buffs tab's "Recommended teams" card (Labs,
+   * issue #663). Each team is the two teammates (character keys) to pair
+   * with this character; order matters, first is the strongest. `tags` come
+   * from `src/characters/teamTags.ts`. Populated by hand per character, and
+   * empty is a valid state. See `src/characters/recommendedTeams.ts`.
+   */
+  suggestedTeams?: Array<{ members: [string, string]; tags?: string[] }>;
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;
