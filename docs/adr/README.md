@@ -104,6 +104,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0056](./0056-build-card-layouts-and-curated-art.md) | Build card layouts and curated art | accepted | | components, build-card, persistence |
 | [0057](./0057-substat-roll-value.md) | Show what each substat is worth | accepted | | components, calculator |
 | [0058](./0058-per-character-filter-memory.md) | Remember picker filters per character (and the inventory's globally) | accepted | | components, composables, persistence |
+| [0059](./0059-recommended-team-typical-buffs.md) | Recommended teams turn on hand-written typical buffs | accepted | | buffs, components, labs, persistence |
 
 ## When to write a new ADR
 

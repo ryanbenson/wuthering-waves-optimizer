@@ -62,8 +62,9 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 18, 2026",
     items: [
       "New in Labs: Recommended teams on the Team Buffs tab. Pick a suggested team for your character to fill both teammate slots in one click. Only a few characters have teams so far, with more to come",
+      "Recommended teams (Labs) can now also turn on your teammates' buffs. Set each teammate's sequence and whether they have their signature weapon, and their usual echo buffs come on too",
     ],
-    itemDetails: { 0: { tag: "labs" } },
+    itemDetails: { 0: { tag: "labs" }, 1: { tag: "labs" } },
   },
   {
     date: "2026-11-17",
