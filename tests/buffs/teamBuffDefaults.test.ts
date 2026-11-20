@@ -8,7 +8,12 @@ import { ELEMENT_NAMES } from "../../src/buffs/teamBuffs";
 // real buffs the teammate can actually give.
 const basics = import.meta.glob("../../src/characters/*/basic.ts", { eager: true }) as Record<
   string,
-  { getCharacterBasicInfo: () => { signatureWeapon?: string } }
+  {
+    getCharacterBasicInfo: () => {
+      signatureWeapon?: string;
+      suggestedTeams?: Array<{ members: string[] }>;
+    };
+  }
 >;
 function signatureOf(character: string): string | undefined {
   const entry = Object.entries(basics).find(([path]) => path.split("/").at(-2) === character);
@@ -47,6 +52,25 @@ describe("TEAM_BUFF_DEFAULTS", () => {
         if (entry.fullTeamElement) {
           expect(ELEMENT_NAMES).toContain(entry.fullTeamElement);
         }
+      }
+    });
+  }
+});
+
+// Issue #732: every teammate named in a recommended team needs an entry, even
+// an empty one ("no team buffs on purpose"), so a missing support shows up
+// here instead of Use team silently turning nothing on for them.
+describe("teammates in recommended teams", () => {
+  for (const [path, mod] of Object.entries(basics)) {
+    const character = path.split("/").at(-2) as string;
+    const teams = mod.getCharacterBasicInfo().suggestedTeams ?? [];
+    if (!teams.length) continue;
+    it(`${character}'s teammates all have typical buffs`, () => {
+      for (const member of teams.flatMap((t) => t.members)) {
+        expect(
+          TEAM_BUFF_DEFAULTS[member],
+          `${member} (in ${character}'s teams) has no typical buffs: run npm run cli -- edit team-data`,
+        ).toBeDefined();
       }
     });
   }

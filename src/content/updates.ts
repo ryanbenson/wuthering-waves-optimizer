@@ -58,6 +58,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-20",
+    dateLabel: "November 20, 2026",
+    items: [
+      "Recommended teams (Labs) now covers Aemeath, Brant and Calcharo, and more teammates turn on their usual buffs. New tags such as Mono Fusion, Fusion Burst and Tune Break show what kind of team you're picking",
+    ],
+    itemDetails: { 0: { tag: "labs" } },
+  },
+  {
     date: "2026-11-19",
     dateLabel: "November 19, 2026",
     items: [

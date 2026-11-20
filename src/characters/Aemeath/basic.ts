@@ -26,5 +26,9 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "SomnoireAnchor", label: "Event" },
       { key: "EndlessCollapse", label: "4*" },
     ],
+    suggestedTeams: [
+      { members: ["Denia", "Mornye"], tags: ["Hypercarry", "Fusion Burst"] },
+      { members: ["Lynae", "Mornye"], tags: ["Hypercarry", "Tune Break"] },
+    ],
   };
 }

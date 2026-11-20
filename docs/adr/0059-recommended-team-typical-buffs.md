@@ -24,7 +24,8 @@ The Team Buffs tab's Recommended teams card (Labs `recommendedTeams`, issue #663
 
 ## Guidance
 
-- Adding a support: list only what a typical setup actually has up, pick one version of any alternative buffs, and let the tests check the keys.
+- Adding a support: list only what a typical setup actually has up, pick one version of any alternative buffs, and let the tests check the keys. `npm run cli -- edit team-data` (issue #732) walks through this.
+- An empty list means "no team buffs on purpose"; a missing entry means not filled in yet. Every teammate named in a recommended team needs an entry, even an empty one.
 - Don't derive typical buffs from the buff list automatically, and don't turn buffs on without the player's click.
 
 ## Related

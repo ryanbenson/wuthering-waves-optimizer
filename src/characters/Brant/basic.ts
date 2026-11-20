@@ -24,5 +24,8 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "RedSpring", label: "Alternate" },
       { key: "EmeraldOfGenesis", label: "Stanrdard" },
     ],
+    suggestedTeams: [
+      { members: ["Changli", "Lupa"], tags: ["Mono Fusion"] },
+    ],
   };
 }

@@ -16,8 +16,8 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
     suggestedTeams: [
-      { members: ["Brant", "Lupa"], tags: ["Dual DPS", "No healer"] },
-      { members: ["Lupa", "Shorekeeper"], tags: ["Quickswap"] },
+      { members: ["Brant", "Lupa"], tags: ["Mono Fusion", "No healer"] },
+      { members: ["Lupa", "Shorekeeper"], tags: ["Dual DPS"] },
     ],
   };
 }

@@ -64,6 +64,7 @@ Anything the character gives teammates (outro, team-wide inherent effects, team-
 - A team buff that scales off the character's own stat (Energy Regen, Crit Rate) uses `inputBase: true`, so the user types the teammate's stat in. Set `realisticBaseAttrValue` to a sensible suggestion, such as the value where every scaled buff hits its cap.
 - Stacked buffs where each stack scales: `hasStacks` plus `inputBase`, with `perStackMaximumValue` and `maximumValue` (see `docs/creating-new-character.md`).
 - Signature-weapon team buffs go in `allWeaponTeamBuffs`; the `new-weapon` skill covers them.
+- Once the buffs exist, run `npm run cli -- edit team-data` to add the character's recommended teams and, if they're used as a teammate, their typical buffs (`src/buffs/teamBuffDefaults.ts`, ADR 0059).
 
 ## 3b. Import frame data
 
