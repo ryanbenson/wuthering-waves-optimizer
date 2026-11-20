@@ -17,7 +17,7 @@ Here's a quick guide on how to build a new character. High level steps:
 8. Add any team buffs to `./buffs/index.ts`
 9. Make sure to do the resonance chains
 10. If there are new features or buff handling, you'll need to update the app to handle it
-11. Optional: add `suggestedWeapons` and `suggestedTeams` to `basic.ts`. `suggestedTeams` is a list of `{ members: [teammateKey, teammateKey], tags: [...] }`, strongest first, for the Team Buffs tab's Recommended teams card (Labs). Tags must come from `src/characters/teamTags.ts`; `tests/characters/recommendedTeams.test.ts` fails on an unknown teammate or tag.
+11. Optional: add `suggestedWeapons` and `suggestedTeams` to `basic.ts`. `suggestedTeams` is a list of `{ members: [teammateKey, teammateKey], tags: [...] }`, strongest first, for the Team Buffs tab's Recommended teams card (Labs). Tags must come from `src/characters/teamTags.ts`; `tests/characters/recommendedTeams.test.ts` fails on an unknown teammate or tag. Every teammate named in a team also needs typical buffs in `src/buffs/teamBuffDefaults.ts` (an empty list means "no team buffs on purpose"), which `tests/buffs/teamBuffDefaults.test.ts` checks. The easiest way to fill in both is `npm run cli -- edit team-data`: it reports what's missing and only offers real characters, buffs and tags.
 
 ## Buff configurations
 

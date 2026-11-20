@@ -23,6 +23,7 @@ npm run cypress:run   # E2E headless
 npm run cli -- generate character   # or: make generate-character
 npm run cli -- generate weapon
 npm run cli -- generate echo-preset
+npm run cli -- edit team-data       # fill in Recommended teams + teammates' typical buffs (#732)
 npm run cli -- generate enemies         # --mode fill|overwrite to skip the prompt
 npm run cli -- import echoes
 npm run cli -- import frames          # per-attack frame data from wuwalab (ADR 0047); --character <Name>

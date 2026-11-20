@@ -14,7 +14,11 @@
  * - `stacks`: optional; otherwise the buff's realistic max stacks.
  * - `fullTeamElement`: only when all three Resonators have this element.
  * Base stat values for `inputBase` buffs come from `realisticBaseAttrValue`.
- * A teammate with no entry gets no buffs turned on.
+ * An empty list means "no team buffs on purpose"; a missing entry means not
+ * filled in yet. Either way Use team turns nothing on for them.
+ *
+ * Fill this in with `npm run cli -- edit team-data` (issue #732), which
+ * rewrites the object below sorted by character. Hand edits are fine too.
  */
 import type { ElementName } from "./teamBuffs";
 
@@ -26,7 +30,17 @@ export type TeamBuffDefault = {
 };
 
 export const TEAM_BUFF_DEFAULTS: Record<string, TeamBuffDefault[]> = {
+  Augusta: [{ key: "OutroSkillBattlesongoftheUnyielding" }, { key: "SequenceNode4AscentinSunandGlory" }],
   Brant: [{ key: "OutroSkillAttentiveHeart" }],
+  Calcharo: [{ key: "SequenceNode4DarkAlliance" }],
+  Changli: [{ key: "OutroSkillStrategyofDuality" }, { key: "SequenceNode4PolishedWords" }],
+  Denia: [
+    { key: "InherentSkillEtchedColorsFusionBurst" },
+    { key: "OutroSkillUnfinishedLiesFusionBurst" },
+    { key: "SequenceNode2TossedintheTidesofRealityFusionBurst" },
+    { key: "ForgedDwarfStarATKBonus", signature: true },
+    { key: "ReminiscenceDenia" },
+  ],
   Iuno: [
     { key: "OutroSkillFromGloomtoGleam" },
     { key: "BlessingoftheWanLight" },
@@ -44,6 +58,23 @@ export const TEAM_BUFF_DEFAULTS: Record<string, TeamBuffDefault[]> = {
     { key: "WildfireMarkDMGBonus", signature: true },
     { key: "FlamingClawprint" },
   ],
+  Lynae: [
+    { key: "TuneBreakBoost" },
+    { key: "LetsHittheRoad" },
+    { key: "PrismaticOverblast" },
+    { key: "SequenceNode2IntoLightsVanishingPoint" },
+    { key: "SpectrumBlasterAllDMG", signature: true },
+    { key: "Hyvatia" },
+    { key: "PactofNeonlightLeap" },
+  ],
+  Mornye: [
+    { key: "InterferedMarker" },
+    { key: "HighSyntonyField" },
+    { key: "Recursion" },
+    { key: "SequenceNode2MorningStarofEntropy" },
+    { key: "StarfieldCalibratorCritDMG", signature: true },
+    { key: "HaloofStarryRadiance" },
+  ],
   Roccia: [
     { key: "CommediaImprovvisoATK" },
     { key: "OutroSkillApplausePlease" },
@@ -56,6 +87,7 @@ export const TEAM_BUFF_DEFAULTS: Record<string, TeamBuffDefault[]> = {
     { key: "SophisticatedStellarealmCritRate" },
     { key: "ReleasedStellarealmCritDMG" },
     { key: "OutroSkillBinaryButterfly" },
+    { key: "InherentSkillSelfGravitation" },
     { key: "SequenceNode2NightsGiftandRefusal" },
     { key: "StellarSymphonyATK", signature: true },
     { key: "RejuvenatingGlow" },
@@ -65,6 +97,12 @@ export const TEAM_BUFF_DEFAULTS: Record<string, TeamBuffDefault[]> = {
     { key: "OutroSkillBlossom" },
     { key: "SequenceNode4BlossomingEmbrace" },
     { key: "RejuvenatingGlow" },
+  ],
+  Yinlin: [
+    { key: "Strategist" },
+    { key: "SequenceNode4SteadfastConviction" },
+    { key: "ImpermanenceHeron" },
+    { key: "MoonlitClouds" },
   ],
   Yuanwu: [{ key: "SequenceNode6DefenderofAllRealms" }, { key: "MoonlitClouds" }],
   Zhezhi: [
