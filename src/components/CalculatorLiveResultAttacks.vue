@@ -1,13 +1,42 @@
 <template>
   <div class="live-result-attacks">
     <div class="toolbar">
-      <button type="button" data-test-live-result-attacks-expand-all @click="setAllExpanded(true)">
+      <div class="pin-side" role="group" aria-label="Pin buttons on the left or right">
+        <span class="pin-side__label">Pins</span>
+        <div class="join">
+          <button
+            v-for="option in PIN_SIDE_OPTIONS"
+            :key="option.value"
+            type="button"
+            class="btn btn-xs join-item"
+            :class="{ 'btn-primary': pinSide === option.value }"
+            :aria-pressed="pinSide === option.value"
+            :data-test-live-result-attacks-pin-side="option.value"
+            @click="setPinSide(option.value)">
+            {{ option.label }}
+          </button>
+        </div>
+      </div>
+      <button type="button" class="toolbar__link" data-test-live-result-attacks-expand-all @click="setAllExpanded(true)">
         Expand all
       </button>
-      <button type="button" data-test-live-result-attacks-collapse-all @click="setAllExpanded(false)">
+      <button type="button" class="toolbar__link" data-test-live-result-attacks-collapse-all @click="setAllExpanded(false)">
         Collapse all
       </button>
     </div>
+    <CalculatorLiveResultAttackGroup
+      :group-key="PINNED_ATTACKS_GROUP_KEY"
+      label="Pinned"
+      variant="pinned"
+      :character="character"
+      :attacks="pinnedAttacks"
+      :expanded="isGroupOpen(PINNED_ATTACKS_GROUP_KEY, true)"
+      :pinned-ids="pinnedIds"
+      :target-attack-id="targetAttackId"
+      :pin-side="pinSide"
+      @toggle="toggleGroup"
+      @toggle-pin="togglePin"
+      @selected-attack="(...args) => emit('selected-attack', ...args)"></CalculatorLiveResultAttackGroup>
     <CalculatorLiveResultAttackGroup
       v-for="group in visibleGroups"
       :key="group.key"
@@ -16,16 +45,30 @@
       :character="character"
       :attacks="group.attacks"
       :is-target="group.key === targetGroupKey"
-      :expanded="!!expandedMap[group.key]"
+      :expanded="isGroupOpen(group.key)"
+      :pinned-ids="pinnedIds"
+      :target-attack-id="targetAttackId"
+      :pin-side="pinSide"
       @toggle="toggleGroup"
+      @toggle-pin="togglePin"
       @selected-attack="(...args) => emit('selected-attack', ...args)"></CalculatorLiveResultAttackGroup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watch } from "vue";
+import { computed } from "vue";
 import CalculatorLiveResultAttackGroup from "./CalculatorLiveResultAttackGroup.vue";
-import { FALLBACK_ATTACK_GROUP_PRIORITY, attackGroupForTarget } from "../calculator/liveResultBar";
+import {
+  FALLBACK_ATTACK_GROUP_PRIORITY,
+  attackGroupForTarget,
+  attackIdForTarget,
+} from "../calculator/liveResultBar";
+import {
+  PINNED_ATTACKS_GROUP_KEY,
+  attackPinId,
+  type AttackPinSide,
+} from "../calculator/pinnedAttacks";
+import { usePinnedAttacks } from "../composables/usePinnedAttacks";
 
 defineOptions({ name: "CalculatorLiveResultAttacks" });
 
@@ -73,6 +116,7 @@ const emit = defineEmits<{
 }>();
 
 const targetGroupKey = computed(() => attackGroupForTarget(props.target));
+const targetAttackId = computed(() => attackIdForTarget(props.target));
 
 const visibleGroups = computed(() => {
   const source = props.allDamages?.value ?? {};
@@ -82,39 +126,58 @@ const visibleGroups = computed(() => {
   })).filter((group) => group.attacks.length > 0);
 });
 
-// Expand state lives here (not inside each row) so "expand all"/"collapse
-// all" and the target-group auto-expand can both drive it directly, instead
-// of reaching into child-owned state.
-const expandedMap = reactive<Record<string, boolean>>({});
+// Open/closed groups and pinned attacks are saved per character in settings
+// (ADR 0060), so they survive recalcs (this component is re-keyed on every
+// build change), character switches and reloads. With nothing saved, the
+// Pinned section and the optimizer's target group start open.
+const characterRef = computed(() => props.character);
+const PIN_SIDE_OPTIONS: Array<{ value: AttackPinSide; label: string }> = [
+  { value: "left", label: "Left" },
+  { value: "right", label: "Right" },
+];
 
-function applyTargetExpansion() {
-  const key = targetGroupKey.value;
-  if (key) expandedMap[key] = true;
-}
-watch(visibleGroups, applyTargetExpansion, { immediate: true });
-// Only ever forces a group open when it becomes the target — never
-// force-closes a group the user expanded manually.
-watch(targetGroupKey, applyTargetExpansion);
+const { pinnedIds, togglePin, isGroupOpen, setGroupsOpen, pinSide, setPinSide } = usePinnedAttacks(
+  characterRef,
+  targetGroupKey,
+);
+
+// Pinned attacks in category order, then list order. A pin whose attack no
+// longer exists (e.g. after an echo change) just doesn't show.
+const pinnedAttacks = computed(() =>
+  visibleGroups.value.flatMap((group) =>
+    group.attacks
+      .filter((attack: Record<string, any>) => pinnedIds.value.has(attackPinId(group.key, attack.key)))
+      .map((attack: Record<string, any>) => ({
+        ...attack,
+        pinGroupKey: group.key,
+        sourceLabel: group.label.replace(/ Attacks$/, ""),
+      })),
+  ),
+);
 
 function toggleGroup(groupKey: string) {
-  expandedMap[groupKey] = !expandedMap[groupKey];
+  const defaultOpen = groupKey === PINNED_ATTACKS_GROUP_KEY;
+  setGroupsOpen([groupKey], !isGroupOpen(groupKey, defaultOpen));
 }
 
 function setAllExpanded(open: boolean) {
-  for (const group of visibleGroups.value) {
-    expandedMap[group.key] = open;
-  }
+  setGroupsOpen(
+    [PINNED_ATTACKS_GROUP_KEY, ...visibleGroups.value.map((group) => group.key)],
+    open,
+  );
 }
 </script>
 
 <style scoped lang="scss">
 .toolbar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 6px;
 
-  button {
+  .toolbar__link {
     border: none;
     background: none;
     color: oklch(var(--p));
@@ -122,5 +185,17 @@ function setAllExpanded(open: boolean) {
     font-weight: 700;
     padding: 0;
   }
+}
+// Global choice (ADR 0060); sits at the left of the toolbar, links on the right.
+.pin-side {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+}
+.pin-side__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: oklch(var(--bc) / 0.6);
 }
 </style>

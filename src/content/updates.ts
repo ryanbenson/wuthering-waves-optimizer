@@ -58,6 +58,15 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-19",
+    dateLabel: "November 19, 2026",
+    items: [
+      "Pin attacks in the Full breakdown's Attacks tab to keep them in a Pinned list at the top, so you can watch just the attacks your character uses. Pins are saved for each resonator, and you can put the pin buttons on the left or right",
+      "The Attacks tab now remembers which categories you opened for each resonator, tags the exact attack the optimizer is targeting, and no longer shows a misleading average on closed categories",
+    ],
+    itemDetails: { 0: { tag: "feature" }, 1: { tag: "improvement" } },
+  },
+  {
     date: "2026-11-18",
     dateLabel: "November 18, 2026",
     items: [

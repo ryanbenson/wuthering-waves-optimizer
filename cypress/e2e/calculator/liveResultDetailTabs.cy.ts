@@ -60,10 +60,65 @@ describe("Live Result panel tabs (Labs flag)", () => {
     cy.get('[data-test-live-result-attack-group-key="basicAttacks"]')
       .find("[data-test-live-result-attack-group-toggle]")
       .should("have.attr", "aria-expanded", "false");
+    // No misleading "first attack" average on a closed group (ADR 0060).
     cy.get('[data-test-live-result-attack-group-key="basicAttacks"]').should(
-      "contain.text",
+      "not.contain.text",
       "avg",
     );
+  });
+
+  it("pinned attacks and open/closed groups are remembered per character across a reload", () => {
+    enableLiveResultBarLab();
+    openBreakdown("Brant");
+    cy.get("[data-test-live-result-detail-tab-attacks]").click();
+
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"] [data-test-live-result-pinned-attacks-hint]').should(
+      "be.visible",
+    );
+
+    // Pin Brant's Liberation (the target group, open by default), then
+    // close that group and open Basic Attacks.
+    cy.get('[data-test-live-result-attack-group-key="liberationAttacks"] [data-test-live-result-attack-pin]')
+      .first()
+      .click();
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"]').should("contain.text", "To the Horizon");
+    cy.get('[data-test-live-result-attack-group-key="liberationAttacks"] [data-test-live-result-attack-group-toggle]').click();
+    cy.get('[data-test-live-result-attack-group-key="basicAttacks"] [data-test-live-result-attack-group-toggle]').click();
+
+    cy.reload();
+    openBreakdown("Brant");
+    cy.get("[data-test-live-result-detail-tab-attacks]").click();
+
+    cy.get('[data-test-live-result-attack-group-key="pinnedAttacks"]').should("contain.text", "To the Horizon");
+    cy.get('[data-test-live-result-attack-group-key="liberationAttacks"] [data-test-live-result-attack-group-toggle]').should(
+      "have.attr",
+      "aria-expanded",
+      "false",
+    );
+    cy.get('[data-test-live-result-attack-group-key="basicAttacks"] [data-test-live-result-attack-group-toggle]').should(
+      "have.attr",
+      "aria-expanded",
+      "true",
+    );
+  });
+
+  it("the Pins Left/Right switch moves the pin buttons and is remembered", () => {
+    enableLiveResultBarLab();
+    openBreakdown("Brant");
+    cy.get("[data-test-live-result-detail-tab-attacks]").click();
+
+    const firstLibRow = '[data-test-live-result-attack-group-key="liberationAttacks"] [data-test-live-result-attack-row]';
+    cy.get(firstLibRow).first().find("td:first-child [data-test-live-result-attack-pin]").should("exist");
+
+    cy.get('[data-test-live-result-attacks-pin-side="right"]').click();
+    cy.get(firstLibRow).first().find("td:last-child [data-test-live-result-attack-pin]").should("exist");
+    cy.get(firstLibRow).first().find("td:first-child [data-test-live-result-attack-pin]").should("not.exist");
+
+    cy.reload();
+    openBreakdown("Brant");
+    cy.get("[data-test-live-result-detail-tab-attacks]").click();
+    cy.get('[data-test-live-result-attacks-pin-side="right"]').should("have.attr", "aria-pressed", "true");
+    cy.get(firstLibRow).first().find("td:last-child [data-test-live-result-attack-pin]").should("exist");
   });
 
   it("clicking a collapsed group's header expands it, and Expand all/Collapse all work", () => {

@@ -5,6 +5,7 @@ import {
   defaultLiveResultBarTarget,
   resolveLiveResultBarTarget,
   attackGroupForTarget,
+  attackIdForTarget,
 } from "../../src/calculator/liveResultBar";
 
 describe("buildLiveResultBarTarget", () => {
@@ -227,5 +228,22 @@ describe("attackGroupForTarget", () => {
     expect(attackGroupForTarget(undefined)).toBeNull();
     expect(attackGroupForTarget("not-a-target")).toBeNull();
     expect(attackGroupForTarget("Attack:missing-pipe")).toBeNull();
+  });
+});
+
+describe("attackIdForTarget", () => {
+  it("returns the group|key part of an Attack target", () => {
+    expect(attackIdForTarget("Attack:liberationAttacks|toTheHorizon")).toBe(
+      "liberationAttacks|toTheHorizon",
+    );
+  });
+
+  it("returns null for non-Attack and unparseable targets", () => {
+    expect(attackIdForTarget("Stat:totalAtk")).toBeNull();
+    expect(attackIdForTarget("Rotation:rot-1")).toBeNull();
+    expect(attackIdForTarget(null)).toBeNull();
+    expect(attackIdForTarget(undefined)).toBeNull();
+    expect(attackIdForTarget("not-a-target")).toBeNull();
+    expect(attackIdForTarget("Attack:missing-pipe")).toBeNull();
   });
 });

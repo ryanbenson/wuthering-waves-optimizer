@@ -3,7 +3,7 @@ status: accepted
 date: 2026-09-01
 tags: [calculator, components, stores]
 supersedes: [0013]
-superseded_by: [0039]
+superseded_by: [0039, 0060]
 ---
 
 # 18. Full breakdown panel — Overview/Attacks/Rotations redesign
@@ -51,6 +51,11 @@ Ships behind the existing `liveResultBar` Labs flag — no new flag.
    flag-off split-pane path, two of them), so the accordion re-renders the
    same per-phase table markup (`<CalculatorDamage>` rows, reused as-is)
    alongside it rather than refactoring it out from underneath those callers.
+
+   **Superseded 2026-11-19:** a closed group no longer shows the "avg" peek,
+   open/closed state is saved per character (the target group still opens by
+   default until the player closes it), and a Pinned section sits above the
+   groups. See ADR [0060](./0060-attacks-tab-pins-and-remembered-groups.md).
 
 3. **Pinned/favorite stats persist per character, as an object map, not an
    array.** `CalculatorLiveResultOverview.vue` groups the panel's 13 stat
@@ -115,3 +120,6 @@ Ships behind the existing `liveResultBar` Labs flag — no new flag.
   time the panel (re)opens, rather than remembering a user's manual
   expand/collapse choices. Simpler and more predictable than persisting a
   third settings shape on top of the two added here.
+
+  **Superseded 2026-11-19:** open/closed groups are now saved per character.
+  See ADR [0060](./0060-attacks-tab-pins-and-remembered-groups.md).
