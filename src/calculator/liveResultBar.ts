@@ -210,12 +210,25 @@ export function resolveLiveResultBarTarget(
  * Which attack-group key (if any) an `"Attack:group|key"` target belongs to
  * — used by the Attacks tab's accordion (CalculatorLiveResultAttacks.vue) to
  * auto-expand the group matching the user's current optimizer target on
- * open, rather than starting every group collapsed. Reuses the same
- * `Attack:group|key` parse as `resolveLiveResultBarTarget` above instead of
- * re-deriving it. Non-Attack targets (Stat/Rotation) and unparseable strings
- * resolve to `null` — nothing to auto-expand.
+ * open when the player hasn't saved a choice for it (ADR 0060). Built on
+ * `attackIdForTarget` below. Non-Attack targets (Stat/Rotation) and
+ * unparseable strings resolve to `null` — nothing to auto-expand.
  */
 export function attackGroupForTarget(
+  target: string | null | undefined,
+): string | null {
+  const id = attackIdForTarget(target);
+  return id === null ? null : id.slice(0, id.indexOf("|"));
+}
+
+/**
+ * The `group|key` part of an `"Attack:group|key"` target — the exact attack
+ * the optimizer is targeting, so the Attacks tab can tag that row (and match
+ * it against pinned attacks, which use the same `group|key` id; see
+ * pinnedAttacks.ts). Non-Attack targets and unparseable strings resolve to
+ * `null`.
+ */
+export function attackIdForTarget(
   target: string | null | undefined,
 ): string | null {
   if (!target) return null;
@@ -228,5 +241,5 @@ export function attackGroupForTarget(
   const pipeIndex = rest.indexOf("|");
   if (pipeIndex === -1) return null;
 
-  return rest.slice(0, pipeIndex);
+  return rest;
 }

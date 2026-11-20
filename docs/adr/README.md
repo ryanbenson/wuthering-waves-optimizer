@@ -71,7 +71,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0049](./0049-rotation-timeline-strip.md) (damage strip, with frame data) | calculator, components, composables, stores |
 | [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`) | calculator, components, weapons, characters |
 | [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
-| [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width) | calculator, components, stores |
+| [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width), 0060 (Attacks tab peek and expand state) | calculator, components, stores |
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | 0046 (phones: one row plus a sheet) | calculator, components |
 | [0020](./0020-enemy-workspace-redesign.md) | Enemy workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (browse modal gained a v3 sibling) | calculator, components, enemies |
 | [0021](./0021-utility-nav-dropdown-redesign.md) | Utility nav dropdown redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0045](./0045-v3-side-rail-navigation.md) (Scanners "New" pill) | components, navigation |
@@ -105,6 +105,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0057](./0057-substat-roll-value.md) | Show what each substat is worth | accepted | | components, calculator |
 | [0058](./0058-per-character-filter-memory.md) | Remember picker filters per character (and the inventory's globally) | accepted | | components, composables, persistence |
 | [0059](./0059-recommended-team-typical-buffs.md) | Recommended teams turn on hand-written typical buffs | accepted | | buffs, components, labs, persistence |
+| [0060](./0060-attacks-tab-pins-and-remembered-groups.md) | Attacks tab: pinned attacks and remembered groups | accepted | | components, composables, persistence |
 
 ## When to write a new ADR
 
