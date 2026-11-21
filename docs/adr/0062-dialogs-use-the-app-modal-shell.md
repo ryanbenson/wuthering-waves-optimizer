@@ -27,7 +27,7 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 ## Consequences
 
 - Pros: one header and one close/scroll behaviour for every dialog; the ✕ no longer scrolls away; a new dialog gets both by using the shell.
-- Cons: dialogs are teleported to `<body>`, so tests and styles can't reach them through their parent element. Body padding is the shell's 1rem instead of the box's 1.5rem. The classic UI's dialogs get the header too.
+- Cons: dialogs are teleported to `<body>`, so tests and styles can't reach them through their parent element. Body padding is the shell's 1rem instead of the box's 1.5rem. The classic UI's dialogs get the header too, and in the light theme they share the v3 choosers' backdrop: each used to dim the page less with its own `.modal-backdrop { opacity: 0.5 }`, and one shell has one backdrop.
 
 ## Guidance
 
