@@ -913,7 +913,9 @@ and keeps the review). While there are
 unsaved results, the page asks before a reload or closing the tab
 (`beforeunload`). A
 save or "Scan again" (`discard()`) clears it. Everything stays in the
-tab's memory only.
+tab's memory only. Navigating to another page inside the app isn't
+guarded: it unmounts the inventory page and the review with it, without a
+question.
 
 `src/scanner/review.ts` holds the pure rules (unit-tested in
 `tests/scanner/review.test.ts`):

@@ -24,7 +24,7 @@
             v-if="confirmRequest.discardLabel"
             type="button"
             class="btn btn-error btn-outline me-auto"
-            @click="settle('discard')">
+            @click="handleDiscard">
             {{ confirmRequest.discardLabel }}
           </button>
           <button type="button" class="btn" @click="handleCancel">
@@ -67,6 +67,10 @@ function syncDialog() {
 
 function handleConfirm() {
   settle(true);
+}
+
+function handleDiscard() {
+  settle("discard");
 }
 
 function handleCancel() {

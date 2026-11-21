@@ -119,7 +119,7 @@ async function handleCloseRequest() {
   if (unsaved) {
     const echoes = unsaved === 1 ? "1 echo isn't" : `${unsaved} echoes aren't`;
     const choice = await ask(
-      `${echoes} saved yet. Keep and close keeps them here: open Scan echoes again to carry on reviewing. They're lost if you reload or close this tab.`,
+      `${echoes} saved yet. Keep and close keeps them here: open Scan echoes again to carry on reviewing. They're lost if you leave this page, reload or close this tab.`,
       { title: "Leave this scan?", discardLabel: "Discard", cancelLabel: "Cancel", confirmLabel: "Keep and close" },
     );
     if (choice === "cancel") return;

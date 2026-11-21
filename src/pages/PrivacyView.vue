@@ -27,7 +27,7 @@
       stats automatically. Both options are processed entirely in your
       browser — nothing is uploaded to a server, no video or screen capture
       ever leaves your device, and captured frames aren't kept. The in-game snapshots
-      you review stay only in this tab until you save, start over or close the
+      you review stay only in this tab until you save, start over, leave this page or close the
       tab. Closing the scanner (including pressing Escape) stops
       screen sharing immediately, the same as clicking "Stop scanning."
     </p>
@@ -108,7 +108,7 @@
               in your browser — nothing is uploaded to a server, no video or
               screen capture ever leaves your device, and captured frames
               aren't kept. The in-game snapshots you review stay only in this
-              tab until you save, start over or close the tab. Closing the scanner (including
+              tab until you save, start over, leave this page or close the tab. Closing the scanner (including
               pressing Escape) stops screen sharing immediately, the same as
               clicking "Stop scanning."
             </p>
@@ -149,7 +149,7 @@ const DEVICE_ITEMS = [
   { title: "Builds and characters", body: "Saved in local storage" },
   { title: "Echo inventory", body: "Saved in local storage" },
   { title: "Settings", body: "Saved in local storage" },
-  { title: "Screen share and video", body: "Read here and never uploaded. Review snapshots stay only in this tab until you save, start over or close it." },
+  { title: "Screen share and video", body: "Read here and never uploaded. Review snapshots stay only in this tab until you save, start over, leave this page or close the tab." },
 ];
 </script>
 
