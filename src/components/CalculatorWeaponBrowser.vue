@@ -1,111 +1,105 @@
 <template>
-  <dialog id="modal-weapon-browser" class="modal" data-test-weapon-browser>
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
-      <form method="dialog" @click="handleClose" data-test-weapon-browser-close>
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-          ✕
+  <AppModal
+    ref="modalElementRef"
+    title="Browse weapons"
+    box-class="max-w-5xl"
+    close-test-attr="data-test-weapon-browser-close"
+    data-test-weapon-browser>
+    <AppFilterPanel
+      panel-key="calculator-weapons"
+      class="mb-6"
+      :active-count="activeFilterCount"
+      :clear-disabled="!activeFilterCount"
+      data-test-weapon-browser-filters
+      @clear="resetFilters">
+      <div class="weapons__filters__rarity flex flex-wrap gap-2">
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(5)"
+          :class="{
+            'btn-active': isRarityFilterActive(5),
+          }"
+          data-test-weapon-browser-filter-rarity="5">
+          5✦
         </button>
-      </form>
-      <div class="py-4">
-        <AppFilterPanel
-          panel-key="calculator-weapons"
-          class="mb-6"
-          :active-count="activeFilterCount"
-          :clear-disabled="!activeFilterCount"
-          data-test-weapon-browser-filters
-          @clear="resetFilters">
-          <div class="weapons__filters__rarity flex flex-wrap gap-2">
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(5)"
-              :class="{
-                'btn-active': isRarityFilterActive(5),
-              }"
-              data-test-weapon-browser-filter-rarity="5">
-              5✦
-            </button>
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(4)"
-              :class="{
-                'btn-active': isRarityFilterActive(4),
-              }"
-              data-test-weapon-browser-filter-rarity="4">
-              4✦
-            </button>
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(3)"
-              :class="{
-                'btn-active': isRarityFilterActive(3),
-              }"
-              data-test-weapon-browser-filter-rarity="3">
-              3✦
-            </button>
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(2)"
-              :class="{
-                'btn-active': isRarityFilterActive(2),
-              }"
-              data-test-weapon-browser-filter-rarity="2">
-              2✦
-            </button>
-            <button
-              class="rounded mr-1 inline-flex justify-center size-8 items-center"
-              @click="toggleRarityFilter(1)"
-              :class="{
-                'btn-active': isRarityFilterActive(1),
-              }"
-              data-test-weapon-browser-filter-rarity="1">
-              1✦
-            </button>
-          </div>
-        </AppFilterPanel>
-
-        <div class="weapons__list">
-          <template v-if="!weaponsListed.length">
-            <div class="weapons__list--empty py-12 text-center w-full" data-test-weapon-browser-empty>
-              No weapons found
-            </div>
-          </template>
-          <template v-else>
-            <div
-              class="weapons__list__items grid grid-cols-1 md:grid-cols-4 gap-4" data-test-weapon-browser-list>
-              <CalculatorWeaponCard
-                v-for="weapon in weaponsListed"
-                :key="weapon.key"
-                :name="weapon.name"
-                :name-key="weapon.key"
-                :rarity="weapon.rarity ?? 1"
-                :is-active="false"
-                :is-signature="weapon.key === props.signatureWeapon"
-                @click="chooseWeapon(weapon)"
-                class="cursor-pointer"
-                :data-test-weapon-browser-list="weapon.key"
-              >
-                <button
-                  @click="chooseWeapon(weapon)"
-                  class="btn btn-sm btn-primary"
-                  :data-test-weapon-browser-list-cta="weapon.key">
-                  Use weapon
-                </button>
-              </CalculatorWeaponCard>
-            </div>
-          </template>
-        </div>
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(4)"
+          :class="{
+            'btn-active': isRarityFilterActive(4),
+          }"
+          data-test-weapon-browser-filter-rarity="4">
+          4✦
+        </button>
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(3)"
+          :class="{
+            'btn-active': isRarityFilterActive(3),
+          }"
+          data-test-weapon-browser-filter-rarity="3">
+          3✦
+        </button>
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(2)"
+          :class="{
+            'btn-active': isRarityFilterActive(2),
+          }"
+          data-test-weapon-browser-filter-rarity="2">
+          2✦
+        </button>
+        <button
+          class="rounded mr-1 inline-flex justify-center size-8 items-center"
+          @click="toggleRarityFilter(1)"
+          :class="{
+            'btn-active': isRarityFilterActive(1),
+          }"
+          data-test-weapon-browser-filter-rarity="1">
+          1✦
+        </button>
       </div>
+    </AppFilterPanel>
+
+    <div class="weapons__list">
+      <template v-if="!weaponsListed.length">
+        <div class="weapons__list--empty py-12 text-center w-full" data-test-weapon-browser-empty>
+          No weapons found
+        </div>
+      </template>
+      <template v-else>
+        <div
+          class="weapons__list__items grid grid-cols-1 md:grid-cols-4 gap-4" data-test-weapon-browser-list>
+          <CalculatorWeaponCard
+            v-for="weapon in weaponsListed"
+            :key="weapon.key"
+            :name="weapon.name"
+            :name-key="weapon.key"
+            :rarity="weapon.rarity ?? 1"
+            :is-active="false"
+            :is-signature="weapon.key === props.signatureWeapon"
+            @click="chooseWeapon(weapon)"
+            class="cursor-pointer"
+            :data-test-weapon-browser-list="weapon.key"
+          >
+            <button
+              @click="chooseWeapon(weapon)"
+              class="btn btn-sm btn-primary"
+              :data-test-weapon-browser-list-cta="weapon.key">
+              Use weapon
+            </button>
+          </CalculatorWeaponCard>
+        </div>
+      </template>
     </div>
-  </dialog>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
+import AppModal from "./AppModal.vue";
 import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
 import { useWeaponBrowserFilters } from "../composables/useWeaponBrowserFilters";
 
@@ -127,12 +121,12 @@ const emit = defineEmits<{
   "weapon-browser:chosen-weapon": [key: string];
 }>();
 
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 // Remembered per character (see useWeaponBrowserFilters); this classic
 // browser only has the rarity filter.
 const { rarityFilter: filterRarity, resetWeaponBrowserFilters } = useWeaponBrowserFilters(
   () => props.character,
 );
-const isOpen = ref(false);
 
 const weaponsListFormatted = computed(() => {
   const weapons: WeaponRow[] = [];
@@ -172,23 +166,16 @@ const weaponsListed = computed(() => {
 });
 
 async function triggerOpenModal() {
-  isOpen.value = true;
-  await nextTick();
-  const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
-  modalEl?.showModal();
+  await modalElementRef.value?.triggerOpenModal();
 }
 
 function triggerCloseModal() {
-  const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
-  modalEl?.close();
-  isOpen.value = false;
+  modalElementRef.value?.triggerCloseModal();
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
 
 function handleClose() {
-  // Must close the <dialog> itself — only clearing isOpen removes the
-  // modal-box (and its method="dialog" form) while leaving the backdrop open.
   triggerCloseModal();
 }
 
@@ -213,9 +200,6 @@ function chooseWeapon(weapon: WeaponRow) {
 
 <style lang="scss" scoped>
 html[data-theme-style="light"] {
-  .modal-backdrop {
-    opacity: 0.5;
-  }
   .weapons__filter__weapon img {
     filter: invert(1);
   }

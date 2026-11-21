@@ -1,12 +1,12 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="title"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     close-test-attr="data-test-echo-odds-close"
     @close="emit('close')">
     <EchoTuneOddsTab :target="target" @edit-weights="handleEditWeights" />
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -15,12 +15,12 @@
 // echo) or, in a build, the odds of a fresh echo beating it (a finished
 // one — scored with the build's character, so the inventory doesn't offer
 // Odds on finished echoes). Teleported
-// to <body> by AppChooserModal, so its clicks never reach the calculator
+// to <body> by AppModal, so its clicks never reach the calculator
 // tile's own click-to-expand handler. See docs/adr/0044-echo-tuning-odds.md.
 import { computed, ref } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { ECHO_SUBSTAT_SLOTS } from "../echoes/tuningOdds";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import EchoTuneOddsTab from "./EchoTuneOddsTab.vue";
 
 defineOptions({ name: "EchoOddsDialog" });
@@ -36,7 +36,7 @@ const title = computed(() => {
   return echoName.value ? `${label} · ${echoName.value}` : label;
 });
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function open() {
   modalRef.value?.triggerOpenModal();

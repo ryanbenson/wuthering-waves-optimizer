@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     title="Choose character"
     close-test-attr="data-test-character-browser-close"
@@ -191,7 +191,7 @@
         :build-status="getCharacterBuildStatus(character.key, characters)"
         @choose="chooseCharacter(character)" />
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -216,7 +216,7 @@ import {
 } from "../../composables/useCharacterBrowserFilters";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 import CalculatorCharacterCard from "../CalculatorCharacterCard.vue";
 import WorkspaceCharacterRow from "./WorkspaceCharacterRow.vue";
 
@@ -244,7 +244,7 @@ const { characters, favoriteCharacters } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
 const { config } = storeToRefs(settingsStore);
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 // Search clears every time; the other filters and the view are remembered
 // (filters per character on teammate pickers — see filterScopeCharacter).

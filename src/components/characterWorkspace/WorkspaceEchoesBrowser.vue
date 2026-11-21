@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalRef"
     :title="`Browse inventory${slotLabel}`"
     close-test-attr="data-test-workspace-echoes-browser-close">
@@ -201,7 +201,7 @@
         <PaginationControls v-model="page" :total-pages="totalPages" />
       </div>
     </template>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -235,7 +235,7 @@ import EchoRatingRangeFilters from "../EchoRatingRangeFilters.vue";
 import PaginationControls from "../PaginationControls.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
-import AppChooserModal from "../AppChooserModal.vue";
+import AppModal from "../AppModal.vue";
 import { buildSimpleSelectOptions } from "../../utils/richSelectOptions";
 import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
@@ -261,7 +261,7 @@ const { echoes, echoIdsEquippedByAnyChars } = storeToRefs(inventoryStore);
 const { characters } = storeToRefs(characterStore);
 const { getEchoEquippedChars } = inventoryStore;
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoIndex = ref<number | null>(null);
 // Search and page are local; the filters and sort are remembered per
 // character (see useEchoBrowserFilters), so switching resonators swaps them.

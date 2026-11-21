@@ -1,0 +1,168 @@
+<template>
+  <!--
+    Teleported to <body> so the dialog never inherits clipping or stacking
+    context from whatever panel happens to host the chooser (the weapon and
+    enemy browsers sit deep inside cards with their own overflow rules).
+  -->
+  <Teleport to="body">
+    <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
+      <div
+        v-if="isOpen || !lazy"
+        class="modal-box app-modal__box flex flex-col p-0 gap-0"
+        :class="[boxClass, { 'app-modal__box--sheet': sheet }]">
+        <div class="flex items-center gap-2 px-4 pt-4 pb-3 shrink-0">
+          <button
+            v-if="showBack"
+            type="button"
+            class="btn btn-sm btn-ghost gap-1 px-2"
+            data-test-chooser-modal-back
+            @click="emit('back')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h3 class="text-lg font-semibold flex-1 min-w-0 truncate">{{ title }}</h3>
+          <slot name="header-actions" />
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost shrink-0"
+            aria-label="Close"
+            v-bind="closeTestAttrs"
+            @click="handleClose">
+            ✕
+          </button>
+        </div>
+
+        <div v-if="$slots.toolbar" class="px-4 pb-3 shrink-0">
+          <slot name="toolbar" />
+        </div>
+
+        <div class="app-modal__body flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+          <slot />
+        </div>
+
+        <div
+          v-if="$slots.footer"
+          class="shrink-0 border-t border-base-300 px-4 py-3 bg-base-100">
+          <slot name="footer" />
+        </div>
+      </div>
+      <!-- After the box, as in DaisyUI's docs: showModal() focuses the first focusable element, which should be in the box, not this hidden button. -->
+      <form method="dialog" class="modal-backdrop" @click="handleClose">
+        <button>close</button>
+      </form>
+    </dialog>
+  </Teleport>
+</template>
+
+<script setup lang="ts">
+import { computed, nextTick, ref } from "vue";
+
+// The root is a <Teleport>, so attributes (data-test-*, ids) are passed to the <dialog> by hand.
+defineOptions({ inheritAttrs: false });
+
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    /**
+     * Name of the `data-test-*` attribute to stamp on the close button. Each
+     * chooser keeps whatever selector its own e2e specs already reference —
+     * renaming one would silently break `cypress/support/commands.ts`'s
+     * shared character-select commands and the enemy/echo specs.
+     */
+    closeTestAttr?: string | null;
+    showBack?: boolean;
+    /** Classes for the box: its max width (default `max-w-5xl`), and a min height where one is needed. */
+    boxClass?: string;
+    /** Render the body only while open (the choosers). false keeps it mounted while closed. */
+    lazy?: boolean;
+    /** Full-screen sheet on phones. Off for small forms. */
+    sheet?: boolean;
+  }>(),
+  {
+    title: "",
+    closeTestAttr: null,
+    showBack: false,
+    boxClass: "max-w-5xl",
+    lazy: true,
+    sheet: true,
+  },
+);
+
+const emit = defineEmits<{ close: []; back: [] }>();
+
+const dialogEl = ref<HTMLDialogElement | null>(null);
+const isOpen = ref(false);
+
+const closeTestAttrs = computed(() =>
+  props.closeTestAttr ? { [props.closeTestAttr]: "" } : {},
+);
+
+async function triggerOpenModal() {
+  isOpen.value = true;
+  await nextTick();
+  dialogEl.value?.showModal();
+}
+
+function triggerCloseModal() {
+  // Cleared first, so the dialog's own close event (handleDialogClose) never
+  // reports a close from code as one by the user.
+  isOpen.value = false;
+  dialogEl.value?.close();
+}
+
+/**
+ * Esc and the native backdrop both fire `close` on the dialog itself without
+ * going through `handleClose` — keep `isOpen` honest in that case, and let
+ * the parent reset filter state the same way it would on an explicit close.
+ */
+function handleDialogClose() {
+  if (!isOpen.value) return;
+  isOpen.value = false;
+  emit("close");
+}
+
+function handleClose() {
+  triggerCloseModal();
+  emit("close");
+}
+
+defineExpose({ triggerOpenModal, triggerCloseModal });
+</script>
+
+<style scoped>
+/*
+ * Phone widths get a full-bleed sheet rather than a floating card: the list
+ * is the whole point of these modals, and a centered box wastes ~30% of a
+ * small screen on backdrop. Above `sm` it stays DaisyUI's normal centered
+ * modal-box.
+ */
+@media (max-width: 639px) {
+  .app-modal__box--sheet {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+}
+
+/*
+ * Wide content inside a chooser (a long substat row, a filter pill strip)
+ * scrolls within its own container rather than pushing the dialog sideways.
+ */
+.app-modal__body {
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+</style>

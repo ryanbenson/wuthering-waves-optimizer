@@ -216,25 +216,32 @@ done. Every capture path releases the same way:
   "the modal closed out from under an active session," not just the
   explicit Stop/Cancel buttons. Unlike Stop, it doesn't let the capture
   queue drain first (see "Capture queue").
-- **The `<dialog>` itself**: `EchoScannerModal.vue`/`CalculatorEchoImporter.vue`
-  wire `@close` on the `<dialog>` element itself, not just `@click` on the
-  backdrop and ✕ button — a real gap found from asking "does this actually
-  cover every way to close it": a native `<dialog>` shown via `showModal()`
-  closes on **Escape** directly, bypassing both click handlers entirely.
-  Without the `@close` listener, Escape left the modal's own `isOpen` state
-  stuck `true` (dialog visually gone, `EchoScannerCapture.vue` still
-  mounted underneath, its unmount cleanup never firing) — exactly the
-  wrong failure mode for a feature whose whole pitch is "nothing keeps
-  running once you're done." `triggerCloseModal` is idempotent (closing an
-  already-closed dialog, or resetting empty state, are no-ops), so it's
-  safe that both the click path and the native close event can end up
-  calling it.
+- **The `<dialog>` itself**: `EchoScannerModal.vue` and
+  `CalculatorEchoImporter.vue` sit on the shared `AppModal.vue` shell
+  (ADR [0062](./adr/0062-dialogs-use-the-app-modal-shell.md)), which
+  listens to the `<dialog>`'s own native `close` event
+  (`handleDialogClose`), not just the ✕ and backdrop clicks. That matters
+  because a native `<dialog>` shown via `showModal()` closes on **Escape**
+  directly, bypassing every click handler — a real gap found from asking
+  "does this actually cover every way to close it": before the native
+  listener, Escape left the modal's own open state stuck `true` (dialog
+  visually gone, `EchoScannerCapture.vue` still mounted underneath, its
+  unmount cleanup never firing) — exactly the wrong failure mode for a
+  feature whose whole pitch is "nothing keeps running once you're done."
+  Now Escape, the ✕ and the backdrop all clear the shell's open state, and
+  because both modals keep the shell's body lazy (not `:lazy="false"`),
+  that unmounts `EchoScannerCapture.vue`, which is what stops the capture
+  (the unmount bullet above). A close by the user also emits `close`, which
+  each modal routes to `resetDuplicateReview`; a close from code goes
+  through the modal's own `triggerCloseModal`, which resets the same state
+  itself. Closing an already-closed dialog, or resetting empty state, are
+  no-ops, so it's safe for both paths to run.
 
 If a future change adds another way to dismiss either modal (a keyboard
-shortcut, a route change, etc.), route it through the same
-`triggerCloseModal`/`onBeforeUnmount` machinery rather than adding a new
-one-off close path — that's exactly the kind of path the Escape-key gap
-above shows is easy to miss.
+shortcut, a route change, etc.), close it through the modal's
+`triggerCloseModal` (or the shell) and keep the body lazy, so the same
+unmount cleanup runs, rather than adding a new one-off close path — that's
+exactly the kind of path the Escape-key gap above shows is easy to miss.
 
 ## ROI layout — how the numbers in `layout.ts` were derived
 
