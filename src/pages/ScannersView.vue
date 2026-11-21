@@ -356,7 +356,7 @@ const privacy = [
   },
   {
     title: "Screen share",
-    body: "Your screen is read in your browser. Nothing is recorded or uploaded, nothing is kept once you're done, and sharing ends the moment you stop or close the scanner.",
+    body: "Your screen is read in your browser. Nothing is recorded or uploaded, your review stays only in this tab until you save, start over or close the tab, and sharing ends the moment you stop or close the scanner.",
   },
   {
     title: "Video upload",

@@ -26,8 +26,9 @@
       game window or upload a recording so the app can read your echoes'
       stats automatically. Both options are processed entirely in your
       browser — nothing is uploaded to a server, no video or screen capture
-      ever leaves your device, and no frames or images are kept once
-      you're done. Closing the scanner (including pressing Escape) stops
+      ever leaves your device, and captured frames aren't kept. The in-game snapshots
+      you review stay only in this tab until you save, start over or close the
+      tab. Closing the scanner (including pressing Escape) stops
       screen sharing immediately, the same as clicking "Stop scanning."
     </p>
     <h2>Changes</h2>
@@ -105,8 +106,9 @@
               your game window or upload a recording so the app can read your
               echoes' stats automatically. Both options are processed entirely
               in your browser — nothing is uploaded to a server, no video or
-              screen capture ever leaves your device, and no frames or images
-              are kept once you're done. Closing the scanner (including
+              screen capture ever leaves your device, and captured frames
+              aren't kept. The in-game snapshots you review stay only in this
+              tab until you save, start over or close the tab. Closing the scanner (including
               pressing Escape) stops screen sharing immediately, the same as
               clicking "Stop scanning."
             </p>
@@ -147,7 +149,7 @@ const DEVICE_ITEMS = [
   { title: "Builds and characters", body: "Saved in local storage" },
   { title: "Echo inventory", body: "Saved in local storage" },
   { title: "Settings", body: "Saved in local storage" },
-  { title: "Screen share and video", body: "Read here, then discarded. Nothing is kept." },
+  { title: "Screen share and video", body: "Read here and never uploaded. Review snapshots stay only in this tab until you save, start over or close it." },
 ];
 </script>
 
