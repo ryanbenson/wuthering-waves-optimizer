@@ -74,8 +74,8 @@ describe("planScannedMarks", () => {
     const inventory = mapParsedEchoes(slots, true).map((echo, i) => (i >= 2 ? { ...echo, locked: true } : echo));
 
     expect(planScannedMarks(slots, inventory)).toEqual([
-      { echoId: inventory[0].echoId, mark: "locked" },
-      { echoId: inventory[1].echoId, mark: "trash" },
+      { echoId: inventory[0].echoId, mark: "locked", replacedDiscard: false },
+      { echoId: inventory[1].echoId, mark: "trash", replacedDiscard: false },
     ]);
   });
 
@@ -90,7 +90,16 @@ describe("planScannedMarks", () => {
         { ...trashInApp, trash: true },
         { ...lockedInApp, locked: true },
       ]),
-    ).toEqual([{ echoId: trashInApp.echoId, mark: "locked" }]);
+    ).toEqual([{ echoId: trashInApp.echoId, mark: "locked", replacedDiscard: true }]);
+  });
+
+  it("leaves an echo kept for testing (temp) alone, so a discard read can't get it deleted", () => {
+    const lockedInGame = { ...slot("IceglintDancer", 1, "ATK", "6.3%"), locked: true, trash: false };
+    const discardedInGame = { ...slot("ShadowStepper", 1, "ATK", "6.9%"), locked: false, trash: true };
+    const slots = [lockedInGame, discardedInGame];
+    const inventory = mapParsedEchoes(slots, true).map((echo) => ({ ...echo, temp: true }));
+
+    expect(planScannedMarks(slots, inventory)).toEqual([]);
   });
 });
 
@@ -103,7 +112,9 @@ describe("two identical echoes in the inventory", () => {
     const [owned] = mapParsedEchoes([unique], true);
     const inventory = [copyA, copyB, owned];
 
-    expect(planScannedMarks([fodder, unique], inventory)).toEqual([{ echoId: owned.echoId, mark: "locked" }]);
+    expect(planScannedMarks([fodder, unique], inventory)).toEqual([
+      { echoId: owned.echoId, mark: "locked", replacedDiscard: false },
+    ]);
     const { writes } = planScannedLoadouts([fodder, unique], inventory, characters);
     expect(writes).toHaveLength(1);
     expect(writes[0].echoIds).toEqual([owned.echoId, null, null, null, null]);

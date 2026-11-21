@@ -38,28 +38,35 @@ function inventoryMatcher<T extends MappedEcho>(inventoryEchoes: readonly T[]) {
 /**
  * The game's lock / discard marks to add to scanned echoes found in the inventory.
  * Add-only: a mark the app has and the game doesn't show is kept. A lock the game shows
- * is added (locking un-discards, as in game); a discard mark is never added to an echo
- * locked in the app, so a misread can't take away its delete protection.
+ * is added, and replaces a discard mark set in the app (the app keeps the two exclusive,
+ * as the game does; `replacedDiscard` says so). A discard mark is only added to an echo
+ * with no mark in the app: never to one locked there (a misread can't take away its
+ * delete protection) or kept for testing (`temp`, which "delete all discarded" would
+ * then remove). An echo kept for testing gets no lock either, since locking clears `temp`.
  * Applied with useEchoInventory's setEchoLocked / setEchoTrash.
  */
 export function planScannedMarks(
   slots: readonly ParsedEchoSlot[],
-  inventoryEchoes: readonly (MappedEcho & { locked?: boolean; trash?: boolean })[],
-): { echoId: string; mark: "locked" | "trash" }[] {
+  inventoryEchoes: readonly (MappedEcho & { locked?: boolean; trash?: boolean; temp?: boolean })[],
+): ScannedMark[] {
   const find = inventoryMatcher(inventoryEchoes);
-  const changes = new Map<string, { echoId: string; mark: "locked" | "trash" }>();
+  const changes = new Map<string, ScannedMark>();
   for (const slot of slots) {
     if (!slot.echo || !(slot.locked || isGameTrash(slot))) continue;
     const echo = find(slot);
-    if (!echo?.echoId) continue;
+    if (!echo?.echoId || echo.temp) continue;
     if (slot.locked) {
-      if (!echo.locked) changes.set(echo.echoId, { echoId: echo.echoId, mark: "locked" });
+      if (!echo.locked) {
+        changes.set(echo.echoId, { echoId: echo.echoId, mark: "locked", replacedDiscard: Boolean(echo.trash) });
+      }
     } else if (!echo.trash && !echo.locked) {
-      changes.set(echo.echoId, { echoId: echo.echoId, mark: "trash" });
+      changes.set(echo.echoId, { echoId: echo.echoId, mark: "trash", replacedDiscard: false });
     }
   }
   return [...changes.values()];
 }
+
+export type ScannedMark = { echoId: string; mark: "locked" | "trash"; replacedDiscard: boolean };
 
 export function planScannedLoadouts(
   slots: readonly ParsedEchoSlot[],
