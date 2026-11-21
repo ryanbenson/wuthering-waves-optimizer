@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-11-05
 tags: [calculator, components, workers, labs, team-rotations]
+superseded_by: [0053, 0061]
 ---
 
 # 52. Team optimizer: separate searches, then combine
@@ -24,14 +25,14 @@ Three designs were mocked up in a published Artifact ("Team Optimizer Exploratio
 - **Low-impact characters keep their build by default.** Under 5% of team damage, no actions, or no echoes in their sets. A kept build's echoes are off limits to teammates. **Updated 2026-11-06 (ADR [0053](./0053-team-optimizer-buff-plans.md)):** a low-damage support who can provide a ticked team buff is searched by default.
 - **The prefill always includes what's worn.** Saved optimizer sets and main echoes, plus the current build's. That keeps the current build in the search, so a result only lands below it because of echo conflicts or guards, and the results say so.
 - **Echo buffs resolve the same way as the v3 optimizer (ADR 0040)**, but through `resolveTeamOptimizerEchoBuffs`, because most characters never mount the buff rows that normally report these stats.
-- **Results save as new builds, pinned to the team.** Existing builds are never overwritten. `createBuild` also makes each new build active, and the confirmation says so.
+- **Results save as new builds, pinned to the team.** Existing builds are never overwritten. `createBuild` also makes each new build active, and the confirmation says so. **Superseded 2026-11-20 (ADR [0061](./0061-team-optimizer-rotation-as-written.md)):** new builds are no longer made active, so other teams and the character page don't change.
 - **Labs and v3 only** (`teamOptimizer`). No store change and no migration: goals are per-session, and sets, main echoes and minimums use the characters' existing `optimizer` settings.
 - **`optimizeWithWorkers` moved out of `Calculator.vue`** into `src/workers/optimizerRun.ts`, with no behavior change, so it can run once per character.
 
 ## Consequences
 
 - Pros: scoring reuses the optimizer as it is, so there's one implementation of the math. In the spike the combiner visited under 100 rows, and the Hiyuki team's result reproduced exactly in the browser.
-- Cons: the top 5 are often near-identical (0.08% apart in the spike, with one low-damage character changing), so the table labels what changes. Large searches (many sets, any main echo) can take many minutes, so the setup counts loadouts first and warns. The generator removes stat-identical loadouts, so if two identical echoes exist, a conflict could be reported when a free copy exists. That's rare, but it means "proven" assumes no exact duplicates among competing echoes.
+- Cons: the top 5 are often near-identical (0.08% apart in the spike, with one low-damage character changing), so the table labels what changes. Large searches (many sets, any main echo) can take many minutes, so the setup counts loadouts first and warns. The generator removes stat-identical loadouts, so if two identical echoes exist, a conflict could be reported when a free copy exists. That's rare, but it means "proven" assumes no exact duplicates among competing echoes. **Note 2026-11-20 (ADR [0061](./0061-team-optimizer-rotation-as-written.md)):** imported inventories with many unleveled +0 echoes make this more common than "rare"; it's known and left as is.
 - Cons: the set and main echo guards infer the provider from who's wearing it now, since a team buff toggle doesn't record its source.
 
 ## Guidance
