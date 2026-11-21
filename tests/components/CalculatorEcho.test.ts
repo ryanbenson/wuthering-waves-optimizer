@@ -223,3 +223,47 @@ describe("CalculatorEcho incomplete echo indicator", () => {
     ).not.toBeNull();
   });
 });
+
+describe("CalculatorEcho echo picker", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    useInventoryStore().echoes = [makeInventoryEcho("cost3", ELITE_ECHO, 3, "EnergyRegen")];
+    useCharacterStore().characters = {
+      [CHARACTER]: { echoes: { 0: createEmptyEchoSlot("cost3") } },
+    };
+    document.body.innerHTML = "";
+    // jsdom doesn't implement <dialog>.showModal()/.close().
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute("open", "");
+    };
+    HTMLDialogElement.prototype.close = function () {
+      this.removeAttribute("open");
+      this.dispatchEvent(new Event("close"));
+    };
+  });
+
+  // The set filter is remembered per character (ADR 0058); closing the picker must not clear it.
+  it("keeps the set filter when the picker is closed with ✕", async () => {
+    const { container } = renderSlot(0);
+    await nextTick();
+    (container.querySelector(".echo__item__edit") as HTMLElement).click();
+    await nextTick();
+    (document.querySelector(".btn--echo--find") as HTMLElement).click();
+    await nextTick();
+    // The slot's two dialogs: Edit echo, then the picker.
+    const picker = () => document.querySelectorAll("dialog")[1] as HTMLDialogElement;
+    expect(picker().textContent).toContain("Choose echo");
+    const setButton = () => picker().querySelector("img.MidnightVeil")!.closest("button") as HTMLElement;
+    setButton().click();
+    await nextTick();
+    expect(setButton().classList.contains("btn-active")).toBe(true);
+
+    (picker().querySelector('button[aria-label="Close"]') as HTMLElement).click();
+    await nextTick();
+    expect(picker().hasAttribute("open")).toBe(false);
+
+    (document.querySelector(".btn--echo--find") as HTMLElement).click();
+    await nextTick();
+    expect(setButton().classList.contains("btn-active")).toBe(true);
+  });
+});

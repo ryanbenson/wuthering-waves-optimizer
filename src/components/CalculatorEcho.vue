@@ -541,7 +541,7 @@
     </div>
   </AppModal>
 
-  <AppModal ref="pickerRef" title="Choose echo" box-class="max-w-5xl" @close="resetFilters">
+  <AppModal ref="pickerRef" title="Choose echo" box-class="max-w-5xl">
     <div
       class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
       :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
