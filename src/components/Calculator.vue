@@ -205,6 +205,7 @@
           v-if="!isLiveResultBarEnabled"
           :key="characterBuildKey"
           :character="character"
+          :suggested-echo-sets="chosenChar.value?.basic?.suggestedEchoSets"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
           :optimizer-elapsed-ms="optimizerElapsedMs"

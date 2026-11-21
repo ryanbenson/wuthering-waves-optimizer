@@ -137,6 +137,8 @@ export interface TeamOptimizerSlotView {
   mainEchoLock: string | null;
   /** The current build wears echoes that aren't in the inventory. */
   isHandTyped: boolean;
+  /** The character's recommended echo sets (basic.ts), for the drawer's set picker. */
+  recommendedSets: string[];
   /** Main echoes the search may try whose buffs nobody has set up, so they count as off. */
   unsetMainEchoes: string[];
 }
@@ -336,7 +338,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
   /** Characters whose goal the player picked, so a refresh doesn't reset it. */
   const touchedGoals = new Set<number>();
   /** Each slot's recommended echo sets (basic.ts), read with the character in loadOffers. */
-  const recommendedSetsBySlot: Record<number, string[]> = {};
+  const recommendedSetsBySlot = reactive<Record<number, string[]>>({});
 
   const guards = computed(() => {
     const slots = [0, 1, 2].map((slot) => {
@@ -563,6 +565,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
         return {
           slot,
           characterId,
+          recommendedSets: recommendedSetsBySlot[slot] ?? [],
           actionCount: count,
           currentDamage,
           damageShare: total > 0 ? currentDamage / total : 0,

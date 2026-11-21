@@ -340,6 +340,7 @@
           v-if="drawerView"
           :key="drawerView.characterId"
           :character="drawerView.characterId"
+          :suggested-echo-sets="drawerView.recommendedSets"
           embedded
           :initial-sets="drawerView.choice.sets"
           :initial-main-echoes="drawerView.choice.mainEchoes"
