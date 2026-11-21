@@ -9,7 +9,6 @@
     data-test-rotations-presets-modal
     @close="isOpen = false">
     <div data-test-rotations-presets>
-
       <div class="flex flex-col gap-2">
         <div v-if="!presets.length" class="text-sm opacity-70">
           No presets are available for {{ characterName }} yet.

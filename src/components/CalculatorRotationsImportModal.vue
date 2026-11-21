@@ -9,7 +9,6 @@
     data-test-rotations-import-modal
     @close="isOpen = false">
     <div data-test-rotations-import>
-
       <div class="flex flex-col gap-4">
         <div>
           <h4 class="font-semibold text-sm mb-1">Import from text</h4>

@@ -5,62 +5,62 @@
     enemy browsers sit deep inside cards with their own overflow rules).
   -->
   <Teleport to="body">
-  <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
-    <form method="dialog" class="modal-backdrop" @click="handleClose">
-      <button>close</button>
-    </form>
-    <div
-      v-if="isOpen || !lazy"
-      class="modal-box app-modal__box flex flex-col p-0 gap-0"
-      :class="[boxClass, { 'app-modal__box--sheet': sheet }]">
-      <div class="flex items-center gap-2 px-4 pt-4 pb-3 shrink-0">
-        <button
-          v-if="showBack"
-          type="button"
-          class="btn btn-sm btn-ghost gap-1 px-2"
-          data-test-chooser-modal-back
-          @click="emit('back')">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
-        <h3 class="text-lg font-semibold flex-1 min-w-0 truncate">{{ title }}</h3>
-        <slot name="header-actions" />
-        <button
-          type="button"
-          class="btn btn-sm btn-circle btn-ghost shrink-0"
-          aria-label="Close"
-          v-bind="closeTestAttrs"
-          @click="handleClose">
-          ✕
-        </button>
-      </div>
-
-      <div v-if="$slots.toolbar" class="px-4 pb-3 shrink-0">
-        <slot name="toolbar" />
-      </div>
-
-      <div class="app-modal__body flex-1 min-h-0 overflow-y-auto px-4 pb-4">
-        <slot />
-      </div>
-
+    <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
+      <form method="dialog" class="modal-backdrop" @click="handleClose">
+        <button>close</button>
+      </form>
       <div
-        v-if="$slots.footer"
-        class="shrink-0 border-t border-base-300 px-4 py-3 bg-base-100">
-        <slot name="footer" />
+        v-if="isOpen || !lazy"
+        class="modal-box app-modal__box flex flex-col p-0 gap-0"
+        :class="[boxClass, { 'app-modal__box--sheet': sheet }]">
+        <div class="flex items-center gap-2 px-4 pt-4 pb-3 shrink-0">
+          <button
+            v-if="showBack"
+            type="button"
+            class="btn btn-sm btn-ghost gap-1 px-2"
+            data-test-chooser-modal-back
+            @click="emit('back')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+          <h3 class="text-lg font-semibold flex-1 min-w-0 truncate">{{ title }}</h3>
+          <slot name="header-actions" />
+          <button
+            type="button"
+            class="btn btn-sm btn-circle btn-ghost shrink-0"
+            aria-label="Close"
+            v-bind="closeTestAttrs"
+            @click="handleClose">
+            ✕
+          </button>
+        </div>
+
+        <div v-if="$slots.toolbar" class="px-4 pb-3 shrink-0">
+          <slot name="toolbar" />
+        </div>
+
+        <div class="app-modal__body flex-1 min-h-0 overflow-y-auto px-4 pb-4">
+          <slot />
+        </div>
+
+        <div
+          v-if="$slots.footer"
+          class="shrink-0 border-t border-base-300 px-4 py-3 bg-base-100">
+          <slot name="footer" />
+        </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
   </Teleport>
 </template>
 
