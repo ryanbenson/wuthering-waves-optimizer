@@ -1,5 +1,9 @@
 <template>
   <div class="flex flex-col gap-4" data-test-team-optimizer-setup>
+    <p class="text-sm opacity-70 m-0" data-test-team-optimizer-intro>
+      Finds the best <span class="font-semibold">team total</span> for this rotation, using it as written. It can change
+      which echoes each character wears, and who wears which buff set or main echo.
+    </p>
     <div class="bg-base-200 border border-base-300 rounded-xl p-3 shadow-lg flex flex-wrap items-center gap-3">
       <div class="flex-1 min-w-[14rem]">
         <div class="text-xs font-bold uppercase tracking-wider opacity-50">Ready to run</div>
@@ -7,6 +11,7 @@
           <template v-if="!optimizer.searchedSlots.value.length">
             Set at least one character to Optimize.
           </template>
+          <template v-else-if="optimizer.isRefreshing.value">Updating for {{ optimizer.damageType.value }} damage…</template>
           <template v-else-if="optimizer.totalLoadouts.value.isCounting">Counting loadouts…</template>
           <template v-else>
             <span class="font-mono font-bold">
@@ -90,6 +95,41 @@
       </label>
     </div>
 
+    <div
+      v-if="optimizer.handSetBuffs.value.length"
+      class="bg-base-200 rounded-xl p-4 flex flex-col gap-3"
+      data-test-team-optimizer-hand-set>
+      <div class="text-xs font-bold uppercase tracking-wider opacity-50">Buffs set by hand in this rotation</div>
+      <p class="text-sm m-0">
+        Some actions have their own team buff settings. The optimizer leaves these as you set them, whoever wears the set or
+        main echo in a result.
+      </p>
+      <ul class="flex flex-col gap-2">
+        <li
+          v-for="entry in optimizer.handSetBuffs.value"
+          :key="`${entry.slot}-${entry.defKey}`"
+          class="flex items-center gap-2 text-sm"
+          :data-test-team-optimizer-hand-set-item="`${entry.slot}-${entry.defKey}`">
+          <div
+            class="size-6 rounded-full border bg-cover bg-center shrink-0"
+            :style="{ backgroundImage: `url(${characterImage(receiverId(entry.slot))})` }"></div>
+          <span>
+            <span class="font-semibold">{{ buffName(entry.defKey) }}</span>
+            <template v-if="entry.onCount"> is on for {{ entry.onCount }}</template>
+            <template v-if="entry.onCount && entry.offCount"> and off for {{ entry.offCount }}</template>
+            <template v-else-if="entry.offCount"> is off for {{ entry.offCount }}</template>
+            of {{ receiverName(entry.slot) }}'s actions.
+          </span>
+        </li>
+      </ul>
+      <div class="border-t border-base-300 pt-3 flex flex-wrap items-center justify-between gap-2">
+        <span class="text-sm opacity-70">Want the optimizer to decide these too?</span>
+        <button type="button" class="btn btn-sm" data-test-team-optimizer-copy-open @click="openCopy">
+          Optimize a copy without them
+        </button>
+      </div>
+    </div>
+
     <div class="flex flex-col gap-3">
       <div
         v-for="view in optimizer.slots.value"
@@ -136,6 +176,14 @@
           </button>
         </div>
 
+        <p
+          v-if="view.isHandTyped"
+          class="text-sm bg-base-300/60 rounded-lg px-3 py-2"
+          :data-test-team-optimizer-hand-typed="view.slot">
+          <span class="badge badge-sm badge-outline mr-1">Typed in by hand</span>
+          {{ characterName(view.characterId) }}'s echoes aren't in your inventory, so the optimizer can't compare against
+          this build and keeps it by default. Import those echoes to include {{ characterName(view.characterId) }}.
+        </p>
         <p v-if="view.choice.goal === 'keep'" class="text-sm opacity-70">
           This build stays as it is, and its echoes are off limits to teammates.
         </p>
@@ -149,6 +197,12 @@
           <span class="opacity-70 ml-2">Main echo:</span>
           <span v-if="!view.choice.mainEchoes.length" class="opacity-50">None</span>
           <span v-for="echo in displayMains(view)" :key="echo" class="badge h-auto py-1">{{ echoName(echo) }}</span>
+          <span
+            v-if="view.mainEchoLock"
+            class="badge badge-sm badge-outline h-auto py-1"
+            :data-test-team-optimizer-main-echo-lock="view.slot">
+            Kept for the rotation's echo attack
+          </span>
           <span v-if="view.choice.minStats.length" class="badge h-auto py-1">
             {{ view.choice.minStats.length }} minimum{{ view.choice.minStats.length === 1 ? "" : "s" }}
           </span>
@@ -224,6 +278,15 @@
           {{ characterName(drift.teammateId) }}'s team buffs for accurate results.
         </div>
 
+        <p
+          v-if="view.unsetMainEchoes.length"
+          class="text-xs opacity-70"
+          :data-test-team-optimizer-unset-main-echo="view.slot">
+          {{ joinNames(view.unsetMainEchoes.map(echoName), "and") }}
+          {{ view.unsetMainEchoes.length === 1 ? "has" : "have" }} buffs you haven't set up for
+          {{ characterName(view.characterId) }}, so they count as off. Set them in <span class="font-semibold">Edit</span> if
+          they'd be active.
+        </p>
         <p v-if="view.blocker" class="text-sm text-warning" :data-test-team-optimizer-blocker="view.slot">
           {{ view.blocker }}
         </p>
@@ -234,6 +297,36 @@
       Heads up: this team's current builds use {{ optimizer.sharedEchoCount.value }}
       echo{{ optimizer.sharedEchoCount.value === 1 ? "" : "es" }} on two characters at once, so the current total isn't possible in-game.
     </p>
+
+    <dialog ref="copyEl" class="modal" data-test-team-optimizer-copy-dialog>
+      <div class="modal-box flex flex-col gap-3">
+        <h3 class="font-semibold">Optimize a copy of this team?</h3>
+        <p class="text-sm">
+          This makes a new team, <span class="font-semibold">"{{ copyName }}"</span>, with the same characters, builds and
+          rotation. Your team stays exactly as it is.
+        </p>
+        <p class="text-sm opacity-70">
+          In the copy, these buffs follow the character's team buff settings instead of being set by hand on each action:
+        </p>
+        <ul class="list-disc pl-5 text-sm">
+          <li v-for="entry in optimizer.handSetBuffs.value" :key="`${entry.slot}-${entry.defKey}`">
+            {{ buffName(entry.defKey) }} on {{ entry.onCount + entry.offCount }} of {{ receiverName(entry.slot) }}'s actions
+          </li>
+        </ul>
+        <p class="text-sm opacity-70">
+          So any buff windows you set for them won't apply in the copy. Builds you save from its results are pinned to the copy.
+        </p>
+        <div class="modal-action">
+          <button type="button" class="btn btn-sm btn-ghost" @click="copyEl?.close()">Cancel</button>
+          <button type="button" class="btn btn-sm btn-primary" data-test-team-optimizer-copy-confirm @click="confirmCopy">
+            Make copy and open it
+          </button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
 
     <dialog ref="drawerEl" class="modal justify-items-end" data-test-team-optimizer-drawer @close="drawerSlot = null">
       <div class="modal-box h-full max-h-full w-full max-w-2xl rounded-none flex flex-col gap-3">
@@ -273,16 +366,30 @@ import {
 } from "../../composables/useTeamOptimizer";
 import OptimizerWorkspaceSetup from "../optimizerWorkspace/OptimizerWorkspaceSetup.vue";
 import { signedPercent } from "../../utils/signedDelta";
+import { teamBuffSource } from "../../calculator/teamBuffPlans";
 
 defineOptions({ name: "TeamOptimizerSetup" });
 
 const props = defineProps<{ optimizer: ReturnType<typeof useTeamOptimizer> }>();
+const emit = defineEmits<{ "open-team": [teamId: string] }>();
 
 const drawerEl = ref<HTMLDialogElement | null>(null);
 const drawerSlot = ref<number | null>(null);
 const drawerView = computed(() =>
   props.optimizer.slots.value.find((view) => view.slot === drawerSlot.value) ?? null,
 );
+
+const copyEl = ref<HTMLDialogElement | null>(null);
+const copyName = computed(() => `${props.optimizer.team.value?.name ?? "Team"} (optimizer)`);
+
+function openCopy() {
+  copyEl.value?.showModal();
+}
+function confirmCopy() {
+  copyEl.value?.close();
+  const id = props.optimizer.copyTeamWithoutHandSetBuffs();
+  if (id) emit("open-team", id);
+}
 
 const isLarge = computed(() => props.optimizer.totalLoadouts.value.count >= LARGE_SEARCH_LOADOUTS);
 
@@ -320,7 +427,25 @@ function offerName(offer: TeamOptimizerOffer) {
   const label = setLabel(offer.source.setKey);
   return offer.defKey === offer.source.setKey ? label : `${label} (${offer.defKey.slice(offer.source.setKey.length)})`;
 }
+function receiverId(slot: number): string {
+  return props.optimizer.team.value?.characterIds?.[slot] ?? "";
+}
+function receiverName(slot: number) {
+  return characterName(receiverId(slot));
+}
+/** The buff as players know it: the set's name, or the main echo's. */
+function buffName(defKey: string) {
+  const source = teamBuffSource(defKey);
+  if (!source) return defKey;
+  return source.kind === "main" ? echoName(source.echoKey) : setLabel(source.setKey);
+}
+function joinNames(names: string[], conjunction: "or" | "and" = "or") {
+  return names.length <= 1
+    ? (names[0] ?? "")
+    : `${names.slice(0, -1).join(", ")} ${conjunction} ${names[names.length - 1]}`;
+}
 function displayMains(view: TeamOptimizerSlotView) {
+  if (view.mainEchoLock) return [view.mainEchoLock];
   return view.choice.protectTeamBuffs && view.guard.requiredMainEcho
     ? [view.guard.requiredMainEcho]
     : view.choice.mainEchoes;
