@@ -290,6 +290,15 @@ export const useCharacterStore = defineStore("character", {
       }
     },
     /**
+     * Marks the build the echo scanner keeps for the character (`scanner`
+     * metadata, see buildFields.ts). The scanner finds it by this flag, never
+     * by its name; renameBuild clears it.
+     */
+    setScannerBuild(characterId, buildId) {
+      const build = this.characters[characterId]?.builds?.find((b) => b.id === buildId);
+      if (build) build.scanner = true;
+    },
+    /**
      * Refuses to delete a character's only build (issue #278's explicit
      * rule) — returns false without changing anything. If the deleted build
      * was active, falls back to equipping the first remaining build so

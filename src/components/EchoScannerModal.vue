@@ -140,11 +140,16 @@ function equipScannedWearers(): string {
     inventoryStore.echoes,
     allCharactersList.map((c) => c.key),
   );
-  const moved = loadouts.applyLoadoutWrites(writes);
+  const { moved, kept, buildNames } = loadouts.applyLoadoutWrites(writes);
+  const keys = writes.map((w) => w.characterKey);
+  const sameName = keys.every((key) => buildNames[key] === SCANNED_BUILD_NAME);
   return [
-    writes.length
-      ? ` Equipped on ${names(writes.map((w) => w.characterKey))}, each in its "${SCANNED_BUILD_NAME}" build.`
-      : "",
+    !keys.length
+      ? ""
+      : sameName
+        ? ` Equipped on ${names(keys)}, each in its "${SCANNED_BUILD_NAME}" build.`
+        : ` Equipped on ${keys.map((key) => `${getCharacterRosterDisplayName(key)} (build "${buildNames[key]}")`).join(", ")}.`,
+    kept ? ` Kept ${plural(kept)} from earlier scans that this one didn't show.` : "",
     moved.length
       ? ` Moved ${plural(moved.length)} off ${names(moved.map((m) => m.from))}, as in game.`
       : "",
@@ -164,12 +169,18 @@ function copyScannedMarks(): string {
     if (mark === "locked") setEchoLocked(echoId, true);
     else setEchoTrash(echoId, true);
   }
-  const count = (mark: string) => changes.filter((change) => change.mark === mark).length;
+  const locked = changes.filter((change) => change.mark === "locked").length;
+  const trash = changes.length - locked;
+  const replaced = changes.filter((change) => change.replacedDiscard).length;
   const added = [
-    count("locked") ? `locked ${plural(count("locked"))}` : "",
-    count("trash") ? `marked ${plural(count("trash"))} as discard` : "",
+    locked ? `locked ${plural(locked)}` : "",
+    trash ? `marked ${plural(trash)} as discard` : "",
   ].filter(Boolean);
-  return added.length ? ` ${added.join(" and ").replace(/^./, (c) => c.toUpperCase())}, as in game.` : "";
+  if (!added.length) return "";
+  const note = replaced
+    ? ` (${replaced}${trash ? ` locked echo${replaced === 1 ? "" : "es"}` : ""} ${replaced === 1 ? "was" : "were"} marked discard here)`
+    : "";
+  return ` ${added.join(" and ").replace(/^./, (c) => c.toUpperCase())}, as in game${note}.`;
 }
 
 function handleFinalized(savedCount: number) {

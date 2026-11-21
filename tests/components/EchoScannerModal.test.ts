@@ -66,7 +66,11 @@ describe("EchoScannerModal's save step", () => {
     HTMLDialogElement.prototype.close ??= function (this: HTMLDialogElement) {
       this.open = false;
     };
-    applyLoadoutWrites.mockReset().mockReturnValue([]);
+    applyLoadoutWrites.mockReset().mockImplementation((writes: { characterKey: string }[]) => ({
+      moved: [],
+      kept: 0,
+      buildNames: Object.fromEntries(writes.map((w) => [w.characterKey, "Scanned"])),
+    }));
     setEchoLocked.mockReset();
     setEchoTrash.mockReset();
     showToast.mockReset();
@@ -114,7 +118,11 @@ describe("EchoScannerModal's save step", () => {
   });
 
   it("says in the toast who was equipped and which echoes moved off other characters", async () => {
-    applyLoadoutWrites.mockReturnValue([{ echoId: "x", from: "Hiyuki", to: "Hsin" }]);
+    applyLoadoutWrites.mockReturnValue({
+      moved: [{ echoId: "x", from: "Hiyuki", to: "Hsin" }],
+      kept: 0,
+      buildNames: { Hsin: "Scanned" },
+    });
 
     await scan([slot("IceglintDancer", 1, "6.3%", { equippedBy: "Hsin" })]);
 
@@ -163,5 +171,34 @@ describe("EchoScannerModal's save step", () => {
     expect(setEchoLocked).toHaveBeenCalledWith(owned.echoId, true);
     expect(applyLoadoutWrites).toHaveBeenCalledTimes(1);
     expect(toast()).toBe('No echoes were saved. Locked 1 echo, as in game. Equipped on Hsin, each in its "Scanned" build.');
+  });
+
+  it("names a build that isn't called \"Scanned\" and counts echoes kept from earlier scans", async () => {
+    applyLoadoutWrites.mockReturnValue({ moved: [], kept: 2, buildNames: { Hsin: "Scanned (2)" } });
+
+    await scan([slot("IceglintDancer", 1, "6.3%", { equippedBy: "Hsin" })]);
+
+    expect(toast()).toBe(
+      "Saved 1 echo to your inventory. Equipped on Hsin (build \"Scanned (2)\"). Kept 2 echoes from earlier scans that this one didn't show.",
+    );
+  });
+
+  it("says when a game lock replaced a discard mark set in the app, and leaves temp echoes alone", async () => {
+    const discardedHere = slot("IceglintDancer", 1, "6.3%", { locked: true });
+    const tempHere = slot("ShadowStepper", 1, "6.9%", { trash: true });
+    const [trashEcho] = mapParsedEchoes([discardedHere], true);
+    const [tempEcho] = mapParsedEchoes([tempHere], true);
+    useInventoryStore().saveEcho({ ...trashEcho, trash: true });
+    useInventoryStore().saveEcho({ ...tempEcho, temp: true });
+
+    await scan([discardedHere, tempHere]);
+    await wrapper.find("[data-test-duplicate-review-apply]").trigger("click");
+    await flushPromises();
+
+    expect(setEchoLocked).toHaveBeenCalledWith(trashEcho.echoId, true);
+    expect(setEchoTrash).not.toHaveBeenCalled();
+    expect(toast()).toBe(
+      "No echoes were saved. Left out 1 echo marked as discard in game. Locked 1 echo, as in game (1 was marked discard here).",
+    );
   });
 });

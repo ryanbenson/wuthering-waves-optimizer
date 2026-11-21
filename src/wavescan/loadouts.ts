@@ -103,6 +103,32 @@ export function groupWavescanLoadouts(
   };
 }
 
+/**
+ * A rescan that showed only some of a character's echoes (the echo scanner): the
+ * scanned ids, then the previous loadout's other echoes in slot order that `keep`
+ * allows, while they fit in LOADOUT_SLOTS and MAX_LOADOUT_COST (an older echo that no
+ * longer fits next to the scanned ones is dropped). Sorted highest cost first, scanned
+ * echoes first within a cost. `kept` lists the previous echoes that stayed.
+ */
+export function mergeLoadout(
+  scanned: readonly string[],
+  previous: readonly (string | null)[],
+  costOf: (id: string) => number,
+  keep: (id: string) => boolean,
+): { ids: string[]; kept: string[] } {
+  const ids = [...scanned];
+  const kept: string[] = [];
+  let cost = ids.reduce((sum, id) => sum + costOf(id), 0);
+  for (const id of previous) {
+    if (!id || ids.includes(id) || !keep(id)) continue;
+    if (ids.length >= LOADOUT_SLOTS || cost + costOf(id) > MAX_LOADOUT_COST) continue;
+    ids.push(id);
+    kept.push(id);
+    cost += costOf(id);
+  }
+  return { ids: sortByCostDesc(ids, new Map(ids.map((id) => [id, costOf(id)]))), kept };
+}
+
 /** Stable: echoes with the same cost keep their order. */
 function sortByCostDesc(ids: string[], costById: Map<string, number>): string[] {
   return ids

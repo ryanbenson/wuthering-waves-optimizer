@@ -388,15 +388,15 @@
       <label v-if="wearerCount" class="label cursor-pointer justify-end gap-2">
         <input v-model="equipWearers" type="checkbox" class="checkbox checkbox-sm" data-test-scanner-equip-wearers />
         <span class="label-text">
-          Equip on the {{ wearerCount }} character{{ wearerCount === 1 ? "" : "s" }} wearing them in game
-          (as a new build for characters you already have)
+          Equip on the {{ wearerCount }} character{{ wearerCount === 1 ? "" : "s" }} wearing them in game,
+          in a "Scanned" build (an echo another character wears here is taken off them, as in game)
         </span>
       </label>
       <label v-if="markCount" class="label cursor-pointer justify-end gap-2">
         <input v-model="copyMarks" type="checkbox" class="checkbox checkbox-sm" data-test-scanner-copy-marks />
         <span class="label-text">
           Add the game's lock / discard marks to {{ markCount }} echo{{ markCount === 1 ? "" : "es" }}
-          (marks you set in the app are kept)
+          (marks set here are kept, but a game lock replaces a discard mark set here)
         </span>
       </label>
       <label v-if="trashCount" class="label cursor-pointer justify-end gap-2">
