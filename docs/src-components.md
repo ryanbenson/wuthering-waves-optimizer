@@ -143,3 +143,7 @@ These sit outside the Calculator/TeamRotations pipeline entirely — no shared c
 - **Stats or damage wrong**: `calculator/stats.ts`, `calculator/calculator.ts`, `calculator/attacks.ts`, and the handlers in `Calculator.vue` that call `computeAllBuffsWithBreakdown` and `calcAllDamages`.
 - **UI not updating**: Check that the relevant ref/reactive is updated in a handler and passed as a prop to the child; ensure the child uses that prop (or store) in template/computed.
 - **New screen or step**: Add a new screen ref and sub-nav entry, add a handler that updates state and runs the same pipeline if it affects stats/damage, and pass the needed props into the new component.
+
+## ConfirmDialog.vue — shared confirmation
+
+`ConfirmDialog.vue` renders whatever `useConfirm()` has pending. `confirm()` resolves a boolean. `ask()` resolves `"confirm" | "cancel" | "discard"`, and when given a `discardLabel` the dialog adds a third, left-aligned Discard button, for questions like "keep or throw away?" where Cancel must mean "stay where I am" (used by `EchoScannerModal.vue` when closing with unsaved results).
