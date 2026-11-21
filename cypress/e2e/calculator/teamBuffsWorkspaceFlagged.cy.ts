@@ -158,7 +158,7 @@ describe("Team Buffs Workspace (liveResultBar flag): Carlotta golden path", () =
     cy.get('[data-test-team-buffs-workspace-reset]').click();
     // Reset asks first (shared confirm dialog).
     cy.get(".confirm-dialog").should("be.visible");
-    cy.get(".confirm-dialog .modal-action").contains("button", "Reset All").click();
+    cy.get(".confirm-dialog .modal-action").contains("button", "Reset all").click();
     cy.get('[data-test-team-buffs-slot-name="1"]').should("contain.text", "None");
     cy.get("[data-test-team-buffs-active-tray]").should("not.exist");
   });

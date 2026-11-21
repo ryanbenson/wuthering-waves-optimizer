@@ -13,7 +13,7 @@ describe("CalculatorRotations delete", () => {
     setActivePinia(createPinia());
     useCharacterStore().characters = {
       Hiyuki: { rotations: [{ id: "r1", name: "Std rotation", order: 0, actions: [] }] },
-    } as any;
+    } as unknown as ReturnType<typeof useCharacterStore>["characters"];
   });
 
   it("asks before deleting a rotation and keeps it on cancel", async () => {
@@ -29,12 +29,12 @@ describe("CalculatorRotations delete", () => {
     settle(false);
     await flushPromises();
     expect(container.querySelector(ROW)).not.toBeNull();
-    expect((useCharacterStore().characters as any).Hiyuki.rotations).toHaveLength(1);
+    expect(useCharacterStore().characters.Hiyuki.rotations).toHaveLength(1);
 
     await fireEvent.click(container.querySelector(ROW)!);
     settle(true);
     await flushPromises();
     expect(container.querySelector(ROW)).toBeNull();
-    expect((useCharacterStore().characters as any).Hiyuki.rotations).toHaveLength(0);
+    expect(useCharacterStore().characters.Hiyuki.rotations).toHaveLength(0);
   });
 });
