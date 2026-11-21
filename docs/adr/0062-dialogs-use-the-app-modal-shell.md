@@ -13,7 +13,7 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 
 ## Decision
 
-- Every dialog that can be closed is an `<AppModal>`: title, optional `header-actions`, ✕, in one row that stays put while the body scrolls. Actions that sat next to a dialog's title (Reset to Default, the scanner's How to scan and its guide's Got it) go in `header-actions`.
+- Every dialog with a ✕ is an `<AppModal>` (the exceptions are listed below): title, optional `header-actions`, ✕, in one row that stays put while the body scrolls. Actions that sat next to a dialog's title (Reset to Default, the scanner's How to scan and its guide's Got it) go in `header-actions`.
 - Two props cover what plain dialogs did differently. Their defaults are what the choosers already did, so the choosers don't change:
   - `lazy`: `false` keeps the body mounted while closed, for dialogs whose parent reaches into it before opening or that keep state between opens.
   - `sheet`: `false` keeps a small form a centred card on phones instead of a full-screen sheet.
@@ -21,7 +21,9 @@ The five choosers ([ADR 0026](./0026-chooser-modals-redesign.md)) share `AppChoo
 - Attributes pass through to the `<dialog>`, so the `id`s and `data-test-*` that tests rely on keep working.
 - Dialogs without a title got one, reusing the v3 choosers' wording where they match ("Choose character", "Browse weapons", "Choose enemy").
 - Dialogs that closed from a Close/Cancel button at the bottom (the rotation and team import dialogs, Rotation presets) get the ✕ instead; the button's `data-test-*` moves to the ✕. The scanner's capture preview, which had no close button, gets one too.
-- Left as it is: `ConfirmDialog.vue`, a question with its own answer buttons, where a ✕ would be a third answer.
+- Left as they are:
+  - Questions with their own answer buttons, where a ✕ would be one more answer: `ConfirmDialog.vue`, the Replace / Add to them question in `teamBuffsWorkspace/TeamBuffsRecommendedTeams.vue`, the Save as new builds confirm in `teamOptimizer/TeamOptimizerResults.vue`, and the copy-the-team confirm in `teamOptimizer/TeamOptimizerSetup.vue`.
+  - The team optimizer's side drawer in `teamOptimizer/TeamOptimizerSetup.vue`, a full-height panel closed with Done, not a centred dialog.
 - `AppChooserModal.vue` is renamed `AppModal.vue`, and its classes `app-chooser-modal*` become `app-modal*`: it is no longer only for choosers.
 
 ## Consequences
