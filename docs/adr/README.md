@@ -38,7 +38,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 
 ## Index
 
-Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 0040, 0041, 0042, 0062) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
+Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 0040, 0041, 0042) first, then redesign-chapter ADRs (0013+) in the order they shipped. **Superseded by** is blank unless a later ADR is known to replace part of that row's Decision — see that ADR for exactly which part.
 
 | ADR | Title | Status | Superseded by | Tags |
 |-----|-------|--------|----------------|------|
@@ -66,11 +66,10 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0040](./0040-wavescan-equipped-loadouts.md) | Equip characters from a Wavescan export's `equippedBy` | accepted | | scanner, interop, stores, components |
 | [0041](./0041-signed-scanner-data-and-assets.md) | Sign `scanner-data.json`, and publish Wavescan's pictures as `scanner-assets.json` | accepted | 0042 (CI makes the pictures) | scanner, data, interop, security |
 | [0042](./0042-ci-commits-scanner-pictures.md) | CI commits Wavescan's pictures to echo pull requests | accepted | | scanner, data, ci |
-| [0062](./0062-dialogs-use-the-app-modal-shell.md) | Dialogs with a close button use the `AppModal` shell | accepted | | components, ui |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
 | [0014](./0014-echo-editor-redesign.md) | Echo display/edit redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0028 (Set Bonus/Main Echo Buff), 0030 (build-context panel → inline tile) | calculator, components, composables, inventory |
 | [0015](./0015-rotation-flow-labs-flag.md) | Rotation Flow (Labs-flagged, shares the `liveResultBar` flag) | accepted | [0049](./0049-rotation-timeline-strip.md) (damage strip, with frame data) | calculator, components, composables, stores |
-| [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppModal`) | calculator, components, weapons, characters |
+| [0016](./0016-weapons-workspace-redesign.md) | Weapons workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (modal chrome → shared `AppChooserModal`, now `AppModal` ([0062](./0062-dialogs-use-the-app-modal-shell.md))) | calculator, components, weapons, characters |
 | [0017](./0017-team-buffs-workspace-redesign.md) | Team Buffs workspace redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0026 (teammate picker → `WorkspaceCharacterBrowser`), 0033 (contribution totals removed) | calculator, components, buffs, characters |
 | [0018](./0018-live-result-panel-tabs-redesign.md) | Full breakdown panel — Overview/Attacks/Rotations redesign (Labs-flagged, shares the `liveResultBar` flag) | accepted | 0039 (panel width), 0060 (Attacks tab peek and expand state) | calculator, components, stores |
 | [0019](./0019-command-bar-merged-live-result-bar-and-identity.md) | Command Bar (merged live result bar + character identity) | accepted | 0046 (phones: one row plus a sheet) | calculator, components |
@@ -107,6 +106,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0059](./0059-recommended-team-typical-buffs.md) | Recommended teams turn on hand-written typical buffs | accepted | | buffs, components, labs, persistence |
 | [0060](./0060-attacks-tab-pins-and-remembered-groups.md) | Attacks tab: pinned attacks and remembered groups | accepted | | components, composables, persistence |
 | [0061](./0061-team-optimizer-rotation-as-written.md) | Team optimizer: the rotation as written, and saving only touches the team | accepted | | calculator, components, labs, team-rotations |
+| [0062](./0062-dialogs-use-the-app-modal-shell.md) | Dialogs with a close button use the `AppModal` shell | accepted | | components, ui |
 
 ## When to write a new ADR
 
