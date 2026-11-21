@@ -3,7 +3,7 @@
     id="modal-echoes-presets"
     ref="modalRef"
     :title="isV3 ? 'Echo presets' : 'Choose a preset to apply to your build'"
-    max-width-class="max-w-5xl">
+    box-class="max-w-5xl">
     <!--
       Cards only mount while the dialog is open (AppModal is lazy). This
       component itself is mounted for the whole time the Echoes tab is, and each v3 card runs

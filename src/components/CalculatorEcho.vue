@@ -3,7 +3,7 @@
     :id="modalId"
     ref="editModalRef"
     title="Edit echo"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     close-test-attr="data-test-echo-modal-close">
     <div
       class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
@@ -541,7 +541,7 @@
     </div>
   </AppModal>
 
-  <AppModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="resetFilters">
+  <AppModal ref="pickerRef" title="Choose echo" box-class="max-w-5xl" @close="resetFilters">
     <div
       class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
       :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">

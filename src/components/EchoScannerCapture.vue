@@ -380,7 +380,7 @@
     <AppModal
       ref="captureModal"
       :title="openCaptureCandidate ? `In-game capture #${openCaptureCandidate.captureIndex}` : ''"
-      max-width-class="max-w-xl"
+      box-class="max-w-xl"
       :sheet="false"
       @close="openCaptureCandidate = null">
       <img

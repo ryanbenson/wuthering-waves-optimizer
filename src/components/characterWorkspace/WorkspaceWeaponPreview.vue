@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     :title="chosenWeapon?.info?.name"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     close-test-attr="data-test-workspace-weapon-preview-close"
     data-test-workspace-weapon-preview>
     <template #header-actions>

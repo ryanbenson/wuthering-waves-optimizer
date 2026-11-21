@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     title="Save echo preset"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     :lazy="false"
     :sheet="false"
     @close="reset">

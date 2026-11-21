@@ -2,7 +2,7 @@
   <AppModal
     ref="modalElementRef"
     title="Choose enemy"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     @close="resetFilters">
     <p
       v-if="!characterElement"

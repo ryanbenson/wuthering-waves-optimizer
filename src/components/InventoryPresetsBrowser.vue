@@ -2,7 +2,7 @@
   <AppModal
     ref="editModalRef"
     title="Edit preset"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     close-test-attr="data-test-echo-modal-close"
     :lazy="false"
     :sheet="false">

@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     title="Import a team"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     :lazy="false"
     :sheet="false"
     close-test-attr="data-test-team-rotations-import-cancel"

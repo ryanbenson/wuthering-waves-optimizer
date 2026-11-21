@@ -2,7 +2,7 @@
   <AppModal
     ref="modalElementRef"
     title="Browse weapons"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     close-test-attr="data-test-weapon-browser-close"
     data-test-weapon-browser>
     <AppFilterPanel

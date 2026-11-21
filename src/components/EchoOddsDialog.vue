@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     :title="title"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     close-test-attr="data-test-echo-odds-close"
     @close="emit('close')">
     <EchoTuneOddsTab :target="target" @edit-weights="handleEditWeights" />

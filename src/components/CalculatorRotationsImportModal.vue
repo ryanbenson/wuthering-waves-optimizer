@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     title="Import a rotation"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     :lazy="false"
     :sheet="false"
     close-test-attr="data-test-rotations-import-cancel"

@@ -42,7 +42,7 @@
   <AppModal
     ref="whatsNewRef"
     title="What's new in the v3 UI"
-    max-width-class="max-w-4xl"
+    box-class="max-w-4xl"
     :lazy="false"
     data-test-whats-new-v3-modal>
     <p class="text-sm opacity-70 mt-1">
@@ -121,7 +121,7 @@
   <AppModal
     ref="lightboxRef"
     :title="lightboxImage?.alt"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     :lazy="false"
     data-test-image-lightbox
     @close="lightboxImage = null">

@@ -2,7 +2,7 @@
   <AppModal
     ref="pickerRef"
     title="Choose echo"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     :lazy="false"
     @close="resetFilters">
     <div
@@ -72,7 +72,7 @@
     v-if="isLiveResultBarEnabled"
     ref="mainEchoSettingsRef"
     title="Main Echo Settings"
-    max-width-class="max-w-md"
+    box-class="max-w-md"
     :lazy="false"
     :sheet="false">
     <div class="flex flex-col gap-4">

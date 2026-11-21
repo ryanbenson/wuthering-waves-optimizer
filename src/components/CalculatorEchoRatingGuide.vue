@@ -1,5 +1,5 @@
 <template>
-  <AppModal ref="modalRef" title="Echo Rating Guide" max-width-class="max-w-5xl" :lazy="false">
+  <AppModal ref="modalRef" title="Echo Rating Guide" box-class="max-w-5xl" :lazy="false">
     <p class="mt-2">
       Every echo with revealed substats gets a quality score. This guide
       explains what the scores mean and how they're calculated.

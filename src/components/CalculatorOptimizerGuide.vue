@@ -1,5 +1,5 @@
 <template>
-  <AppModal ref="modalRef" title="Optimizer Guide" max-width-class="max-w-5xl" :lazy="false">
+  <AppModal ref="modalRef" title="Optimizer Guide" box-class="max-w-5xl" :lazy="false">
     <p class="mt-2">
       This is a quick guide to help you understand how the optimizer works
       and to get the most out of it!

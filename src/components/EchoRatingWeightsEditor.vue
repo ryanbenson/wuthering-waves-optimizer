@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     :title="mode === 'character' ? `Substat Priorities — ${characterId}` : 'Echo Rating Weights'"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     :lazy="false">
     <template #header-actions>
       <button class="btn btn-sm btn-ghost" @click="handleReset">

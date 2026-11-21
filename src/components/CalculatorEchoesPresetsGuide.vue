@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     :title="isV3 ? 'How presets work' : 'Presets Guide'"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     :lazy="false">
     <p class="mt-2">
       This is a quick guide to help you understand how presets work so you

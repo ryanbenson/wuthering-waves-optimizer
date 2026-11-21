@@ -3,7 +3,7 @@
     <AppModal
       ref="pickerRef"
       title="Choose echo"
-      max-width-class="max-w-5xl"
+      box-class="max-w-5xl"
       :lazy="false"
       @close="resetFilters">
       <div

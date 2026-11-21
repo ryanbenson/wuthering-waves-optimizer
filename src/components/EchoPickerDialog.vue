@@ -1,5 +1,5 @@
 <template>
-  <AppModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="echoSearch = ''">
+  <AppModal ref="pickerRef" title="Choose echo" box-class="max-w-5xl" @close="echoSearch = ''">
     <AppFilterPanel
       panel-key="echo-edit-picker"
       class="mb-4"

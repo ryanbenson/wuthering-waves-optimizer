@@ -1,5 +1,5 @@
 <template>
-  <AppModal ref="modalRef" title="Forte Details" max-width-class="max-w-3xl" :lazy="false">
+  <AppModal ref="modalRef" title="Forte Details" box-class="max-w-3xl" :lazy="false">
     <div role="tablist" class="tabs tabs-bordered">
       <template v-for="track in tracks" :key="track.key">
         <input

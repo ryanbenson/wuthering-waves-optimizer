@@ -2,7 +2,7 @@
   <AppModal
     ref="modalElementRef"
     title="Browse inventory"
-    max-width-class="max-w-5xl min-h-[37.5rem]">
+    box-class="max-w-5xl min-h-[37.5rem]">
     <AppFilterPanel
       panel-key="calculator-echoes"
       class="mb-6"

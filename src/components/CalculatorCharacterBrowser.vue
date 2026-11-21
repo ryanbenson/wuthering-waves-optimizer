@@ -2,7 +2,7 @@
   <AppModal
     ref="modalElementRef"
     title="Choose character"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     close-test-attr="data-test-character-browser-close">
     <AppFilterPanel
       panel-key="calculator-characters"

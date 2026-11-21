@@ -3,7 +3,7 @@
     :id="modalId"
     ref="editModalRef"
     title="Edit echo"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     :lazy="false">
     <div
       class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
@@ -502,7 +502,7 @@
     :id="modalIdPicker"
     ref="pickerRef"
     title="Choose echo"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     :lazy="false"
     @close="closeEchoChooser">
     <div

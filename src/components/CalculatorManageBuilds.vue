@@ -3,7 +3,7 @@
     id="modal-manage-builds"
     ref="modalRef"
     :title="mode === 'pick' ? 'Choose Build' : 'Manage Builds'"
-    max-width-class="max-w-2xl"
+    box-class="max-w-2xl"
     close-test-attr="data-test-manage-builds-close"
     :lazy="false"
     @close="handleDialogClose">

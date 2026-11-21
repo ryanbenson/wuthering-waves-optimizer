@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     :title="captureRef?.isShowingGuide ? 'How to scan your echoes' : 'Scan echoes from the game'"
-    max-width-class="max-w-6xl"
+    box-class="max-w-6xl"
     @close="resetDuplicateReview">
     <template #header-actions>
       <button v-if="captureRef?.isShowingGuide" type="button" class="btn btn-sm" @click="captureRef?.closeGuide()">

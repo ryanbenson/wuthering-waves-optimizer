@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     title="Import echoes from a screenshot"
-    max-width-class="max-w-5xl"
+    box-class="max-w-5xl"
     @close="resetDuplicateReview">
     <CalculatorEchoParser
       v-if="!isReviewingDuplicates"

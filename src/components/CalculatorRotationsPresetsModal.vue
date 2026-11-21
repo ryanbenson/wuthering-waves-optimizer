@@ -2,7 +2,7 @@
   <AppModal
     ref="modalRef"
     title="Rotation presets"
-    max-width-class="max-w-lg"
+    box-class="max-w-lg"
     :lazy="false"
     :sheet="false"
     close-test-attr="data-test-rotations-presets-cancel"

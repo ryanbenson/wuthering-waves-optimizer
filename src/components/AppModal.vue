@@ -12,7 +12,7 @@
     <div
       v-if="isOpen || !lazy"
       class="modal-box app-modal__box flex flex-col p-0 gap-0"
-      :class="[maxWidthClass, { 'app-modal__box--sheet': sheet }]">
+      :class="[boxClass, { 'app-modal__box--sheet': sheet }]">
       <div class="flex items-center gap-2 px-4 pt-4 pb-3 shrink-0">
         <button
           v-if="showBack"
@@ -81,7 +81,8 @@ const props = withDefaults(
      */
     closeTestAttr?: string | null;
     showBack?: boolean;
-    maxWidthClass?: string;
+    /** Classes for the box: its max width (default `max-w-5xl`), and a min height where one is needed. */
+    boxClass?: string;
     /** Render the body only while open (the choosers). false keeps it mounted while closed. */
     lazy?: boolean;
     /** Full-screen sheet on phones. Off for small forms. */
@@ -91,7 +92,7 @@ const props = withDefaults(
     title: "",
     closeTestAttr: null,
     showBack: false,
-    maxWidthClass: "max-w-5xl",
+    boxClass: "max-w-5xl",
     lazy: true,
     sheet: true,
   },
