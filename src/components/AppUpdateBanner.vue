@@ -44,7 +44,6 @@
     title="What's new in the v3 UI"
     max-width-class="max-w-4xl"
     :lazy="false"
-    :close-on-backdrop="false"
     data-test-whats-new-v3-modal>
     <p class="text-sm opacity-70 mt-1">
       The v3 UI is now the default: a redesign of the app focused on quick insights and
@@ -124,7 +123,6 @@
     :title="lightboxImage?.alt"
     max-width-class="max-w-5xl"
     :lazy="false"
-    :close-on-backdrop="false"
     data-test-image-lightbox
     @close="lightboxImage = null">
     <img
