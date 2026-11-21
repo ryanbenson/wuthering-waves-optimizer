@@ -9,7 +9,7 @@
         class="btn btn-sm"
         @click="handleResetAll"
         data-test-team-buffs-workspace-reset>
-        Reset All
+        Reset all
       </button>
     </div>
 
@@ -751,9 +751,9 @@ const openWeapon = useFilterPanelOpen("team-buffs-weapon");
 const { confirm } = useConfirm();
 
 async function handleResetAll() {
-  const confirmed = await confirm(`Reset all team buffs for ${props.character}?`, {
+  const confirmed = await confirm(`Reset all team buffs for ${getCharacterRosterDisplayName(props.character)}?`, {
     title: "Reset team buffs",
-    confirmLabel: "Reset All",
+    confirmLabel: "Reset all",
     variant: "warning",
   });
   if (!confirmed) {

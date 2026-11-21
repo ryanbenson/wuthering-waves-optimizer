@@ -732,9 +732,9 @@ function clearLocalBuffData(keys: Set<string>) {
 const { confirm } = useConfirm();
 
 async function clearAllPartyBuffs() {
-  const confirmed = await confirm(`Reset all team buffs for ${props.character}?`, {
-    title: "Reset team buffs",
-    confirmLabel: "Reset All",
+  const confirmed = await confirm(`Clear all team buffs for ${getCharacterRosterDisplayName(props.character)}?`, {
+    title: "Clear team buffs",
+    confirmLabel: "Clear all",
     variant: "warning",
   });
   if (!confirmed) {

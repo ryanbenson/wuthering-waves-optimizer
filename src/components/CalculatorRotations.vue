@@ -675,7 +675,7 @@ const { confirm } = useConfirm();
 
 async function handleDeleteRotation(rotationId: string) {
   const name = rotations.value.find((rotation) => rotation.id === rotationId)?.name;
-  const confirmed = await confirm(`Do you really want to delete "${name ?? "this rotation"}"?`, {
+  const confirmed = await confirm(`Do you really want to delete "${name || "this rotation"}"?`, {
     title: "Delete rotation",
     confirmLabel: "Delete",
     variant: "error",
