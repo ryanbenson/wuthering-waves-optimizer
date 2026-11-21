@@ -63,7 +63,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0037](./0037-build-card-scanner-package.md) | Extract the build card parser into `@wutheringtools/build-card-scanner` | accepted | | scanner, packages, architecture |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar), 0038 (v3 is the default; Labs flag retired) | calculator, components, stores |
 | [0038](./0038-wavescan-import.md) | Import Wavescan exports (Labs-flagged, echoes first) | accepted | 0040 (`equippedBy` equips loadouts) | scanner, interop, stores, components |
-| [0040](./0040-wavescan-equipped-loadouts.md) | Equip characters from a Wavescan export's `equippedBy` | accepted | | scanner, interop, stores, components |
+| [0040](./0040-wavescan-equipped-loadouts.md) | Equip characters from a Wavescan export's `equippedBy` (updated 2026-11-21: the echo scanner's reserved build, lock / discard marks) | accepted | | scanner, interop, stores, components |
 | [0041](./0041-signed-scanner-data-and-assets.md) | Sign `scanner-data.json`, and publish Wavescan's pictures as `scanner-assets.json` | accepted | 0042 (CI makes the pictures) | scanner, data, interop, security |
 | [0042](./0042-ci-commits-scanner-pictures.md) | CI commits Wavescan's pictures to echo pull requests | accepted | | scanner, data, ci |
 | [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | 0018 (detail panel width), 0019 (bar/identity component merged into Command Bar) | calculator, components, stores |
