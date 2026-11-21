@@ -366,20 +366,23 @@
         class="text-sm flex flex-wrap justify-end gap-x-4 gap-y-1 mb-2"
         data-test-scanner-save-summary>
         <li>
-          <strong>{{ summary.newCount }}</strong> new
-          echo{{ summary.newCount === 1 ? "" : "es" }} will be saved
+          <strong>{{ saveSummary.newCount }}</strong> new
+          echo{{ saveSummary.newCount === 1 ? "" : "es" }} will be saved
         </li>
-        <li v-if="summary.inventoryCount" class="text-info">
-          <strong>{{ summary.inventoryCount }}</strong> already in your
+        <li v-if="saveSummary.inventoryCount" class="text-info">
+          <strong>{{ saveSummary.inventoryCount }}</strong> already in your
           inventory (you'll choose next)
         </li>
-        <li v-if="summary.attentionCount - summary.unknownCount > 0" class="text-warning">
-          <strong>{{ summary.attentionCount - summary.unknownCount }}</strong>
+        <li v-if="saveSummary.attentionCount - saveSummary.unknownCount > 0" class="text-warning">
+          <strong>{{ saveSummary.attentionCount - saveSummary.unknownCount }}</strong>
           still flagged (saved as shown)
         </li>
-        <li v-if="summary.unknownCount" class="text-warning">
-          <strong>{{ summary.unknownCount }}</strong> unknown
-          echo{{ summary.unknownCount === 1 ? "" : "es" }} (saved without a name)
+        <li v-if="saveSummary.unknownCount" class="text-warning">
+          <strong>{{ saveSummary.unknownCount }}</strong> unknown
+          echo{{ saveSummary.unknownCount === 1 ? "" : "es" }} (saved without a name)
+        </li>
+        <li v-if="trashCount && !keepTrash" class="opacity-70" data-test-scanner-trash-skipped>
+          <strong>{{ trashCount }}</strong> marked as discard in game (left out)
         </li>
       </ul>
       <label v-if="wearerCount" class="label cursor-pointer justify-end gap-2">
@@ -387,6 +390,19 @@
         <span class="label-text">
           Equip on the {{ wearerCount }} character{{ wearerCount === 1 ? "" : "s" }} wearing them in game
           (as a new build for characters you already have)
+        </span>
+      </label>
+      <label v-if="markCount" class="label cursor-pointer justify-end gap-2">
+        <input v-model="copyMarks" type="checkbox" class="checkbox checkbox-sm" data-test-scanner-copy-marks />
+        <span class="label-text">
+          Add the game's lock / discard marks to {{ markCount }} echo{{ markCount === 1 ? "" : "es" }}
+          (marks you set in the app are kept)
+        </span>
+      </label>
+      <label v-if="trashCount" class="label cursor-pointer justify-end gap-2">
+        <input v-model="keepTrash" type="checkbox" class="checkbox checkbox-sm" data-test-scanner-keep-trash />
+        <span class="label-text">
+          Save the {{ trashCount }} echo{{ trashCount === 1 ? "" : "es" }} marked as discard in game too
         </span>
       </label>
       <div class="flex gap-2 justify-end">
@@ -439,14 +455,25 @@ import EchoScannerSavedCard from "./EchoScannerSavedCard.vue";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
+import { isGameTrash } from "../scanner/scannedLoadouts";
 import type { FrameSize, RegionFrac, ScanCandidate } from "../scanner/types";
+
+/** The save step's checkboxes, applied by EchoScannerModal after the save. */
+export type ScanSaveOptions = {
+  /** Equip each echo on the character the game shows wearing it. */
+  equipWearers: boolean;
+  /** Add the game's lock / discard marks (never clears one). */
+  copyMarks: boolean;
+  /** Also save the echoes the game shows as discarded. */
+  keepTrash: boolean;
+};
 
 const props = withDefaults(defineProps<{ inventoryOnly?: boolean }>(), {
   inventoryOnly: false,
 });
 
 const emit = defineEmits<{
-  "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean, equipWearers: boolean];
+  "echoes-parsed": [echoes: ScanCandidate["slot"][], saveToInventory: boolean, options: ScanSaveOptions];
 }>();
 
 const scanner = useEchoScanner();
@@ -802,25 +829,48 @@ async function openCapture(candidate: ScanCandidate) {
 
 const willSaveToInventory = computed(() => props.inventoryOnly || isSavingToInventory.value);
 
+/** Characters the scanned echoes said they're "Equipped by". */
+const wearerCount = computed(() => new Set(candidates.value.map((c) => c.slot.equippedBy).filter(Boolean)).size);
+/** Echoes the game shows locked or discarded. */
+const markCount = computed(() => candidates.value.filter((c) => c.slot.locked || isGameTrash(c.slot)).length);
+const trashCount = computed(() => candidates.value.filter((c) => isGameTrash(c.slot)).length);
+
+// Remembered per browser like the capture beep. Equipping and adding marks are on unless
+// the player turned them off; saving discarded echoes is opt-in.
+const EQUIP_WEARERS_KEY = "echoScanner.equipWearers";
+const COPY_MARKS_KEY = "echoScanner.copyMarks";
+const KEEP_TRASH_KEY = "echoScanner.keepTrash";
+const equipWearers = ref(readFlag(EQUIP_WEARERS_KEY, true));
+const copyMarks = ref(readFlag(COPY_MARKS_KEY, true));
+const keepTrash = ref(readFlag(KEEP_TRASH_KEY, false));
+watch(equipWearers, (enabled) => writeFlag(EQUIP_WEARERS_KEY, enabled));
+watch(copyMarks, (enabled) => writeFlag(COPY_MARKS_KEY, enabled));
+watch(keepTrash, (enabled) => writeFlag(KEEP_TRASH_KEY, enabled));
+
+/** The summary and button count what will be saved: discarded echoes only when kept. */
+const saveSummary = computed(() =>
+  summarizeCandidates(
+    keepTrash.value ? candidates.value : candidates.value.filter((c) => !isGameTrash(c.slot)),
+    reviewContext.value,
+  ),
+);
+
 /** Says what the button will actually do: save straight away, or stop at the duplicate step first. */
 const continueLabel = computed(() => {
-  if (!willSaveToInventory.value) return "Continue";
-  const { total, inventoryCount } = summary.value;
+  const { total, inventoryCount } = saveSummary.value;
+  if (!willSaveToInventory.value || total === 0) return "Continue";
   if (inventoryCount > 0) {
     return `Review ${inventoryCount} duplicate${inventoryCount === 1 ? "" : "s"} →`;
   }
   return `Save ${total} echo${total === 1 ? "" : "es"}`;
 });
 
-/** Characters the scanned echoes said they're "Equipped by". */
-const wearerCount = computed(() => new Set(candidates.value.map((c) => c.slot.equippedBy).filter(Boolean)).size);
-// Remembered per browser like the capture beep; on unless the player turned it off.
-const EQUIP_WEARERS_KEY = "echoScanner.equipWearers";
-const equipWearers = ref(readFlag(EQUIP_WEARERS_KEY, true));
-watch(equipWearers, (enabled) => writeFlag(EQUIP_WEARERS_KEY, enabled));
-
 function handleContinue() {
   const slots = candidates.value.map((c) => c.slot);
-  emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value, equipWearers.value && wearerCount.value > 0);
+  emit("echoes-parsed", slots, props.inventoryOnly || isSavingToInventory.value, {
+    equipWearers: equipWearers.value && wearerCount.value > 0,
+    copyMarks: copyMarks.value && markCount.value > 0,
+    keepTrash: keepTrash.value,
+  });
 }
 </script>

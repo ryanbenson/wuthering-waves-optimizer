@@ -64,7 +64,7 @@ describe("planScannedLoadouts", () => {
 });
 
 describe("planScannedMarks", () => {
-  it("copies the game's lock / discard marks onto inventory echoes that differ, keeping them exclusive", () => {
+  it("adds the game's lock / discard marks and never clears one the app has", () => {
     const lockedInGame = { ...slot("IceglintDancer", 1, "ATK", "6.3%"), locked: true, trash: false };
     const discardedInGame = { ...slot("ShadowStepper", 1, "ATK", "6.9%"), locked: false, trash: true };
     const unmarkedInGame = { ...slot("WindlashColeoid", 3, "Glacio DMG Bonus", "7.5%"), locked: false, trash: false };
@@ -74,9 +74,38 @@ describe("planScannedMarks", () => {
     const inventory = mapParsedEchoes(slots, true).map((echo, i) => (i >= 2 ? { ...echo, locked: true } : echo));
 
     expect(planScannedMarks(slots, inventory)).toEqual([
-      { echoId: inventory[0].echoId, locked: true, trash: false },
-      { echoId: inventory[1].echoId, locked: false, trash: true },
-      { echoId: inventory[2].echoId, locked: false, trash: false },
+      { echoId: inventory[0].echoId, mark: "locked" },
+      { echoId: inventory[1].echoId, mark: "trash" },
     ]);
+  });
+
+  it("locks an echo the app had as discard, but never discards one the app has locked", () => {
+    const lockedInGame = { ...slot("IceglintDancer", 1, "ATK", "6.3%"), locked: true, trash: false };
+    const discardedInGame = { ...slot("ShadowStepper", 1, "ATK", "6.9%"), locked: false, trash: true };
+    const slots = [lockedInGame, discardedInGame];
+    const [trashInApp, lockedInApp] = mapParsedEchoes(slots, true);
+
+    expect(
+      planScannedMarks(slots, [
+        { ...trashInApp, trash: true },
+        { ...lockedInApp, locked: true },
+      ]),
+    ).toEqual([{ echoId: trashInApp.echoId, mark: "locked" }]);
+  });
+});
+
+describe("two identical echoes in the inventory", () => {
+  it("are skipped for marks and equips: the scan can't tell which copy it saw", () => {
+    const fodder = { ...slot("IceglintDancer", 1, "ATK", "6.3%", "Hiyuki"), locked: true, trash: false };
+    const unique = { ...slot("WindlashColeoid", 3, "Glacio DMG Bonus", "7.5%", "Hiyuki"), locked: true, trash: false };
+    const [copyA] = mapParsedEchoes([fodder], true);
+    const [copyB] = mapParsedEchoes([fodder], true);
+    const [owned] = mapParsedEchoes([unique], true);
+    const inventory = [copyA, copyB, owned];
+
+    expect(planScannedMarks([fodder, unique], inventory)).toEqual([{ echoId: owned.echoId, mark: "locked" }]);
+    const { writes } = planScannedLoadouts([fodder, unique], inventory, characters);
+    expect(writes).toHaveLength(1);
+    expect(writes[0].echoIds).toEqual([owned.echoId, null, null, null, null]);
   });
 });

@@ -1,36 +1,61 @@
 /**
- * Loadouts to equip after a scan is saved: every scanned echo whose panel said
- * "Equipped by <character>", found in the inventory by identity (so an echo that
- * was already owned counts too), grouped and ordered the way a Wavescan import is
- * (groupWavescanLoadouts: highest cost first, over-limit loadouts blocked).
- * The writes go through useWavescanLoadouts' applyLoadoutWrites.
+ * What a saved scan changes besides the inventory rows: the loadouts to equip (every
+ * scanned echo whose panel said "Equipped by <character>") and the game's lock / discard
+ * marks. Both find each scanned echo in the inventory by identity, so an echo that was
+ * already owned counts too. The loadouts are grouped and ordered the way a Wavescan
+ * import is (groupWavescanLoadouts: highest cost first, over-limit loadouts blocked)
+ * and written through useWavescanLoadouts' applyLoadoutWrites.
  */
 import type { ParsedEchoSlot } from "./types";
 import { mapParsedEchoes, type MappedEcho } from "../echoes/parsedEchoMapping";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
-import { groupWavescanLoadouts, padLoadout } from "../wavescan/loadouts";
+import { groupWavescanLoadouts, padLoadout, type WavescanLoadoutInput } from "../wavescan/loadouts";
 import type { WavescanLoadoutWrite } from "../composables/useWavescanLoadouts";
 
+/** The game shows this echo as discarded (marked as trash). Locked wins, as in game. */
+export function isGameTrash(slot: ParsedEchoSlot): boolean {
+  return Boolean(slot.trash) && !slot.locked;
+}
+
 /**
- * The game's lock / discard marks for every scanned echo found in the inventory by
- * identity, where they differ from what the inventory has. Applied with useEchoInventory's
- * setEchoLocked / setEchoTrash, which keep the two exclusive like the game does.
+ * Finds a scanned slot's echo in the inventory by identity. The identity has no level
+ * or unique id, so identical copies (+0 fodder is common) can't be told apart: when more
+ * than one inventory echo matches, this returns undefined rather than guess.
+ */
+function inventoryMatcher<T extends MappedEcho>(inventoryEchoes: readonly T[]) {
+  const byIdentity = new Map<string, T[]>();
+  for (const echo of inventoryEchoes) {
+    const key = getEchoIdentityKey(echo);
+    byIdentity.set(key, [...(byIdentity.get(key) ?? []), echo]);
+  }
+  return (slot: ParsedEchoSlot): T | undefined => {
+    const [mapped] = mapParsedEchoes([slot], false);
+    const matches = byIdentity.get(getEchoIdentityKey(mapped));
+    return matches?.length === 1 && matches[0].echoId ? matches[0] : undefined;
+  };
+}
+
+/**
+ * The game's lock / discard marks to add to scanned echoes found in the inventory.
+ * Add-only: a mark the app has and the game doesn't show is kept. A lock the game shows
+ * is added (locking un-discards, as in game); a discard mark is never added to an echo
+ * locked in the app, so a misread can't take away its delete protection.
+ * Applied with useEchoInventory's setEchoLocked / setEchoTrash.
  */
 export function planScannedMarks(
   slots: readonly ParsedEchoSlot[],
   inventoryEchoes: readonly (MappedEcho & { locked?: boolean; trash?: boolean })[],
-): { echoId: string; locked: boolean; trash: boolean }[] {
-  const byIdentity = new Map(inventoryEchoes.map((echo) => [getEchoIdentityKey(echo), echo]));
-  const changes = new Map<string, { echoId: string; locked: boolean; trash: boolean }>();
+): { echoId: string; mark: "locked" | "trash" }[] {
+  const find = inventoryMatcher(inventoryEchoes);
+  const changes = new Map<string, { echoId: string; mark: "locked" | "trash" }>();
   for (const slot of slots) {
-    if (!slot.echo || slot.locked === undefined) continue;
-    const [mapped] = mapParsedEchoes([slot], false);
-    const echo = byIdentity.get(getEchoIdentityKey(mapped));
+    if (!slot.echo || !(slot.locked || isGameTrash(slot))) continue;
+    const echo = find(slot);
     if (!echo?.echoId) continue;
-    const locked = Boolean(slot.locked);
-    const trash = !locked && Boolean(slot.trash);
-    if (Boolean(echo.locked) !== locked || Boolean(echo.trash) !== trash) {
-      changes.set(echo.echoId, { echoId: echo.echoId, locked, trash });
+    if (slot.locked) {
+      if (!echo.locked) changes.set(echo.echoId, { echoId: echo.echoId, mark: "locked" });
+    } else if (!echo.trash && !echo.locked) {
+      changes.set(echo.echoId, { echoId: echo.echoId, mark: "trash" });
     }
   }
   return [...changes.values()];
@@ -41,19 +66,19 @@ export function planScannedLoadouts(
   inventoryEchoes: readonly MappedEcho[],
   characterKeys: Iterable<string>,
 ): { writes: WavescanLoadoutWrite[]; blocked: { characterKey: string; reason: string }[] } {
-  const byIdentity = new Map(inventoryEchoes.map((echo) => [getEchoIdentityKey(echo), echo]));
-  const echoes: MappedEcho[] = [];
+  const find = inventoryMatcher(inventoryEchoes);
+  const echoes: (MappedEcho & { echoId: string })[] = [];
   const equippedBy: Record<string, string> = {};
   for (const slot of slots) {
     if (!slot.equippedBy || !slot.echo) continue;
-    const [mapped] = mapParsedEchoes([slot], false);
-    const echo = byIdentity.get(getEchoIdentityKey(mapped));
+    const echo = find(slot);
     if (!echo?.echoId || equippedBy[echo.echoId]) continue;
-    echoes.push(echo);
+    echoes.push({ ...echo, echoId: echo.echoId });
     equippedBy[echo.echoId] = slot.equippedBy;
   }
 
-  const { groups } = groupWavescanLoadouts({ echoes, skipped: [], equippedBy } as never, characterKeys);
+  const input: WavescanLoadoutInput = { echoes, skipped: [], equippedBy };
+  const { groups } = groupWavescanLoadouts(input, characterKeys);
   const byId = new Map(echoes.map((echo) => [echo.echoId, echo]));
   const writes: WavescanLoadoutWrite[] = [];
   const blocked: { characterKey: string; reason: string }[] = [];

@@ -53,9 +53,10 @@ import { useToast } from "../composables/useToast";
 import { useWavescanLoadouts, SCANNED_BUILD_NAME } from "../composables/useWavescanLoadouts";
 import { useInventoryStore } from "../stores/inventory";
 import { allCharactersList, getCharacterRosterDisplayName } from "../characters/characters";
-import { planScannedLoadouts, planScannedMarks } from "../scanner/scannedLoadouts";
+import { isGameTrash, planScannedLoadouts, planScannedMarks } from "../scanner/scannedLoadouts";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import type { ParsedEchoSlot } from "../scanner/types";
+import type { ScanSaveOptions } from "./EchoScannerCapture.vue";
 
 const modalId = "modal-echo-scanner-inventory";
 
@@ -112,59 +113,77 @@ const {
 const { showToast } = useToast();
 
 const inventoryStore = useInventoryStore();
-// Only applyLoadoutWrites is used: each wearer's echoes go into its "Scanned" build (SCANNED_BUILD_NAME).
+// Only applyLoadoutWrites is used: each wearer's echoes go into the build the scanner keeps for it (SCANNED_BUILD_NAME).
 const loadouts = useWavescanLoadouts({ mapped: ref(null), meta: ref(null), mode: ref("append") });
 loadouts.buildTarget.value = "scanned";
-let lastScan: { slots: ParsedEchoSlot[]; equipWearers: boolean } | null = null;
+let lastScan: { slots: ParsedEchoSlot[]; options: ScanSaveOptions; skippedTrash: number } | null = null;
 
-function handleScanSaved(slots: ParsedEchoSlot[], saveToInventory: boolean, equipWearers: boolean) {
-  lastScan = { slots, equipWearers };
-  return handleEchoesParsed(slots, saveToInventory);
+const plural = (count: number) => `${count} echo${count === 1 ? "" : "es"}`;
+const names = (keys: string[]) => [...new Set(keys)].map(getCharacterRosterDisplayName).join(", ");
+
+/**
+ * Echoes the game shows as discarded aren't added to the inventory unless the player
+ * kept them; every scanned slot still counts for the marks and the equips, so an echo
+ * already in the inventory gets its discard mark (when marks are copied).
+ */
+function handleScanSaved(slots: ParsedEchoSlot[], saveToInventory: boolean, options: ScanSaveOptions) {
+  const kept = options.keepTrash ? slots : slots.filter((slot) => !isGameTrash(slot));
+  lastScan = { slots, options, skippedTrash: slots.length - kept.length };
+  return handleEchoesParsed(kept, saveToInventory);
 }
 
 /** Equips each character's scanned echoes; returns a sentence for the toast, or "". */
 function equipScannedWearers(): string {
-  if (!lastScan?.equipWearers) return "";
+  if (!lastScan?.options.equipWearers) return "";
   const { writes, blocked } = planScannedLoadouts(
     lastScan.slots,
     inventoryStore.echoes,
     allCharactersList.map((c) => c.key),
   );
-  loadouts.applyLoadoutWrites(writes);
-  const names = (list: { characterKey: string }[]) => list.map((w) => getCharacterRosterDisplayName(w.characterKey)).join(", ");
+  const moved = loadouts.applyLoadoutWrites(writes);
   return [
-    writes.length ? ` Equipped on ${names(writes)}, each in its "${SCANNED_BUILD_NAME}" build; other builds are unchanged.` : "",
-    blocked.length ? ` Not equipped (over the 5-echo / 12-cost limit): ${names(blocked)}.` : "",
+    writes.length
+      ? ` Equipped on ${names(writes.map((w) => w.characterKey))}, each in its "${SCANNED_BUILD_NAME}" build.`
+      : "",
+    moved.length
+      ? ` Moved ${plural(moved.length)} off ${names(moved.map((m) => m.from))}, as in game.`
+      : "",
+    blocked.length
+      ? ` Not equipped (over the 5-echo / 12-cost limit): ${names(blocked.map((b) => b.characterKey))}.`
+      : "",
   ].join("");
 }
 
 const { setEchoLocked, setEchoTrash } = useEchoInventory();
 
-/** Copies the game's lock / discard marks onto the scanned echoes; returns a sentence for the toast, or "". */
+/** Adds the game's lock / discard marks to the scanned echoes; returns a sentence for the toast, or "". */
 function copyScannedMarks(): string {
-  if (!lastScan) return "";
+  if (!lastScan?.options.copyMarks) return "";
   const changes = planScannedMarks(lastScan.slots, inventoryStore.echoes);
-  for (const { echoId, locked, trash } of changes) {
-    if (locked) setEchoLocked(echoId, true);
-    else if (trash) setEchoTrash(echoId, true);
-    else {
-      setEchoLocked(echoId, false);
-      setEchoTrash(echoId, false);
-    }
+  for (const { echoId, mark } of changes) {
+    if (mark === "locked") setEchoLocked(echoId, true);
+    else setEchoTrash(echoId, true);
   }
-  return changes.length
-    ? ` Updated the lock / discard mark on ${changes.length} echo${changes.length === 1 ? "" : "es"} to match the game.`
-    : "";
+  const count = (mark: string) => changes.filter((change) => change.mark === mark).length;
+  const added = [
+    count("locked") ? `locked ${plural(count("locked"))}` : "",
+    count("trash") ? `marked ${plural(count("trash"))} as discard` : "",
+  ].filter(Boolean);
+  return added.length ? ` ${added.join(" and ").replace(/^./, (c) => c.toUpperCase())}, as in game.` : "";
 }
 
 function handleFinalized(savedCount: number) {
   triggerCloseModal();
+  const skipped = lastScan?.skippedTrash
+    ? ` Left out ${plural(lastScan.skippedTrash)} marked as discard in game.`
+    : "";
   const marks = copyScannedMarks();
   const equipped = equipScannedWearers();
   showToast(
-    (savedCount
-      ? `Saved ${savedCount} echo${savedCount === 1 ? "" : "es"} to your inventory.`
-      : "No echoes were saved.") + marks + equipped,
+    (savedCount ? `Saved ${plural(savedCount)} to your inventory.` : "No echoes were saved.") +
+      skipped +
+      marks +
+      equipped,
     savedCount || marks || equipped ? "success" : "info",
   );
 }
