@@ -144,15 +144,15 @@ const VIDEO_MAX_PENDING = 3;
  */
 const LAYOUT_CHECK_CANDIDATES = 3;
 
+/** Who an "Equipped by <name>" line can name (Rover is matched by player name, which we don't ask for yet). */
+const EQUIP_CHARACTERS = allCharactersList.map(({ key, name }) => ({ key, name }));
+
 /**
  * Every crop one candidate could need, all drawn from the *same* frame at
  * the tick it settled — see snapshotFrame. The set icon and fallback crops
  * are only sometimes used, but grabbing them later would read whatever
  * echo the user has clicked to since.
  */
-/** Who an "Equipped by <name>" line can name (Rover is matched by player name, which we don't ask for yet). */
-const EQUIP_CHARACTERS = allCharactersList.map(({ key, name }) => ({ key, name }));
-
 type FrameSnapshot = {
   primary: Record<"name" | "main" | "secondary" | "substatLabels" | "substatValues" | "equippedBy", ImageBitmap>;
   setIcon: ImageBitmap;

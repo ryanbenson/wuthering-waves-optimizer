@@ -7,6 +7,16 @@
 import { PLAYER_CHARACTER_KEY } from "@wutheringtools/scanner-core/equippedBy";
 import type { WavescanEchoMapResult } from "./echoes";
 
+/**
+ * What groupWavescanLoadouts reads from a Wavescan import (WavescanEchoMapResult),
+ * narrowed so the echo scanner can pass inventory echoes too.
+ */
+export type WavescanLoadoutInput = {
+  echoes: readonly { echoId: string; type: number | null }[];
+  skipped: readonly Pick<WavescanEchoMapResult["skipped"][number], "equippedBy">[];
+  equippedBy: WavescanEchoMapResult["equippedBy"];
+};
+
 export const LOADOUT_SLOTS = 5;
 export const MAX_LOADOUT_COST = 12;
 
@@ -38,7 +48,7 @@ export type WavescanLoadoutPlan = {
  * name, not which Rover; the user picks which Rover entry it is.
  */
 export function groupWavescanLoadouts(
-  mapped: WavescanEchoMapResult,
+  mapped: WavescanLoadoutInput,
   knownKeys: Iterable<string>,
 ): WavescanLoadoutPlan {
   const known = new Set(knownKeys);
