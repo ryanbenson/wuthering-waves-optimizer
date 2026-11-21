@@ -10,19 +10,21 @@
             ✕
           </button>
         </form>
-        <div class="py-4">
-          <div
-            class="flex align-center gap-1 mb-6 items-center flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
+        <div class="py-4 mb-2 flex flex-col gap-3">
+          <input
+            v-model="pickerSearch"
+            type="search"
+            placeholder="Search echoes…"
+            class="input input-bordered input-sm w-full max-w-xs"
+            aria-label="Search echoes"
+            data-test-optimizer-workspace-picker-search />
+          <div class="flex align-center gap-1 items-center flex-wrap">
             <span class="mr-2">Filter</span>
-            <button
-              v-for="echoSet in echoSets"
-              :key="echoSet"
-              @click="toggleEchoSetFilter(echoSet)"
-              class="rounded p-[.3rem]"
-              :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-              <img :src="getEchoSetImage(echoSet)" class="size-7" :class="echoSet" />
-            </button>
+            <EchoSetToggles
+              v-model="pickerSets"
+              v-model:recommended-only="pickerRecommendedOnly"
+              :sets="echoSets"
+              :recommended="recommendedSets" />
             <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
           </div>
         </div>
@@ -84,10 +86,12 @@
             Only echoes from these sets are considered.
           </p>
         </div>
-        <OptimizerWorkspaceEchoSets
+        <EchoSetToggles
+          :model-value="setFilters"
           :sets="echoSets"
-          :selected="setFilters"
-          @toggle="toggleSetFilter"></OptimizerWorkspaceEchoSets>
+          :recommended="recommendedSets"
+          data-test-optimizer-workspace-echo-sets
+          @update:model-value="updateSets" />
 
         <div class="divider my-0"></div>
 
@@ -283,7 +287,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, toRef } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, toRef, watch } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../../echoes/stats";
 import {
   getSetBonusEffectsFromListOfSetKeys,
@@ -296,12 +300,14 @@ import type { OptimizerMinStatRow } from "../CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "../CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "../CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerSettings from "../CalculatorOptimizerSettings.vue";
-import OptimizerWorkspaceEchoSets from "./OptimizerWorkspaceEchoSets.vue";
+import EchoSetToggles from "../EchoSetToggles.vue";
 import OptimizerWorkspaceTarget from "./OptimizerWorkspaceTarget.vue";
 import OptimizerWorkspaceRunBar, {
   type OptimizerSetupSection,
 } from "./OptimizerWorkspaceRunBar.vue";
 import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
+import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
+import { eligibleEchoSets, setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
@@ -312,6 +318,8 @@ defineOptions({ name: "OptimizerWorkspaceSetup" });
 const props = withDefaults(
   defineProps<{
     character: string;
+    /** The character's recommended echo sets (basic.ts suggestedEchoSets). */
+    suggestedEchoSets?: string[];
     /** Team optimizer's drawer: no run bar or target, since the team run owns those. */
     embedded?: boolean;
     /** Embedded only: the team optimizer's current choices, used instead of the saved ones. */
@@ -347,7 +355,15 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 
 const modalIdPicker = "optimizerWorkspaceEchoPicker";
-const echoSetFilter = ref<string | null>(null);
+// Main echo picker: name search and sets (an echo matches any of them); with
+// "Recommended only" and no set picked it lists the recommended sets' echoes.
+const pickerSearch = ref("");
+const pickerSets = ref<string[]>([]);
+const pickerRecommendedOnly = ref(true);
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+// The sets in use: the saved ones, or the recommended sets while none are saved
+// (eligibleEchoSets, shared with the team optimizer). Only the player's own
+// picks are saved (updateSets); the recommended sets never are.
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
 const minStats = ref<OptimizerMinStatRow[]>([]);
@@ -418,8 +434,12 @@ type EchoListEntry = {
 
 const allEchoesListFiltered = computed((): EchoListEntry[] => {
   let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
-  if (echoSetFilter.value) {
-    allEchoes = allEchoes.filter((echo) => echo.sets.includes(echoSetFilter.value!));
+  const sets = setFilterFor(recommendedSets.value, pickerSets.value, pickerRecommendedOnly.value);
+  if (sets.length) {
+    allEchoes = allEchoes.filter((echo) => echo.sets.some((set) => sets.includes(set)));
+  }
+  if (pickerSearch.value.trim()) {
+    allEchoes = allEchoes.filter((echo) => echoMatchesNameSearch(echo.key, pickerSearch.value));
   }
   const classOrder: Record<string, number> = {
     Calamity: 0,
@@ -493,12 +513,20 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
-function toggleSetFilter(set: string) {
-  const index = setFilters.value.findIndex((setFilter) => setFilter === set);
-  if (index >= 0) setFilters.value.splice(index, 1);
-  else setFilters.value.push(set);
+function updateSets(sets: string[]) {
+  setFilters.value = sets;
+  characterStore.setCharacterOptimizerEchoSets(props.character, [...sets]);
   void syncOptimizerConfig();
 }
+
+function savedEchoSets(): string[] | undefined {
+  return (currentCharacter.value as { optimizer?: { echoSets?: string[] } }).optimizer?.echoSets;
+}
+
+// The recommended sets can arrive after mount (the character data loads separately).
+watch(recommendedSets, (sets) => {
+  if (!props.embedded) setFilters.value = eligibleEchoSets(savedEchoSets(), sets);
+});
 
 function handleUpdatedTarget(target: unknown) {
   optimizationTarget.value = target;
@@ -521,7 +549,6 @@ async function syncOptimizerConfig() {
   await characterStore.setCharacterData(props.character, {
     optimizer: {
       mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
-      echoSets: JSON.parse(JSON.stringify(setFilters.value)),
       minStats: JSON.parse(JSON.stringify(minStats.value)),
       optimizationTarget: optimizationTarget.value,
       damageType: damageType.value,
@@ -531,35 +558,25 @@ async function syncOptimizerConfig() {
   });
 }
 
-function getEchoSetImage(echoSet: string) {
-  return getEchoSetIconByType(echoSet);
-}
-
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
 }
 
 function openEchoChooser() {
+  resetFilters();
+  pickerRecommendedOnly.value = true;
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
 function closeEchoChooser() {
-  echoSetFilter.value = null;
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.close();
 }
 
-function toggleEchoSetFilter(echoSet: string) {
-  echoSetFilter.value = echoSetFilter.value === echoSet ? null : echoSet;
-}
-
-function isEchoSetFilterActive(echoSet: string) {
-  return echoSetFilter.value === echoSet;
-}
-
 function resetFilters() {
-  echoSetFilter.value = null;
+  pickerSets.value = [];
+  pickerSearch.value = "";
 }
 
 function handleUpdatedMinStats(stats: OptimizerMinStatRow[]) {
@@ -618,7 +635,9 @@ onMounted(() => {
     };
   };
   mainEchoes.value = props.embedded ? [...props.initialMainEchoes] : (ch.optimizer?.mainEchoes ?? []);
-  setFilters.value = props.embedded ? [...props.initialSets] : (ch.optimizer?.echoSets ?? []);
+  setFilters.value = props.embedded
+    ? [...props.initialSets]
+    : eligibleEchoSets(ch.optimizer?.echoSets, recommendedSets.value);
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value = ch.optimizer?.ignoreOtherResonantorEchoes ?? false;

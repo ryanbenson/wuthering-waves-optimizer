@@ -27,5 +27,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Iuno", "Shorekeeper"], tags: ["Quickswap"] },
       { members: ["Iuno", "Verina"], tags: ["Quickswap"] },
     ],
+    suggestedEchoSets: ["CrownofValor"],
   };
 }

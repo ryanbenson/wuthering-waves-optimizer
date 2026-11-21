@@ -100,19 +100,11 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-          <div
-            class="echo-filters__sets flex flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSet !== null }">
-            <button
-              v-for="setKey in echoSetsList"
-              :key="setKey"
-              type="button"
-              @click="toggleEchoSetFilter(setKey)"
-              class="rounded mr-1 p-[.3rem]"
-              :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
-              <img :src="getEchoSetImage(setKey)" class="size-7" :class="setKey" />
-            </button>
-          </div>
+          <EchoSetToggles
+            v-model="echoSets"
+            v-model:recommended-only="recommendedOnly"
+            :sets="echoSetsList"
+            :recommended="recommendedSets" />
         </div>
       </AppFilterPanel>
 
@@ -129,7 +121,22 @@
       </div>
     </template>
 
-    <div v-if="!echoesList.length" class="py-12 text-center w-full opacity-60">
+    <div
+      v-if="!echoesList.length && setFilter.length && echoesWithoutSetFilter.length"
+      class="py-12 flex flex-col items-center gap-3 w-full"
+      data-test-workspace-echoes-browser-empty-sets>
+      <span class="opacity-60">
+        No echoes in the {{ echoSets.length ? "selected" : "recommended" }} sets
+      </span>
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-test-workspace-echoes-browser-show-all-sets
+        @click="showAllSets">
+        Show All Sets
+      </button>
+    </div>
+    <div v-else-if="!echoesList.length" class="py-12 text-center w-full opacity-60">
       No echoes found
     </div>
     <template v-else>
@@ -212,7 +219,6 @@ import {
   ECHO_RV_MAX,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getEchoSubStatEntries,
   getReadableSubStatLabel,
   echoSetLabelMap,
@@ -235,12 +241,14 @@ import EchoRatingRangeFilters from "../EchoRatingRangeFilters.vue";
 import PaginationControls from "../PaginationControls.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
+import EchoSetToggles from "../EchoSetToggles.vue";
 import AppChooserModal from "../AppChooserModal.vue";
 import { buildSimpleSelectOptions } from "../../utils/richSelectOptions";
 import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
 import { useUiDensity } from "../../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
+import { setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   ECHO_RATING_PERCENT_MAX,
   ECHO_RATING_PERCENT_MIN,
@@ -250,7 +258,11 @@ import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
-const props = defineProps<{ character: string }>();
+const props = defineProps<{
+  character: string;
+  /** The character's recommended echo sets (basic.ts suggestedEchoSets). */
+  suggestedEchoSets?: string[];
+}>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
@@ -268,7 +280,7 @@ const echoIndex = ref<number | null>(null);
 const search = ref("");
 const {
   costFilter,
-  echoSet,
+  echoSets,
   equippedFilter,
   mainStatFilter,
   favoriteFilter,
@@ -301,9 +313,18 @@ const equippedEchoIdInSlot = computed(() => {
   return characters.value?.[props.character]?.echoes?.[echoIndex.value]?.echoId ?? null;
 });
 
+const echoSetsList = Object.keys(echoSetLabelMap);
+// "Recommended only" isn't remembered: it starts on whenever the character has
+// recommended sets, and limits the list to them until sets are picked.
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+const recommendedOnly = ref(true);
+const setFilter = computed(() =>
+  setFilterFor(recommendedSets.value, echoSets.value, recommendedOnly.value),
+);
+
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (echoSet.value) count += 1;
+  if (setFilter.value.length) count += 1;
   if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -317,21 +338,16 @@ const activeFilterCount = computed(() => {
 });
 
 watch(
-  [mainStatFilter, echoSet, search, favoriteFilter, equippedFilter, costFilter,
+  [mainStatFilter, setFilter, search, favoriteFilter, equippedFilter, costFilter,
    substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
   },
 );
 
-const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
-
-const echoesFiltered = computed(() => {
+const echoesWithoutSetFilter = computed(() => {
   let allEchoes = echoes.value ?? [];
   if (allEchoes.length <= 0) return allEchoes;
-  if (echoSet.value) {
-    allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
-  }
   if (search.value.trim()) {
     allEchoes = allEchoes.filter((item: any) =>
       echoMatchesNameSearch(item.echo, search.value),
@@ -388,6 +404,12 @@ const echoesFiltered = computed(() => {
 
   return allEchoes;
 });
+
+const echoesFiltered = computed(() =>
+  setFilter.value.length
+    ? echoesWithoutSetFilter.value.filter((item: any) => setFilter.value.includes(item.echoSet))
+    : echoesWithoutSetFilter.value,
+);
 
 const echoesList = computed(() => {
   if (sortBy.value !== "impact") return echoesFiltered.value;
@@ -548,18 +570,15 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 
 function resetFilters() {
   search.value = "";
+  recommendedOnly.value = false;
   resetEchoBrowserFilters();
 }
 
-function getEchoSetImage(set: string) {
-  return getEchoSetIconByType(set);
+function showAllSets() {
+  echoSets.value = [];
+  recommendedOnly.value = false;
 }
-function toggleEchoSetFilter(set: string) {
-  echoSet.value = echoSet.value === set ? null : set;
-}
-function isEchoSetFilterActive(set: string) {
-  return echoSet.value === set;
-}
+
 function getCharsEquipped(item: any) {
   return getEchoEquippedChars(item.echoId);
 }

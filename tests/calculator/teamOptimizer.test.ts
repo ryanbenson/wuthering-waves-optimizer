@@ -484,6 +484,21 @@ describe("defaults", () => {
     expect(choice.minStats).toEqual([{ stat: "energyRegen", minValue: 120 }]);
   });
 
+  it("uses the recommended sets when no sets are saved, like the optimizer", () => {
+    const worn = { echoes: { 0: { echoId: "a" }, 1: { echoId: "b" } }, mainEcho: { echo: "MainA" } };
+    expect(defaultTeamOptimizerChoice(worn, inventory, ["MidnightVeil"]).sets).toEqual([
+      "MidnightVeil",
+      "VoidThunder",
+    ]);
+    expect(
+      defaultTeamOptimizerChoice(
+        { ...worn, optimizer: { echoSets: ["MoltenRift"] } },
+        inventory,
+        ["MidnightVeil"],
+      ).sets,
+    ).toEqual(["MoltenRift", "VoidThunder"]);
+  });
+
   it("falls back to what's worn, ignoring a lone echo from another set", () => {
     const choice = defaultTeamOptimizerChoice(
       {

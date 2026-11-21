@@ -10,7 +10,8 @@ export type EchoBrowserEquippedFilter = "self" | "any";
 
 export type EchoBrowserFilters = {
   cost: number | null;
-  echoSet: string | null;
+  /** Selected sets; an echo matches any of them. */
+  echoSets: string[];
   equipped: EchoBrowserEquippedFilter | null;
   mainStat: string | null;
   favorites: boolean;
@@ -26,7 +27,7 @@ export type EchoBrowserFilters = {
 
 export const EMPTY_ECHO_BROWSER_FILTERS: EchoBrowserFilters = {
   cost: null,
-  echoSet: null,
+  echoSets: [],
   equipped: null,
   mainStat: null,
   favorites: false,
@@ -50,7 +51,7 @@ function parseRange(rawMin: unknown, rawMax: unknown, floor: number, ceiling: nu
 
 /** Reads saved filters defensively: anything missing or malformed means "not filtered". */
 export function parseEchoBrowserFilters(raw: unknown): EchoBrowserFilters {
-  if (!raw || typeof raw !== "object") return { ...EMPTY_ECHO_BROWSER_FILTERS, substats: [] };
+  if (!raw || typeof raw !== "object") return { ...EMPTY_ECHO_BROWSER_FILTERS, echoSets: [], substats: [] };
   const saved = raw as Record<string, unknown>;
   const [cvMin, cvMax] = parseRange(saved.cvMin, saved.cvMax, 0, ECHO_CV_MAX);
   const [rvMin, rvMax] = parseRange(saved.rvMin, saved.rvMax, 0, ECHO_RV_MAX);
@@ -62,7 +63,12 @@ export function parseEchoBrowserFilters(raw: unknown): EchoBrowserFilters {
   );
   return {
     cost: typeof saved.cost === "number" ? saved.cost : null,
-    echoSet: typeof saved.echoSet === "string" ? saved.echoSet : null,
+    // Saved before the set filter took several sets: `echoSet` held one.
+    echoSets: Array.isArray(saved.echoSets)
+      ? saved.echoSets.filter((set): set is string => typeof set === "string")
+      : typeof saved.echoSet === "string"
+        ? [saved.echoSet]
+        : [],
     equipped: saved.equipped === "self" || saved.equipped === "any" ? saved.equipped : null,
     mainStat: typeof saved.mainStat === "string" ? saved.mainStat : null,
     favorites: saved.favorites === true,
@@ -94,7 +100,7 @@ export function useEchoBrowserFilters(characterId: MaybeRefOrGetter<string | nul
   });
   return {
     costFilter: scoped.field("cost"),
-    echoSet: scoped.field("echoSet"),
+    echoSets: scoped.field("echoSets"),
     equippedFilter: scoped.field("equipped"),
     mainStatFilter: scoped.field("mainStat"),
     favoriteFilter: scoped.field("favorites"),

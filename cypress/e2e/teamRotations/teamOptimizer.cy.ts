@@ -312,6 +312,19 @@ describe("Team optimizer", () => {
     cy.get('[data-test-team-optimizer-edit="0"]').click();
     cy.get("[data-test-team-optimizer-drawer]").should("be.visible");
     cy.get("[data-test-team-optimizer-drawer] [data-test-optimizer-workspace-run-bar]").should("not.exist");
+    // Suoming has no recommended echo sets, so the set row has no "Recommended only".
+    cy.get("[data-test-team-optimizer-drawer] [data-test-echo-set-recommended-only]").should("not.exist");
+    cy.get("[data-test-team-optimizer-drawer-done]").click();
+    cy.get("[data-test-team-optimizer-drawer]").should("not.be.visible");
+
+    // Hsin's drawer offers her recommended sets, like the other set pickers.
+    cy.get('[data-test-team-optimizer-edit="1"]').click();
+    cy.get(
+      "[data-test-team-optimizer-drawer] [data-test-optimizer-workspace-echo-sets] [data-test-echo-set-recommended-only]",
+    ).should("have.class", "btn-active");
+    cy.get(
+      '[data-test-team-optimizer-drawer] [data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle="HeartofSwornVigil"]',
+    ).should("exist");
     cy.get("[data-test-team-optimizer-drawer-done]").click();
     cy.get("[data-test-team-optimizer-drawer]").should("not.be.visible");
 

@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "SolarFlame", label: "BP" },
       { key: "Pistols26", label: "4*" },
     ],
+    suggestedEchoSets: ["MoonlitClouds"],
   };
 }

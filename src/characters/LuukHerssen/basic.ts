@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "CelestialSpiral", label: "4*" },
       { key: "AetherStrike", label: "BP" },
     ],
+    suggestedEchoSets: ["RiteofGildedRevelation"],
   };
 }

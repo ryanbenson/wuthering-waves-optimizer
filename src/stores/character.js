@@ -125,6 +125,13 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].optimizer.minStats = data;
       }
     },
+    // Replaces the saved eligible echo sets: setCharacterData merges arrays
+    // index by index, so it can't drop a set.
+    setCharacterOptimizerEchoSets(characterId, sets) {
+      const character = (this.characters[characterId] ??= {});
+      character.optimizer ??= {};
+      character.optimizer.echoSets = sets;
+    },
     // "Use calculator setting" in the v3 optimizer: drop the optimizer's own
     // setting so the buff falls back to the calculator's (see
     // src/calculator/optimizerBuffStatus.ts). setCharacterData merges, so it

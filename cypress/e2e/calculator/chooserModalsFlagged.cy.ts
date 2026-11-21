@@ -94,6 +94,53 @@ function visitWithTwoSetInventory() {
 }
 
 describe("v3 chooser modals (liveResultBar flag)", () => {
+  it("starts on the character's recommended sets and filters by several sets at once", () => {
+    visitWithTwoSetInventory();
+    // Roccia recommends Midnight Veil and Moonlit Clouds (basic.ts suggestedEchoSets).
+    cy.selectWorkspaceCharacter("Roccia");
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    const count = () => cy.get("[data-test-workspace-echoes-browser-count]");
+    const set = (key: string) => cy.get(`[data-test-echo-set-toggle="${key}"]`);
+    const recommendedOnly = () => cy.get("[data-test-echo-set-recommended-only]");
+
+    // "Recommended only" narrows the set row and the list to those sets; nothing is selected.
+    recommendedOnly().should("have.class", "btn-active");
+    count().should("contain.text", "1 echo");
+    set("MidnightVeil").should("have.attr", "aria-pressed", "false");
+    set("FreezingFrost").should("not.exist");
+
+    recommendedOnly().click({ force: true });
+    recommendedOnly().should("not.have.class", "btn-active");
+    count().should("contain.text", "3 echoes");
+
+    set("FreezingFrost").click({ force: true });
+    set("FreezingFrost").should("have.class", "btn-active");
+    count().should("contain.text", "2 echoes");
+    set("MidnightVeil").click({ force: true });
+    count().should("contain.text", "3 echoes");
+    set("FreezingFrost").click({ force: true });
+    count().should("contain.text", "1 echo");
+  });
+
+  it("says when the recommended sets empty the list, and offers every set", () => {
+    visitWithTwoSetInventory();
+    // Carlotta recommends Frosty Resolve, which nothing in this inventory is from.
+    cy.selectWorkspaceCharacter("Carlotta");
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-browse]").click({ force: true });
+
+    cy.get("[data-test-workspace-echoes-browser-empty-sets]").should(
+      "contain.text",
+      "No echoes in the recommended sets",
+    );
+    cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
+    cy.get("[data-test-workspace-echoes-browser-count]").should("contain.text", "3 echoes");
+    cy.get("[data-test-echo-set-recommended-only]").should("not.have.class", "btn-active");
+  });
+
   it("picks a character through the shared shell, using the preserved selectors", () => {
     visitWithFlagEnabled();
     // Uses the shared command — proves the selector contract still holds.
@@ -291,6 +338,8 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     // Open the slot editor, then its Browse action.
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    // Start from every set: nothing in the seed is from Carlotta's recommended set.
+    cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     // Both seeded echoes are candidates for the empty slot, and each gets a
@@ -334,10 +383,12 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
 
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    // Start from every set: nothing in the seed is from Carlotta's recommended set.
+    cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     cy.get("[data-test-workspace-echoes-browser-sort]").select("impact", { force: true });
-    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
+    cy.get('[data-test-echo-set-toggle="MidnightVeil"]').click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-impact='chooser-other-set']", {
       timeout: 15000,
     }).should("exist");
@@ -354,8 +405,8 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     // Filter changes to FreezingFrost without ever touching sortBy (still
     // "impact") or closing the modal — both of its echoes must still get
     // badges.
-    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
-    cy.get(".echo-filters__sets button.FreezingFrost").click({ force: true });
+    cy.get('[data-test-echo-set-toggle="MidnightVeil"]').click({ force: true });
+    cy.get('[data-test-echo-set-toggle="FreezingFrost"]').click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-impact='chooser-strong']", {
       timeout: 15000,
     }).should("exist");

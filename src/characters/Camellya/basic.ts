@@ -20,5 +20,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Sanhua", "Shorekeeper"], tags: ["Hypercarry"] },
       { members: ["Sanhua", "Verina"], tags: ["Hypercarry", "Budget"] },
     ],
+    suggestedEchoSets: ["HavocEclipse", "LingeringTunes"],
   };
 }

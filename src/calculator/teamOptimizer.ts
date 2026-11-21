@@ -30,6 +30,7 @@ import {
   setBonusEffectsOnePiece,
   setBonusEffectsTwo,
 } from "../echoes/sets";
+import { eligibleEchoSets } from "../echoes/recommendedEchoSets";
 import { echoSetLabelMap } from "../echoes/stats";
 import {
   buildCharacterCalculationContext,
@@ -121,10 +122,12 @@ function wornEchoes(
 /**
  * The prefill: the character's saved optimizer settings plus what they're wearing
  * now (sets with an active bonus, and the main echo's own set so it can be found).
+ * With no saved sets, the character's recommended sets stand in, as in the optimizer.
  */
 export function defaultTeamOptimizerChoice(
   characterData: Record<string, any>,
   inventoryEchoes: any[],
+  recommendedSets: string[] = [],
 ): Omit<TeamOptimizerChoice, "goal"> {
   const optimizer = characterData?.optimizer ?? {};
   const worn = wornEchoes(characterData, inventoryEchoes);
@@ -144,7 +147,7 @@ export function defaultTeamOptimizerChoice(
   return {
     // Always including what's worn keeps the current build in the search, so a
     // result can only fall below it because of echo conflicts or team buff guards.
-    sets: [...new Set([...(optimizer.echoSets ?? []), ...wornSets])],
+    sets: [...new Set([...eligibleEchoSets(optimizer.echoSets, recommendedSets), ...wornSets])],
     mainEchoes: [
       ...new Set([
         ...(optimizer.mainEchoes ?? []),
