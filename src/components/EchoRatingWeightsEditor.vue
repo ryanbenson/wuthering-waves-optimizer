@@ -1,5 +1,6 @@
 <template>
   <AppModal
+    id="modal-echo-rating-weights-editor"
     ref="modalRef"
     :title="mode === 'character' ? `Substat Priorities — ${characterId}` : 'Echo Rating Weights'"
     box-class="max-w-2xl"
