@@ -10,7 +10,7 @@
             ✕
           </button>
         </form>
-        <div class="py-4 flex flex-col gap-3">
+        <div class="py-4 mb-2 flex flex-col gap-3">
           <input
             v-model="pickerSearch"
             type="search"
@@ -18,20 +18,15 @@
             class="input input-bordered input-sm w-full max-w-xs"
             aria-label="Search echoes"
             data-test-optimizer-workspace-picker-search />
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-            <button
-              v-if="recommendedSets.length"
-              type="button"
-              class="btn btn-sm btn-ghost rounded px-2"
-              :class="{ 'btn-active': sameSets(pickerSets, recommendedSets) }"
-              data-test-optimizer-workspace-picker-recommended
-              @click="pickerSets = sameSets(pickerSets, recommendedSets) ? [] : [...recommendedSets]">
-              Recommended
-            </button>
-            <button type="button" class="btn btn-sm btn-ghost" @click="resetFilters">Clear</button>
+          <div class="flex align-center gap-1 items-center flex-wrap">
+            <span class="mr-2">Filter</span>
+            <EchoSetToggles
+              v-model="pickerSets"
+              v-model:recommended-only="pickerRecommendedOnly"
+              :sets="echoSets"
+              :recommended="recommendedSets" />
+            <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
           </div>
-          <EchoSetToggles v-model="pickerSets" :sets="echoSets" />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <template v-if="!allEchoesListFiltered.length">
@@ -84,19 +79,8 @@
       <!-- Echo sets + main echo -->
       <div class="bg-base-200 rounded-xl p-4 flex flex-col gap-3">
         <div ref="setsSection" class="scroll-mt-20">
-          <div class="flex items-center justify-between gap-2">
-            <div class="text-xs font-bold uppercase tracking-wider opacity-50">
-              Eligible echo sets
-            </div>
-            <button
-              v-if="recommendedSets.length"
-              type="button"
-              class="btn btn-xs btn-ghost"
-              :class="{ 'btn-active': sameSets(setFilters, recommendedSets) }"
-              data-test-optimizer-workspace-recommended-sets
-              @click="toggleRecommendedSets">
-              Recommended
-            </button>
+          <div class="text-xs font-bold uppercase tracking-wider opacity-50">
+            Eligible echo sets
           </div>
           <p class="text-xs opacity-60 mt-1">
             Only echoes from these sets are considered.
@@ -105,6 +89,7 @@
         <EchoSetToggles
           v-model="setFilters"
           :sets="echoSets"
+          :recommended="recommendedSets"
           data-test-optimizer-workspace-echo-sets
           @update:model-value="syncOptimizerConfig" />
 
@@ -321,6 +306,8 @@ import OptimizerWorkspaceRunBar, {
   type OptimizerSetupSection,
 } from "./OptimizerWorkspaceRunBar.vue";
 import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
+import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
+import { setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
@@ -331,7 +318,7 @@ defineOptions({ name: "OptimizerWorkspaceSetup" });
 const props = withDefaults(
   defineProps<{
     character: string;
-    /** The character's recommended echo sets (basic.ts), for the set pickers. */
+    /** The character's recommended echo sets (basic.ts suggestedEchoSets). */
     suggestedEchoSets?: string[];
     /** Team optimizer's drawer: no run bar or target, since the team run owns those. */
     embedded?: boolean;
@@ -368,12 +355,12 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 
 const modalIdPicker = "optimizerWorkspaceEchoPicker";
-// Main echo picker: name search and sets (an echo matches any of them), opening on the
-// character's recommended sets.
+// Main echo picker: name search and sets (an echo matches any of them); with
+// "Recommended only" and no set picked it lists the recommended sets' echoes.
 const pickerSearch = ref("");
 const pickerSets = ref<string[]>([]);
+const pickerRecommendedOnly = ref(true);
 const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
-const sameSets = (a: string[], b: string[]) => a.length === b.length && b.every((set) => a.includes(set));
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
 const minStats = ref<OptimizerMinStatRow[]>([]);
@@ -444,12 +431,12 @@ type EchoListEntry = {
 
 const allEchoesListFiltered = computed((): EchoListEntry[] => {
   let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
-  if (pickerSets.value.length) {
-    allEchoes = allEchoes.filter((echo) => echo.sets.some((set) => pickerSets.value.includes(set)));
+  const sets = setFilterFor(recommendedSets.value, pickerSets.value, pickerRecommendedOnly.value);
+  if (sets.length) {
+    allEchoes = allEchoes.filter((echo) => echo.sets.some((set) => sets.includes(set)));
   }
-  const needle = pickerSearch.value.trim().toLowerCase();
-  if (needle) {
-    allEchoes = allEchoes.filter((echo) => echo.name.toLowerCase().includes(needle));
+  if (pickerSearch.value.trim()) {
+    allEchoes = allEchoes.filter((echo) => echoMatchesNameSearch(echo.key, pickerSearch.value));
   }
   const classOrder: Record<string, number> = {
     Calamity: 0,
@@ -523,11 +510,6 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
-function toggleRecommendedSets() {
-  setFilters.value = sameSets(setFilters.value, recommendedSets.value) ? [] : [...recommendedSets.value];
-  void syncOptimizerConfig();
-}
-
 // The recommended sets can arrive after mount (the character data loads separately).
 watch(recommendedSets, (sets) => {
   if (!setFilters.value.length) setFilters.value = [...sets];
@@ -569,8 +551,8 @@ function getEchoSetIcon(type: string) {
 }
 
 function openEchoChooser() {
-  pickerSets.value = [...recommendedSets.value];
-  pickerSearch.value = "";
+  resetFilters();
+  pickerRecommendedOnly.value = true;
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
@@ -641,8 +623,6 @@ onMounted(() => {
     };
   };
   mainEchoes.value = props.embedded ? [...props.initialMainEchoes] : (ch.optimizer?.mainEchoes ?? []);
-  // No sets chosen (the optimizer can't run without one) starts on the recommended
-  // ones; a saved choice stays.
   setFilters.value = props.embedded
     ? [...props.initialSets]
     : ch.optimizer?.echoSets?.length

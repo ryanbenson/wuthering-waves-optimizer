@@ -22,22 +22,27 @@ describe("Optimizer Workspace: setup readiness", () => {
     cy.viewport(1280, 800);
     openOptimizer();
 
-    // Carlotta starts on her recommended set (Frosty Resolve) and an attack target,
-    // so only the main echo is missing; Run is disabled.
-    cy.get('[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle="FrostyResolve"]').should("have.attr", "aria-pressed", "true");
+    // With no saved sets Carlotta uses her recommended set (Frosty Resolve), shown under
+    // "Recommended only", and she starts with an attack target, so only the main echo
+    // is missing; Run is disabled.
+    const eligible = (set: string) =>
+      cy.get(`[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle="${set}"]`);
+    cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-recommended-only]").should("have.class", "btn-active");
+    cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle]").should("have.length", 1);
+    eligible("FrostyResolve").should("have.attr", "aria-pressed", "true");
     check("sets").should("have.attr", "data-test-optimizer-workspace-check-state", "ok");
     check("mainEcho").should("have.attr", "data-test-optimizer-workspace-check-state", "missing");
     cy.get("[data-test-optimizer-workspace-optimize-btn]").should("be.disabled");
 
     // Without any set, that is its own red chip.
-    cy.get('[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle="FrostyResolve"]').click();
+    eligible("FrostyResolve").click();
     check("sets").should("have.attr", "data-test-optimizer-workspace-check-state", "missing");
-    cy.get("[data-test-optimizer-workspace-recommended-sets]").click();
+    eligible("FrostyResolve").click();
     check("sets").should("have.attr", "data-test-optimizer-workspace-check-state", "ok");
 
-    // The main echo picker opens on the recommended sets and can search by name.
+    // The main echo picker lists the recommended sets' echoes and can search by name.
     cy.get("[data-test-optimizer-workspace-add-echo]").click();
-    cy.get("[data-test-optimizer-workspace-picker-recommended]").should("have.class", "btn-active");
+    cy.get("#optimizerWorkspaceEchoPicker [data-test-echo-set-recommended-only]").should("have.class", "btn-active");
     cy.get("[data-test-optimizer-workspace-picker-search]").type("Sentry", { force: true });
     cy.get("[data-test-optimizer-workspace-pick-echo]").each(($button) => {
       expect($button.attr("data-test-optimizer-workspace-pick-echo")).to.contain("Sentry");
@@ -86,7 +91,7 @@ describe("Optimizer Workspace: setup readiness", () => {
   it("clicking the buffs warning opens the section", () => {
     cy.viewport(1440, 900);
     openOptimizer();
-    // Frosty Resolve is Carlotta's recommended set, selected from the start.
+    // Frosty Resolve is Carlotta's recommended set, in use from the start.
     cy.get("[data-test-optimizer-workspace-buffs-toggle]").click();
     cy.get("[data-test-optimizer-workspace-buffs-toggle]").should("have.attr", "aria-expanded", "false");
 
@@ -107,7 +112,7 @@ describe("Optimizer Workspace: setup readiness", () => {
     cy.viewport(1440, 900);
     openOptimizer();
     cy.viewport(390, 844);
-    // Carlotta's recommended set is already selected, so only the main echo is left.
+    // Carlotta's recommended set is already in use, so only the main echo is left.
     cy.get("[data-test-optimizer-workspace-run-bar-summary]").should("contain.text", "1 to fix");
     cy.screenshot("optimizer-readiness-phone", { capture: "viewport" });
   });

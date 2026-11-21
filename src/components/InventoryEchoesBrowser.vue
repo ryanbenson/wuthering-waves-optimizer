@@ -1441,12 +1441,4 @@ html[data-theme-style="light"] {
   outline-offset: 2px;
   border-radius: var(--rounded-box, 1rem);
 }
-.echo-filters__sets--active {
-  button {
-    opacity: 0.6;
-  }
-  button.btn-active {
-    opacity: 1;
-  }
-}
 </style>

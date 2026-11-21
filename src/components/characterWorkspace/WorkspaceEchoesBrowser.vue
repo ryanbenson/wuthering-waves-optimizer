@@ -100,17 +100,11 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-          <button
-            v-if="recommendedSets.length"
-            type="button"
-            class="btn btn-sm btn-ghost rounded px-2"
-            :class="{ 'btn-active': isRecommendedSetFilter }"
-            v-tooltip="recommendedSetsTooltip"
-            data-test-workspace-echoes-browser-recommended-sets
-            @click="toggleRecommendedSets">
-            Recommended
-          </button>
-          <EchoSetToggles v-model="echoSets" :sets="echoSetsList" />
+          <EchoSetToggles
+            v-model="echoSets"
+            v-model:recommended-only="recommendedOnly"
+            :sets="echoSetsList"
+            :recommended="recommendedSets" />
         </div>
       </AppFilterPanel>
 
@@ -127,7 +121,22 @@
       </div>
     </template>
 
-    <div v-if="!echoesList.length" class="py-12 text-center w-full opacity-60">
+    <div
+      v-if="!echoesList.length && setFilter.length && echoesWithoutSetFilter.length"
+      class="py-12 flex flex-col items-center gap-3 w-full"
+      data-test-workspace-echoes-browser-empty-sets>
+      <span class="opacity-60">
+        No echoes in the {{ echoSets.length ? "selected" : "recommended" }} sets
+      </span>
+      <button
+        type="button"
+        class="btn btn-sm"
+        data-test-workspace-echoes-browser-show-all-sets
+        @click="showAllSets">
+        Show All Sets
+      </button>
+    </div>
+    <div v-else-if="!echoesList.length" class="py-12 text-center w-full opacity-60">
       No echoes found
     </div>
     <template v-else>
@@ -239,6 +248,7 @@ import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
 import { useUiDensity } from "../../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
+import { setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   ECHO_RATING_PERCENT_MAX,
   ECHO_RATING_PERCENT_MIN,
@@ -248,7 +258,11 @@ import { deltaToneBadgeClass, signedImpact } from "../../utils/signedDelta";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
-const props = defineProps<{ character: string; suggestedEchoSets?: string[] }>();
+const props = defineProps<{
+  character: string;
+  /** The character's recommended echo sets (basic.ts suggestedEchoSets). */
+  suggestedEchoSets?: string[];
+}>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
@@ -299,9 +313,18 @@ const equippedEchoIdInSlot = computed(() => {
   return characters.value?.[props.character]?.echoes?.[echoIndex.value]?.echoId ?? null;
 });
 
+const echoSetsList = Object.keys(echoSetLabelMap);
+// "Recommended only" isn't remembered: it starts on whenever the character has
+// recommended sets, and limits the list to them until sets are picked.
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+const recommendedOnly = ref(true);
+const setFilter = computed(() =>
+  setFilterFor(recommendedSets.value, echoSets.value, recommendedOnly.value),
+);
+
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (echoSets.value.length) count += 1;
+  if (setFilter.value.length) count += 1;
   if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -315,33 +338,16 @@ const activeFilterCount = computed(() => {
 });
 
 watch(
-  [mainStatFilter, echoSets, search, favoriteFilter, equippedFilter, costFilter,
+  [mainStatFilter, setFilter, search, favoriteFilter, equippedFilter, costFilter,
    substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
   },
 );
 
-// The set filter starts on the character's recommended sets; the row keeps one
-// fixed order for every character.
-const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
-watch(recommendedSets, (sets) => (echoSets.value = [...sets]), { immediate: true });
-const echoSetsList = Object.keys(echoSetLabelMap);
-const isRecommendedSetFilter = computed(
-  () =>
-    echoSets.value.length === recommendedSets.value.length &&
-    recommendedSets.value.every((set) => echoSets.value.includes(set)),
-);
-const recommendedSetsTooltip = computed(
-  () => `Recommended sets: ${recommendedSets.value.map((set) => echoSetLabelMap[set]).join(", ")}`,
-);
-
-const echoesFiltered = computed(() => {
+const echoesWithoutSetFilter = computed(() => {
   let allEchoes = echoes.value ?? [];
   if (allEchoes.length <= 0) return allEchoes;
-  if (echoSets.value.length) {
-    allEchoes = allEchoes.filter((item: any) => echoSets.value.includes(item.echoSet));
-  }
   if (search.value.trim()) {
     allEchoes = allEchoes.filter((item: any) =>
       echoMatchesNameSearch(item.echo, search.value),
@@ -398,6 +404,12 @@ const echoesFiltered = computed(() => {
 
   return allEchoes;
 });
+
+const echoesFiltered = computed(() =>
+  setFilter.value.length
+    ? echoesWithoutSetFilter.value.filter((item: any) => setFilter.value.includes(item.echoSet))
+    : echoesWithoutSetFilter.value,
+);
 
 const echoesList = computed(() => {
   if (sortBy.value !== "impact") return echoesFiltered.value;
@@ -558,12 +570,15 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 
 function resetFilters() {
   search.value = "";
+  recommendedOnly.value = false;
   resetEchoBrowserFilters();
 }
 
-function toggleRecommendedSets() {
-  echoSets.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];
+function showAllSets() {
+  echoSets.value = [];
+  recommendedOnly.value = false;
 }
+
 function getCharsEquipped(item: any) {
   return getEchoEquippedChars(item.echoId);
 }
