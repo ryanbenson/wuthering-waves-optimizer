@@ -114,8 +114,10 @@ async function triggerOpenModal() {
 }
 
 function triggerCloseModal() {
-  dialogEl.value?.close();
+  // Cleared first, so the dialog's own close event (handleDialogClose) never
+  // reports a close from code as one by the user.
   isOpen.value = false;
+  dialogEl.value?.close();
 }
 
 /**

@@ -50,6 +50,39 @@ describe("AppModal", () => {
     expect(dialog()?.hasAttribute("open")).toBe(false);
   });
 
+  it("emits close when the user closes it (✕, Esc, backdrop) but not on triggerCloseModal()", async () => {
+    const { getByText, getByRole, emitted } = render({
+      components: { AppModal },
+      emits: ["closed"],
+      template: `
+        <button @click="$refs.modal.triggerOpenModal()">open</button>
+        <button @click="$refs.modal.triggerCloseModal()">close from code</button>
+        <AppModal ref="modal" title="Title" data-test-my-dialog @close="$emit('closed')">
+          <p>Body</p>
+        </AppModal>
+      `,
+    });
+    const closes = () => emitted().closed?.length ?? 0;
+
+    await fireEvent.click(getByText("open"));
+    await fireEvent.click(getByRole("button", { name: "Close" }));
+    expect(closes()).toBe(1);
+
+    // Esc: the browser closes the <dialog> itself and fires its native close event.
+    await fireEvent.click(getByText("open"));
+    dialog()!.close();
+    expect(closes()).toBe(2);
+
+    await fireEvent.click(getByText("open"));
+    await fireEvent.click(dialog()!.querySelector(".modal-backdrop")!);
+    expect(closes()).toBe(3);
+
+    await fireEvent.click(getByText("open"));
+    await fireEvent.click(getByText("close from code"));
+    expect(dialog()?.hasAttribute("open")).toBe(false);
+    expect(closes()).toBe(3);
+  });
+
   it("is a full-screen sheet on phones unless sheet is false", async () => {
     const sheet = renderModal();
     await fireEvent.click(sheet.getByText("open"));
