@@ -19,7 +19,11 @@
 
 const SHARED_FIELD_KEYS = ["characterLevel", "talents", "substatWeights"] as const;
 const BOOKKEEPING_KEYS = ["builds", "activeBuildId"] as const;
-const BUILD_METADATA_KEYS = ["id", "name", "createdAt", "updatedAt"] as const;
+/**
+ * `scanner`: true on the build the echo scanner keeps for the character (SCANNED_BUILD_NAME
+ * in useWavescanLoadouts.ts). Metadata, so it never reaches the live record or an export.
+ */
+const BUILD_METADATA_KEYS = ["id", "name", "createdAt", "updatedAt", "scanner"] as const;
 
 /**
  * Deep-clones plain, JSON-serializable data. Character records live in a
@@ -81,7 +85,7 @@ export function applyBuildFields(
 
 /**
  * Strips a build entry's own metadata (`id`, `name`, `createdAt`,
- * `updatedAt`) down to just its build-data fields — the shape
+ * `updatedAt`, `scanner`) down to just its build-data fields — the shape
  * `applyBuildFields` expects as its second argument when equipping a build
  * onto the live character record.
  */

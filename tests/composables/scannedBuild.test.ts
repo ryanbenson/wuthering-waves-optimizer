@@ -84,4 +84,42 @@ describe('the echo scanner\'s "Scanned" build', () => {
 
     expect(buildNames("Hsin")).toEqual(["Kept", SCANNED_BUILD_NAME]);
   });
+
+  it("never touches a build the player named \"Scanned\": the scanner's build is found by its flag", () => {
+    const characters = useCharacterStore();
+    characters.ensureCharacterBuilds("Hsin");
+    characters.applyEchoLoadout("Hsin", { echoIds: ["e6"], presetId: null, fillSlots: 1 });
+    characters.renameBuild("Hsin", characters.getActiveBuildId("Hsin"), SCANNED_BUILD_NAME);
+
+    scanner().applyLoadoutWrites([write("Hsin", ["e1"])]);
+    scanner().applyLoadoutWrites([write("Hsin", ["e2"])]);
+
+    expect(buildNames("Hsin")).toEqual([SCANNED_BUILD_NAME, `${SCANNED_BUILD_NAME} (2)`]);
+    expect(slotIds("Hsin")).toEqual(["e2", null, null, null, null]);
+    characters.equipBuild("Hsin", characters.getBuilds("Hsin")[0].id);
+    expect(slotIds("Hsin")).toEqual(["e6", null, null, null, null]);
+  });
+
+  it("keeps the flag on the scanner's build only, not on the live record or the build switched to", () => {
+    const characters = useCharacterStore();
+    scanner().applyLoadoutWrites([write("Hsin", ["e1"])]);
+    characters.createBuild("Hsin", "Experiment", { from: "active" });
+    characters.equipBuild("Hsin", characters.getBuilds("Hsin")[0].id);
+    characters.equipBuild("Hsin", characters.getBuilds("Hsin")[1].id);
+
+    const flags = characters.getBuilds("Hsin").map((b: { scanner?: boolean }) => Boolean(b.scanner));
+    expect(flags).toEqual([true, false]);
+    expect(characters.characters.Hsin.scanner).toBeUndefined();
+  });
+
+  it("returns the echoes it took off another character's active build", () => {
+    const characters = useCharacterStore();
+    characters.ensureCharacterBuilds("Hiyuki");
+    characters.applyEchoLoadout("Hiyuki", { echoIds: ["e1", "e6"], presetId: null, fillSlots: 2 });
+
+    const moved = scanner().applyLoadoutWrites([write("Hsin", ["e1", "e2"])]);
+
+    expect(moved).toEqual([{ echoId: "e1", from: "Hiyuki", to: "Hsin" }]);
+    expect(slotIds("Hiyuki")).toEqual([null, "e6", null, null, null]);
+  });
 });

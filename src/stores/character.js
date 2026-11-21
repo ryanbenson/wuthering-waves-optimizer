@@ -283,6 +283,8 @@ export const useCharacterStore = defineStore("character", {
       }
       const build = this.characters[characterId]?.builds?.find((b) => b.id === buildId);
       if (build) {
+        // Renaming the echo scanner's build makes it the player's own (see buildFields.ts).
+        if (build.name !== name) delete build.scanner;
         build.name = name;
         build.updatedAt = Date.now();
       }
