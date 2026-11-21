@@ -218,7 +218,7 @@ const summary = summarizeCandidates(candidates, context);
 | Module | Highlights |
 |---|---|
 | `gameData` | `setScannerGameData`, `scannerGameData`, `ScannerGameData`, `ScannerEcho` |
-| `layout` | Region constants (`NAME_BLOCK`, `SUBSTAT_LABEL_COLUMN`, …), `toPixelRegion`, `isSupportedAspect`, `SUPPORTED_ASPECT_RANGE` |
+| `layout` | Region constants (`NAME_BLOCK`, `SUBSTAT_LABEL_COLUMN`, `EQUIPPED_BY_LINE`, `DISCARD_ICON_BOX`, `LOCK_ICON_BOX`, …), `toPixelRegion`, `isSupportedAspect`, `SUPPORTED_ASPECT_RANGE` |
 | `contentRect` | `detectContentRect`: finds the game area inside a frame with a title bar or letterboxing |
 | `layoutCheck` | `readsAsPanel`, `createLayoutCheck`: confirms the echo panel is really where the layout expects |
 | `fingerprint` | `computeFingerprint`, `fingerprintDistance`, `countChangedCells` |
@@ -230,6 +230,7 @@ const summary = summarizeCandidates(candidates, context);
 | `parsedEchoMapping` | `mapParsedEchoes`, `isEmptyParsedEcho`, `getSubstatType`, `getSubstatValue`. An empty slot (no echo, set, main stat or substat value) never gets an `echoId`, so it isn't saved to an inventory (`ParsedSubstat` is exported from the root as `LooseParsedSubstat`) |
 | `echoIdentity` | `getEchoIdentityKey`, `buildIdentityKeySet` |
 | `equippedBy` | `matchEquippedBy`, `findEquippedByName`, `PLAYER_CHARACTER_KEY`, `isPlayerCharacterKey` |
+| `echoMarks` | `readEchoMarks`, `isDiscardMarked`, `isLockClosed`: the panel's lock / discard toggles from RGBA pixels of `LOCK_ICON_BOX` / `DISCARD_ICON_BOX` (never both true; locked wins) |
 | `levenshtein` | `levenshteinSimilarity`, `prefixTolerantSimilarity` |
 | `types` | `RegionFrac`, `FrameSize`, `OcrLine`, `ParsedEchoSlot`, `ScanCandidate`, `FieldConfidence` |
 

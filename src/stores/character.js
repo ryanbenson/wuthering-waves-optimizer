@@ -283,9 +283,20 @@ export const useCharacterStore = defineStore("character", {
       }
       const build = this.characters[characterId]?.builds?.find((b) => b.id === buildId);
       if (build) {
+        // Renaming the echo scanner's build makes it the player's own (see buildFields.ts).
+        if (build.name !== name) delete build.scanner;
         build.name = name;
         build.updatedAt = Date.now();
       }
+    },
+    /**
+     * Marks the build the echo scanner keeps for the character (`scanner`
+     * metadata, see buildFields.ts). The scanner finds it by this flag, never
+     * by its name; renameBuild clears it.
+     */
+    setScannerBuild(characterId, buildId) {
+      const build = this.characters[characterId]?.builds?.find((b) => b.id === buildId);
+      if (build) build.scanner = true;
     },
     /**
      * Refuses to delete a character's only build (issue #278's explicit

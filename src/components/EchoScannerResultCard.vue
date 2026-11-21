@@ -37,6 +37,19 @@
       <span v-if="inInventory" class="badge badge-sm badge-info badge-outline">
         Already in inventory
       </span>
+      <span v-if="candidate.slot.locked" class="badge badge-sm badge-ghost" data-test-scan-result-locked>Locked</span>
+      <span v-else-if="candidate.slot.trash" class="badge badge-sm badge-error badge-outline" data-test-scan-result-trash>
+        Discard
+      </span>
+      <span v-if="candidate.slot.equippedBy" class="badge badge-sm badge-ghost" data-test-scan-result-equipped-by>
+        Equipped by {{ getCharacterRosterDisplayName(candidate.slot.equippedBy) }}
+      </span>
+      <span
+        v-else-if="candidate.equippedByName"
+        v-tooltip="'This name didn\'t match a character, so this echo won\'t be equipped automatically'"
+        class="badge badge-sm badge-ghost">
+        Equipped by "{{ candidate.equippedByName }}"?
+      </span>
       <div class="ml-auto flex gap-1">
         <button
           v-if="candidate.slot.echo && hasLowConfidence(candidate)"
@@ -165,6 +178,7 @@ import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { echoSetImageMap } from "../echoes/stats";
 import { DEBUG_REGIONS, contentPercentStyle, regionPercentStyle } from "../scanner/layout";
 import { hasLowConfidence } from "../scanner/review";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { FrameSize, ScanCandidate } from "../scanner/types";
 
 const props = defineProps<{

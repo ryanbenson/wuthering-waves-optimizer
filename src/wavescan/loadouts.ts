@@ -7,6 +7,16 @@
 import { PLAYER_CHARACTER_KEY } from "@wutheringtools/scanner-core/equippedBy";
 import type { WavescanEchoMapResult } from "./echoes";
 
+/**
+ * What groupWavescanLoadouts reads from a Wavescan import (WavescanEchoMapResult),
+ * narrowed so the echo scanner can pass inventory echoes too.
+ */
+export type WavescanLoadoutInput = {
+  echoes: readonly { echoId: string; type: number | null }[];
+  skipped: readonly Pick<WavescanEchoMapResult["skipped"][number], "equippedBy">[];
+  equippedBy: WavescanEchoMapResult["equippedBy"];
+};
+
 export const LOADOUT_SLOTS = 5;
 export const MAX_LOADOUT_COST = 12;
 
@@ -38,7 +48,7 @@ export type WavescanLoadoutPlan = {
  * name, not which Rover; the user picks which Rover entry it is.
  */
 export function groupWavescanLoadouts(
-  mapped: WavescanEchoMapResult,
+  mapped: WavescanLoadoutInput,
   knownKeys: Iterable<string>,
 ): WavescanLoadoutPlan {
   const known = new Set(knownKeys);
@@ -91,6 +101,32 @@ export function groupWavescanLoadouts(
     groups: [...groups.values()],
     unmatched: [...unmatched].map(([wearer, count]) => ({ wearer, count })),
   };
+}
+
+/**
+ * A rescan that showed only some of a character's echoes (the echo scanner): the
+ * scanned ids, then the previous loadout's other echoes in slot order that `keep`
+ * allows, while they fit in LOADOUT_SLOTS and MAX_LOADOUT_COST (an older echo that no
+ * longer fits next to the scanned ones is dropped). Sorted highest cost first, scanned
+ * echoes first within a cost. `kept` lists the previous echoes that stayed.
+ */
+export function mergeLoadout(
+  scanned: readonly string[],
+  previous: readonly (string | null)[],
+  costOf: (id: string) => number,
+  keep: (id: string) => boolean,
+): { ids: string[]; kept: string[] } {
+  const ids = [...scanned];
+  const kept: string[] = [];
+  let cost = ids.reduce((sum, id) => sum + costOf(id), 0);
+  for (const id of previous) {
+    if (!id || ids.includes(id) || !keep(id)) continue;
+    if (ids.length >= LOADOUT_SLOTS || cost + costOf(id) > MAX_LOADOUT_COST) continue;
+    ids.push(id);
+    kept.push(id);
+    cost += costOf(id);
+  }
+  return { ids: sortByCostDesc(ids, new Map(ids.map((id) => [id, costOf(id)]))), kept };
 }
 
 /** Stable: echoes with the same cost keep their order. */

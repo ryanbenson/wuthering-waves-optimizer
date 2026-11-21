@@ -29,6 +29,7 @@ import {
   groupWavescanLoadouts,
   isSameLoadout,
   LOADOUT_SLOTS,
+  mergeLoadout,
   moveLoadoutEcho,
   nextBuildName,
   padLoadout,
@@ -39,7 +40,22 @@ import type {
   WavescanLoadoutTile,
 } from "../components/SettingsWavescanLoadout.vue";
 
-export type WavescanBuildTarget = "active" | "new";
+/**
+ * Where an import writes each character's loadout: the build that's active, a new
+ * dated build, or (the echo scanner) the character's reserved "Scanned" build.
+ */
+export type WavescanBuildTarget = "active" | "new" | "scanned";
+
+/**
+ * The echo scanner keeps one build per character in step with the game, updated in place
+ * on every scan. It's found by the `scanner` flag the scanner sets when it creates it,
+ * never by its name, so a build the player named "Scanned" is never touched. Renaming it
+ * clears the flag (it becomes the player's own); the next scan then starts a new one.
+ */
+export const SCANNED_BUILD_NAME = "Scanned";
+
+/** An echo applyLoadoutWrites took off another character, as the game shows it moved. */
+export type LoadoutMove = { echoId: string; from: string; to: string };
 
 type LoadoutState = {
   /** Mapped echo ids in the order the user wants them, slot 1 first. */
@@ -360,14 +376,61 @@ export function useWavescanLoadouts(options: {
   }
 
   /**
+   * Switches to the character's scanner build, making it first if needed (see
+   * SCANNED_BUILD_NAME). Returns true when the build was already there.
+   */
+  function equipScannedBuild(characterKey: string, existed: boolean): boolean {
+    type Build = { id: string; name: string; scanner?: boolean };
+    const builds: Build[] = characterStore.getBuilds(characterKey);
+    const scanned = builds.find((build) => build.scanner);
+    if (scanned) {
+      if (characterStore.getActiveBuildId(characterKey) !== scanned.id) {
+        characterStore.equipBuild(characterKey, scanned.id);
+      }
+      return true;
+    }
+    if (existed) {
+      const names = builds.map((build) => build.name);
+      characterStore.createBuild(characterKey, nextBuildName(SCANNED_BUILD_NAME, names), { from: "active" });
+    } else {
+      // A character the app didn't have yet: its only build is the scan.
+      characterStore.renameBuild(characterKey, characterStore.getActiveBuildId(characterKey), SCANNED_BUILD_NAME);
+    }
+    characterStore.setScannerBuild(characterKey, characterStore.getActiveBuildId(characterKey));
+    return false;
+  }
+
+  function costOf(echoId: string) {
+    return Number((inventoryStore.getEchoById(echoId) as { type?: number } | undefined)?.type ?? 0);
+  }
+
+  /**
    * Equips each loadout the way the app's own equip paths do:
    * `applyEchoLoadout` for the slots and the `equipped` map, and `mainEcho`
    * from slot 1, the same field the echoes panel writes. Run after the
    * scanned echoes are in the inventory.
+   *
+   * In "scanned" mode, a rescan of an existing scanner build keeps that build's
+   * other echoes (mergeLoadout): a scan that showed three of a character's echoes
+   * doesn't empty the other two slots. Echoes another write in this batch claims,
+   * or another character wears, aren't kept.
+   *
+   * Returns the echoes it took off other characters (whatever build those have
+   * active), as the game moved them; how many echoes it kept from earlier scans;
+   * and the build each character ends up on.
    */
-  function applyLoadoutWrites(writes: WavescanLoadoutWrite[]) {
+  function applyLoadoutWrites(writes: WavescanLoadoutWrite[]): {
+    moved: LoadoutMove[];
+    kept: number;
+    buildNames: Record<string, string>;
+  } {
+    const moved: LoadoutMove[] = [];
+    let kept = 0;
+    const buildNames: Record<string, string> = {};
+    const claimed = new Set(writes.flatMap((write) => write.echoIds).filter(Boolean));
     for (const write of writes) {
       const { characterKey } = write;
+      let { echoIds, mainEcho } = write;
       const existed = Boolean(characterStore.characters?.[characterKey]);
       characterStore.ensureCharacterBuilds(characterKey);
       if (buildTarget.value === "new" && existed) {
@@ -378,25 +441,45 @@ export function useWavescanLoadouts(options: {
           from: "active",
         });
       }
+      if (buildTarget.value === "scanned" && equipScannedBuild(characterKey, existed)) {
+        const merged = mergeLoadout(
+          echoIds.filter((id): id is string => Boolean(id)),
+          characterSlotIds(characterKey),
+          costOf,
+          (id) =>
+            !claimed.has(id) &&
+            Boolean(inventoryStore.getEchoById(id)) &&
+            !findEquippedElsewhere(inventoryStore.equipped, characterKey, [id]).length,
+        );
+        if (merged.kept.length) {
+          kept += merged.kept.length;
+          echoIds = padLoadout(merged.ids);
+          const main = inventoryStore.getEchoById(merged.ids[0]) as { echo?: string; rank?: number } | undefined;
+          mainEcho = main?.echo ? { echo: main.echo, rank: main.rank ?? 5 } : null;
+        }
+      }
 
       // Take each echo off whoever wears it now, as the game did.
-      for (const move of findEquippedElsewhere(inventoryStore.equipped, characterKey, write.echoIds)) {
+      for (const move of findEquippedElsewhere(inventoryStore.equipped, characterKey, echoIds)) {
         const slot = characterStore.characters?.[move.characterKey]?.echoes?.[move.slot];
         if (slot?.echoId === move.echoId) {
           characterStore.removeCharacterEcho(move.characterKey, move.slot);
         }
         inventoryStore.deleteEchoEquippedMappingCharacter(move.echoId, move.characterKey);
+        moved.push({ echoId: move.echoId, from: move.characterKey, to: characterKey });
       }
 
       characterStore.applyEchoLoadout(characterKey, {
-        echoIds: write.echoIds,
+        echoIds,
         presetId: null,
-        fillSlots: write.echoIds.length,
+        fillSlots: echoIds.length,
       });
-      if (write.mainEcho) {
-        characterStore.setCharacterData(characterKey, { mainEcho: write.mainEcho });
+      if (mainEcho) {
+        characterStore.setCharacterData(characterKey, { mainEcho });
       }
+      buildNames[characterKey] = characterStore.getActiveBuild(characterKey)?.name ?? "";
     }
+    return { moved, kept, buildNames };
   }
 
   return {
