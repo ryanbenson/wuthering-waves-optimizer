@@ -2,7 +2,7 @@
 status: accepted
 date: 2026-09-07
 tags: [team-rotations, components]
-superseded_by: [43]
+superseded_by: [62]
 ---
 
 # 27. Team presets browser redesign
@@ -78,7 +78,7 @@ with the user first; this ADR builds it.
   `data-test-filter-panel-clear` button. Cypress specs must scope to
   `.app-chooser-modal__box` when clicking it; a bare
   `[data-test-filter-panel-clear]` selector matches two elements.
-  **Superseded 2026-10-18 (ADR [0043](0043-dialogs-use-the-app-modal-shell.md)):** the shell is
+  **Superseded 2026-10-18 (ADR [0062](0062-dialogs-use-the-app-modal-shell.md)):** the shell is
   `AppModal.vue` now, so the class to scope to is `.app-modal__box`.
 - `characterFilterOptions` and the element filter are derived every render
   from `props.presets` (71 entries, cheap) rather than memoized against a

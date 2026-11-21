@@ -1,5 +1,5 @@
 // #632: every dialog's title and close (X) share one header row that stays put while the
-// dialog's body scrolls (AppModal, ADR 0043).
+// dialog's body scrolls (AppModal, ADR 0062).
 describe("Dialog header", () => {
   it("keeps the Optimizer Guide's title and X in place while its body scrolls", () => {
     cy.visit("/");
