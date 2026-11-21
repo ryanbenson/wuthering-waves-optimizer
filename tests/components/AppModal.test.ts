@@ -43,16 +43,11 @@ describe("AppModal", () => {
     expect(renderModal({ lazy: false }).queryByText("Body")).not.toBeNull();
   });
 
-  it("closes on a backdrop click unless closeOnBackdrop is false", async () => {
+  it("closes on a backdrop click", async () => {
     const open = renderModal();
     await fireEvent.click(open.getByText("open"));
     await fireEvent.click(dialog()!.querySelector(".modal-backdrop")!);
     expect(dialog()?.hasAttribute("open")).toBe(false);
-
-    document.body.innerHTML = "";
-    const kept = renderModal({ closeOnBackdrop: false });
-    await fireEvent.click(kept.getByText("open"));
-    expect(dialog()!.querySelector(".modal-backdrop")).toBeNull();
   });
 
   it("is a full-screen sheet on phones unless sheet is false", async () => {

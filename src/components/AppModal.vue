@@ -6,7 +6,7 @@
   -->
   <Teleport to="body">
   <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
-    <form v-if="closeOnBackdrop" method="dialog" class="modal-backdrop" @click="handleClose">
+    <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
     <div
@@ -84,8 +84,6 @@ const props = withDefaults(
     maxWidthClass?: string;
     /** Render the body only while open (the choosers). false keeps it mounted while closed. */
     lazy?: boolean;
-    /** false: a click outside the box does nothing (Esc and the ✕ still close). */
-    closeOnBackdrop?: boolean;
     /** Full-screen sheet on phones. Off for small forms. */
     sheet?: boolean;
   }>(),
@@ -95,7 +93,6 @@ const props = withDefaults(
     showBack: false,
     maxWidthClass: "max-w-5xl",
     lazy: true,
-    closeOnBackdrop: true,
     sheet: true,
   },
 );
