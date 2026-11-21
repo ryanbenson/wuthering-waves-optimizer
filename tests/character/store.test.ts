@@ -86,6 +86,52 @@ describe("useCharacterStore builds", () => {
 
       expect(build.name).toBe("New Build");
     });
+
+    it("starts from the given build fields with from: { fields }, ignoring shared fields and metadata", () => {
+      const store = useCharacterStore();
+      store.setCharacterData("Carlotta", { weapon: "SwordOfVoid", characterLevel: "90" });
+      store.ensureCharacterBuilds("Carlotta");
+      const fields = {
+        id: "not-this-id",
+        name: "Not this name",
+        weapon: "AnotherWeapon",
+        characterLevel: "1",
+        echoes: { 0: { echoId: "e1" } },
+      };
+
+      const build = store.createBuild("Carlotta", "Team build", { from: { fields } });
+
+      expect(build.id).not.toBe("not-this-id");
+      expect(build.name).toBe("Team build");
+      expect(build.weapon).toBe("AnotherWeapon");
+      expect(build.echoes).toEqual({ 0: { echoId: "e1" } });
+      expect(build).not.toHaveProperty("characterLevel");
+      // A copy, so later edits to the caller's object don't reach the build.
+      fields.echoes[0].echoId = "changed";
+      expect(build.echoes[0].echoId).toBe("e1");
+    });
+
+    it("adds the build without equipping it when equip is false", () => {
+      const store = useCharacterStore();
+      const inventory = useInventoryStore();
+      store.setCharacterData("Carlotta", { weapon: "SwordOfVoid", echoes: { 0: { echoId: "worn" } } });
+      store.ensureCharacterBuilds("Carlotta");
+      store.equipBuild("Carlotta", store.getActiveBuildId("Carlotta"));
+      const activeId = store.getActiveBuildId("Carlotta");
+      const equippedBefore = JSON.parse(JSON.stringify(inventory.equipped));
+
+      const build = store.createBuild("Carlotta", "Team build", {
+        from: { fields: { weapon: "AnotherWeapon", echoes: { 0: { echoId: "new" } } } },
+        equip: false,
+      });
+
+      expect(store.getBuilds("Carlotta")).toHaveLength(2);
+      expect(store.getBuilds("Carlotta")[1].id).toBe(build.id);
+      expect(store.getActiveBuildId("Carlotta")).toBe(activeId);
+      expect(store.characters.Carlotta.weapon).toBe("SwordOfVoid");
+      expect(store.characters.Carlotta.echoes[0].echoId).toBe("worn");
+      expect(inventory.equipped).toEqual(equippedBefore);
+    });
   });
 
   describe("importBuild", () => {
