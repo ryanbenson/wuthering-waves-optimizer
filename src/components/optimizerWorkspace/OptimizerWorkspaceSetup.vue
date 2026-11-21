@@ -87,11 +87,11 @@
           </p>
         </div>
         <EchoSetToggles
-          v-model="setFilters"
+          :model-value="setFilters"
           :sets="echoSets"
           :recommended="recommendedSets"
           data-test-optimizer-workspace-echo-sets
-          @update:model-value="syncOptimizerConfig" />
+          @update:model-value="updateSets" />
 
         <div class="divider my-0"></div>
 
@@ -307,7 +307,7 @@ import OptimizerWorkspaceRunBar, {
 } from "./OptimizerWorkspaceRunBar.vue";
 import { useOptimizerEchoBuffs } from "../../composables/useOptimizerEchoBuffs";
 import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
-import { setFilterFor } from "../../echoes/recommendedEchoSets";
+import { eligibleEchoSets, setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   normalizeLoadoutFormat,
   type OptimizerLoadoutFormat,
@@ -361,6 +361,9 @@ const pickerSearch = ref("");
 const pickerSets = ref<string[]>([]);
 const pickerRecommendedOnly = ref(true);
 const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+// The sets in use: the saved ones, or the recommended sets while none are saved
+// (eligibleEchoSets, shared with the team optimizer). Only the player's own
+// picks are saved (updateSets); the recommended sets never are.
 const setFilters = ref<string[]>([]);
 const mainEchoes = ref<string[]>([]);
 const minStats = ref<OptimizerMinStatRow[]>([]);
@@ -510,9 +513,19 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
+function updateSets(sets: string[]) {
+  setFilters.value = sets;
+  characterStore.setCharacterOptimizerEchoSets(props.character, [...sets]);
+  void syncOptimizerConfig();
+}
+
+function savedEchoSets(): string[] | undefined {
+  return (currentCharacter.value as { optimizer?: { echoSets?: string[] } }).optimizer?.echoSets;
+}
+
 // The recommended sets can arrive after mount (the character data loads separately).
 watch(recommendedSets, (sets) => {
-  if (!setFilters.value.length) setFilters.value = [...sets];
+  if (!props.embedded) setFilters.value = eligibleEchoSets(savedEchoSets(), sets);
 });
 
 function handleUpdatedTarget(target: unknown) {
@@ -536,7 +549,6 @@ async function syncOptimizerConfig() {
   await characterStore.setCharacterData(props.character, {
     optimizer: {
       mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
-      echoSets: JSON.parse(JSON.stringify(setFilters.value)),
       minStats: JSON.parse(JSON.stringify(minStats.value)),
       optimizationTarget: optimizationTarget.value,
       damageType: damageType.value,
@@ -625,9 +637,7 @@ onMounted(() => {
   mainEchoes.value = props.embedded ? [...props.initialMainEchoes] : (ch.optimizer?.mainEchoes ?? []);
   setFilters.value = props.embedded
     ? [...props.initialSets]
-    : ch.optimizer?.echoSets?.length
-      ? ch.optimizer.echoSets
-      : [...recommendedSets.value];
+    : eligibleEchoSets(ch.optimizer?.echoSets, recommendedSets.value);
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value = ch.optimizer?.ignoreOtherResonantorEchoes ?? false;

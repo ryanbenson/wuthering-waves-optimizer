@@ -335,6 +335,8 @@ export function useTeamOptimizer(teamId: Ref<string>) {
 
   /** Characters whose goal the player picked, so a refresh doesn't reset it. */
   const touchedGoals = new Set<number>();
+  /** Each slot's recommended echo sets (basic.ts), read with the character in loadOffers. */
+  const recommendedSetsBySlot: Record<number, string[]> = {};
 
   const guards = computed(() => {
     const slots = [0, 1, 2].map((slot) => {
@@ -737,6 +739,7 @@ export function useTeamOptimizer(teamId: Ref<string>) {
     for (const slot of occupiedSlots.value) {
       const others = occupiedSlots.value.filter((other) => other !== slot);
       const character = await getCharByName(team.value.characterIds[slot]);
+      recommendedSetsBySlot[slot] = character?.basic?.suggestedEchoSets ?? [];
       const offers = listTeamBuffOffers({
         usableEchoes: inventoryEchoes.value,
         teammateBuffConfigs: others.map(
@@ -805,7 +808,11 @@ export function useTeamOptimizer(teamId: Ref<string>) {
       if (touchedGoals.has(slot)) continue;
       const characterId = team.value.characterIds[slot];
       const data = slotData(slot);
-      const base = defaultTeamOptimizerChoice(data, inventoryEchoes.value);
+      const base = defaultTeamOptimizerChoice(
+        data,
+        inventoryEchoes.value,
+        recommendedSetsBySlot[slot],
+      );
       const damage = readTeamDamage(
         baseline.value?.perCharacter?.[characterId]?.damageAggregation,
         damageType.value,

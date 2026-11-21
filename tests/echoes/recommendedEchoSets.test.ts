@@ -1,5 +1,26 @@
 import { describe, it, expect } from "vitest";
-import { setFilterFor, shownEchoSets } from "../../src/echoes/recommendedEchoSets";
+import {
+  eligibleEchoSets,
+  setFilterFor,
+  shownEchoSets,
+} from "../../src/echoes/recommendedEchoSets";
+
+describe("eligibleEchoSets", () => {
+  it("uses the saved sets when there are any", () => {
+    expect(eligibleEchoSets(["MoltenRift"], ["FrostyResolve"])).toEqual(["MoltenRift"]);
+  });
+
+  it("falls back to the recommended sets when nothing (or an empty list) is saved", () => {
+    expect(eligibleEchoSets(undefined, ["FrostyResolve"])).toEqual(["FrostyResolve"]);
+    expect(eligibleEchoSets([], ["FrostyResolve"])).toEqual(["FrostyResolve"]);
+    expect(eligibleEchoSets(null, undefined)).toEqual([]);
+  });
+
+  it("returns a copy, so the result can't alias the saved or recommended list", () => {
+    const recommended = ["FrostyResolve"];
+    expect(eligibleEchoSets(undefined, recommended)).not.toBe(recommended);
+  });
+});
 
 describe("shownEchoSets", () => {
   const all = ["A", "B", "C", "D"];
