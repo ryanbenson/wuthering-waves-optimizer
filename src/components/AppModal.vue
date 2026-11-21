@@ -6,9 +6,6 @@
   -->
   <Teleport to="body">
     <dialog ref="dialogEl" class="modal app-modal" v-bind="$attrs" @close="handleDialogClose">
-      <form method="dialog" class="modal-backdrop" @click="handleClose">
-        <button>close</button>
-      </form>
       <div
         v-if="isOpen || !lazy"
         class="modal-box app-modal__box flex flex-col p-0 gap-0"
@@ -60,6 +57,10 @@
           <slot name="footer" />
         </div>
       </div>
+      <!-- After the box, as in DaisyUI's docs: showModal() focuses the first focusable element, which should be in the box, not this hidden button. -->
+      <form method="dialog" class="modal-backdrop" @click="handleClose">
+        <button>close</button>
+      </form>
     </dialog>
   </Teleport>
 </template>
