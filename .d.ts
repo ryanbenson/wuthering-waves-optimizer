@@ -32,8 +32,11 @@ interface CharacterBasicInfo {
   suggestedTeams?: Array<{ members: [string, string]; tags?: string[] }>;
   /**
    * Recommended echo set keys (match `echoSetLabelMap` in src/echoes/stats.ts), best
-   * first, from community build guides. The owned-echo picker's "Recommended" set
-   * filter selects these. Empty is valid.
+   * first. Source: the "Best Echo Sets" section of each character's build guide on
+   * Prydwen (prydwen.gg/wuthering-waves/characters/<character>), copied as listed on
+   * 2026-10-17; not hand-checked. Read by the set pickers' "Recommended only" toggle
+   * and, while no sets are saved, the optimizers' eligible sets (eligibleEchoSets in
+   * src/echoes/recommendedEchoSets.ts). Empty is valid.
    */
   suggestedEchoSets?: string[];
   spectroFrazzle?: boolean;
