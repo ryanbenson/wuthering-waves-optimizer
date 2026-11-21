@@ -534,7 +534,11 @@
     </template>
 
     <template v-else-if="showOptimizer">
-      <TeamOptimizerWorkspace :team-id="selectedTeamId" @back="showOptimizer = false" />
+      <TeamOptimizerWorkspace
+        :key="selectedTeamId ?? ''"
+        :team-id="selectedTeamId"
+        @back="showOptimizer = false"
+        @open-team="openTeamInOptimizer" />
     </template>
 
     <template v-else>
@@ -621,9 +625,17 @@ const selectedTeamId = ref<string | null>(
 const showSummary = ref(false);
 
 const showOptimizer = ref(false);
-watch(selectedTeamId, () => {
-  showOptimizer.value = false;
+// Switching teams closes the optimizer, except when the optimizer itself just
+// made a copy of the team to optimize (ADR 0061), which opens straight into it.
+let openOptimizerForTeamId: string | null = null;
+watch(selectedTeamId, (teamId) => {
+  showOptimizer.value = teamId !== null && teamId === openOptimizerForTeamId;
+  openOptimizerForTeamId = null;
 });
+function openTeamInOptimizer(teamId: string) {
+  openOptimizerForTeamId = teamId;
+  selectedTeamId.value = teamId;
+}
 watch(selectedTeamId, (teamId) => {
   if (teamId) {
     sessionStorage.setItem(ACTIVE_TEAM_ID_KEY, teamId);

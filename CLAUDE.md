@@ -55,6 +55,7 @@ npm run guides:screenshots           # recapture the guide images into guide-ima
 ## Hard rules
 
 - **Accuracy first.** Prefer correct formulas over clever shortcuts. When changing calculator math, add/update unit tests under `tests/calculator/`.
+- **Rotations are calculated as written.** Don't add rotation validation; optimizers only avoid contradicting the rotation through their own choices, and never change user data silently (see Accuracy notes in `docs/context.md`).
 - **Calculator stays pure.** No Vue, DOM, or Pinia inside `src/calculator/` or workers. Workers receive plain objects only.
 - **Stores = user input.** Character lists, echo tables, formula constants live in code modules — never in Pinia.
 - **No classes** for domain logic. Plain objects, factories, modules.

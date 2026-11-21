@@ -84,11 +84,13 @@
           </span>
         </div>
 
-        <EchoCardSubstatList :slots="substatSlots" size="xs" :character-id="characterStore.activeCharacter" />
+        <EchoCardSubstatList :slots="substatSlots" size="xs" :character-id="scoredCharacterId" />
 
         <div class="mt-auto flex flex-col items-center gap-1 pt-1 empty:hidden">
-          <EchoEquippedIndicator :echo-id="echoId || null" />
-          <EchoEquippedByOthers :echo-id="echoId || null" />
+          <template v-if="!hideEquipped">
+            <EchoEquippedIndicator :echo-id="echoId || null" />
+            <EchoEquippedByOthers :echo-id="echoId || null" />
+          </template>
         </div>
       </div>
 
@@ -184,8 +186,10 @@
           </div>
         </div>
         <div class="mt-auto flex flex-col items-center gap-1 empty:hidden">
-          <EchoEquippedIndicator :echo-id="echoId || null" />
-          <EchoEquippedByOthers :echo-id="echoId || null" />
+          <template v-if="!hideEquipped">
+            <EchoEquippedIndicator :echo-id="echoId || null" />
+            <EchoEquippedByOthers :echo-id="echoId || null" />
+          </template>
         </div>
       </div>
     </div>
@@ -227,12 +231,17 @@ const props = withDefaults(
     echoSubStatsType5: string;
     echoSubStatsValue5: number | string;
     hideInventory?: boolean;
+    /** Whose substat weights to score with; the active character when not given. */
+    characterId?: string | null;
+    /** Hide "Already equipped" / "Also on", which describe the active character's build. */
+    hideEquipped?: boolean;
   }>(),
-  { hideInventory: false },
+  { hideInventory: false, characterId: null, hideEquipped: false },
 );
 
 const characterStore = useCharacterStore();
 const settingsStore = useSettingsStore() as any;
+const scoredCharacterId = computed(() => props.characterId ?? characterStore.activeCharacter);
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
 );
@@ -258,7 +267,7 @@ const cardStatsSource: EchoCardStatsProps & EchoRatingProps = {
   get echoSubStatsValue4() { return props.echoSubStatsValue4; },
   get echoSubStatsType5() { return props.echoSubStatsType5; },
   get echoSubStatsValue5() { return props.echoSubStatsValue5; },
-  get characterId() { return characterStore.activeCharacter; },
+  get characterId() { return scoredCharacterId.value; },
 };
 
 const {

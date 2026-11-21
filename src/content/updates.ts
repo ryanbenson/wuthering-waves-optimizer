@@ -62,8 +62,12 @@ export const updateEntries: UpdateEntry[] = [
     dateLabel: "November 20, 2026",
     items: [
       "Recommended teams (Labs) now covers Aemeath, Brant and Calcharo, and more teammates turn on their usual buffs. New tags such as Mono Fusion, Fusion Burst and Tune Break show what kind of team you're picking",
+      "Team optimizer (Labs): saving a result now adds new builds pinned to that team only. Your active builds and other teams no longer change, and saving a second result no longer mixes in the first",
+      "Team optimizer (Labs): results now compare each character with their current build, showing every echo slot as the same or swapped (with what it replaces), the set bonuses, and why each team buff is gained or lost",
+      "Team optimizer (Labs): the main echo stays the one your rotation uses for its echo attack, and buffs you set by hand on rotation actions are left as written. You can also optimize a copy of the team without them",
+      "Team optimizer (Labs): fixed saved builds sometimes calculating a little lower on the Team page than the result showed, more reliable results for teams with an empty slot or a healer, and the page no longer freezes during long runs",
     ],
-    itemDetails: { 0: { tag: "labs" } },
+    itemDetails: { 0: { tag: "labs" }, 1: { tag: "labs" }, 2: { tag: "labs" }, 3: { tag: "labs" }, 4: { tag: "labs" } },
   },
   {
     date: "2026-11-19",

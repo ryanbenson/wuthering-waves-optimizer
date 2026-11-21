@@ -100,9 +100,23 @@ const moonlitEchoes = [
   { ...echo("moon-1b", "SabyrBoar", 1, "ATK", "ATK", 40), echoSet: "MoonlitClouds" },
 ];
 
-function seedPlanTeam(win: Window) {
+interface PlanTeamOptions {
+  /** One of Suoming's actions sets Moonlit Clouds on by hand, which beats any plan's toggles (ADR 0061). */
+  handSetMoonlit?: boolean;
+  /** Keep Mornye's Reactor Husk echo attack, which fixes her main echo (ADR 0061). */
+  mornyeEchoAttack?: boolean;
+  /** Hsin wears echoes typed in by hand, not from the inventory. */
+  hsinHandTyped?: boolean;
+}
+
+function seedPlanTeam(win: Window, options: PlanTeamOptions = {}) {
   const suomingActions = actionsFor(suomingRotations as any[], 0, 1);
-  const mornyeActions = actionsFor(mornyeRotations as any[], 1, suomingActions.length + 1);
+  if (options.handSetMoonlit) {
+    suomingActions[0] = { ...suomingActions[0], advancedConfig: { teamBuffs: { MoonlitClouds: { isEnabled: true } } } };
+  }
+  const mornyeActions = actionsFor(mornyeRotations as any[], 1, suomingActions.length + 1).filter(
+    (action: any) => options.mornyeEchoAttack || action.type !== "echoAttacks",
+  );
   const hsinActions = actionsFor(hsinRotations as any[], 2, suomingActions.length + mornyeActions.length + 1);
   const character = (weapon: string, optimizer: Record<string, unknown>) => ({
     weapon,
@@ -118,7 +132,12 @@ function seedPlanTeam(win: Window) {
         // Credited with a buff nobody on the team provides, which the search should correct.
         Suoming: { ...character("EmeraldOfGenesis", damageDealer), teamBuffs: { buffs: { FallacyOfNoReturn: { isEnabled: true } } } },
         Mornye: character("Variation", {}),
-        Hsin: character("BloomingJadehaven", damageDealer),
+        Hsin: {
+          ...character("BloomingJadehaven", damageDealer),
+          ...(options.hsinHandTyped
+            ? { echoes: { 0: { echo: "SentryConstruct", type: 4, rank: 5, stat: "CritRate", echoSet: "HeartofSwornVigil" } } }
+            : {}),
+        },
       },
       activeCharacter: "Suoming",
       favoriteCharacters: [],
@@ -155,10 +174,76 @@ function openTeam(labOn: boolean) {
   cy.get("[data-test-team-rotation-editor]").should("be.visible");
 }
 
+function openPlanTeamOptimizer(options: PlanTeamOptions = {}) {
+  cy.viewport(1280, 900);
+  cy.visit("/teams", { onBeforeLoad: (win) => seedPlanTeam(win, options) });
+  cy.get(`[data-test-team-rotations-item="${PLAN_TEAM_NAME}"]`).contains(PLAN_TEAM_NAME).click();
+  cy.get("[data-test-team-rotation-summary-optimize]").first().click();
+  cy.get("[data-test-team-optimizer-setup]", { timeout: 60000 }).should("be.visible");
+}
+
 describe("Team optimizer", () => {
+  it("lists buffs set by hand in the rotation and leaves them as written (ADR 0061)", () => {
+    openPlanTeamOptimizer({ handSetMoonlit: true });
+
+    cy.get("[data-test-team-optimizer-intro]").should("contain.text", "using it as written");
+    cy.get("[data-test-team-optimizer-hand-set-item='0-MoonlitClouds']").should(
+      "contain.text",
+      "Moonlit Clouds is on for 1 of Suoming's actions.",
+    );
+    // Nothing is forced: the offer stays the player's choice.
+    cy.get("[data-test-team-optimizer-offer='1-MoonlitClouds'] input").should("not.be.disabled");
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled").click();
+
+    cy.get("[data-test-team-optimizer-results]", { timeout: 180000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-mismatch]").should("not.exist");
+    cy.get("[data-test-team-optimizer-kept-from-rotation]").should("contain.text", "left it as you set it");
+  });
+
+  it("keeps the main echo the rotation's echo attack uses, and keeps hand-typed builds by default", () => {
+    openPlanTeamOptimizer({ mornyeEchoAttack: true, hsinHandTyped: true });
+
+    // Mornye's rotation casts Reactor Husk's attack, and there's no Reactor Husk to wear.
+    cy.get("[data-test-team-optimizer-goal-damage='1']").click();
+    cy.get("[data-test-team-optimizer-main-echo-lock='1']").should("contain.text", "Kept for the rotation's echo attack");
+    cy.get("[data-test-team-optimizer-slot='1']").should("contain.text", "Reactor Husk");
+    cy.get("[data-test-team-optimizer-blocker='1']").should("contain.text", "uses Reactor Husk's echo attack");
+    cy.get("[data-test-team-optimizer-run]").should("be.disabled");
+    cy.get("[data-test-team-optimizer-goal-keep='1']").click();
+    cy.get("[data-test-team-optimizer-blocker='1']").should("not.exist");
+
+    // Hsin's echoes aren't in the inventory, so the optimizer can't compare against them.
+    cy.get("[data-test-team-optimizer-hand-typed='2']").should("contain.text", "Typed in by hand");
+    cy.get("[data-test-team-optimizer-goal-keep='2']").should("have.class", "btn-active");
+    cy.get("[data-test-team-optimizer-run]").should("not.be.disabled");
+  });
+
+  it("optimizes a copy of the team without the hand-set buffs, leaving the original rotation unchanged", () => {
+    openPlanTeamOptimizer({ handSetMoonlit: true });
+
+    cy.get("[data-test-team-optimizer-hand-set] [data-test-team-optimizer-copy-open]").click();
+    cy.get("[data-test-team-optimizer-copy-dialog]")
+      .should("contain.text", `"${PLAN_TEAM_NAME} (optimizer)"`)
+      .and("contain.text", "Moonlit Clouds on 1 of Suoming's actions");
+    cy.get("[data-test-team-optimizer-copy-confirm]").click();
+
+    cy.get("[data-test-team-optimizer]").should("contain.text", `Optimize team: ${PLAN_TEAM_NAME} (optimizer)`);
+    cy.get("[data-test-team-optimizer-setup]", { timeout: 60000 }).should("be.visible");
+    cy.get("[data-test-team-optimizer-hand-set]").should("not.exist");
+    cy.window().then((win) => {
+      const teams = JSON.parse(win.localStorage.getItem("teamRotations")!).teams;
+      expect(teams).to.have.length(2);
+      const original = teams.find((team: any) => team.name === PLAN_TEAM_NAME);
+      const copy = teams.find((team: any) => team.name === `${PLAN_TEAM_NAME} (optimizer)`);
+      expect(original.actions[0].advancedConfig.teamBuffs.MoonlitClouds.isEnabled).to.equal(true);
+      expect(copy.actions.some((action: any) => action.advancedConfig)).to.equal(false);
+      expect(copy.actions).to.have.length(original.actions.length);
+    });
+  });
+
   it("compares what a support could provide, and saves the buffs with the builds", () => {
     cy.viewport(1280, 900);
-    cy.visit("/teams", { onBeforeLoad: seedPlanTeam });
+    cy.visit("/teams", { onBeforeLoad: (win) => seedPlanTeam(win) });
     cy.get(`[data-test-team-rotations-item="${PLAN_TEAM_NAME}"]`).contains(PLAN_TEAM_NAME).click();
     cy.get("[data-test-team-rotation-summary-optimize]").first().click();
 
@@ -173,21 +258,29 @@ describe("Team optimizer", () => {
     cy.get("[data-test-team-optimizer-mismatch]").should("not.exist");
     cy.get("[data-test-team-optimizer-proof]").should("contain.text", "No better combination exists");
     cy.get("[data-test-team-optimizer-plan]").should("contain.text", "Mornye: Moonlit Clouds");
-    cy.get("[data-test-team-optimizer-buff-changes]").should("contain.text", "Suoming loses Fallacy of No Return");
+    // Every lost buff says why (#738).
+    cy.get("[data-test-team-optimizer-buff-change]")
+      .filter(':contains("Suoming loses Fallacy of No Return")')
+      .should("contain.text", "Nobody wears Fallacy of No Return in this plan.");
 
     cy.get("[data-test-team-optimizer-total]")
       .invoke("text")
       .then((total) => {
         cy.get("[data-test-team-optimizer-save]").click();
+        cy.get("[data-test-team-optimizer-confirm]").should("contain.text", "other teams don't change");
         cy.get("[data-test-team-optimizer-confirm-save]").click();
         // Only true if the toggles saved too: the Team page reads them.
         cy.get("[data-test-team-optimizer-saved]").should("contain.text", `now calculates ${total}`);
         cy.window().then((win) => {
           const characters = JSON.parse(win.localStorage.getItem("character")!).characters;
-          expect(characters.Suoming.teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(false);
-          expect(characters.Hsin.teamBuffs.buffs.MoonlitClouds.isEnabled).to.equal(true);
-          // The original build is untouched.
-          expect(characters.Suoming.builds[0].teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(true);
+          const team = JSON.parse(win.localStorage.getItem("teamRotations")!).teams[0];
+          const pinned = (id: string, slot: number) =>
+            characters[id].builds.find((build: any) => build.id === team.buildIds[slot]);
+          expect(pinned("Suoming", 0).teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(false);
+          expect(pinned("Hsin", 2).teamBuffs.buffs.MoonlitClouds.isEnabled).to.equal(true);
+          // The active build, and so the character page and other teams, is untouched (ADR 0061).
+          expect(characters.Suoming.activeBuildId).not.to.equal(team.buildIds[0]);
+          expect(characters.Suoming.teamBuffs.buffs.FallacyOfNoReturn.isEnabled).to.equal(true);
         });
       });
   });
@@ -230,6 +323,11 @@ describe("Team optimizer", () => {
     cy.get("[data-test-team-optimizer-proof]").should("contain.text", "No better combination exists");
     cy.get("[data-test-team-optimizer-row]").should("have.length", 5);
     cy.get("[data-test-team-optimizer-detail]").should("have.length", 2);
+    // Notes compare with the current build, which has no echoes, so every slot is new (#736, #737).
+    cy.get("[data-test-team-optimizer-pick-note='0-0']").should("contain.text", "5 echoes swapped");
+    cy.get("[data-test-team-optimizer-slots='0'] [data-test-team-optimizer-slot-change='swapped']").should("have.length", 5);
+    // The echo cards' equipped badges describe the calculator's active character, not this team.
+    cy.get("[data-test-team-optimizer-detail]").should("not.contain.text", "Already equipped");
 
     cy.get('[data-test-team-optimizer-row="1"]').click();
     cy.get('[data-test-team-optimizer-row="0"]').click();
@@ -240,6 +338,11 @@ describe("Team optimizer", () => {
         cy.get("[data-test-team-optimizer-save]").click();
         cy.get("[data-test-team-optimizer-confirm-save]").click();
         cy.get("[data-test-team-optimizer-saved]").should("contain.text", `now calculates ${total}`);
+        // Saving the same result again would add nothing: every character already matches it.
+        cy.get("[data-test-team-optimizer-save]").click();
+        cy.get("[data-test-team-optimizer-confirm-nothing]").should("be.visible");
+        cy.get("[data-test-team-optimizer-confirm-save]").should("be.disabled");
+        cy.get("[data-test-team-optimizer-confirm] .btn-ghost").click();
 
         // The saved builds are what the team now uses.
         cy.get("[data-test-team-optimizer-back]").click();
@@ -249,9 +352,11 @@ describe("Team optimizer", () => {
         cy.window().then((win) => {
           const teams = JSON.parse(win.localStorage.getItem("teamRotations")!).teams;
           const characters = JSON.parse(win.localStorage.getItem("character")!).characters;
-          expect(teams[0].buildIds[0]).to.equal(characters.Suoming.activeBuildId);
-          expect(characters.Suoming.builds.at(-1).name).to.equal(`${TEAM_NAME} optimized`);
-          expect(characters.Hsin.builds.at(-1).name).to.equal(`${TEAM_NAME} optimized`);
+          // Pinned to this team, not made active (ADR 0061).
+          expect(teams[0].buildIds[0]).to.equal(characters.Suoming.builds.at(-1).id);
+          expect(teams[0].buildIds[0]).not.to.equal(characters.Suoming.activeBuildId);
+          expect(characters.Suoming.builds.at(-1).name).to.equal(`${TEAM_NAME} optimizer`);
+          expect(characters.Hsin.builds.at(-1).name).to.equal(`${TEAM_NAME} optimizer`);
         });
       });
   });

@@ -2,6 +2,7 @@
 status: accepted
 date: 2026-11-06
 tags: [calculator, components, labs, team-rotations]
+superseded_by: [0061]
 ---
 
 # 53. Team optimizer: compare who provides which team buff
@@ -18,7 +19,8 @@ The goal is the best real team total, even if the player waits longer. Trying ev
 
 - **Search by buff plan.** A plan fixes who provides which set and main echo buff. Teammates only reach each other through those buffs, so within a plan the total is still a sum of independent scores, and the existing searches and `combineTeamLoadouts` still find its best. Comparing plans covers the trade-off without pairing every loadout.
 - **Echo buffs follow the plan.** On a full team, a set or main echo buff is on for a receiver only if a teammate provides it. A team with an empty slot leaves saved echo buffs on, since they may stand in for the missing teammate. Kit and weapon buffs and typed values stay as saved.
-- **Saving writes the toggles.** A result's team buff settings go on its new builds, including a kept character whose only change is buffs, so the Team page agrees with what was shown. Existing builds are still never overwritten.
+  **Superseded 2026-11-20 (ADR [0061](./0061-team-optimizer-rotation-as-written.md)):** on a team with an empty slot, buffs someone on the team could provide now follow the plan too; only buffs nobody on the team can make stay as saved. Buffs set by hand on rotation actions are left as written and listed in setup.
+- **Saving writes the toggles.** A result's team buff settings go on its new builds, including a kept character whose only change is buffs, so the Team page agrees with what was shown. Existing builds are still never overwritten. **Superseded 2026-11-20 (ADR [0061](./0061-team-optimizer-rotation-as-written.md)):** each new build gets the plan's full team buff settings, not just the ones that changed since the run started, and isn't made active.
 - **Conditions the calculator can't check are opt-in.** Each buff's reach and conditions are reviewed by hand in `TEAM_BUFF_SOURCE_RULES`. Buffs with conditions, stacks or no reviewed rule start unticked unless the player already enabled them on a teammate, because crediting one wrongly makes a worse team look better. Healing sets start ticked only for a character whose kit heals.
 - **Only buffs that change the team's damage are offered.** Each is tested on the current builds, so a Glacio buff on a Fusion team creates no plans.
 - **Two stages by default.** Scouting finds each option's best build and calculates every plan's real total with them. Plans within 3% of the leader, and at least 3, get a full search with the buffs they'd receive. Identical searches run once.

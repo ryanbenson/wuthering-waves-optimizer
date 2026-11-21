@@ -5,6 +5,7 @@ import {
   characterCanHeal,
   diffTeamBuffs,
   enumerateTeamBuffPlans,
+  findHandSetTeamBuffs,
   incomingSlot,
   listTeamBuffOffers,
   pickVariedResults,
@@ -14,6 +15,12 @@ import {
   teamBuffSource,
   teamBuffsFromAbsentCharacters,
   teamBuffsSignature,
+  describePlanDifference,
+  explainTeamBuffChange,
+  lockOptionsToMainEcho,
+  rotationMainEchoes,
+  wearsTeamBuffSource,
+  withoutHandSetTeamBuffs,
   type TeamBuffOffer,
   type TeamBuffOption,
 } from "../../src/calculator/teamBuffPlans";
@@ -246,9 +253,26 @@ describe("applyProvisionsToTeamBuffs", () => {
     expect(next.selectedCharacter1).toBe("Denia");
   });
 
-  it("leaves echo buffs on for a team with an empty slot, since they may stand in for that teammate", () => {
+  it("leaves echo buffs nobody on a team with an empty slot can make, since they may stand in for that teammate", () => {
     const next = applyProvisionsToTeamBuffs({ teamBuffs: saved, provided: [], isTeamFull: false });
     expect(next.buffs.RejuvenatingGlow.isEnabled).toBe(true);
+  });
+
+  it("on a team with an empty slot, turns off a buff a teammate could make but doesn't in this plan (ADR 0061)", () => {
+    const next = applyProvisionsToTeamBuffs({
+      teamBuffs: saved,
+      provided: [],
+      isTeamFull: false,
+      offeredByTeam: ["RejuvenatingGlow"],
+    });
+    expect(next.buffs.RejuvenatingGlow.isEnabled).toBe(false);
+    const provided = applyProvisionsToTeamBuffs({
+      teamBuffs: saved,
+      provided: ["RejuvenatingGlow"],
+      isTeamFull: false,
+      offeredByTeam: ["RejuvenatingGlow"],
+    });
+    expect(provided.buffs.RejuvenatingGlow.isEnabled).toBe(true);
   });
 
   it("turns on what's provided, keeping saved stacks or assuming the maximum", () => {
@@ -393,5 +417,171 @@ describe("defaultTeamOptimizerGoal with team buffs", () => {
 
   it("keeps a character with no actions to score", () => {
     expect(defaultTeamOptimizerGoal({ ...lowDamage, hasActions: false, canProvideTeamBuffs: true })).toBe("keep");
+  });
+});
+
+describe("hand-set team buffs on rotation actions (ADR 0061)", () => {
+  const action = (slot: number, teamBuffs?: Record<string, { isEnabled?: boolean }>, extra: Record<string, unknown> = {}) => ({
+    id: `${slot}-${Math.random()}`,
+    slot,
+    ...(teamBuffs ? { advancedConfig: { teamBuffs } } : {}),
+    ...extra,
+  });
+
+  it("counts echo team buffs set on and off by hand, per receiver", () => {
+    const actions = [
+      action(0, { MoonlitClouds: { isEnabled: true }, FallacyOfNoReturn: { isEnabled: false } }),
+      action(0, { MoonlitClouds: { isEnabled: true } }),
+      action(0, { MoonlitClouds: { isEnabled: false } }),
+      action(1, { FallacyOfNoReturn: { isEnabled: false } }),
+      action(2),
+    ];
+    const found = findHandSetTeamBuffs(actions, [0, 1, 2]);
+    expect(found).toHaveLength(3);
+    expect(found).toEqual(
+      expect.arrayContaining([
+        { slot: 0, defKey: "MoonlitClouds", onCount: 2, offCount: 1 },
+        { slot: 0, defKey: "FallacyOfNoReturn", onCount: 0, offCount: 1 },
+        { slot: 1, defKey: "FallacyOfNoReturn", onCount: 0, offCount: 1 },
+      ]),
+    );
+    // Grouped by receiver slot.
+    expect(found.map((entry) => entry.slot)).toEqual([0, 0, 1]);
+  });
+
+  it("ignores disabled actions, empty slots and kit or weapon team buffs", () => {
+    const actions = [
+      action(0, { MoonlitClouds: { isEnabled: true } }, { isDisabled: true }),
+      action(1, { SomeKitTeamBuff: { isEnabled: true } }),
+      action(2, { MoonlitClouds: { isEnabled: true } }),
+    ];
+    expect(findHandSetTeamBuffs(actions, [0, 1])).toEqual([]);
+  });
+
+  describe("withoutHandSetTeamBuffs", () => {
+    it("removes only echo team buffs, keeps other overrides and doesn't change the input", () => {
+      const original = [
+        {
+          id: "a",
+          slot: 0,
+          advancedConfig: {
+            teamBuffs: { MoonlitClouds: { isEnabled: true }, SomeKitTeamBuff: { isEnabled: true } },
+            buffs: { SelfBuff: { isEnabled: false } },
+          },
+        },
+      ];
+      const snapshot = JSON.parse(JSON.stringify(original));
+      const [next] = withoutHandSetTeamBuffs(original);
+
+      expect(next.advancedConfig).toEqual({
+        teamBuffs: { SomeKitTeamBuff: { isEnabled: true } },
+        buffs: { SelfBuff: { isEnabled: false } },
+      });
+      expect(original).toEqual(snapshot);
+    });
+
+    it("drops an advancedConfig left with no overrides, and leaves untouched actions as they are", () => {
+      const untouched = { id: "b", slot: 1, advancedConfig: { buffs: { SelfBuff: { isEnabled: true } } } };
+      const [cleared, same] = withoutHandSetTeamBuffs([
+        { id: "a", slot: 0, advancedConfig: { teamBuffs: { MoonlitClouds: { isEnabled: false } } } },
+        untouched,
+      ]);
+      expect(cleared).toEqual({ id: "a", slot: 0 });
+      expect(same).toBe(untouched);
+    });
+  });
+});
+
+describe("wearsTeamBuffSource", () => {
+  const worn = { setBonusLabels: ["Chromatic Foam 2 Set", "Chromatic Foam 5 Set", null], mainEchoKey: "ReminiscenceDenia" };
+
+  it("matches the set bonus that grants a set's team buff", () => {
+    expect(wearsTeamBuffSource("ChromaticFoam", worn)).toBe(true);
+    expect(wearsTeamBuffSource("MoonlitClouds", worn)).toBe(false);
+  });
+
+  it("needs the full bonus, not just the 2-piece", () => {
+    expect(wearsTeamBuffSource("ChromaticFoam", { setBonusLabels: ["Chromatic Foam 2 Set"], mainEchoKey: null })).toBe(false);
+  });
+
+  it("matches a main echo team buff by the main echo worn", () => {
+    expect(wearsTeamBuffSource("ReminiscenceDenia", worn)).toBe(true);
+    expect(wearsTeamBuffSource("FallacyOfNoReturn", worn)).toBe(false);
+  });
+
+  it("is false for buffs that don't come from echoes", () => {
+    expect(wearsTeamBuffSource("SomeKitTeamBuff", worn)).toBe(false);
+  });
+});
+
+describe("rotationMainEchoes and lockOptionsToMainEcho (ADR 0061)", () => {
+  it("lists the echoes whose echo attacks a slot's enabled actions use", () => {
+    const actions = [
+      { slot: 0, type: "echoAttacks", mainEcho: "ReactorHusk" },
+      { slot: 0, type: "echoAttacks", mainEcho: "ReactorHusk" },
+      { slot: 0, type: "echoAttacks", mainEcho: "Hecate", isDisabled: true },
+      { slot: 0, type: "normalAttacks", mainEcho: "Hecate" },
+      { slot: 1, type: "echoAttacks", mainEcho: "Hecate" },
+    ];
+    expect(rotationMainEchoes(actions, 0)).toEqual(["ReactorHusk"]);
+    expect(rotationMainEchoes(actions, 1)).toEqual(["Hecate"]);
+    expect(rotationMainEchoes(actions, 2)).toEqual([]);
+  });
+
+  it("narrows options to the rotation's echo, dropping options that need another main echo", () => {
+    const options = [
+      { ...option("plain"), mainEchoes: ["Hecate", "ReactorHusk"] },
+      { ...option("hecate", ["Hecate"]), mainEchoes: ["Hecate"], requiredMainEcho: "Hecate" },
+      { ...option("set", ["MoonlitClouds"]), mainEchoes: ["Other"] },
+    ];
+    const locked = lockOptionsToMainEcho(options, "ReactorHusk");
+    expect(locked).toHaveLength(2);
+    expect(locked.every((entry) => entry.mainEchoes.join() === "ReactorHusk")).toBe(true);
+    expect(locked.every((entry) => entry.requiredMainEcho === "ReactorHusk")).toBe(true);
+    expect(locked.map((entry) => entry.provides)).toEqual([[], ["MoonlitClouds"]]);
+    // The player's options aren't changed.
+    expect(options[0].mainEchoes).toEqual(["Hecate", "ReactorHusk"]);
+  });
+});
+
+describe("explaining a result (#738)", () => {
+  const provisions = [
+    { characterId: "Mornye", defKey: "RejuvenatingGlow", receiverIds: ["Aemeath", "Denia"] },
+    { characterId: "Lynae", defKey: "MoonlitClouds", receiverIds: ["Denia"] },
+  ];
+
+  it("a gained buff names who provides it", () => {
+    expect(
+      explainTeamBuffChange({ characterId: "Aemeath", defKey: "RejuvenatingGlow", isOn: true }, provisions, []),
+    ).toEqual({ kind: "provided", providerIds: ["Mornye"] });
+  });
+
+  it("a lost next-Resonator buff says who it reaches instead", () => {
+    expect(explainTeamBuffChange({ characterId: "Aemeath", defKey: "MoonlitClouds", isOn: false }, provisions, [])).toEqual({
+      kind: "reachesOther",
+      providerIds: ["Lynae"],
+      receiverIds: ["Denia"],
+    });
+  });
+
+  it("a lost buff someone wears now says they stop wearing it, and otherwise that nobody does", () => {
+    expect(
+      explainTeamBuffChange({ characterId: "Aemeath", defKey: "HaloofStarryRadiance", isOn: false }, provisions, [
+        "Mornye",
+        "Aemeath",
+      ]),
+    ).toEqual({ kind: "stoppedWearing", providerIds: ["Mornye"] });
+    expect(
+      explainTeamBuffChange({ characterId: "Aemeath", defKey: "HaloofStarryRadiance", isOn: false }, provisions, []),
+    ).toEqual({ kind: "nobody" });
+  });
+
+  it("describes how a plan differs from another, per character in team order", () => {
+    const best = [{ characterId: "Mornye", defKey: "HaloofStarryRadiance" }];
+    expect(describePlanDifference(provisions, best, ["Aemeath", "Lynae", "Mornye"])).toEqual([
+      { characterId: "Lynae", now: ["MoonlitClouds"], before: [] },
+      { characterId: "Mornye", now: ["RejuvenatingGlow"], before: ["HaloofStarryRadiance"] },
+    ]);
+    expect(describePlanDifference(best, best, ["Mornye"])).toEqual([]);
   });
 });

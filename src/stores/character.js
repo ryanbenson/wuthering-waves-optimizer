@@ -213,21 +213,34 @@ export const useCharacterStore = defineStore("character", {
       character.activeBuildId = build.id;
     },
     /**
-     * Creates a new build for the character and immediately equips it.
+     * Creates a new build for the character and, by default, equips it.
      * `options.from`: "active" (default) duplicates the currently-active
-     * build's fields; "blank" starts with no build fields set at all. Every
-     * build-field reader in the calculation pipeline (`buildCharacterContext.ts`)
-     * already falls back to a sensible default (`characterData.X ?? ...`)
-     * when a field is missing, so an empty object is a complete "blank"
-     * build rather than a partial one — no need to hand-maintain a second
-     * copy of those defaults here, which could drift from the real ones.
+     * build's fields; "blank" starts with no build fields set at all; an
+     * object `{ fields }` starts from those build fields (deep-copied, shared
+     * fields and metadata ignored). Every build-field reader in the
+     * calculation pipeline (`buildCharacterContext.ts`) already falls back to
+     * a sensible default (`characterData.X ?? ...`) when a field is missing,
+     * so an empty object is a complete "blank" build rather than a partial
+     * one — no need to hand-maintain a second copy of those defaults here,
+     * which could drift from the real ones.
+     * `options.equip`: false adds the build without switching to it, so the
+     * live record, the inventory's `equipped` map and anything using the
+     * active build stay as they are (the team optimizer saves this way and
+     * pins the build to its team, ADR 0061).
      */
     createBuild(characterId, name, options = {}) {
-      const { from = "active" } = options;
+      const { from = "active", equip = true } = options;
       this.ensureCharacterBuilds(characterId);
       const character = this.characters[characterId];
 
-      const fields = from === "blank" ? {} : extractBuildFields(character);
+      let fields;
+      if (from === "blank") {
+        fields = {};
+      } else if (from && typeof from === "object") {
+        fields = omitBuildMetadata(extractBuildFields(from.fields ?? {}));
+      } else {
+        fields = extractBuildFields(character);
+      }
       const build = {
         id: randomString(12),
         name: name || "New Build",
@@ -236,7 +249,9 @@ export const useCharacterStore = defineStore("character", {
         ...fields,
       };
       character.builds.push(build);
-      this.equipBuild(characterId, build.id);
+      if (equip) {
+        this.equipBuild(characterId, build.id);
+      }
       return build;
     },
     /**

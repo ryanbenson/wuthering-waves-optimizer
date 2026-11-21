@@ -16,6 +16,7 @@ import { mainEchoesData } from "../echoes/index";
 import { setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import { echoSetLabelMap } from "../echoes/stats";
 import { filterEchoesForOptimizer } from "./optimizer";
+import { hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
 
 /** Plans within this share of the best estimate get a full search. */
 export const BUFF_PLAN_SHORTLIST_MARGIN = 0.03;
@@ -356,22 +357,26 @@ export function provisionReceivers(
 
 /**
  * A receiver's team buff settings under a plan: echo buffs on only if a teammate
- * actually provides them. A team with an empty slot leaves other echo buffs on,
- * since they may stand in for the missing teammate. Everything else (kit and
- * weapon buffs, typed values, stacks already set) stays as the player saved it.
+ * actually provides them. On a team with an empty slot, a buff nobody on the
+ * team can make stays as saved, since it may stand in for the missing
+ * teammate; one a teammate could make (`offeredByTeam`) still follows the plan,
+ * or a support could drop it while the receiver kept counting it (ADR 0061).
+ * Everything else (kit and weapon buffs, typed values, stacks already set)
+ * stays as the player saved it.
  */
 export function applyProvisionsToTeamBuffs(input: {
   teamBuffs: TeamBuffConfig | undefined;
   provided: string[];
   isTeamFull: boolean;
+  /** Echo buffs someone on the team could provide. Only read when the team isn't full. */
+  offeredByTeam?: string[];
 }): TeamBuffConfig {
-  const { teamBuffs, provided, isTeamFull } = input;
+  const { teamBuffs, provided, isTeamFull, offeredByTeam = [] } = input;
   const buffs: Record<string, any> = { ...(teamBuffs?.buffs ?? {}) };
-  if (isTeamFull) {
-    for (const def of SOURCED_DEFS) {
-      if (buffs[def.key]?.isEnabled && !provided.includes(def.key)) {
-        buffs[def.key] = { ...buffs[def.key], isEnabled: false };
-      }
+  for (const def of SOURCED_DEFS) {
+    const followsPlan = isTeamFull || offeredByTeam.includes(def.key);
+    if (followsPlan && buffs[def.key]?.isEnabled && !provided.includes(def.key)) {
+      buffs[def.key] = { ...buffs[def.key], isEnabled: false };
     }
   }
   for (const defKey of provided) {
@@ -462,4 +467,185 @@ export function teamBuffsFromAbsentCharacters(
     if (defs.some((def) => teamBuffs?.buffs?.[def.key]?.isEnabled)) absent.push(selected);
   }
   return absent;
+}
+
+// --- Buffs set by hand on rotation actions (ADR 0061) ----------------------
+
+/**
+ * An echo team buff that a team rotation's actions set by hand for one
+ * receiver: the action's own `advancedConfig.teamBuffs` entry, which wins over
+ * the character's team buff toggles (and so over any plan) at calculation time.
+ * The optimizer leaves these as written (ADR 0061): they're the same in every
+ * result, so they can't change which one ranks first. The setup lists them.
+ */
+export interface HandSetTeamBuff {
+  /** The receiving character's slot. */
+  slot: number;
+  defKey: string;
+  /** Enabled actions with this buff set on by hand. */
+  onCount: number;
+  /** Enabled actions with this buff set off by hand. */
+  offCount: number;
+}
+
+/** What a build is wearing, as far as team buff sources go. */
+export interface WornTeamBuffSources {
+  /** Active set bonus labels, e.g. "Chromatic Foam 5 Set". */
+  setBonusLabels: Array<string | null>;
+  mainEchoKey: string | null;
+}
+
+/** Whether a build is wearing what provides this team buff: the set bonus that grants it, or the main echo. */
+export function wearsTeamBuffSource(defKey: string, worn: WornTeamBuffSources): boolean {
+  const source = teamBuffSource(defKey);
+  if (!source) return false;
+  if (source.kind === "main") return source.echoKey === worn.mainEchoKey;
+  const label = teamBuffSetBonus(source.setKey)?.label ?? null;
+  return label !== null && worn.setBonusLabels.includes(label);
+}
+
+type ActionWithConfig = { slot?: number; isDisabled?: boolean; advancedConfig?: RotationAdvancedConfig };
+
+/**
+ * Echo team buffs set by hand on enabled actions, per receiver, in slot then
+ * buff order. Kit and weapon team buffs aren't included: plans never change
+ * those either way.
+ */
+export function findHandSetTeamBuffs(actions: ActionWithConfig[], occupiedSlots: number[]): HandSetTeamBuff[] {
+  const found = new Map<string, HandSetTeamBuff>();
+  for (const action of actions) {
+    if (action.isDisabled || typeof action.slot !== "number" || !occupiedSlots.includes(action.slot)) continue;
+    const overrides = action.advancedConfig?.teamBuffs ?? {};
+    for (const def of SOURCED_DEFS) {
+      const entry = overrides[def.key];
+      if (!entry) continue;
+      const id = `${action.slot}|${def.key}`;
+      const counts = found.get(id) ?? { slot: action.slot, defKey: def.key, onCount: 0, offCount: 0 };
+      if (entry.isEnabled) counts.onCount++;
+      else counts.offCount++;
+      found.set(id, counts);
+    }
+  }
+  const order = SOURCED_DEFS.map((def) => def.key);
+  return [...found.values()].sort((a, b) => a.slot - b.slot || order.indexOf(a.defKey) - order.indexOf(b.defKey));
+}
+
+/**
+ * The actions with their hand-set echo team buffs removed, so those buffs
+ * follow each character's team buff settings again. For a *copy* of the team
+ * only: the player's own rotation is never changed. New objects throughout;
+ * an `advancedConfig` left with no overrides is dropped.
+ */
+export function withoutHandSetTeamBuffs<Action extends ActionWithConfig>(actions: Action[]): Action[] {
+  const sourced = new Set(SOURCED_DEFS.map((def) => def.key));
+  return actions.map((action) => {
+    const teamBuffs = action.advancedConfig?.teamBuffs;
+    if (!teamBuffs || !Object.keys(teamBuffs).some((key) => sourced.has(key))) return action;
+    const kept = Object.fromEntries(Object.entries(teamBuffs).filter(([key]) => !sourced.has(key)));
+    const advancedConfig: RotationAdvancedConfig = { ...action.advancedConfig };
+    if (Object.keys(kept).length) advancedConfig.teamBuffs = kept;
+    else delete advancedConfig.teamBuffs;
+    if (hasAdvancedConfigOverrides(advancedConfig)) return { ...action, advancedConfig };
+    const next: Action = { ...action };
+    delete (next as ActionWithConfig).advancedConfig;
+    return next;
+  });
+}
+
+// --- The rotation's echo attacks (ADR 0061) ------------------------------
+
+/**
+ * The echoes whose echo attacks a character's enabled actions use. An echo
+ * attack is calculated from the echo the action names, whatever the build
+ * wears, so a search that gives this character a different main echo would
+ * contradict the rotation.
+ */
+export function rotationMainEchoes(
+  actions: Array<{ slot?: number; type?: string; mainEcho?: string | null; isDisabled?: boolean }>,
+  slot: number,
+): string[] {
+  const keys: string[] = [];
+  for (const action of actions) {
+    if (action.isDisabled || action.slot !== slot || action.type !== "echoAttacks" || !action.mainEcho) continue;
+    if (!keys.includes(action.mainEcho)) keys.push(action.mainEcho);
+  }
+  return keys;
+}
+
+/**
+ * Options narrowed to one main echo: options that need another main echo are
+ * dropped, and the rest search only this one. Never changes the player's
+ * choices, only what this search tries.
+ */
+export function lockOptionsToMainEcho(options: TeamBuffOption[], echoKey: string): TeamBuffOption[] {
+  const locked = new Map<string, TeamBuffOption>();
+  for (const option of options) {
+    if (option.requiredMainEcho && option.requiredMainEcho !== echoKey) continue;
+    const next = { ...option, mainEchoes: [echoKey], requiredMainEcho: echoKey };
+    const id = JSON.stringify([next.provides, next.sets, next.mainEchoes]);
+    if (!locked.has(id)) locked.set(id, { ...next, id });
+  }
+  return [...locked.values()];
+}
+
+// --- Explaining a result (#738) ------------------------------------------
+
+export interface TeamBuffProvisionView {
+  characterId: string;
+  defKey: string;
+  /** Who it reaches in this result. */
+  receiverIds: string[];
+}
+
+export type TeamBuffChangeReason =
+  /** Gained: these teammates provide it in this plan. */
+  | { kind: "provided"; providerIds: string[] }
+  /** Lost: provided, but a "next Resonator" buff only reaches someone else. */
+  | { kind: "reachesOther"; providerIds: string[]; receiverIds: string[] }
+  /** Lost: these teammates wear it now, but not in this plan. */
+  | { kind: "stoppedWearing"; providerIds: string[] }
+  /** Lost: nobody provides it in this plan, and nobody on the team wears it now either. */
+  | { kind: "nobody" };
+
+/** Why a result turns a receiver's team buff on or off, in terms a player can act on. */
+export function explainTeamBuffChange(
+  change: TeamBuffChange,
+  provisions: TeamBuffProvisionView[],
+  /** Teammates whose current build wears this buff's set or main echo. */
+  currentWearerIds: string[],
+): TeamBuffChangeReason {
+  const providers = provisions.filter(
+    (provision) => provision.defKey === change.defKey && provision.characterId !== change.characterId,
+  );
+  if (change.isOn) return { kind: "provided", providerIds: providers.map((provision) => provision.characterId) };
+  if (providers.length) {
+    return {
+      kind: "reachesOther",
+      providerIds: providers.map((provision) => provision.characterId),
+      receiverIds: [...new Set(providers.flatMap((provision) => provision.receiverIds))],
+    };
+  }
+  const wearers = currentWearerIds.filter((id) => id !== change.characterId);
+  return wearers.length ? { kind: "stoppedWearing", providerIds: wearers } : { kind: "nobody" };
+}
+
+export interface PlanDifference {
+  characterId: string;
+  /** Buffs this character provides in this plan. */
+  now: string[];
+  /** Buffs they provide in the plan it's compared with. */
+  before: string[];
+}
+
+/** Who provides something different from the compared plan, in team order. */
+export function describePlanDifference(
+  provisions: Array<{ characterId: string; defKey: string }>,
+  compared: Array<{ characterId: string; defKey: string }>,
+  characterIds: string[],
+): PlanDifference[] {
+  const of = (list: Array<{ characterId: string; defKey: string }>, id: string) =>
+    list.filter((entry) => entry.characterId === id).map((entry) => entry.defKey);
+  return characterIds
+    .map((characterId) => ({ characterId, now: of(provisions, characterId), before: of(compared, characterId) }))
+    .filter((entry) => entry.now.join("|") !== entry.before.join("|"));
 }

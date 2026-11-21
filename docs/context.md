@@ -26,6 +26,7 @@ When goals conflict, resolve in this order:
 - Prefer shared pure functions used by both the live calculator and optimizer workers so both paths cannot drift.
 - When unsure about a formula, verify against in-game numbers or existing character tests — do not invent shortcuts. See [accuracy-verification.md](./accuracy-verification.md) for the checklist.
 - Comments and TODOs in `src/calculator/` often mark unverified edge cases; treat those as hazards, not free simplification targets.
+- **Rotations are calculated as written.** The app doesn't check whether a user's rotation is realistic (who could really provide a buff, whether a toggle or swap order makes sense), and shouldn't start to: that path leads to a game simulator. An optimizer's only job is not to *contradict* the rotation through its own choices, such as giving a character a different main echo than the one whose echo attack the rotation uses. Anything the user wrote into the rotation is the same for every result, so it stays their call; at most, say so plainly. Never change a user's rotation or builds to make a search work: constrain the search, explain it, or work on a copy they ask for (ADR [0061](./adr/0061-team-optimizer-rotation-as-written.md)).
 
 ### Performance notes
 

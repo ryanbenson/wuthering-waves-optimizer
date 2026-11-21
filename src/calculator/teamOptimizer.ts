@@ -19,7 +19,10 @@ import type { TeamBuffDef } from "../buffs/teamBuffs";
 import { applyMainEchoBuffEffects } from "../echoes/applyMainEchoBuffEffects";
 import { resolveSetBonusStats } from "../echoes/echoSetPassives";
 import { mainEchoesData } from "../echoes/index";
-import { getMainEchoBuffs, mergeMainEchoBuffStats } from "../echoes/mainEchoBuffs";
+import {
+  getMainEchoBuffs,
+  mergeMainEchoBuffStats,
+} from "../echoes/mainEchoBuffs";
 import {
   getSetBonusEffects,
   getSetsFromEchoes,
@@ -36,14 +39,21 @@ import {
 } from "./buildCharacterContext";
 import { resolveCharactersForBuild } from "./buildOverride";
 import { meetsMinStatThreshold } from "./meetsMinStatThreshold";
-import { filterEchoesForOptimizer, normalizeLoadoutFormat, type OptimizerContext } from "./optimizer";
+import {
+  filterEchoesForOptimizer,
+  normalizeLoadoutFormat,
+  type OptimizerContext,
+} from "./optimizer";
 import {
   getCalculatorMainEchoBuffEntry,
   getMainEchoBuffEntry,
   resolveOptimizerBuff,
   type OptimizerBuffEntry,
 } from "./optimizerBuffStatus";
-import { buildOptimizerRotationData, type OptimizerRotationData } from "./rotationData";
+import {
+  buildOptimizerRotationData,
+  type OptimizerRotationData,
+} from "./rotationData";
 import { resolveActiveStance } from "./stances";
 import {
   calcTeamRotationDamage,
@@ -64,7 +74,10 @@ const VERIFY_TOLERANCE = 1e-6;
 
 export type TeamOptimizerDamageType = "Normal" | "Average" | "Crit";
 
-const DAMAGE_AGGREGATION_KEY: Record<TeamOptimizerDamageType, keyof DamageAggregation> = {
+const DAMAGE_AGGREGATION_KEY: Record<
+  TeamOptimizerDamageType,
+  keyof DamageAggregation
+> = {
   Normal: "normalDamage",
   Average: "avgDamage",
   Crit: "critDamage",
@@ -96,8 +109,13 @@ export interface TeamOptimizerChoice {
   protectTeamBuffs: boolean;
 }
 
-function wornEchoes(characterData: Record<string, any>, inventoryEchoes: any[]): any[] {
-  return resolveCharacterEchoes(characterData?.echoes, inventoryEchoes).filter((echo) => echo?.echo);
+function wornEchoes(
+  characterData: Record<string, any>,
+  inventoryEchoes: any[],
+): any[] {
+  return resolveCharacterEchoes(characterData?.echoes, inventoryEchoes).filter(
+    (echo) => echo?.echo,
+  );
 }
 
 /**
@@ -112,19 +130,30 @@ export function defaultTeamOptimizerChoice(
   const worn = wornEchoes(characterData, inventoryEchoes);
   const counts = new Map<string, number>();
   for (const echo of worn) {
-    if (echo.echoSet) counts.set(echo.echoSet, (counts.get(echo.echoSet) ?? 0) + 1);
+    if (echo.echoSet)
+      counts.set(echo.echoSet, (counts.get(echo.echoSet) ?? 0) + 1);
   }
-  const wornSets = [...counts.entries()].filter(([, count]) => count >= 2).map(([set]) => set);
+  const wornSets = [...counts.entries()]
+    .filter(([, count]) => count >= 2)
+    .map(([set]) => set);
   const wornMain = characterData?.mainEcho?.echo ?? worn[0]?.echo ?? null;
   const wornMainSet = worn.find((echo) => echo.echo === wornMain)?.echoSet;
-  if (wornMainSet && !wornSets.includes(wornMainSet)) wornSets.push(wornMainSet);
+  if (wornMainSet && !wornSets.includes(wornMainSet))
+    wornSets.push(wornMainSet);
 
   return {
     // Always including what's worn keeps the current build in the search, so a
     // result can only fall below it because of echo conflicts or team buff guards.
     sets: [...new Set([...(optimizer.echoSets ?? []), ...wornSets])],
-    mainEchoes: [...new Set([...(optimizer.mainEchoes ?? []), ...(wornMain ? [wornMain] : [])])],
-    minStats: (optimizer.minStats ?? []).map((row: TeamOptimizerMinStat) => ({ ...row })),
+    mainEchoes: [
+      ...new Set([
+        ...(optimizer.mainEchoes ?? []),
+        ...(wornMain ? [wornMain] : []),
+      ]),
+    ],
+    minStats: (optimizer.minStats ?? []).map((row: TeamOptimizerMinStat) => ({
+      ...row,
+    })),
     loadoutFormat: normalizeLoadoutFormat(optimizer.loadoutFormat),
     ignoreOtherResonatorEchoes: optimizer.ignoreOtherResonantorEchoes === true,
     protectTeamBuffs: true,
@@ -137,8 +166,10 @@ export function defaultTeamOptimizerGoal(input: {
   hasEligibleEchoes: boolean;
   /** A low-damage support may still be worth searching for what they give the team (ADR 0053). */
   canProvideTeamBuffs?: boolean;
+  /** Echoes typed in by hand can't be searched or compared, so the build is kept (ADR 0061). */
+  isHandTyped?: boolean;
 }): TeamOptimizerGoal {
-  if (!input.hasActions) return "keep";
+  if (!input.hasActions || input.isHandTyped) return "keep";
   if (input.canProvideTeamBuffs) return "damage";
   if (!input.hasEligibleEchoes) return "keep";
   return input.damageShare < KEEP_BUILD_DAMAGE_SHARE ? "keep" : "damage";
@@ -152,14 +183,19 @@ export function eligibleTeamOptimizerEchoes(input: {
   excludedEchoIds?: ReadonlySet<string>;
 }): any[] {
   const allowed = new Set([...input.sets, ...(input.requiredSetKeys ?? [])]);
-  const usable = (filterEchoesForOptimizer(input.inventoryEchoes) as any[]).filter(
-    (echo) => !input.excludedEchoIds?.has(echo.echoId),
-  );
+  const usable = (
+    filterEchoesForOptimizer(input.inventoryEchoes) as any[]
+  ).filter((echo) => !input.excludedEchoIds?.has(echo.echoId));
   const required = input.requiredMainEcho;
   // A required main echo outside the chosen sets still has to be found, but only
   // reach outside them if no copy is inside.
-  const reachOutside = Boolean(required) && !usable.some((echo) => echo.echo === required && allowed.has(echo.echoSet));
-  return usable.filter((echo) => allowed.has(echo.echoSet) || (reachOutside && echo.echo === required));
+  const reachOutside =
+    Boolean(required) &&
+    !usable.some((echo) => echo.echo === required && allowed.has(echo.echoSet));
+  return usable.filter(
+    (echo) =>
+      allowed.has(echo.echoSet) || (reachOutside && echo.echo === required),
+  );
 }
 
 /**
@@ -175,7 +211,8 @@ export function echoIdsWornOutsideTeam(
   const ids = new Set<string>();
   for (const [echoId, wornBy] of Object.entries(equipped ?? {})) {
     const wearers = Object.keys(wornBy ?? {});
-    if (wearers.length && !wearers.some((character) => team.has(character))) ids.add(echoId);
+    if (wearers.length && !wearers.some((character) => team.has(character)))
+      ids.add(echoId);
   }
   return ids;
 }
@@ -218,7 +255,13 @@ export interface TeamBuffGuardSlot {
 }
 
 function emptyGuard(): TeamBuffGuard {
-  return { floors: [], requiredMainEcho: null, requiredSetBonusLabels: [], requiredSetKeys: [], drifts: [] };
+  return {
+    floors: [],
+    requiredMainEcho: null,
+    requiredSetBonusLabels: [],
+    requiredSetKeys: [],
+    drifts: [],
+  };
 }
 
 /**
@@ -226,7 +269,10 @@ function emptyGuard(): TeamBuffGuard {
  * the value that already reaches the buff's maximum. Null when the entered value
  * doesn't clear the buff's threshold, because then nothing depends on it.
  */
-export function teamBuffStatFloor(def: TeamBuffDef, enteredValue: number): number | null {
+export function teamBuffStatFloor(
+  def: TeamBuffDef,
+  enteredValue: number,
+): number | null {
   let needed: number | null = null;
   for (const modifier of def.modifiers ?? []) {
     const { modifierStep, modifierValue, maximumValue } = modifier;
@@ -235,8 +281,13 @@ export function teamBuffStatFloor(def: TeamBuffDef, enteredValue: number): numbe
     const minStatValue = modifier.minStatValue ?? 0;
     if (enteredValue <= minStatValue) continue;
     let floor = enteredValue;
-    if (typeof modifierValue === "number" && modifierValue > 0 && typeof maximumValue === "number") {
-      const atCap = minStatValue + (maximumValue / modifierValue) * modifierStep * 100;
+    if (
+      typeof modifierValue === "number" &&
+      modifierValue > 0 &&
+      typeof maximumValue === "number"
+    ) {
+      const atCap =
+        minStatValue + (maximumValue / modifierValue) * modifierStep * 100;
       // Rounded because 0.125 / 0.001 * 0.01 style steps pick up float noise.
       floor = Math.min(floor, Math.round(atCap * 1e6) / 1e6);
     }
@@ -247,13 +298,21 @@ export function teamBuffStatFloor(def: TeamBuffDef, enteredValue: number): numbe
 
 function setKeyOfTeamBuff(buffKey: string): string | null {
   // Variants like FlowerofTingedYearningUnison share their set's key as a prefix.
-  return Object.keys(echoSetLabelMap).find((set) => buffKey === set || buffKey.startsWith(set)) ?? null;
+  return (
+    Object.keys(echoSetLabelMap).find(
+      (set) => buffKey === set || buffKey.startsWith(set),
+    ) ?? null
+  );
 }
 
 function activeSetBonusLabel(worn: any[], setKey: string): string | null {
   const bonuses = getSetBonusEffects(getSetsFromEchoes(worn));
   const prefix = `${echoSetLabelMap[setKey]} `;
-  return [bonuses.setBonusTwo, bonuses.setBonusOne, bonuses.setBonusOnePiece].find((label) => label?.startsWith(prefix)) ?? null;
+  return (
+    [bonuses.setBonusTwo, bonuses.setBonusOne, bonuses.setBonusOnePiece].find(
+      (label) => label?.startsWith(prefix),
+    ) ?? null
+  );
 }
 
 /**
@@ -263,7 +322,9 @@ function activeSetBonusLabel(worn: any[], setKey: string): string | null {
  *   keep that main echo or set bonus. Nothing is required if a kept build
  *   already provides it, and a buff with no provider on the team is left alone.
  */
-export function deriveTeamBuffGuards(slots: Array<TeamBuffGuardSlot | null>): Array<TeamBuffGuard | null> {
+export function deriveTeamBuffGuards(
+  slots: Array<TeamBuffGuardSlot | null>,
+): Array<TeamBuffGuard | null> {
   const guards = slots.map((slot) => (slot ? emptyGuard() : null));
 
   slots.forEach((receiver, receiverIndex) => {
@@ -274,19 +335,28 @@ export function deriveTeamBuffGuards(slots: Array<TeamBuffGuardSlot | null>): Ar
     slots.forEach((provider, providerIndex) => {
       if (!provider || providerIndex === receiverIndex) return;
       const isSelected =
-        teamBuffs.selectedCharacter1 === provider.characterId || teamBuffs.selectedCharacter2 === provider.characterId;
+        teamBuffs.selectedCharacter1 === provider.characterId ||
+        teamBuffs.selectedCharacter2 === provider.characterId;
       if (!isSelected) return;
-      const defs = (buffsByCharacter as Record<string, TeamBuffDef[]>)[provider.characterId] ?? [];
+      const defs =
+        (buffsByCharacter as Record<string, TeamBuffDef[]>)[
+          provider.characterId
+        ] ?? [];
       for (const def of defs) {
         const entry = config[def.key];
-        const guarded = def.modifierBasedOn ? GUARDED_STATS[def.modifierBasedOn] : undefined;
+        const guarded = def.modifierBasedOn
+          ? GUARDED_STATS[def.modifierBasedOn]
+          : undefined;
         if (!entry?.isEnabled || !def.inputBase || !guarded) continue;
         const floor = teamBuffStatFloor(def, Number(entry.baseAttrValue));
         if (floor === null) continue;
         const guard = guards[providerIndex]!;
         const actualRaw = provider.finalStats?.[guarded.stat];
         if (provider.goal === "keep") {
-          if (actualRaw != null && !meetsMinStatThreshold(actualRaw, floor, guarded.stat)) {
+          if (
+            actualRaw != null &&
+            !meetsMinStatThreshold(actualRaw, floor, guarded.stat)
+          ) {
             guard.drifts.push({
               label: guarded.label,
               teammateId: receiver.characterId,
@@ -298,7 +368,12 @@ export function deriveTeamBuffGuards(slots: Array<TeamBuffGuardSlot | null>): Ar
         }
         const existing = guard.floors.find((row) => row.stat === guarded.stat);
         if (existing) existing.minValue = Math.max(existing.minValue, floor);
-        else guard.floors.push({ stat: guarded.stat, minValue: floor, label: guarded.label });
+        else
+          guard.floors.push({
+            stat: guarded.stat,
+            minValue: floor,
+            label: guarded.label,
+          });
       }
     });
 
@@ -309,8 +384,14 @@ export function deriveTeamBuffGuards(slots: Array<TeamBuffGuardSlot | null>): Ar
         .filter(({ slot, index }) => slot && index !== receiverIndex);
 
       if ((mainEchoesData as Record<string, unknown>)[def.key]) {
-        const providers = others.filter(({ slot }) => slot!.characterData?.mainEcho?.echo === def.key);
-        if (!providers.length || providers.some(({ slot }) => slot!.goal === "keep")) continue;
+        const providers = others.filter(
+          ({ slot }) => slot!.characterData?.mainEcho?.echo === def.key,
+        );
+        if (
+          !providers.length ||
+          providers.some(({ slot }) => slot!.goal === "keep")
+        )
+          continue;
         guards[providers[0].index]!.requiredMainEcho = def.key;
         continue;
       }
@@ -321,10 +402,17 @@ export function deriveTeamBuffGuards(slots: Array<TeamBuffGuardSlot | null>): Ar
         .map(({ slot, index }) => ({
           index,
           goal: slot!.goal,
-          label: activeSetBonusLabel(wornEchoes(slot!.characterData, slot!.inventoryEchoes), setKey),
+          label: activeSetBonusLabel(
+            wornEchoes(slot!.characterData, slot!.inventoryEchoes),
+            setKey,
+          ),
         }))
         .filter((provider) => provider.label);
-      if (!providers.length || providers.some((provider) => provider.goal === "keep")) continue;
+      if (
+        !providers.length ||
+        providers.some((provider) => provider.goal === "keep")
+      )
+        continue;
       const guard = guards[providers[0].index]!;
       if (!guard.requiredSetBonusLabels.includes(providers[0].label!)) {
         guard.requiredSetBonusLabels.push(providers[0].label!);
@@ -341,10 +429,14 @@ export function mergeMinStats(
   minStats: TeamOptimizerMinStat[],
   floors: TeamOptimizerMinStat[],
 ): TeamOptimizerMinStat[] {
-  const merged = minStats.map((row) => ({ stat: row.stat, minValue: row.minValue }));
+  const merged = minStats.map((row) => ({
+    stat: row.stat,
+    minValue: row.minValue,
+  }));
   for (const floor of floors) {
     const existing = merged.find((row) => row.stat === floor.stat);
-    if (existing) existing.minValue = Math.max(Number(existing.minValue), floor.minValue);
+    if (existing)
+      existing.minValue = Math.max(Number(existing.minValue), floor.minValue);
     else merged.push({ stat: floor.stat, minValue: floor.minValue });
   }
   return merged;
@@ -374,7 +466,11 @@ export function resolveTeamOptimizerEchoBuffs(
   talentData: Record<string, any>,
 ): TeamOptimizerEchoBuffs {
   const optimizer = characterData?.optimizer ?? {};
-  const allDefs = { ...setBonusEffectsOnePiece, ...setBonusEffectsOne, ...setBonusEffectsTwo } as Record<string, any>;
+  const allDefs = {
+    ...setBonusEffectsOnePiece,
+    ...setBonusEffectsOne,
+    ...setBonusEffectsTwo,
+  } as Record<string, any>;
 
   const echoSetPassives: Record<string, OptimizerBuffEntry> = {};
   for (const def of Object.values(allDefs)) {
@@ -386,30 +482,50 @@ export function resolveTeamOptimizerEchoBuffs(
         alwaysEnabled: Boolean(passive.alwaysEnabled),
         calculatorFallback: true,
       });
-      echoSetPassives[passive.key] = { isEnabled: resolved.isEnabled, stacks: resolved.stacks };
+      echoSetPassives[passive.key] = {
+        isEnabled: resolved.isEnabled,
+        stacks: resolved.stacks,
+      };
     }
   }
 
   const echoSetPassiveBuffs: Record<string, Record<string, unknown>> = {};
   for (const [label, def] of Object.entries(allDefs)) {
-    echoSetPassiveBuffs[label] = resolveSetBonusStats(def, echoSetPassives, talentData);
+    echoSetPassiveBuffs[label] = resolveSetBonusStats(
+      def,
+      echoSetPassives,
+      talentData,
+    );
   }
 
   const mainEchoStats: Record<string, Record<string, unknown>> = {};
-  const mainEchoBuffConfigs: Record<string, Record<string, OptimizerBuffEntry>> = {};
+  const mainEchoBuffConfigs: Record<
+    string,
+    Record<string, OptimizerBuffEntry>
+  > = {};
   for (const echoKey of mainEchoKeys) {
     const def = (mainEchoesData as Record<string, any>)[echoKey];
     const statsByBuff: Record<string, Record<string, unknown>> = {};
     const config: Record<string, OptimizerBuffEntry> = {};
     for (const buff of getMainEchoBuffs(def)) {
       const resolved = resolveOptimizerBuff({
-        optimizerEntry: getMainEchoBuffEntry(optimizer.mainEchoBuffs?.[echoKey], buff.key),
-        calculatorEntry: getCalculatorMainEchoBuffEntry(characterData?.mainEcho, echoKey, buff.key),
+        optimizerEntry: getMainEchoBuffEntry(
+          optimizer.mainEchoBuffs?.[echoKey],
+          buff.key,
+        ),
+        calculatorEntry: getCalculatorMainEchoBuffEntry(
+          characterData?.mainEcho,
+          echoKey,
+          buff.key,
+        ),
         hasStacks: Boolean(buff.hasStacks),
         alwaysEnabled: Boolean(buff.alwaysEnabled),
         calculatorFallback: true,
       });
-      config[buff.key] = { isEnabled: resolved.isEnabled, stacks: resolved.stacks };
+      config[buff.key] = {
+        isEnabled: resolved.isEnabled,
+        stacks: resolved.stacks,
+      };
       if (!resolved.isEnabled) continue;
       statsByBuff[buff.key] = applyMainEchoBuffEffects({
         effects: buff.effects,
@@ -419,25 +535,44 @@ export function resolveTeamOptimizerEchoBuffs(
         talentData,
       });
     }
-    mainEchoStats[echoKey] = mergeMainEchoBuffStats(statsByBuff, {}) as Record<string, unknown>;
+    mainEchoStats[echoKey] = mergeMainEchoBuffStats(statsByBuff, {}) as Record<
+      string,
+      unknown
+    >;
     mainEchoBuffConfigs[echoKey] = config;
   }
 
-  return { echoSetPassives, echoSetPassiveBuffs, mainEchoStats, mainEchoBuffConfigs };
+  return {
+    echoSetPassives,
+    echoSetPassiveBuffs,
+    mainEchoStats,
+    mainEchoBuffConfigs,
+  };
 }
 
 /** The character's record as it would be with this loadout equipped. */
 export function applyLoadoutToCharacterData(
   characterData: Record<string, any>,
   loadout: any[],
-  echoBuffs: Pick<TeamOptimizerEchoBuffs, "echoSetPassives" | "mainEchoBuffConfigs">,
+  echoBuffs: Pick<
+    TeamOptimizerEchoBuffs,
+    "echoSetPassives" | "mainEchoBuffConfigs"
+  >,
 ): Record<string, any> {
   const bonuses = getSetBonusEffects(getSetsFromEchoes(loadout));
   const main = loadout[0];
-  const allDefs = { ...setBonusEffectsOnePiece, ...setBonusEffectsOne, ...setBonusEffectsTwo } as Record<string, any>;
+  const allDefs = {
+    ...setBonusEffectsOnePiece,
+    ...setBonusEffectsOne,
+    ...setBonusEffectsTwo,
+  } as Record<string, any>;
   // Only the sets this loadout activates, so other sets' saved settings stay as they are.
   const activePassives: Record<string, OptimizerBuffEntry> = {};
-  for (const label of [bonuses.setBonusOnePiece, bonuses.setBonusOne, bonuses.setBonusTwo]) {
+  for (const label of [
+    bonuses.setBonusOnePiece,
+    bonuses.setBonusOne,
+    bonuses.setBonusTwo,
+  ]) {
     for (const passive of (label ? allDefs[label]?.passives : null) ?? []) {
       const entry = echoBuffs.echoSetPassives[passive.key];
       if (entry) activePassives[passive.key] = entry;
@@ -479,7 +614,12 @@ export async function buildOptimizerContextForCharacter(
 ): Promise<OptimizerContext> {
   // A one-character map, so the context sent to each worker stays small.
   const characters = { [characterId]: characterData };
-  const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
+  const built = await buildCharacterCalculationContext(
+    characterId,
+    characters,
+    enemyConfig,
+    inventoryEchoes,
+  );
   const basic = built.chosenChar?.basic ?? {};
   return {
     chosenChar: built.chosenChar,
@@ -495,7 +635,9 @@ export async function buildOptimizerContextForCharacter(
       // aren't in the calculation context, and leaving them out silently loses
       // those passives on every override action.
       weaponPassiveDefs: built.definitions.weaponPassives,
-      refinement: String(characterData?.weapons?.[characterData?.weapon]?.refinement ?? "1"),
+      refinement: String(
+        characterData?.weapons?.[characterData?.weapon]?.refinement ?? "1",
+      ),
     },
     charBuffsData: built.charBuffsData,
     charResonanceChainsData: built.charResonanceChainsData,
@@ -533,7 +675,11 @@ export async function buildOptimizerContextForCharacter(
     activeCharacterResonanceChains: characterData?.resonanceChains ?? {},
     activeStance:
       characterData?.activeStance ??
-      resolveActiveStance(built.chosenChar?.basic?.stances, undefined, characterData?.buffs),
+      resolveActiveStance(
+        built.chosenChar?.basic?.stances,
+        undefined,
+        characterData?.buffs,
+      ),
     getRotationById: () => null,
   };
 }
@@ -556,7 +702,15 @@ export async function buildTeamOptimizerSlotPlan(input: {
   inventoryEchoes: any[];
   mainEchoKeys: string[];
 }): Promise<TeamOptimizerSlotPlan> {
-  const { team, slot, characterId, characterData, enemyConfig, inventoryEchoes, mainEchoKeys } = input;
+  const {
+    team,
+    slot,
+    characterId,
+    characterData,
+    enemyConfig,
+    inventoryEchoes,
+    mainEchoKeys,
+  } = input;
   // Resolved first so the per-action override path, which rebuilds from the
   // stored record, starts from the same settings as the plain path.
   const talents = {
@@ -566,12 +720,25 @@ export async function buildTeamOptimizerSlotPlan(input: {
     liberation: characterData?.talents?.liberation ?? 10,
     intro: characterData?.talents?.intro ?? 10,
   };
-  const echoBuffs = resolveTeamOptimizerEchoBuffs(characterId, characterData, mainEchoKeys, talents);
+  const echoBuffs = resolveTeamOptimizerEchoBuffs(
+    characterId,
+    characterData,
+    mainEchoKeys,
+    talents,
+  );
   const searchData = {
     ...characterData,
-    echoSetPassives: { ...characterData?.echoSetPassives, ...echoBuffs.echoSetPassives },
+    echoSetPassives: {
+      ...characterData?.echoSetPassives,
+      ...echoBuffs.echoSetPassives,
+    },
   };
-  const context = await buildOptimizerContextForCharacter(characterId, searchData, enemyConfig, inventoryEchoes);
+  const context = await buildOptimizerContextForCharacter(
+    characterId,
+    searchData,
+    enemyConfig,
+    inventoryEchoes,
+  );
   const actions = team.actions
     .filter((action) => action.slot === slot && !action.isDisabled)
     .sort((a, b) => a.order - b.order);
@@ -583,7 +750,12 @@ export async function buildTeamOptimizerSlotPlan(input: {
     echoBuffs,
     target: `Rotation:${id}`,
     rotationData: buildOptimizerRotationData(
-      { id, name: team.name ?? "Team Rotation", duration: team.duration, actions },
+      {
+        id,
+        name: team.name ?? "Team Rotation",
+        duration: team.duration,
+        actions,
+      },
       context.chosenChar,
       context.characterLevel,
     ),
@@ -597,20 +769,26 @@ export interface TeamOptimizerRow {
   score: number;
 }
 
-export interface TeamOptimizerList<Row extends TeamOptimizerRow = TeamOptimizerRow> {
+export interface TeamOptimizerList<
+  Row extends TeamOptimizerRow = TeamOptimizerRow,
+> {
   /** Best first. */
   rows: Row[];
   /** Rows below the kept ones exist, so the proof has to account for them. */
   isTruncated: boolean;
 }
 
-export interface TeamOptimizerCombination<Row extends TeamOptimizerRow = TeamOptimizerRow> {
+export interface TeamOptimizerCombination<
+  Row extends TeamOptimizerRow = TeamOptimizerRow,
+> {
   total: number;
   /** One row per list, in list order. */
   picks: Row[];
 }
 
-export interface TeamOptimizerCombineResult<Row extends TeamOptimizerRow = TeamOptimizerRow> {
+export interface TeamOptimizerCombineResult<
+  Row extends TeamOptimizerRow = TeamOptimizerRow,
+> {
   combinations: TeamOptimizerCombination<Row>[];
   /** True when no combination outside the kept rows could reach the top N. */
   isProven: boolean;
@@ -636,7 +814,12 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
 ): TeamOptimizerCombineResult<Row> {
   if (!lists.length || lists.some((list) => list.rows.length === 0)) {
     const isComplete = lists.every((list) => !list.isTruncated);
-    return { combinations: [], isProven: isComplete, unseenBound: isComplete ? -Infinity : null, visited: 0 };
+    return {
+      combinations: [],
+      isProven: isComplete,
+      unseenBound: isComplete ? -Infinity : null,
+      visited: 0,
+    };
   }
 
   const best: TeamOptimizerCombination<Row>[] = [];
@@ -648,7 +831,8 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
   let visited = 0;
   let isCapped = false;
 
-  const threshold = () => (best.length < topN ? -Infinity : best[best.length - 1].total);
+  const threshold = () =>
+    best.length < topN ? -Infinity : best[best.length - 1].total;
 
   const search = (listIndex: number, total: number) => {
     if (listIndex === lists.length) {
@@ -664,7 +848,8 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
       }
       visited++;
       // Rows are sorted, so nothing further down this list can do better.
-      if (total + row.score + bestOfLaterLists[listIndex] <= threshold()) return;
+      if (total + row.score + bestOfLaterLists[listIndex] <= threshold())
+        return;
       if (row.echoIds.some((id) => used.has(id))) continue;
       row.echoIds.forEach((id) => used.add(id));
       picks.push(row);
@@ -678,19 +863,31 @@ export function combineTeamLoadouts<Row extends TeamOptimizerRow>(
   const bestTotal = lists.reduce((sum, list) => sum + list.rows[0].score, 0);
   const unseenBound = lists.reduce((bound, list) => {
     if (!list.isTruncated) return bound;
-    return Math.max(bound, bestTotal - list.rows[0].score + list.rows[list.rows.length - 1].score);
+    return Math.max(
+      bound,
+      bestTotal - list.rows[0].score + list.rows[list.rows.length - 1].score,
+    );
   }, -Infinity);
   const hasTruncatedList = lists.some((list) => list.isTruncated);
   const isProven =
     !isCapped &&
-    (!hasTruncatedList || (best.length === topN && best[best.length - 1].total >= unseenBound));
+    (!hasTruncatedList ||
+      (best.length === topN && best[best.length - 1].total >= unseenBound));
 
-  return { combinations: best, isProven, unseenBound: isCapped ? null : unseenBound, visited };
+  return {
+    combinations: best,
+    isProven,
+    unseenBound: isCapped ? null : unseenBound,
+    visited,
+  };
 }
 
 // --- Verifying -----------------------------------------------------------
 
-type TeamRotationCharacterResultMap = Record<string, TeamRotationCharacterResult>;
+type TeamRotationCharacterResultMap = Record<
+  string,
+  TeamRotationCharacterResult
+>;
 
 export interface TeamOptimizerVerification {
   total: number;
@@ -707,23 +904,42 @@ export async function verifyTeamCombination(input: {
   team: TeamRotationInput;
   characters: Record<string, any>;
   loadoutBySlot: Array<any[] | null>;
-  echoBuffsBySlot: Array<Pick<TeamOptimizerEchoBuffs, "echoSetPassives" | "mainEchoBuffConfigs"> | null>;
+  echoBuffsBySlot: Array<Pick<
+    TeamOptimizerEchoBuffs,
+    "echoSetPassives" | "mainEchoBuffConfigs"
+  > | null>;
   enemyConfig: TeamEnemyConfig;
   inventoryEchoes: any[];
   damageType: TeamOptimizerDamageType;
   expectedTotal: number;
 }): Promise<TeamOptimizerVerification> {
-  const { team, loadoutBySlot, echoBuffsBySlot, enemyConfig, inventoryEchoes, damageType, expectedTotal } = input;
+  const {
+    team,
+    loadoutBySlot,
+    echoBuffsBySlot,
+    enemyConfig,
+    inventoryEchoes,
+    damageType,
+    expectedTotal,
+  } = input;
   let characters = input.characters;
   team.characterIds.forEach((characterId, slot) => {
     if (!characterId) return;
-    characters = resolveCharactersForBuild(characters, characterId, team.buildIds?.[slot] ?? null);
+    characters = resolveCharactersForBuild(
+      characters,
+      characterId,
+      team.buildIds?.[slot] ?? null,
+    );
     const loadout = loadoutBySlot[slot];
     const echoBuffs = echoBuffsBySlot[slot];
     if (loadout && echoBuffs) {
       characters = {
         ...characters,
-        [characterId]: applyLoadoutToCharacterData(characters[characterId], loadout, echoBuffs),
+        [characterId]: applyLoadoutToCharacterData(
+          characters[characterId],
+          loadout,
+          echoBuffs,
+        ),
       };
     }
   });
@@ -735,16 +951,31 @@ export async function verifyTeamCombination(input: {
     inventoryEchoes,
   );
   const perCharacter: Record<string, number> = {};
-  for (const [characterId, characterResult] of Object.entries(result.perCharacter)) {
-    perCharacter[characterId] = readTeamDamage(characterResult.damageAggregation, damageType);
+  for (const [characterId, characterResult] of Object.entries(
+    result.perCharacter,
+  )) {
+    perCharacter[characterId] = readTeamDamage(
+      characterResult.damageAggregation,
+      damageType,
+    );
   }
   const total = readTeamDamage(result.total, damageType);
-  const matches = expectedTotal > 0 && Math.abs(total / expectedTotal - 1) <= VERIFY_TOLERANCE;
-  return { total, perCharacter, characterResults: result.perCharacter, matches };
+  const matches =
+    expectedTotal > 0 &&
+    Math.abs(total / expectedTotal - 1) <= VERIFY_TOLERANCE;
+  return {
+    total,
+    perCharacter,
+    characterResults: result.perCharacter,
+    matches,
+  };
 }
 
 /** How many echoes in `echoIds` aren't in `baseline`. */
-export function countChangedEchoes(echoIds: string[], baseline: string[]): number {
+export function countChangedEchoes(
+  echoIds: string[],
+  baseline: string[],
+): number {
   const base = new Set(baseline);
   return echoIds.filter((id) => !base.has(id)).length;
 }
@@ -769,4 +1000,223 @@ export function echoesSharedOutsideTeam(
 export function countEchoesSharedByTeam(echoIdsBySlot: string[][]): number {
   const all = echoIdsBySlot.flat();
   return all.length - new Set(all).size;
+}
+
+// --- Comparing with the current build (#736, #737) -----------------------
+
+/**
+ * Whether a build wears echoes that aren't in the inventory (typed in by
+ * hand). The search only uses inventory echoes, so it can't reproduce or
+ * compare such a build.
+ */
+export function isHandTypedBuild(
+  characterEchoes: Record<string | number, any> | undefined,
+  inventoryEchoes: any[],
+): boolean {
+  const ids = new Set(inventoryEchoes.map((echo) => echo.echoId));
+  for (let index = 0; index < 5; index++) {
+    const slot = (characterEchoes as Record<string, any> | undefined)?.[index];
+    if (slot?.echo && !(slot.echoId && ids.has(slot.echoId))) return true;
+  }
+  return false;
+}
+
+export interface LoadoutSlotChange {
+  echo: any;
+  /** The echo is in the current build too (by id, so copies with different substats differ). */
+  isSame: boolean;
+  /** The current echo this one replaces, if any. */
+  was: any | null;
+}
+
+/**
+ * A result's echoes against the current build's: which stay, which are new,
+ * and what each new one replaces (same cost first, then any left over).
+ */
+export function compareLoadoutWithCurrent(
+  loadout: any[],
+  current: any[],
+): LoadoutSlotChange[] {
+  const currentEchoes = current.filter((echo) => echo?.echo);
+  const newIds = new Set(loadout.map((echo) => echo?.echoId));
+  const currentIds = new Set(
+    currentEchoes.map((echo) => echo.echoId).filter(Boolean),
+  );
+  const removed = currentEchoes.filter(
+    (echo) => !echo.echoId || !newIds.has(echo.echoId),
+  );
+  const take = (match: Parameters<typeof removed.findIndex>[0]) => {
+    const index = removed.findIndex(match);
+    return index === -1 ? null : removed.splice(index, 1)[0];
+  };
+  const changes = loadout.map((echo) => ({
+    echo,
+    isSame: currentIds.has(echo?.echoId),
+    was: null as any,
+  }));
+  for (const change of changes) {
+    if (!change.isSame)
+      change.was = take((echo) => echo.type === change.echo?.type);
+  }
+  for (const change of changes) {
+    if (!change.isSame && !change.was) change.was = take(() => true);
+  }
+  return changes;
+}
+
+/**
+ * For a character who deals no damage in the rotation, every loadout scores
+ * 0, so the order among them is arbitrary. Prefer the ones closest to the
+ * current build. Rows that score anything are left as they are.
+ */
+export function preferClosestToCurrent<Row extends TeamOptimizerRow>(
+  rows: Row[],
+  currentEchoIds: string[],
+): Row[] {
+  if (!rows.length || rows.some((row) => row.score !== 0)) return rows;
+  return rows
+    .map((row, index) => ({
+      row,
+      index,
+      changed: countChangedEchoes(row.echoIds, currentEchoIds),
+    }))
+    .sort((a, b) => a.changed - b.changed || a.index - b.index)
+    .map((entry) => entry.row);
+}
+
+/**
+ * Main echoes, of those given, with a conditional buff nobody has set up for
+ * this character, in the optimizer or the calculator. Those count as off, the
+ * same as the calculator does when you pick that echo, so the setup says so
+ * rather than assuming them on (ADR 0061).
+ */
+export function mainEchoesWithUnsetBuffs(
+  characterData: Record<string, any>,
+  echoKeys: string[],
+): string[] {
+  const optimizer = characterData?.optimizer ?? {};
+  return echoKeys.filter((echoKey) =>
+    getMainEchoBuffs((mainEchoesData as Record<string, any>)[echoKey]).some(
+      (buff) =>
+        resolveOptimizerBuff({
+          optimizerEntry: getMainEchoBuffEntry(
+            optimizer.mainEchoBuffs?.[echoKey],
+            buff.key,
+          ),
+          calculatorEntry: getCalculatorMainEchoBuffEntry(
+            characterData?.mainEcho,
+            echoKey,
+            buff.key,
+          ),
+          hasStacks: Boolean(buff.hasStacks),
+          alwaysEnabled: Boolean(buff.alwaysEnabled),
+          calculatorFallback: true,
+        }).status === "unset",
+    ),
+  );
+}
+
+/** Whether a build already matches a result: same echoes, same main echo, same echo team buffs. */
+export function buildMatchesResult(input: {
+  currentEchoIds: string[];
+  currentMainEcho: string | null;
+  loadout: any[] | null;
+  teamBuffsChanged: boolean;
+  /** Set bonus or main echo buff settings the result uses that the build doesn't. */
+  echoSettingsChanged?: boolean;
+}): boolean {
+  if (input.teamBuffsChanged || input.echoSettingsChanged) return false;
+  if (!input.loadout) return true;
+  const ids = input.loadout.map((echo) => echo.echoId);
+  return (
+    input.loadout[0]?.echo === input.currentMainEcho &&
+    ids.length === input.currentEchoIds.length &&
+    countChangedEchoes(ids, input.currentEchoIds) === 0
+  );
+}
+
+function buffSetting(entry: any, hasStacks: boolean): string {
+  if (!entry?.isEnabled) return "off";
+  return hasStacks ? `on:${Number(entry.stacks ?? 0)}` : "on";
+}
+
+/**
+ * The echo settings a result changes besides the echoes themselves: set bonus
+ * passives of the sets the result activates and the main echo's buffs, where
+ * the result's value (from the optimizer settings) differs from the build's.
+ * Returns set and echo names, empty when the build would calculate the same.
+ * `next` is `applyLoadoutToCharacterData(current, …)`.
+ */
+export function changedEchoSettings(
+  current: Record<string, any>,
+  next: Record<string, any>,
+): string[] {
+  const names = new Set<string>();
+  const allDefs = {
+    ...setBonusEffectsOnePiece,
+    ...setBonusEffectsOne,
+    ...setBonusEffectsTwo,
+  } as Record<string, any>;
+  const nextBonus = next?.echoSetBonus ?? {};
+  const currentBonus = current?.echoSetBonus ?? {};
+  for (const key of ["setBonusOnePiece", "setBonusOne", "setBonusTwo"]) {
+    const label = nextBonus[key] ?? null;
+    if (label !== (currentBonus[key] ?? null) && label)
+      names.add(allDefs[label]?.name ?? label);
+    for (const passive of (label ? allDefs[label]?.passives : null) ?? []) {
+      if (passive.alwaysEnabled) continue;
+      const hasStacks = Boolean(passive.hasStacks);
+      if (
+        buffSetting(next?.echoSetPassives?.[passive.key], hasStacks) !==
+        buffSetting(current?.echoSetPassives?.[passive.key], hasStacks)
+      ) {
+        names.add(allDefs[label]?.name ?? label);
+      }
+    }
+  }
+  const mainEcho = next?.mainEcho?.echo;
+  if (mainEcho && mainEcho === current?.mainEcho?.echo) {
+    const nextBuffs = next.mainEcho.buffs ?? {};
+    const currentBuffs = current.mainEcho?.buffs ?? {};
+    for (const key of new Set([
+      ...Object.keys(nextBuffs),
+      ...Object.keys(currentBuffs),
+    ])) {
+      if (
+        buffSetting(nextBuffs[key], true) !==
+        buffSetting(currentBuffs[key], true)
+      ) {
+        names.add(
+          (mainEchoesData as Record<string, any>)[mainEcho]?.name ?? mainEcho,
+        );
+      }
+    }
+  }
+  return [...names];
+}
+
+/**
+ * Whether a team optimizer run can say nothing beats #1 (ADR 0053, 0061):
+ * every plan was fully searched (including any scouting couldn't build a team
+ * for), the plan list wasn't capped, each combiner's bound is known and #1 beats
+ * the best any plan could hold outside its kept rows, and every shown result
+ * matched the Team page, since the proof is in the search's numbers but results
+ * are ranked by the Team page's.
+ */
+export function isTeamRunProven(input: {
+  plansTotal: number;
+  plansSearched: number;
+  isPlanListCapped: boolean;
+  isBoundKnown: boolean;
+  bestCombinerTotal: number;
+  unseenBound: number;
+  allMatchTeamPage: boolean;
+}): boolean {
+  return (
+    input.isBoundKnown &&
+    !input.isPlanListCapped &&
+    input.plansSearched === input.plansTotal &&
+    input.bestCombinerTotal >= input.unseenBound &&
+    input.allMatchTeamPage
+  );
 }
