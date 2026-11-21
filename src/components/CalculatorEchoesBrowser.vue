@@ -102,7 +102,7 @@
             <span class="text-xs font-medium opacity-60 mr-1">Set</span>
             <div
               class="echoes__filters__sets echo-filters__sets flex flex-wrap"
-              :class="{ 'echo-filters__sets--active': echoSet !== null }">
+              :class="{ 'echo-filters__sets--active': echoSets.length }">
               <button
                 v-for="setKey in echoSetsList"
                 :key="setKey"
@@ -246,7 +246,7 @@ const echoIndex = ref<number | null>(null);
 const search = ref("");
 const {
   costFilter,
-  echoSet,
+  echoSets,
   equippedFilter,
   mainStatFilter,
   favoriteFilter,
@@ -268,7 +268,7 @@ const isOpen = ref(false);
 
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (echoSet.value) count += 1;
+  if (echoSets.value.length) count += 1;
   if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -284,7 +284,7 @@ const activeFilterCount = computed(() => {
 watch(
   [
     mainStatFilter,
-    echoSet,
+    echoSets,
     search,
     favoriteFilter,
     equippedFilter,
@@ -310,8 +310,8 @@ const echoesList = computed(() => {
         return allEchoes;
       }
       // filter by type if set
-      if (echoSet.value) {
-        allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
+      if (echoSets.value.length) {
+        allEchoes = allEchoes.filter((item: any) => echoSets.value.includes(item.echoSet));
       }
       if (search.value.trim()) {
         allEchoes = allEchoes.filter((item: any) =>
@@ -407,12 +407,13 @@ function getEchoSetImage(set: string) {
   return getEchoSetIconByType(set);
 }
 
+// One set at a time here; the remembered filter is a list (the v3 browser takes several).
 function toggleEchoSetFilter(set: string) {
-  echoSet.value = echoSet.value === set ? null : set;
+  echoSets.value = isEchoSetFilterActive(set) ? [] : [set];
 }
 
 function isEchoSetFilterActive(set: string) {
-  return echoSet.value === set;
+  return echoSets.value.includes(set);
 }
 
 const equippedFilterOptions = computed((): AppRichSelectOption[] => [

@@ -150,6 +150,7 @@
         <CalculatorEchoes
           :key="characterBuildKey"
           :character="character"
+          :suggested-echo-sets="chosenChar.value?.basic?.suggestedEchoSets"
           @update-stats="updateStatsEchoes"
           @updated-main-echo="handleUpdatedMainEcho"
           @updated-main-echo-rank="
@@ -228,6 +229,7 @@
           v-else
           :key="characterBuildKey"
           :character="character"
+          :suggested-echo-sets="chosenChar.value?.basic?.suggestedEchoSets"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
           :optimizer-elapsed-ms="optimizerElapsedMs"

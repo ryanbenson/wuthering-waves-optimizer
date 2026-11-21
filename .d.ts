@@ -30,6 +30,12 @@ interface CharacterBasicInfo {
    * empty is a valid state. See `src/characters/recommendedTeams.ts`.
    */
   suggestedTeams?: Array<{ members: [string, string]; tags?: string[] }>;
+  /**
+   * Recommended echo set keys (match `echoSetLabelMap` in src/echoes/stats.ts), best
+   * first, from community build guides. The owned-echo picker's "Recommended" set
+   * filter selects these. Empty is valid.
+   */
+  suggestedEchoSets?: string[];
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;

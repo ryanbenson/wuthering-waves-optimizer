@@ -14,5 +14,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     ],
     liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
     suggestedWeapons: [],
+    suggestedEchoSets: ["MoltenRift"],
   };
 }

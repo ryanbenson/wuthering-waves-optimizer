@@ -22,5 +22,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Lumingloss", label: "BP" },
       { key: "FablesofWisdom", label: "4*" }
     ],
+    suggestedEchoSets: ["SongofFeatheredTrace"],
   };
 }

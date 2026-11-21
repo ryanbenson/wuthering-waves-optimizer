@@ -18,5 +18,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Lynae", "Mornye"], tags: ["Tune Break"] },
       { members: ["Yinlin", "Shorekeeper"] },
     ],
+    suggestedEchoSets: ["VoidThunder", "LingeringTunes"],
   };
 }

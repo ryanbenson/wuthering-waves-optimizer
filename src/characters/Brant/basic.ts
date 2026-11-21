@@ -27,5 +27,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     suggestedTeams: [
       { members: ["Changli", "Lupa"], tags: ["Mono Fusion"] },
     ],
+    suggestedEchoSets: ["MoltenRift"],
   };
 }

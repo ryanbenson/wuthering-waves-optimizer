@@ -30,5 +30,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Denia", "Mornye"], tags: ["Hypercarry", "Fusion Burst"] },
       { members: ["Lynae", "Mornye"], tags: ["Hypercarry", "Tune Break"] },
     ],
+    suggestedEchoSets: ["TrailblazingStar"],
   };
 }

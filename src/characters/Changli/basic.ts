@@ -19,5 +19,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Brant", "Lupa"], tags: ["Mono Fusion", "No healer"] },
       { members: ["Lupa", "Shorekeeper"], tags: ["Dual DPS"] },
     ],
+    suggestedEchoSets: ["MoltenRift"],
   };
 }
