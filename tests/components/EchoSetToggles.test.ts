@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, fireEvent } from "@testing-library/vue";
 import EchoSetToggles from "../../src/components/EchoSetToggles.vue";
 
@@ -55,30 +55,50 @@ describe("EchoSetToggles", () => {
     expect(shown(container)).toEqual(["FreezingFrost", "MoltenRift"]);
   });
 
-  it("starts on Recommended only, keeping the row's order, and shows every set when turned off", async () => {
+  it("starts with every set shown, and Recommended only narrows the row in its own order", async () => {
     const { container } = render(EchoSetToggles, {
       props: {
         sets: ["FreezingFrost", "MoltenRift", "VoidThunder"],
         recommended: ["VoidThunder", "FreezingFrost"],
         modelValue: [],
       },
+      global: { directives: { tooltip: {} } },
     });
-    expect(recommendedOnly(container)!.className).toContain("btn-active");
-    expect(shown(container)).toEqual(["FreezingFrost", "VoidThunder"]);
-
-    await fireEvent.click(recommendedOnly(container)!);
     expect(recommendedOnly(container)!.className).not.toContain("btn-active");
     expect(shown(container)).toEqual(["FreezingFrost", "MoltenRift", "VoidThunder"]);
+
+    await fireEvent.click(recommendedOnly(container)!);
+    expect(recommendedOnly(container)!.className).toContain("btn-active");
+    expect(recommendedOnly(container)!.getAttribute("aria-pressed")).toBe("true");
+    expect(shown(container)).toEqual(["FreezingFrost", "VoidThunder"]);
   });
 
-  it("keeps a selected set in view under Recommended only", () => {
+  it("sends an analytics event when Recommended only is switched", async () => {
+    const track = vi.fn();
+    (window as any).umami = { track };
+    const { container } = render(EchoSetToggles, {
+      props: { sets: ["FreezingFrost"], recommended: ["FreezingFrost"], modelValue: [], surface: "optimizer" },
+      global: { directives: { tooltip: {} } },
+    });
+    await fireEvent.click(recommendedOnly(container)!);
+    await fireEvent.click(recommendedOnly(container)!);
+    expect(track.mock.calls).toEqual([
+      ["echo-sets-recommended-only", { on: true, surface: "optimizer" }],
+      ["echo-sets-recommended-only", { on: false, surface: "optimizer" }],
+    ]);
+    delete (window as any).umami;
+  });
+
+  it("keeps a selected set in view under Recommended only", async () => {
     const { container } = render(EchoSetToggles, {
       props: {
         sets: ["FreezingFrost", "MoltenRift", "VoidThunder"],
         recommended: ["VoidThunder"],
         modelValue: ["FreezingFrost"],
       },
+      global: { directives: { tooltip: {} } },
     });
+    await fireEvent.click(recommendedOnly(container)!);
     expect(shown(container)).toEqual(["FreezingFrost", "VoidThunder"]);
   });
 });

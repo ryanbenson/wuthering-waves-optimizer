@@ -45,7 +45,8 @@ describe("CalculatorOptimizer (classic) eligible echo sets", () => {
   it("uses the recommended sets while none are saved, without saving them", async () => {
     const { container, getAllByText } = await renderOptimizer();
     expect(eligibleSet(container, "FrostyResolve").getAttribute("aria-pressed")).toBe("true");
-    expect(container.querySelector("[data-test-echo-set-recommended-only]")).not.toBeNull();
+    const toggle = container.querySelector("[data-test-echo-set-recommended-only]")!;
+    expect(toggle.className).not.toContain("btn-active"); // opt-in, off by default
 
     // Another setting changes, so the optimizer saves: the sets stay unsaved.
     await fireEvent.click(getAllByText("Use echo")[0]!);

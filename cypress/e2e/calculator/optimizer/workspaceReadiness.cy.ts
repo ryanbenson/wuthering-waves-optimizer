@@ -22,12 +22,13 @@ describe("Optimizer Workspace: setup readiness", () => {
     cy.viewport(1280, 800);
     openOptimizer();
 
-    // With no saved sets Carlotta uses her recommended set (Frosty Resolve), shown under
-    // "Recommended only", and she starts with an attack target, so only the main echo
-    // is missing; Run is disabled.
+    // With no saved sets Carlotta uses her recommended set (Frosty Resolve), shown
+    // selected, and she starts with an attack target, so only the main echo is
+    // missing; Run is disabled. "Recommended only" is opt-in.
     const eligible = (set: string) =>
       cy.get(`[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle="${set}"]`);
-    cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-recommended-only]").should("have.class", "btn-active");
+    cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-recommended-only]").should("not.have.class", "btn-active");
+    cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-recommended-only]").click();
     cy.get("[data-test-optimizer-workspace-echo-sets] [data-test-echo-set-toggle]").should("have.length", 1);
     eligible("FrostyResolve").should("have.attr", "aria-pressed", "true");
     check("sets").should("have.attr", "data-test-optimizer-workspace-check-state", "ok");
@@ -40,9 +41,9 @@ describe("Optimizer Workspace: setup readiness", () => {
     eligible("FrostyResolve").click();
     check("sets").should("have.attr", "data-test-optimizer-workspace-check-state", "ok");
 
-    // The main echo picker lists the recommended sets' echoes and can search by name.
+    // The main echo picker offers the same opt-in toggle and can search by name.
     cy.get("[data-test-optimizer-workspace-add-echo]").click();
-    cy.get("#optimizerWorkspaceEchoPicker [data-test-echo-set-recommended-only]").should("have.class", "btn-active");
+    cy.get("#optimizerWorkspaceEchoPicker [data-test-echo-set-recommended-only]").should("not.have.class", "btn-active");
     cy.get("[data-test-optimizer-workspace-picker-search]").type("Sentry", { force: true });
     cy.get("[data-test-optimizer-workspace-pick-echo]").each(($button) => {
       expect($button.attr("data-test-optimizer-workspace-pick-echo")).to.contain("Sentry");

@@ -97,6 +97,7 @@
             :model-value="setFilters"
             :sets="echoSets"
             :recommended="recommendedSets"
+            surface="classic-optimizer"
             data-test-optimizer-echo-sets
             @update:model-value="updateSets" />
           <h3 class="mt-6 mb-2">Choose main echoes</h3>

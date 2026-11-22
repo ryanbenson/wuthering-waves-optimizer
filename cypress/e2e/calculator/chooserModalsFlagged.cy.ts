@@ -94,7 +94,7 @@ function visitWithTwoSetInventory() {
 }
 
 describe("v3 chooser modals (liveResultBar flag)", () => {
-  it("starts on the character's recommended sets and filters by several sets at once", () => {
+  it("filters by several sets at once; Recommended only narrows just the set row", () => {
     visitWithTwoSetInventory();
     // Roccia recommends Midnight Veil and Moonlit Clouds (basic.ts suggestedEchoSets).
     cy.selectWorkspaceCharacter("Roccia");
@@ -105,15 +105,18 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     const set = (key: string) => cy.get(`[data-test-echo-set-toggle="${key}"]`);
     const recommendedOnly = () => cy.get("[data-test-echo-set-recommended-only]");
 
-    // "Recommended only" narrows the set row and the list to those sets; nothing is selected.
-    recommendedOnly().should("have.class", "btn-active");
-    count().should("contain.text", "1 echo");
-    set("MidnightVeil").should("have.attr", "aria-pressed", "false");
-    set("FreezingFrost").should("not.exist");
-
-    recommendedOnly().click({ force: true });
+    // Off by default: every set and every echo shows.
     recommendedOnly().should("not.have.class", "btn-active");
     count().should("contain.text", "3 echoes");
+    set("FreezingFrost").should("exist");
+
+    // On: the row shows only the recommended sets; the list doesn't change.
+    recommendedOnly().click({ force: true });
+    recommendedOnly().should("have.class", "btn-active");
+    set("FreezingFrost").should("not.exist");
+    set("MidnightVeil").should("have.attr", "aria-pressed", "false");
+    count().should("contain.text", "3 echoes");
+    recommendedOnly().click({ force: true });
 
     set("FreezingFrost").click({ force: true });
     set("FreezingFrost").should("have.class", "btn-active");
@@ -124,21 +127,21 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     count().should("contain.text", "1 echo");
   });
 
-  it("says when the recommended sets empty the list, and offers every set", () => {
+  it("says when the selected sets empty the list, and offers every set", () => {
     visitWithTwoSetInventory();
-    // Carlotta recommends Frosty Resolve, which nothing in this inventory is from.
     cy.selectWorkspaceCharacter("Carlotta");
     cy.get('[data-test-calculator-nav="echoes"]').click();
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
 
+    // Nothing in this inventory is from Frosty Resolve.
+    cy.get('[data-test-echo-set-toggle="FrostyResolve"]').click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-empty-sets]").should(
       "contain.text",
-      "No echoes in the recommended sets",
+      "No echoes in the selected sets",
     );
     cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-count]").should("contain.text", "3 echoes");
-    cy.get("[data-test-echo-set-recommended-only]").should("not.have.class", "btn-active");
   });
 
   it("picks a character through the shared shell, using the preserved selectors", () => {
@@ -338,8 +341,6 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     // Open the slot editor, then its Browse action.
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
-    // Start from every set: nothing in the seed is from Carlotta's recommended set.
-    cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     // Both seeded echoes are candidates for the empty slot, and each gets a
@@ -383,8 +384,6 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
 
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
-    // Start from every set: nothing in the seed is from Carlotta's recommended set.
-    cy.get("[data-test-workspace-echoes-browser-show-all-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     cy.get("[data-test-workspace-echoes-browser-sort]").select("impact", { force: true });

@@ -277,7 +277,7 @@
       <!-- Sets last -->
       <div class="echoes__filters__row flex flex-wrap items-center gap-2">
         <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-        <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" />
+        <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" surface="inventory" />
       </div>
     </AppFilterPanel>
     <AppBulkActionBar

@@ -102,9 +102,9 @@
           <span class="text-xs font-medium opacity-60 mr-1">Set</span>
           <EchoSetToggles
             v-model="echoSets"
-            v-model:recommended-only="recommendedOnly"
             :sets="echoSetsList"
-            :recommended="recommendedSets" />
+            :recommended="recommendedSets"
+            surface="echo-browser" />
         </div>
       </AppFilterPanel>
 
@@ -122,12 +122,10 @@
     </template>
 
     <div
-      v-if="!echoesList.length && setFilter.length && echoesWithoutSetFilter.length"
+      v-if="!echoesList.length && echoSets.length && echoesWithoutSetFilter.length"
       class="py-12 flex flex-col items-center gap-3 w-full"
       data-test-workspace-echoes-browser-empty-sets>
-      <span class="opacity-60">
-        No echoes in the {{ echoSets.length ? "selected" : "recommended" }} sets
-      </span>
+      <span class="opacity-60">No echoes in the selected sets</span>
       <button
         type="button"
         class="btn btn-sm"
@@ -248,7 +246,6 @@ import { echoMatchesNameSearch } from "../../utils/echoNameSearch";
 import { useToast } from "../../composables/useToast";
 import { useUiDensity } from "../../composables/useUiDensity";
 import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
-import { setFilterFor } from "../../echoes/recommendedEchoSets";
 import {
   ECHO_RATING_PERCENT_MAX,
   ECHO_RATING_PERCENT_MIN,
@@ -314,17 +311,13 @@ const equippedEchoIdInSlot = computed(() => {
 });
 
 const echoSetsList = Object.keys(echoSetLabelMap);
-// "Recommended only" isn't remembered: it starts on whenever the character has
-// recommended sets, and limits the list to them until sets are picked.
+// The set row's "Recommended only" narrows the icons to these; the list is
+// filtered only by the sets the player selects.
 const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
-const recommendedOnly = ref(true);
-const setFilter = computed(() =>
-  setFilterFor(recommendedSets.value, echoSets.value, recommendedOnly.value),
-);
 
 const activeFilterCount = computed(() => {
   let count = 0;
-  if (setFilter.value.length) count += 1;
+  if (echoSets.value.length) count += 1;
   if (search.value.trim()) count += 1;
   if (costFilter.value) count += 1;
   if (mainStatFilter.value) count += 1;
@@ -338,7 +331,7 @@ const activeFilterCount = computed(() => {
 });
 
 watch(
-  [mainStatFilter, setFilter, search, favoriteFilter, equippedFilter, costFilter,
+  [mainStatFilter, echoSets, search, favoriteFilter, equippedFilter, costFilter,
    substatFilter, cvMin, cvMax, rvMin, rvMax, ratingMin, ratingMax],
   () => {
     page.value = 1;
@@ -406,8 +399,8 @@ const echoesWithoutSetFilter = computed(() => {
 });
 
 const echoesFiltered = computed(() =>
-  setFilter.value.length
-    ? echoesWithoutSetFilter.value.filter((item: any) => setFilter.value.includes(item.echoSet))
+  echoSets.value.length
+    ? echoesWithoutSetFilter.value.filter((item: any) => echoSets.value.includes(item.echoSet))
     : echoesWithoutSetFilter.value,
 );
 
@@ -570,13 +563,11 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
 
 function resetFilters() {
   search.value = "";
-  recommendedOnly.value = false;
   resetEchoBrowserFilters();
 }
 
 function showAllSets() {
   echoSets.value = [];
-  recommendedOnly.value = false;
 }
 
 function getCharsEquipped(item: any) {
