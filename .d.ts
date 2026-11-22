@@ -36,7 +36,7 @@ interface CharacterBasicInfo {
    * Prydwen (prydwen.gg/wuthering-waves/characters/<character>), copied as listed on
    * 2026-10-17; not hand-checked. Read by the set pickers' "Recommended only" toggle
    * and, while no sets are saved, the optimizers' eligible sets (eligibleEchoSets in
-   * src/echoes/recommendedEchoSets.ts). Empty is valid.
+   * src/echoes/recommendedEchoSets.ts; ADR 0063). Empty is valid.
    */
   suggestedEchoSets?: string[];
   spectroFrazzle?: boolean;
