@@ -21,5 +21,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Stonard", label: "BP" },
       { key: "CelestialSpiral", label: "4*" },
     ],
+    suggestedEchoSets: ["CrownofValor", "MoonlitClouds"],
   };
 }

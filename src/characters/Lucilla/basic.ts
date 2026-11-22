@@ -26,5 +26,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "CosmicRipples", label: "Standard" },
       { key: "WaltzinMasquerade", label: "4*" },
     ],
+    suggestedEchoSets: ["WishesofQuietSnowfall", "MoonlitClouds"],
   };
 }

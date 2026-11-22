@@ -12,7 +12,7 @@ describe("parseEchoBrowserFilters", () => {
   it("reads valid saved filters", () => {
     const saved = {
       cost: 4,
-      echoSet: "Celestial Light",
+      echoSets: ["Celestial Light", "Frosty Resolve"],
       equipped: "any",
       mainStat: "Crit Rate",
       favorites: true,
@@ -26,6 +26,10 @@ describe("parseEchoBrowserFilters", () => {
       sortBy: "impact",
     };
     expect(parseEchoBrowserFilters(saved)).toEqual(saved);
+  });
+
+  it("reads a single set saved before the filter took several", () => {
+    expect(parseEchoBrowserFilters({ echoSet: "Celestial Light" }).echoSets).toEqual(["Celestial Light"]);
   });
 
   it("treats missing or malformed values as unfiltered", () => {
@@ -71,15 +75,15 @@ describe("useEchoBrowserFilters", () => {
   it("swaps filters when the character changes", () => {
     const character = ref("Jinhsi");
     const filters = useEchoBrowserFilters(character);
-    filters.echoSet.value = "Celestial Light";
+    filters.echoSets.value = ["Celestial Light"];
     filters.costFilter.value = 4;
 
     character.value = "Camellya";
-    expect(filters.echoSet.value).toBeNull();
+    expect(filters.echoSets.value).toEqual([]);
     expect(filters.costFilter.value).toBeNull();
 
     character.value = "Jinhsi";
-    expect(filters.echoSet.value).toBe("Celestial Light");
+    expect(filters.echoSets.value).toEqual(["Celestial Light"]);
     expect(filters.costFilter.value).toBe(4);
   });
 

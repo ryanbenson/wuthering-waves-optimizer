@@ -23,5 +23,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "Augment", label: "BP" },
       { key: "FusionAccretion", label: "4*" },
     ],
+    suggestedEchoSets: ["DreamoftheLost"],
   };
 }

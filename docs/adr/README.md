@@ -106,6 +106,7 @@ Architecture ADRs (0001–0012, 0029, 0031, 0032, 0034, 0035, 0036, 0037, 0038, 
 | [0059](./0059-recommended-team-typical-buffs.md) | Recommended teams turn on hand-written typical buffs | accepted | | buffs, components, labs, persistence |
 | [0060](./0060-attacks-tab-pins-and-remembered-groups.md) | Attacks tab: pinned attacks and remembered groups | accepted | | components, composables, persistence |
 | [0061](./0061-team-optimizer-rotation-as-written.md) | Team optimizer: the rotation as written, and saving only touches the team | accepted | | calculator, components, labs, team-rotations |
+| [0063](./0063-recommended-echo-sets.md) | Recommended echo sets: data source, opt-in "Recommended only" set-row toggle, optimizers' eligible-sets fallback | proposed | | characters, components, data, optimizer, team-rotations |
 
 ## When to write a new ADR
 

@@ -93,18 +93,13 @@
         class="optimizer-filters__sets card card-compact card-bordered bg-base-100 shadow-sm">
         <div class="card-body">
           <h3 class="mb-2">Choose echo sets</h3>
-          <div
-            class="echo-filters__sets flex gap-1 flex-wrap"
-            :class="{ 'echo-filters__sets--active': setFilters.length }">
-            <button
-              v-for="set in echoSets"
-              :key="set"
-              @click="toggleSetFilter(set)"
-              class="rounded p-[.3rem]"
-              :class="{ 'btn-active': isSetFilterActive(set) }">
-              <img :src="getSetIcon(set)" :alt="set" class="size-7" />
-            </button>
-          </div>
+          <EchoSetToggles
+            :model-value="setFilters"
+            :sets="echoSets"
+            :recommended="recommendedSets"
+            surface="classic-optimizer"
+            data-test-optimizer-echo-sets
+            @update:model-value="updateSets" />
           <h3 class="mt-6 mb-2">Choose main echoes</h3>
           <div class="optimizer-echoes-chosen flex gap-2">
             <div
@@ -375,7 +370,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import {
   getSetBonusEffectsFromListOfSetKeys,
@@ -393,6 +388,8 @@ import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import OptimizerStaleResultsAlert from "./OptimizerStaleResultsAlert.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
+import EchoSetToggles from "./EchoSetToggles.vue";
+import { eligibleEchoSets } from "../echoes/recommendedEchoSets";
 import {
   normalizeLoadoutFormat,
   OPTIMIZER_EMPTY_REASON_MESSAGES,
@@ -406,6 +403,8 @@ import {
 
 const props = defineProps<{
   character: string;
+  /** The character's recommended echo sets (basic.ts suggestedEchoSets). */
+  suggestedEchoSets?: string[];
   totalCombos?: number;
   processedCombos?: number;
   optimizerElapsedMs?: number;
@@ -444,7 +443,11 @@ const characterStore = useCharacterStore();
 
 const modalIdPicker = "optimizerEchoPicker";
 const echoSetFilter = ref<string | null>(null);
+// The sets in use: the saved ones, or the recommended sets while none are saved
+// (eligibleEchoSets, shared with the v3 setup and the team optimizer). Only the
+// player's own picks are saved (updateSets); the recommended sets never are.
 const setFilters = ref<string[]>([]);
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
 const mainEchoes = ref<string[]>([]);
 const minStats = ref<OptimizerMinStatRow[]>([]);
 const optimizationTarget = ref<unknown>(null);
@@ -634,15 +637,19 @@ function chooseMainEcho(echoKey: string) {
   closeEchoChooser();
 }
 
-function toggleSetFilter(set: string) {
-  const index = setFilters.value.findIndex((setFilter) => setFilter === set);
-  if (index >= 0) {
-    setFilters.value.splice(index, 1);
-  } else {
-    setFilters.value.push(set);
-  }
+function updateSets(sets: string[]) {
+  setFilters.value = sets;
+  characterStore.setCharacterOptimizerEchoSets(props.character, [...sets]);
   void syncOptimizerConfig();
 }
+
+// The recommended sets can arrive after mount (the character data loads separately).
+watch(recommendedSets, (sets) => {
+  setFilters.value = eligibleEchoSets(
+    (currentCharacter.value as { optimizer?: { echoSets?: string[] } }).optimizer?.echoSets,
+    sets,
+  );
+});
 
 function handleUpdatedTarget(target: unknown) {
   optimizationTarget.value = target;
@@ -658,7 +665,6 @@ async function syncOptimizerConfig() {
   await characterStore.setCharacterData(props.character, {
     optimizer: {
       mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
-      echoSets: JSON.parse(JSON.stringify(setFilters.value)),
       minStats: JSON.parse(JSON.stringify(minStats.value)),
       optimizationTarget: optimizationTarget.value,
       damageType: damageType.value,
@@ -666,14 +672,6 @@ async function syncOptimizerConfig() {
       loadoutFormat: loadoutFormat.value,
     },
   });
-}
-
-function isSetFilterActive(set: string) {
-  return !!setFilters.value.find((setFilter) => setFilter === set);
-}
-
-function getSetIcon(set: string) {
-  return getEchoSetIconByType(set);
 }
 
 function openEchoChooser() {
@@ -772,7 +770,7 @@ onMounted(() => {
     };
   };
   mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
-  setFilters.value = ch.optimizer?.echoSets ?? [];
+  setFilters.value = eligibleEchoSets(ch.optimizer?.echoSets, recommendedSets.value);
   minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value =

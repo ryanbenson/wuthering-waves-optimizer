@@ -17,5 +17,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { key: "FeatherEdge", label: "BP" },
       { key: "CommandoOfConviction", label: "4*" },
     ],
+    suggestedEchoSets: ["HeartofEvilsPurge"],
   };
 }

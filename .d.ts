@@ -30,6 +30,15 @@ interface CharacterBasicInfo {
    * empty is a valid state. See `src/characters/recommendedTeams.ts`.
    */
   suggestedTeams?: Array<{ members: [string, string]; tags?: string[] }>;
+  /**
+   * Recommended echo set keys (match `echoSetLabelMap` in src/echoes/stats.ts), best
+   * first. Source: the "Best Echo Sets" section of each character's build guide on
+   * Prydwen (prydwen.gg/wuthering-waves/characters/<character>), copied as listed on
+   * 2026-10-17; not hand-checked. Read by the set pickers' "Recommended only" toggle
+   * and, while no sets are saved, the optimizers' eligible sets (eligibleEchoSets in
+   * src/echoes/recommendedEchoSets.ts; ADR 0063). Empty is valid.
+   */
+  suggestedEchoSets?: string[];
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;

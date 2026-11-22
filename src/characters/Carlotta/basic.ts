@@ -19,5 +19,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Zhezhi", "Shorekeeper"], tags: ["Hypercarry"] },
       { members: ["Zhezhi", "Verina"], tags: ["Hypercarry"] },
     ],
+    suggestedEchoSets: ["FrostyResolve"],
   };
 }

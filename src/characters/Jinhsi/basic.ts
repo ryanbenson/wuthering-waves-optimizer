@@ -20,5 +20,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       { members: ["Zhezhi", "Verina"], tags: ["Hypercarry"] },
       { members: ["Yuanwu", "Verina"], tags: ["Budget"] },
     ],
+    suggestedEchoSets: ["CelestialLight"],
   };
 }

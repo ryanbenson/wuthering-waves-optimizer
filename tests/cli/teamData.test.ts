@@ -133,6 +133,11 @@ const basics = import.meta.glob("../../src/characters/*/basic.ts", { eager: true
   { getCharacterBasicInfo: () => { suggestedTeams?: Array<{ members: [string, string]; tags?: string[] }> } }
 >;
 
+/** Just past an existing suggestedTeams block; other fields (suggestedEchoSets) can follow it. */
+function teamsBlockEnd(content: string, start: number): number {
+  return content.indexOf("    ],\n", start) + "    ],\n".length;
+}
+
 describe("renderBasicWithTeams", () => {
   const carlotta = read("src/characters/Carlotta/basic.ts");
   const shorekeeper = read("src/characters/Shorekeeper/basic.ts");
@@ -146,7 +151,7 @@ describe("renderBasicWithTeams", () => {
   it("replaces an existing block and leaves the rest of the file alone", () => {
     const out = renderBasicWithTeams(carlotta, teams);
     const start = carlotta.indexOf("    suggestedTeams");
-    const end = carlotta.indexOf("  };");
+    const end = teamsBlockEnd(carlotta, start);
     expect(out).toBe(carlotta.slice(0, start) + block + carlotta.slice(end));
   });
 
@@ -174,7 +179,7 @@ describe("renderBasicWithTeams", () => {
 
   it("removes the block when there are no teams", () => {
     const start = carlotta.indexOf("    suggestedTeams");
-    const end = carlotta.indexOf("  };");
+    const end = teamsBlockEnd(carlotta, start);
     expect(renderBasicWithTeams(carlotta, [])).toBe(carlotta.slice(0, start) + carlotta.slice(end));
     expect(renderBasicWithTeams(shorekeeper, [])).toBe(shorekeeper);
   });
