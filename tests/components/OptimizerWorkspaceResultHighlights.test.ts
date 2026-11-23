@@ -70,7 +70,7 @@ describe("OptimizerWorkspaceResultHighlights", () => {
       "[data-test-optimizer-workspace-result-highlights] > div",
     );
     expect(tiles.length).toBe(6);
-    const deltaLines = container.querySelectorAll("[data-delta-tone]");
+    const deltaLines = container.querySelectorAll("[data-test-stat-delta-total] [data-delta-tone]");
     expect(deltaLines.length).toBe(6);
   });
 
@@ -84,5 +84,71 @@ describe("OptimizerWorkspaceResultHighlights", () => {
     expect(neutral.every((el) => el.classList.contains("opacity-60"))).toBe(true);
     expect(container.textContent).not.toContain("+0.0%");
     expect(container.textContent).not.toContain("-0.0%");
+  });
+
+  // Issue #746: under the total, how much the stat itself moves.
+  function tile(container: Element, label: string): Element {
+    const tiles = Array.from(
+      container.querySelectorAll("[data-test-optimizer-workspace-result-highlights] > div"),
+    );
+    const found = tiles.find((t) => t.querySelector(".truncate")?.textContent === label);
+    if (!found) throw new Error(`no ${label} tile`);
+    return found;
+  }
+  function parts(el: Element): string[] {
+    return Array.from(el.querySelectorAll("[data-test-stat-delta-part]")).map((p) =>
+      Array.from(p.querySelectorAll("span"))
+        .map((s) => s.textContent?.trim())
+        .join(" "),
+    );
+  }
+
+  it("shows Crit Rate's change in points under its total change (the issue's numbers)", () => {
+    const { container } = render(OptimizerWorkspaceResultHighlights, {
+      props: baseProps({
+        finalStats: { ...baseProps().finalStats, totalCritRate: 0.721 },
+        totalCritRate: 0.802,
+      }),
+    });
+    const cr = tile(container, "Crit Rate");
+    expect(cr.querySelector("[data-test-stat-delta-total]")?.textContent).toContain("-10.1%");
+    expect(parts(cr)).toEqual(["Stat -8.1%"]);
+    expect(parts(tile(container, "Crit DMG"))).toEqual(["Stat +20.0%"]);
+    expect(parts(tile(container, "Energy Regen"))).toEqual(["Stat +10.0%"]);
+  });
+
+  it("splits HP, ATK and DEF into their % and flat changes", () => {
+    const { container } = render(OptimizerWorkspaceResultHighlights, {
+      props: baseProps({
+        finalStats: {
+          ...baseProps().finalStats,
+          hpPercent: 20,
+          hpFlat: 2580,
+          attackPercent: 60.8,
+          attackFlat: 400,
+          defPercent: 10,
+          defFlat: 0,
+        },
+        currentStatParts: {
+          hpPercent: 30.1,
+          hpFlat: 2580,
+          attackPercent: 60,
+          attackFlat: 350,
+          defPercent: 21.8,
+          defFlat: 0,
+        },
+      }),
+    });
+    expect(parts(tile(container, "HP"))).toEqual(["HP% -10.1%", "Flat 0"]);
+    expect(parts(tile(container, "ATK"))).toEqual(["ATK% +0.8%", "Flat +50"]);
+    expect(parts(tile(container, "DEF"))).toEqual(["DEF% -11.8%", "Flat 0"]);
+    const flatZero = tile(container, "HP").querySelectorAll("[data-test-stat-delta-part] [data-delta-tone]")[1];
+    expect(flatZero.getAttribute("data-delta-tone")).toBe("neutral");
+  });
+
+  it("leaves out the HP/ATK/DEF split when the current build's isn't known", () => {
+    const { container } = render(OptimizerWorkspaceResultHighlights, { props: baseProps() });
+    expect(tile(container, "ATK").querySelector("[data-test-stat-delta-parts]")).toBeNull();
+    expect(tile(container, "ATK").textContent).toContain("+20.0%");
   });
 });

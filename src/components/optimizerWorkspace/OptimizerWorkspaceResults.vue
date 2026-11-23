@@ -65,12 +65,14 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDmg"
       :energy-regen="energyRegen"
+      :current-stat-parts="currentStatParts"
       :target-type="targetType"
       :target-value="targetValue"></OptimizerWorkspaceSpotlight>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../../utils/statDeltas";
 import AppDeltaPercent from "../AppDeltaPercent.vue";
 import OptimizerStaleResultsAlert from "../OptimizerStaleResultsAlert.vue";
 import { computed, ref, watch } from "vue";
@@ -97,6 +99,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStatParts?: CurrentStatParts | null;
     totalCombos: number;
     optimizerElapsedMs: number;
     resultsStale?: boolean;

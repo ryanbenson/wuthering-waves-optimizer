@@ -21,6 +21,7 @@
         :total-crit-rate="totalCritRate"
         :total-crit-dmg="totalCritDmg"
         :energy-regen="energyRegen"
+        :current-stat-parts="currentStatParts"
         :total-combos="totalCombos"
         :optimizer-elapsed-ms="optimizerElapsedMs"
         :results-stale="resultsStale"
@@ -57,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../../utils/statDeltas";
 import { computed } from "vue";
 import { useGuideDrawer } from "../../composables/useGuideDrawer";
 import OptimizerWorkspaceSetup from "./OptimizerWorkspaceSetup.vue";
@@ -87,6 +89,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStatParts?: CurrentStatParts | null;
     optimizationTargetType: string;
     optimizationTargetObject: string;
     isOptimizerRunning?: boolean;

@@ -335,8 +335,9 @@
               :total-def="current(pick).totalDef ?? 0"
               :total-crit-rate="current(pick).totalCritRate ?? 0"
               :total-crit-dmg="current(pick).totalCritDMG ?? 0"
-              :energy-regen="
-                current(pick).energyRegen ?? 0
+              :energy-regen="current(pick).energyRegen ?? 0"
+              :current-stat-parts="
+                pickStatParts(current(pick))
               "></OptimizerWorkspaceResultHighlights>
             <p
               v-if="erDrop(pick) !== null"
@@ -486,6 +487,7 @@ import type {
 } from "../../composables/useTeamOptimizer";
 import TeamRotationDamageBar from "../TeamRotationDamageBar.vue";
 import OptimizerWorkspaceResultHighlights from "../optimizerWorkspace/OptimizerWorkspaceResultHighlights.vue";
+import { pickStatParts } from "../../utils/statDeltas";
 import { formatOptimizerElapsed } from "../optimizerWorkspace/formatElapsed";
 import { sortLoadoutForDisplay } from "../optimizerWorkspace/optimizerLoadoutSort";
 import {

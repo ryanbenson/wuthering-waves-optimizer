@@ -96,3 +96,13 @@ describe("refreshOptimizerSnapshotBaseline", () => {
     expect(snapshot.stats.totalAtk).toBe(2000);
   });
 });
+
+describe("snapshot stat parts (#746)", () => {
+  it("keeps the %/flat HP, ATK and DEF pools through create and refresh", () => {
+    const parts = { hpPercent: 30, hpFlat: 2580, attackPercent: 60, attackFlat: 350, defPercent: 20, defFlat: 0 };
+    const snapshot = createOptimizerRunSnapshot(inputs(), { ...stats, ...parts }, {});
+    expect(snapshot.stats).toMatchObject(parts);
+    const refreshed = refreshOptimizerSnapshotBaseline(snapshot, { ...stats, ...parts, attackFlat: 400 }, {});
+    expect(refreshed.stats.attackFlat).toBe(400);
+  });
+});

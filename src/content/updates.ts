@@ -58,6 +58,15 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-22",
+    dateLabel: "November 22, 2026",
+    items: [
+      "Optimizer results now show how much each stat itself goes up or down (like -8.1% Crit Rate), plus the % and flat split for HP, ATK and DEF, next to the total change",
+      "The optimizer's stat table showed your ATK change on the stat you optimized for (HP, DEF, Crit or Energy Regen) instead of that stat's own change",
+    ],
+    itemDetails: { 0: { tag: "improvement" }, 1: { tag: "fix" } },
+  },
+  {
     date: "2026-11-20",
     dateLabel: "November 20, 2026",
     items: [
