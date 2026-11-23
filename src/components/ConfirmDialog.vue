@@ -20,6 +20,13 @@
           </li>
         </ul>
         <div class="modal-action">
+          <button
+            v-if="confirmRequest.discardLabel"
+            type="button"
+            class="btn btn-error btn-outline me-auto"
+            @click="handleDiscard">
+            {{ confirmRequest.discardLabel }}
+          </button>
           <button type="button" class="btn" @click="handleCancel">
             {{ confirmRequest.cancelLabel }}
           </button>
@@ -60,6 +67,10 @@ function syncDialog() {
 
 function handleConfirm() {
   settle(true);
+}
+
+function handleDiscard() {
+  settle("discard");
 }
 
 function handleCancel() {

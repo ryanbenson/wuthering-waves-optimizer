@@ -9,6 +9,8 @@ export interface ConfirmRequest {
   confirmLabel: string;
   cancelLabel: string;
   variant: ConfirmVariant;
+  /** A third, destructive choice shown on the left (ask() only). */
+  discardLabel?: string;
 }
 
 export interface ConfirmOptions {
@@ -17,7 +19,11 @@ export interface ConfirmOptions {
   confirmLabel?: string;
   cancelLabel?: string;
   variant?: ConfirmVariant;
+  discardLabel?: string;
 }
+
+/** What ask() resolves to. Dismissing the dialog (Escape, backdrop) is "cancel". */
+export type ConfirmChoice = "confirm" | "cancel" | "discard";
 
 export const confirmButtonClasses: Record<ConfirmVariant, string> = {
   primary: "btn btn-primary",
@@ -26,13 +32,14 @@ export const confirmButtonClasses: Record<ConfirmVariant, string> = {
 };
 
 const confirmRequest = ref<ConfirmRequest | null>(null);
-let resolveFn: ((value: boolean) => void) | null = null;
+let resolveFn: ((value: ConfirmChoice) => void) | null = null;
 
 export function useConfirm() {
-  function confirm(message: string, options: ConfirmOptions = {}): Promise<boolean> {
+  /** Like confirm(), with an optional discardLabel third choice. */
+  function ask(message: string, options: ConfirmOptions = {}): Promise<ConfirmChoice> {
     return new Promise((resolve) => {
       if (resolveFn) {
-        resolveFn(false);
+        resolveFn("cancel");
       }
 
       resolveFn = resolve;
@@ -43,16 +50,21 @@ export function useConfirm() {
         confirmLabel: options.confirmLabel ?? "Confirm",
         cancelLabel: options.cancelLabel ?? "Cancel",
         variant: options.variant ?? "primary",
+        discardLabel: options.discardLabel,
       };
     });
   }
 
-  function settle(result: boolean) {
+  async function confirm(message: string, options: ConfirmOptions = {}): Promise<boolean> {
+    return (await ask(message, { ...options, discardLabel: undefined })) === "confirm";
+  }
+
+  function settle(result: boolean | "discard") {
     const resolve = resolveFn;
     resolveFn = null;
     confirmRequest.value = null;
-    resolve?.(result);
+    resolve?.(result === "discard" ? "discard" : result ? "confirm" : "cancel");
   }
 
-  return { confirmRequest, confirm, settle };
+  return { confirmRequest, confirm, ask, settle };
 }

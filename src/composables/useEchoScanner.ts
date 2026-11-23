@@ -1104,13 +1104,26 @@ export function useEchoScanner() {
     candidates.value = candidates.value.map((c) => (c.id === id ? updater(c) : c));
   }
 
-  onBeforeUnmount(() => {
-    // Includes "stopping": a Stop that's still draining the queue has
-    // nowhere to deliver its results once the component is gone.
-    if (["running", "starting", "trimming", "stopping"].includes(status.value)) {
-      abort();
-    }
-  });
+  /**
+   * Ends a capture that's still going, keeping whatever was read so far for review.
+   * Includes "stopping": a Stop that's still draining the queue has nowhere to deliver
+   * its results once the scanner window is closed. A video that was only opened (the
+   * trim step) goes back to the start screen.
+   */
+  function abortIfActive() {
+    if (!["running", "starting", "trimming", "stopping"].includes(status.value)) return;
+    abort();
+    if (!candidates.value.length) status.value = "idle";
+  }
+
+  /** Drops the current results and returns to the start screen ("Scan again", or after a save). */
+  function discard() {
+    abortIfActive();
+    resetState();
+    status.value = "idle";
+  }
+
+  onBeforeUnmount(abortIfActive);
 
   return {
     status,
@@ -1137,6 +1150,8 @@ export function useEchoScanner() {
     cancelVideo,
     startVideoScan,
     stop,
+    abortIfActive,
+    discard,
     removeCandidate,
     updateCandidate,
     saveCandidateNow,

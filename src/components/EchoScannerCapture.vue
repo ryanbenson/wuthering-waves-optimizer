@@ -44,9 +44,10 @@
           <p class="opacity-90">
             Screen sharing and video upload are both processed entirely in
             your browser — no server, no upload, no account, nothing saved
-            anywhere but this device. Once you close this window (or a
-            video finishes scanning), the captured frames and the
-            in-game snapshots shown for review are gone. There's
+            anywhere but this device. Captured frames aren't kept, and the
+            in-game snapshots shown for review stay only in this tab's
+            memory: closing this window keeps them so you can continue,
+            and they're gone once you save, start over, leave this page or close the tab. There's
             no data collection, no privacy tradeoff, and nothing to worry
             about using either option.
           </p>
@@ -123,7 +124,7 @@
             d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
         </svg>
         Processed on this device only — the video file is never uploaded
-        anywhere, and it's discarded when you close this window.
+        anywhere, and isn't kept once its frames are read.
       </p>
       <div class="flex flex-col items-center gap-3">
         <div class="relative w-full max-w-md" :style="previewAspectStyle">
@@ -412,7 +413,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { useEchoScanner } from "../composables/useEchoScanner";
 import { mapParsedEchoes } from "../echoes/parsedEchoMapping";
 import { useInventoryStore } from "../stores/inventory";
@@ -629,8 +630,26 @@ async function handleStartVideoScan() {
 }
 
 function handleRetry() {
-  status.value = "idle";
+  scanner.discard();
 }
+
+// EchoScannerModal keeps this component mounted while its window is closed, so a
+// review survives a misclick; it calls these instead of relying on an unmount.
+defineExpose({
+  stopCapture: () => scanner.abortIfActive(),
+  discardScan: () => scanner.discard(),
+  unsavedCount: () => candidates.value.length,
+});
+
+// Unsaved results live only in this tab: let the browser ask before a reload or
+// closing the tab drops them.
+function warnBeforeUnload(event: BeforeUnloadEvent) {
+  if (!candidates.value.length) return;
+  event.preventDefault();
+  event.returnValue = "";
+}
+window.addEventListener("beforeunload", warnBeforeUnload);
+onBeforeUnmount(() => window.removeEventListener("beforeunload", warnBeforeUnload));
 
 // --- Guide ---------------------------------------------------------------
 
