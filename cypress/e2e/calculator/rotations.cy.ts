@@ -220,6 +220,28 @@ describe("Calculator Rotations", () => {
       .find("[data-test-rotation-action-sync-status]")
       .should("not.contain.text", "Fully customized");
   });
+
+  it("should ask before deleting a rotation: Cancel keeps it, Delete removes it", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+    cy.get(`[data-test-rotations-action="create"]`).click();
+    cy.get(`[data-test-rotation-item-by-name="Untitled Rotation"]`).click();
+
+    // The editor's Delete button emits rotation-delete; every delete path
+    // goes through CalculatorRotations' confirm dialog.
+    const deleteButton = `[data-test-rotation-action-delete="Untitled Rotation"]`;
+    cy.get(deleteButton).scrollIntoView().click();
+    cy.get(".confirm-dialog", { timeout: 10000 }).should("be.visible");
+    cy.get(".confirm-dialog .modal-action").contains("button", "Cancel").click();
+    cy.get(".confirm-dialog").should("not.be.visible");
+    cy.get(`[data-test-rotation-item-by-name="Untitled Rotation"]`).should("exist");
+
+    cy.get(deleteButton).scrollIntoView().click();
+    cy.get(".confirm-dialog", { timeout: 10000 }).should("be.visible");
+    cy.get(".confirm-dialog .modal-action").contains("button", "Delete").click();
+    cy.get(`[data-test-rotation-item-by-name="Untitled Rotation"]`).should("not.exist");
+  });
 });
 
 describe("Calculator Rotations export/import", () => {

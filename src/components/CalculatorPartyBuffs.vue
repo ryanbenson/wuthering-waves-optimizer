@@ -337,6 +337,7 @@ import AppRichSelect, {
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
+import { useConfirm } from "../composables/useConfirm";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
 import { buffIsPossibleForTeam, buffIsUsed, buffMatchesSearch, resolveHideImpossible } from "../buffs/buffFilters";
@@ -728,7 +729,17 @@ function clearLocalBuffData(keys: Set<string>) {
   updatedStats();
 }
 
-function clearAllPartyBuffs() {
+const { confirm } = useConfirm();
+
+async function clearAllPartyBuffs() {
+  const confirmed = await confirm(`Clear all team buffs for ${getCharacterRosterDisplayName(props.character)}?`, {
+    title: "Clear team buffs",
+    confirmLabel: "Clear all",
+    variant: "warning",
+  });
+  if (!confirmed) {
+    return;
+  }
   characterStore.clearAllTeamBuffs(props.character);
   buffsDataChar1.value = [];
   buffsDataChar2.value = [];
