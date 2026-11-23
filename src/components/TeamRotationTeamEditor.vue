@@ -7,10 +7,8 @@
       :duration="team.duration"
       :result="result"
       :frame-length="teamFrameLength"
-      :show-optimize="isTeamOptimizerOn"
       @view-damages="openDamages"
-      @view-summary="emit('view-summary')"
-      @optimize="emit('optimize')" />
+      @view-summary="emit('view-summary')" />
 
     <div class="card card-compact bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
@@ -400,7 +398,6 @@ import { buildTimelineStrip, type TimelineStrip } from "../calculator/rotationTi
 import { useTeamRotationTiming } from "../composables/useRotationTiming";
 import type { FrameDataFile } from "../calculator/frameData";
 import { rotationLength, type RotationLength, type TimingSlot } from "../calculator/rotationTiming";
-import { isTeamOptimizerEnabled } from "../utils/labs";
 import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useSettingsStore } from "../stores/settings";
@@ -446,7 +443,7 @@ import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
-const emit = defineEmits<{ "view-summary": []; optimize: [] }>();
+const emit = defineEmits<{ "view-summary": [] }>();
 
 const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
@@ -842,10 +839,6 @@ function handleActionDuplicate(id: string) {
 const settingsStore = useSettingsStore();
 const isLiveResultBarEnabled = computed(
   () => isV3UiEnabled(settingsStore),
-);
-// v3 only, like other new features (ADR 0038).
-const isTeamOptimizerOn = computed(
-  () => isV3UiEnabled(settingsStore) && isTeamOptimizerEnabled(settingsStore),
 );
 
 const totalHits = computed(

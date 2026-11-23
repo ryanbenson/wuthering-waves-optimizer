@@ -7,6 +7,8 @@ superseded_by: [0053, 0061]
 
 # 52. Team optimizer: separate searches, then combine
 
+> **Parked 2026-11-23 (#748):** the team optimizer's code was removed from `master` and kept on the `labs/team-optimizer` branch while the feature is reworked. Nothing described here ships today. To pick it back up, revert #748's commit on a fresh branch from `master`.
+
 ## Context
 
 Players with their whole echo inventory imported had to optimize a team one character at a time, and the order they went in decided who got the shared echoes. They wanted one button on a team rotation that finds the best builds for everyone at once.

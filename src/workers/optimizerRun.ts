@@ -1,8 +1,7 @@
 /**
  * Runs one optimizer search: spawns the generator and processor workers, feeds
  * batches between them with backpressure, and merges their candidates into a
- * global top-N. Extracted from Calculator.vue so Team Rotations' team optimizer
- * (ADR 0052) can run it once per character. Plain TS, no Vue: the caller owns
+ * global top-N. Extracted from Calculator.vue. Plain TS, no Vue: the caller owns
  * its own state and updates it from the callbacks.
  */
 import {
@@ -25,11 +24,6 @@ export interface OptimizerRunInput {
   loadoutFormat?: string;
   /** Total worker budget, resolved by the caller from Settings → Preferences. */
   workerCount: number;
-  /** Team optimizer: return each candidate without its per-attack breakdown, so
-   *  a deep top-N stays cheap to send between threads. */
-  slimResults?: boolean;
-  /** Team optimizer: skip any loadout missing one of these set bonuses. */
-  requiredSetBonusLabels?: string[];
 }
 
 export interface OptimizerRunResult {
@@ -205,8 +199,6 @@ export function runOptimizerWorkers(
     rotationData = null,
     loadoutFormat = "Any",
     workerCount,
-    slimResults = false,
-    requiredSetBonusLabels = [],
   } = input;
 
   // Worker count is user-configurable (Settings → Preferences), split between
@@ -352,8 +344,6 @@ export function runOptimizerWorkers(
         damageType,
         rotationData: serializableRotationData,
         topN,
-        slimResults,
-        requiredSetBonusLabels: [...requiredSetBonusLabels],
       },
     });
     worker.onmessage = (e) => {

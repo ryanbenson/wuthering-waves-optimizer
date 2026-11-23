@@ -7,6 +7,8 @@ supersedes: [0052, 0053]
 
 # 61. Team optimizer: the rotation as written, and saving only touches the team
 
+> **Parked 2026-11-23 (#748):** the team optimizer's code was removed from `master` and kept on the `labs/team-optimizer` branch while the feature is reworked. Nothing described here ships today. To pick it back up, revert #748's commit on a fresh branch from `master`. Decision 1, "rotations are calculated as written", still applies project-wide through `docs/context.md` and `CLAUDE.md`.
+
 ## Context
 
 Player feedback on the Labs team optimizer (issues #735–#738) and a review of the whole feature turned up two kinds of problem.

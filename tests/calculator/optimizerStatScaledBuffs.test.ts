@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
-  buildTeamOptimizerSlotPlan,
-  verifyTeamCombination,
   applyLoadoutToCharacterData,
-} from "../../src/calculator/teamOptimizer";
+  buildOptimizerSlotPlan,
+  teamPageDamage,
+} from "./support/optimizerFromStoredData";
 import {
   computeLoadoutFinalStats,
   computeOverrideBuffVariants,
@@ -102,9 +102,8 @@ async function scoreAndPage(characterId: string, worn: any[] | null, loadoutRaw:
     actions[index] = { ...actions[index], advancedConfig: { buffs: { OutroSkillRecursion: { isEnabled: false } } } };
   }
   const team: any = { name: "Test", characterIds: [characterId, null, null], buildIds: [null, null, null], actions, duration: null };
-  const characters = { [characterId]: data };
   const loadout = normalizeOptimizerLoadout(loadoutRaw);
-  const plan = await buildTeamOptimizerSlotPlan({
+  const plan = await buildOptimizerSlotPlan({
     team,
     slot: 0,
     characterId,
@@ -134,19 +133,18 @@ async function scoreAndPage(characterId: string, worn: any[] | null, loadoutRaw:
     ? computeOverrideBuffVariants(rotationData.overrideActions, context)
     : new Map();
   const { damageAggregation } = scoreOptimizerRotation(rotationData, loadout, stats, context, variants);
-  const verified = await verifyTeamCombination({
+  const page = await teamPageDamage({
     team,
-    characters,
-    loadoutBySlot: [loadout, null, null],
-    echoBuffsBySlot: [echoBuffs, null, null],
+    characterId,
+    characterData: data,
+    loadout,
+    echoBuffs,
     enemyConfig,
     inventoryEchoes,
-    damageType: "Average",
-    expectedTotal: 1,
   });
   return {
     score: damageAggregation.avgDamage ?? 0,
-    page: verified.perCharacter[characterId],
+    page,
     overrides: rotationData.overrideActions.length,
     context,
     stats,
