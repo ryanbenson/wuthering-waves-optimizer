@@ -7,6 +7,8 @@ superseded_by: [0061]
 
 # 53. Team optimizer: compare who provides which team buff
 
+> **Parked 2026-11-23 (#748):** the team optimizer's code was removed from `master` and kept on the `labs/team-optimizer` branch while the feature is reworked. Nothing described here ships today. To pick it back up, revert #748's commit on a fresh branch from `master`.
+
 ## Context
 
 ADR 0052 ranks each character on their own damage. A team buff is a toggle saved on the receiver, so a support's build never gets credit for what it gives the team. On a real Aemeath, Lynae and Mornye team, Mornye's best personal build (Empyrean Anthem + Hecate, 254,661) lost to Rejuvenating Glow + Fallacy of No Return (247,303) by 9,808 once Aemeath's buffs matched each set.

@@ -533,14 +533,6 @@
       <TeamRotationSummary :team-id="selectedTeamId" @back="showSummary = false" />
     </template>
 
-    <template v-else-if="showOptimizer">
-      <TeamOptimizerWorkspace
-        :key="selectedTeamId ?? ''"
-        :team-id="selectedTeamId"
-        @back="showOptimizer = false"
-        @open-team="openTeamInOptimizer" />
-    </template>
-
     <template v-else>
       <button
         type="button"
@@ -552,8 +544,7 @@
       <TeamRotationTeamEditor
         :key="selectedTeamId"
         :team-id="selectedTeamId"
-        @view-summary="showSummary = true"
-        @optimize="showOptimizer = true" />
+        @view-summary="showSummary = true" />
     </template>
 
     <TeamRotationsImportModal v-model:open="isImportOpen" @import="importTeamData" />
@@ -572,7 +563,6 @@ import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import TeamRotationSummary from "./TeamRotationSummary.vue";
-import TeamOptimizerWorkspace from "./teamOptimizer/TeamOptimizerWorkspace.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import TeamRotationsImportModal from "./TeamRotationsImportModal.vue";
@@ -624,18 +614,6 @@ const selectedTeamId = ref<string | null>(
 );
 const showSummary = ref(false);
 
-const showOptimizer = ref(false);
-// Switching teams closes the optimizer, except when the optimizer itself just
-// made a copy of the team to optimize (ADR 0061), which opens straight into it.
-let openOptimizerForTeamId: string | null = null;
-watch(selectedTeamId, (teamId) => {
-  showOptimizer.value = teamId !== null && teamId === openOptimizerForTeamId;
-  openOptimizerForTeamId = null;
-});
-function openTeamInOptimizer(teamId: string) {
-  openOptimizerForTeamId = teamId;
-  selectedTeamId.value = teamId;
-}
 watch(selectedTeamId, (teamId) => {
   if (teamId) {
     sessionStorage.setItem(ACTIVE_TEAM_ID_KEY, teamId);

@@ -58,6 +58,14 @@ export const currentAnnouncement: Announcement | null = null;
 
 export const updateEntries: UpdateEntry[] = [
   {
+    date: "2026-11-23",
+    dateLabel: "November 23, 2026",
+    items: [
+      "The team optimizer has been taken out of Labs for now while it's reworked. Builds it already saved stay as they are",
+    ],
+    itemDetails: { 0: { tag: "labs" } },
+  },
+  {
     date: "2026-11-22",
     dateLabel: "November 22, 2026",
     items: [

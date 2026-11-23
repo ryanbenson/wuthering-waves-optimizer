@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
-import { RECOMMENDED_TEAMS_LAB, TEAM_OPTIMIZER_LAB } from "../utils/labs";
+import { RECOMMENDED_TEAMS_LAB } from "../utils/labs";
 
 withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
   variant: "legacy",
@@ -77,14 +77,10 @@ withDefaults(defineProps<{ variant?: "legacy" | "v3" }>(), {
 type LabFeature = { key: string; label: string; details: string };
 
 // Echo scanning graduated on 2026-10-27 and frame timing on 2026-11-06; any
-// stored `labs.echoScanning` or `labs.frameTiming` is simply ignored now.
+// stored `labs.echoScanning` or `labs.frameTiming` is simply ignored now. The
+// team optimizer was parked on the `labs/team-optimizer` branch on 2026-11-23
+// (#748), so a stored `labs.teamOptimizer` is ignored too.
 const labsFeatures = ref<LabFeature[]>([
-  {
-    key: TEAM_OPTIMIZER_LAB,
-    label: "Team optimizer",
-    details:
-      "Adds an Optimize team button to Team Rotations. It finds the best builds for all of a team's characters at once, for that team's rotation, without using an echo twice. Results save as new builds, so your current ones stay untouched.",
-  },
   {
     key: RECOMMENDED_TEAMS_LAB,
     label: "Recommended teams",

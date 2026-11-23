@@ -5,9 +5,6 @@
  */
 type SettingsLike = { labs?: Record<string, { isEnabled?: boolean } | undefined> | null };
 
-/** Optimize all three of a team's builds at once (ADR 0052). */
-export const TEAM_OPTIMIZER_LAB = "teamOptimizer";
-
 /** Recommended teams on the Team Buffs tab (issue #663). */
 export const RECOMMENDED_TEAMS_LAB = "recommendedTeams";
 
@@ -15,10 +12,6 @@ export const RECOMMENDED_TEAMS_LAB = "recommendedTeams";
 // StoreGeneric fails TS's weak-type check against an all-optional type.
 export function isLabEnabled(settings: object, key: string): boolean {
   return (settings as SettingsLike).labs?.[key]?.isEnabled === true;
-}
-
-export function isTeamOptimizerEnabled(settings: object): boolean {
-  return isLabEnabled(settings, TEAM_OPTIMIZER_LAB);
 }
 
 export function isRecommendedTeamsEnabled(settings: object): boolean {
