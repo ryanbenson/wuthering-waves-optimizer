@@ -68,12 +68,14 @@
         :total-crit-rate="totalCritRate"
         :total-crit-dmg="totalCritDmg"
         :energy-regen="energyRegen"
+        :current-stat-parts="currentStatParts"
         :target-value="targetValue" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../utils/statDeltas";
 import { computed } from "vue";
 import CalculatorOptimizerResultStats from "./CalculatorOptimizerResultStats.vue";
 import CalculatorOptimizerResultDamage from "./CalculatorOptimizerResultDamage.vue";
@@ -106,6 +108,7 @@ const props = withDefaults(
     totalCritRate: number;
     totalCritDmg: number;
     energyRegen: number;
+    currentStatParts?: CurrentStatParts | null;
   }>(),
   {
     loadout: () => [],

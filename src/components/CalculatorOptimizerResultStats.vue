@@ -20,7 +20,7 @@
             }">
             {{ displayInt(finalStats.totalHp ?? 0) }}
             <template v-if="targetValue === 'totalHp'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -42,7 +42,7 @@
             }">
             {{ displayInt(finalStats.totalAtk ?? 0) }}
             <template v-if="targetValue === 'totalAtk'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -64,7 +64,7 @@
             }">
             {{ displayInt(finalStats.totalDef ?? 0) }}
             <template v-if="targetValue === 'totalDef'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -81,7 +81,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.totalCritRate ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritRate'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -98,7 +98,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.totalCritDMG ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritDMG'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -115,7 +115,7 @@
           <td class="text-right">
             {{ displayPercentage((finalStats.energyRegen ?? 0) * 100) }}
             <template v-if="targetValue === 'energyRegen'">
-              <AppDeltaPercent :value="atkDiffPercent" parens />
+              <OptimizerTargetStatDelta v-if="targetDelta" :delta="targetDelta" />
             </template>
           </td>
         </tr>
@@ -238,9 +238,10 @@
 </template>
 
 <script setup lang="ts">
-import AppDeltaPercent from "./AppDeltaPercent.vue";
+import OptimizerTargetStatDelta from "./OptimizerTargetStatDelta.vue";
 import { computed } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
+import { getStatDeltas, statDeltaKeyForTarget, type CurrentStatParts } from "../utils/statDeltas";
 
 defineOptions({ name: "CalculatorOptimizerResultStats" });
 
@@ -254,14 +255,28 @@ const props = defineProps<{
   totalCritRate: number;
   totalCritDmg: number;
   energyRegen: number;
+  /** The current build's %/flat HP, ATK and DEF pools; without them those rows skip the split. */
+  currentStatParts?: CurrentStatParts | null;
 }>();
 
 const hpTooltipContent = computed(() => null);
 const atkTooltipContent = computed(() => null);
 const defTooltipContent = computed(() => null);
 
-const atkDiffPercent = computed(() => {
-  const diffNumber = (props.finalStats.totalAtk ?? 0) - props.totalAtk;
-  return (diffNumber / props.totalAtk) * 100;
+// The optimized-for stat's own change: the total vs now, then the stat
+// itself (issue #746). Each row reads its own stat — this used to show the
+// ATK change on every target row.
+const targetDelta = computed(() => {
+  const key = statDeltaKeyForTarget(props.targetValue);
+  if (!key) return null;
+  return getStatDeltas(props.finalStats, {
+    ...(props.currentStatParts ?? {}),
+    totalHp: props.totalHp,
+    totalAtk: props.totalAtk,
+    totalDef: props.totalDef,
+    totalCritRate: props.totalCritRate,
+    totalCritDMG: props.totalCritDmg,
+    energyRegen: props.energyRegen,
+  })[key];
 });
 </script>

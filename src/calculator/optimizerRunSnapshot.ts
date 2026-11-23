@@ -31,6 +31,13 @@ export type OptimizerSnapshotStats = {
   totalCritRate: number;
   totalCritDMG: number;
   energyRegen: number;
+  /** The %-stat and flat-stat pools behind HP, ATK and DEF, for the stat-change lines (#746). */
+  hpPercent?: number;
+  hpFlat?: number;
+  attackPercent?: number;
+  attackFlat?: number;
+  defPercent?: number;
+  defFlat?: number;
 };
 
 export type OptimizerRunSnapshot = {

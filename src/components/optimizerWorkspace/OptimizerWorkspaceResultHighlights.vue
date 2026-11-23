@@ -6,15 +6,39 @@
         <div class="text-[.65rem] font-bold uppercase tracking-wider opacity-50 truncate">{{ tile.label }}</div>
       </div>
       <div class="font-mono font-bold text-sm mt-0.5">{{ tile.display }}</div>
-      <AppDeltaPercent v-if="tile.hasDiff" :value="tile.diffPercent" class="block font-mono text-xs font-bold" />
+      <div class="font-mono text-xs font-bold" data-test-stat-delta-total>
+        <AppDeltaPercent :value="tile.diffPercent" />
+        <span class="ml-1 font-sans text-[.6rem] font-semibold text-base-content/60">total</span>
+      </div>
+      <div
+        v-if="tile.parts.length"
+        class="mt-1 pt-1 border-t border-dashed border-base-content/20 flex flex-col"
+        data-test-stat-delta-parts>
+        <div
+          v-for="part in tile.parts"
+          :key="part.label"
+          class="font-mono text-[.7rem] font-semibold whitespace-nowrap"
+          data-test-stat-delta-part>
+          <span class="font-sans text-[.6rem] text-base-content/60">{{ part.label }}</span>
+          <span class="ml-1" :class="deltaToneTextClass(part.delta.tone)" :data-delta-tone="part.delta.tone">{{
+            part.delta.text
+          }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+// The best loadout's six headline stats. Under each value: the total's change
+// vs the current build (as before), then the stat's own change — points for
+// Crit Rate/Crit DMG/Energy Regen, %-stat and flat-stat for HP/ATK/DEF
+// (issue #746, utils/statDeltas.ts).
 import AppDeltaPercent from "../AppDeltaPercent.vue";
 import { computed } from "vue";
 import { displayPercentage, displayInt } from "../../utils/numbers";
+import { deltaToneTextClass } from "../../utils/signedDelta";
+import { getStatDeltas, type CurrentStatParts } from "../../utils/statDeltas";
 
 defineOptions({ name: "OptimizerWorkspaceResultHighlights" });
 
@@ -28,74 +52,48 @@ const props = defineProps<{
   totalCritRate: number;
   totalCritDmg: number;
   energyRegen: number;
+  /** The current build's %/flat HP, ATK and DEF pools; without them those tiles skip the split. */
+  currentStatParts?: CurrentStatParts | null;
 }>();
-
-function diffPercent(next: number, current: number): number {
-  if (!current) return 0;
-  return ((next - current) / current) * 100;
-}
 
 // Row 1: HP, ATK, DEF — row 2: Crit Rate, Crit DMG, Energy Regen.
 const tiles = computed(() => {
-  const finalHp = props.finalStats.totalHp ?? 0;
-  const finalAtk = props.finalStats.totalAtk ?? 0;
-  const finalDef = props.finalStats.totalDef ?? 0;
-  const finalCritRate = (props.finalStats.totalCritRate ?? 0) * 100;
-  const finalCritDmg = (props.finalStats.totalCritDMG ?? 0) * 100;
-  const finalEnergyRegen = (props.finalStats.energyRegen ?? 0) * 100;
-  const currentCritRate = props.totalCritRate * 100;
-  const currentCritDmg = props.totalCritDmg * 100;
-  const currentEnergyRegen = props.energyRegen * 100;
+  const final = props.finalStats;
+  const deltas = getStatDeltas(final, {
+    ...(props.currentStatParts ?? {}),
+    totalHp: props.totalHp,
+    totalAtk: props.totalAtk,
+    totalDef: props.totalDef,
+    totalCritRate: props.totalCritRate,
+    totalCritDMG: props.totalCritDmg,
+    energyRegen: props.energyRegen,
+  });
 
   return [
-    {
-      key: "hp",
-      label: "HP",
-      icon: `${ICON_BASE}/hp.png`,
-      display: displayInt(finalHp),
-      diffPercent: diffPercent(finalHp, props.totalHp),
-      hasDiff: true,
-    },
-    {
-      key: "atk",
-      label: "ATK",
-      icon: `${ICON_BASE}/atk.png`,
-      display: displayInt(finalAtk),
-      diffPercent: diffPercent(finalAtk, props.totalAtk),
-      hasDiff: true,
-    },
-    {
-      key: "def",
-      label: "DEF",
-      icon: `${ICON_BASE}/def.png`,
-      display: displayInt(finalDef),
-      diffPercent: diffPercent(finalDef, props.totalDef),
-      hasDiff: true,
-    },
+    { key: "hp", label: "HP", icon: `${ICON_BASE}/hp.png`, display: displayInt(final.totalHp ?? 0), delta: deltas.hp },
+    { key: "atk", label: "ATK", icon: `${ICON_BASE}/atk.png`, display: displayInt(final.totalAtk ?? 0), delta: deltas.atk },
+    { key: "def", label: "DEF", icon: `${ICON_BASE}/def.png`, display: displayInt(final.totalDef ?? 0), delta: deltas.def },
     {
       key: "critRate",
       label: "Crit Rate",
       icon: `${ICON_BASE}/critrate.png`,
-      display: displayPercentage(finalCritRate),
-      diffPercent: diffPercent(finalCritRate, currentCritRate),
-      hasDiff: true,
+      display: displayPercentage((final.totalCritRate ?? 0) * 100),
+      delta: deltas.critRate,
     },
     {
       key: "critDmg",
       label: "Crit DMG",
       icon: `${ICON_BASE}/critdamage.png`,
-      display: displayPercentage(finalCritDmg),
-      diffPercent: diffPercent(finalCritDmg, currentCritDmg),
-      hasDiff: true,
+      display: displayPercentage((final.totalCritDMG ?? 0) * 100),
+      delta: deltas.critDmg,
     },
     {
       key: "energyRegen",
       label: "Energy Regen",
       icon: `${ICON_BASE}/energyregen.png`,
-      display: displayPercentage(finalEnergyRegen),
-      diffPercent: diffPercent(finalEnergyRegen, currentEnergyRegen),
-      hasDiff: true,
+      display: displayPercentage((final.energyRegen ?? 0) * 100),
+      delta: deltas.energyRegen,
     },
-  ];
+  ].map((tile) => ({ ...tile, diffPercent: tile.delta.totalPercent, parts: tile.delta.parts }));
 });
 </script>

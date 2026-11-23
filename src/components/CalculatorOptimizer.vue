@@ -369,12 +369,14 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDMG"
       :energy-regen="energyRegen"
+      :current-stat-parts="currentStatParts"
       :target-type="optimizationTargetType"
       :target-value="optimizationTargetObject" />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { CurrentStatParts } from "../utils/statDeltas";
 import { computed, onMounted, reactive, ref } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import {
@@ -420,6 +422,7 @@ const props = defineProps<{
   totalCritRate: number;
   totalCritDMG: number;
   energyRegen: number;
+  currentStatParts?: CurrentStatParts | null;
   optimizationTargetType: string;
   optimizationTargetObject: string;
   resultsStale?: boolean;

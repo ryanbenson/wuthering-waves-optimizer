@@ -218,6 +218,7 @@
           :total-crit-rate="optimizerCompareStats.totalCritRate"
           :total-crit-dmg="optimizerCompareStats.totalCritDMG"
           :energy-regen="optimizerCompareStats.energyRegen"
+          :current-stat-parts="optimizerCompareStatParts"
           :results-stale="optimizerResultsStale"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
@@ -242,6 +243,7 @@
           :total-crit-rate="optimizerCompareStats.totalCritRate"
           :total-crit-dmg="optimizerCompareStats.totalCritDMG"
           :energy-regen="optimizerCompareStats.energyRegen"
+          :current-stat-parts="optimizerCompareStatParts"
           :results-stale="optimizerResultsStale"
           :optimization-target-type="optimizationTargetType"
           :optimization-target-object="optimizationTargetObject"
@@ -485,6 +487,7 @@
 
 <script lang="ts">
 // @ts-nocheck
+import { pickStatParts } from "../utils/statDeltas";
 import {
   defineComponent,
   reactive,
@@ -1533,6 +1536,12 @@ export default defineComponent({
           totalCritRate: totalCritRate.value,
           totalCritDMG: totalCritDMG.value,
           energyRegen: energyRegen.value,
+          hpPercent: totalHpPercent.value,
+          hpFlat: totalHpFlat.value,
+          attackPercent: totalAtkPercent.value,
+          attackFlat: totalAtkFlat.value,
+          defPercent: totalDefPercent.value,
+          defFlat: totalDefFlat.value,
         },
         allDamages,
       );
@@ -1871,7 +1880,20 @@ export default defineComponent({
     watch(
       [
         optimizerResultsStale,
-        () => [totalAtk.value, totalHp.value, totalDef.value, totalCritRate.value, totalCritDMG.value, energyRegen.value],
+        () => [
+          totalAtk.value,
+          totalHp.value,
+          totalDef.value,
+          totalCritRate.value,
+          totalCritDMG.value,
+          energyRegen.value,
+          totalHpPercent.value,
+          totalHpFlat.value,
+          totalAtkPercent.value,
+          totalAtkFlat.value,
+          totalDefPercent.value,
+          totalDefFlat.value,
+        ],
         () => allDamages,
       ],
       () => {
@@ -1885,6 +1907,12 @@ export default defineComponent({
             totalCritRate: totalCritRate.value,
             totalCritDMG: totalCritDMG.value,
             energyRegen: energyRegen.value,
+            hpPercent: totalHpPercent.value,
+            hpFlat: totalHpFlat.value,
+            attackPercent: totalAtkPercent.value,
+            attackFlat: totalAtkFlat.value,
+            defPercent: totalDefPercent.value,
+            defFlat: totalDefFlat.value,
           },
           allDamages,
         );
@@ -1903,8 +1931,15 @@ export default defineComponent({
           totalCritRate: totalCritRate.value,
           totalCritDMG: totalCritDMG.value,
           energyRegen: energyRegen.value,
+          hpPercent: totalHpPercent.value,
+          hpFlat: totalHpFlat.value,
+          attackPercent: totalAtkPercent.value,
+          attackFlat: totalAtkFlat.value,
+          defPercent: totalDefPercent.value,
+          defFlat: totalDefFlat.value,
         },
     );
+    const optimizerCompareStatParts = computed(() => pickStatParts(optimizerCompareStats.value));
     const optimizerCompareDamages = computed(() =>
       optimizerSnapshot.value
         ? optimizerSnapshot.value.allDamages
@@ -2161,6 +2196,7 @@ export default defineComponent({
       optimizerSnapshot,
       optimizerResultsStale,
       optimizerCompareStats,
+      optimizerCompareStatParts,
       optimizerCompareDamages,
       rerunOptimizer,
       // data for the sidebar
